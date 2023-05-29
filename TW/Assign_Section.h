@@ -16,7 +16,7 @@ class Assign_Section : public QDialog
 public:
 	Assign_Section(InterFace* InterFace,QWidget *parent = nullptr);
 	~Assign_Section();
-
+	//text
 	void ShowComboVTK();
 	void table_Section_Lists();
 	void table_Group_Lists(Part_Base*Part);
