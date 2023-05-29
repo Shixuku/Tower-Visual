@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InterFaceClass</class>
+ <widget class="QMainWindow" name="InterFaceClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1293</width>
+    <height>830</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>InterFace</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="1">
+     <widget class="QWidget" name="widget_3" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="btn_part">
+         <property name="text">
+          <string>管理部件数据</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_ins">
+         <property name="text">
+          <string>管理实例数据</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QTreeWidget" name="treeWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item row="0" column="2" rowspan="3">
+     <widget class="QWidget" name="widget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1293</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件(File)</string>
+    </property>
+    <addaction name="menuSave"/>
+    <addaction name="actionRead"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>编辑(Edit)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>视图(View)</string>
+    </property>
+    <addaction name="actionNodes"/>
+   </widget>
+   <widget class="QMenu" name="menu_Set">
+    <property name="title">
+     <string>设置(Set)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Widget">
+    <property name="title">
+     <string>窗口(Widget)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Create">
+    <property name="title">
+     <string>新建（Create）</string>
+    </property>
+    <widget class="QMenu" name="menuPart">
+     <property name="title">
+      <string>Part</string>
+     </property>
+     <addaction name="actionLeg"/>
+     <addaction name="actionBody"/>
+     <addaction name="actionCrossArm"/>
+    </widget>
+    <addaction name="menuPart"/>
+   </widget>
+   <addaction name="menu_Create"/>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_View"/>
+   <addaction name="menu_Set"/>
+   <addaction name="menu_Widget"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/xinjian.jfif</normaloff>:/xinjian.jfif</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>新建</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/dakai.jfif</normaloff>:/dakai.jfif</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>打开</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/baocun.png</normaloff>:/baocun.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>保存</string>
+   </property>
+  </action>
+  <action name="actionLeg">
+   <property name="text">
+    <string>Leg</string>
+   </property>
+  </action>
+  <action name="actionBody">
+   <property name="text">
+    <string>Body</string>
+   </property>
+  </action>
+  <action name="actionCrossArm">
+   <property name="text">
+    <string>Head</string>
+   </property>
+  </action>
+  <action name="actionSavePartLeg">
+   <property name="text">
+    <string>SavePartLeg</string>
+   </property>
+  </action>
+  <action name="actionSavePartBody">
+   <property name="text">
+    <string>SavePartBody</string>
+   </property>
+  </action>
+  <action name="actionSavePartHead">
+   <property name="text">
+    <string>SavePartHead</string>
+   </property>
+  </action>
+  <action name="actionSaveTower">
+   <property name="text">
+    <string>SaveTower</string>
+   </property>
+  </action>
+  <action name="menuSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionRead">
+   <property name="text">
+    <string>Read</string>
+   </property>
+  </action>
+  <action name="actionNodes">
+   <property name="text">
+    <string>Nodes</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="InterFace.qrc"/>
+  <include location="tubiao.qrc"/>
+ </resources>
+ <connections/>
+</ui>

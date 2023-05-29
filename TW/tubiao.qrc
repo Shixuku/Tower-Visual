@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/">
+    <file>dakai.jfif</file>
+  <file>xinjian.jfif</file>
+ <file>baocun.png</file>
+  </qresource>
+</RCC>
