@@ -127,6 +127,12 @@
     <ClCompile Include="TowerData_Insulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Wire_InterFace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Element_Wire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beamActor.h">
@@ -198,6 +204,9 @@
     <ClInclude Include="TowerData_Insulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Element_Wire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="InterFace.h">
@@ -236,6 +245,9 @@
     <QtMoc Include="SetAllSection.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Wire_InterFace.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="T_CrossArm.ui">
@@ -269,6 +281,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="SetAllSection.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Wire_InterFace.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
