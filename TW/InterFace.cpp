@@ -14,6 +14,7 @@
 #include"Tower_Assembly.h"
 #include"Assign_Section.h"
 #include"SetAllSection.h"
+#include"Wire_InterFace.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -104,6 +105,9 @@ void InterFace::TreeWidgetShow()
 
 	QTreeWidgetItem* pNewItem10 = new QTreeWidgetItem(ui.treeWidget);
 	pNewItem10->setText(0, QString("绝缘子串"));
+
+	QTreeWidgetItem* pNewItem11 = new QTreeWidgetItem(ui.treeWidget);
+	pNewItem11->setText(0, QString("导线建模"));
 }
 
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -146,6 +150,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (item == ui.treeWidget->topLevelItem(5))
 	{
 		ui_Interphase_spacer();
+	}
+	else if (item == ui.treeWidget->topLevelItem(6))
+	{
+		ui_Wire_InterFace();
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -381,6 +389,13 @@ void InterFace::ui_Interphase_spacer()
 	IS->show();
 	Point_Inqure();
 	
+}
+
+void InterFace::ui_Wire_InterFace()
+{
+	Wire_InterFace* wire = new Wire_InterFace(this);
+	wire->show();
+	Point_Inqure();
 }
 
 void InterFace::SaveFile()
