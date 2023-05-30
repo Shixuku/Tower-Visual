@@ -24,6 +24,7 @@ class T_Body;
 class T_CrossArm;
 class Tower_Assembly;
 class MouseInteractorHighLightActor;
+class Wire_InterFace;
 
 class InterFace : public QMainWindow
 {
@@ -76,6 +77,7 @@ public slots:
     void ui_Management_PartData();
     void ui_Management_InsData();
     void ui_Interphase_spacer();
+    void ui_Wire_InterFace();
     void SaveFile();
     void OpenFile();
     void ui_Section();
