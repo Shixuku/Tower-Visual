@@ -11,6 +11,10 @@ public:
 
 	Node() {};
 	Node(int id, double ix, double iy, double iz);
+	Node(double ix, double iy, double iz)
+	{
+		x = ix, y = iy, z = iz;
+	}
 	void show()const;
 
 	void SaveTo(QDataStream& fin)const;
