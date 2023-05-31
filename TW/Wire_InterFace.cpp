@@ -119,8 +119,8 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 	int num_Node = m_Nodes.size();
 	int p = xgd_Real.size() - 1;
 	//确定的向量
-	double v_x = xgd_Real[p].x - xgd_List[p - 1].x;
-	double v_y = xgd_Real[p].y - xgd_List[p - 1].y;
+	double v_x = xgd_Real[p].x - xgd_Real[p - 1].x;
+	double v_y = xgd_Real[p].y - xgd_Real[p - 1].y;
 	double angle = ((atan2(v_x, v_y) * 180) / 3.1415926);
 	angle = vtkMath::RadiansFromDegrees(angle);
 	Creat_WireData wire_temp(xgd_Real, rou, yingli, N, Node_Temp); //zuo分裂的基础点
@@ -177,12 +177,12 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 		vector<Node> xgd_6;
 		for (int i = 0; i < xgd_Real.size(); i++)
 		{
-			xgd_1.push_back(Node(xgd_Real[i].x - 200 * cos(angle), xgd_Real[i].y + 200 * sin(angle), xgd_Real[i].z + 350));
-			xgd_2.push_back(Node(xgd_Real[i].x + 200 * cos(angle), xgd_Real[i].y - 200 * sin(angle), xgd_Real[i].z + 350));
-			xgd_3.push_back(Node(xgd_Real[i].x + 400 * cos(angle), xgd_Real[i].y - 400 * sin(angle), xgd_Real[i].z));
-			xgd_4.push_back(Node(xgd_Real[i].x + 200 * cos(angle), xgd_Real[i].y - 200 * sin(angle), xgd_Real[i].z - 350));
-			xgd_5.push_back(Node(xgd_Real[i].x - 200 * cos(angle), xgd_Real[i].y + 200 * sin(angle), xgd_Real[i].z - 350));
-			xgd_6.push_back(Node(xgd_Real[i].x - 400 * cos(angle), xgd_Real[i].y + 400 * sin(angle), xgd_Real[i].z));
+			xgd_1.push_back(Node(xgd_Real[i].x - 200 * cos(angle), xgd_Real[i].y + 200 * sin(angle), xgd_Real[i].z + 346));
+			xgd_2.push_back(Node(xgd_Real[i].x + 200 * cos(angle), xgd_Real[i].y - 200 * sin(angle), xgd_Real[i].z + 346));
+			xgd_3.push_back(Node(xgd_Real[i].x + 346 * cos(angle), xgd_Real[i].y - 346 * sin(angle), xgd_Real[i].z));
+			xgd_4.push_back(Node(xgd_Real[i].x + 200 * cos(angle), xgd_Real[i].y - 200 * sin(angle), xgd_Real[i].z - 346));
+			xgd_5.push_back(Node(xgd_Real[i].x - 200 * cos(angle), xgd_Real[i].y + 200 * sin(angle), xgd_Real[i].z - 346));
+			xgd_6.push_back(Node(xgd_Real[i].x - 346 * cos(angle), xgd_Real[i].y + 346 * sin(angle), xgd_Real[i].z));
 		};
 		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
 		Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
@@ -226,7 +226,6 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 	{
 		cd->CreatWire_ele((i + 1) + p * N * i + num_Node, p * N * (i + 1) + (i + 1) + num_Node, m_Elements_Wire);
 	}
-
 	//耐张串部分
 	if (direction == 1)//左耐张
 	{
@@ -237,7 +236,10 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			ids.push_back(p * N * i + (i + 1) + num_Node);
 
 		}
-		cd->Creat_Spacer(m_Elements_Spacer, ids);//间隔棒单元
+		if (fenlie != 1)
+		{
+			cd->Creat_Spacer(m_Elements_Spacer, ids);//间隔棒单元
+		}
 		cd->Creat_Strain_Strand(xgd_List, 0, ids, m_Nodes, m_Elements_Strain);
 	}
 	else if (direction == 2)
@@ -248,7 +250,10 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 		{
 			ids.push_back(p * N * (i + 1) + (i + 1) + num_Node);
 		}
-		cd->Creat_Spacer(m_Elements_Spacer, ids);//间隔棒单元
+		if (fenlie != 1)
+		{
+			cd->Creat_Spacer(m_Elements_Spacer, ids);//间隔棒单元
+		}
 		int num = xgd_List.size() - 1;
 		cd->Creat_Strain_Strand(xgd_List, num, ids, m_Nodes, m_Elements_Strain);
 	}
@@ -264,11 +269,15 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 
 		}
 		int num = xgd_List.size() - 1;
-		cd->Creat_Spacer(m_Elements_Spacer, ids_1);//间隔棒单元
-		cd->Creat_Spacer(m_Elements_Spacer, ids_2);//间隔棒单元
+		if (fenlie != 1)
+		{
+			cd->Creat_Spacer(m_Elements_Spacer, ids_1);//间隔棒单元
+			cd->Creat_Spacer(m_Elements_Spacer, ids_2);//间隔棒单元
+		}
 		cd->Creat_Strain_Strand(xgd_List, 0, ids_1, m_Nodes, m_Elements_Strain);
 		cd->Creat_Strain_Strand(xgd_List, num, ids_2, m_Nodes, m_Elements_Strain);
 	}
+	
 }
 
 void Wire_InterFace::Show_Senior()
