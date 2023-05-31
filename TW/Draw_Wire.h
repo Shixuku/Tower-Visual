@@ -12,7 +12,7 @@
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
 #include<vtkProperty.h>
-#include "D:/VST/VTK/VTK/Use_VTK.h"
+#include"D:/VTK/Use_VTK.h"
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricSpline.h>
 #include <vtkCellArray.h>

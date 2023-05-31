@@ -53,33 +53,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_4" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>类型</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="combo_type">
-           <item>
-            <property name="text">
-             <string>悬垂绝缘子</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>V型绝缘子</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QWidget" name="widget_3" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
@@ -93,27 +66,7 @@
           <widget class="QComboBox" name="combo_count">
            <item>
             <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>6</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8</string>
             </property>
            </item>
           </widget>

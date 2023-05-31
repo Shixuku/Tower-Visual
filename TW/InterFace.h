@@ -25,7 +25,7 @@ class T_CrossArm;
 class Tower_Assembly;
 class MouseInteractorHighLightActor;
 class Wire_InterFace;
-
+class Interphase_spacer;
 class InterFace : public QMainWindow
 {
     Q_OBJECT
