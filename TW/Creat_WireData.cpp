@@ -60,12 +60,17 @@ void Creat_WireData::CreatWire_ele(int a, int b, vector<Element_Wire>& m_Element
 	}
 }
 
-vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, double angle, vector<Node> xgd, vector<Node> wire0, int dangwei, vector<Node>& node) const
+vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node> xgd_List, vector<Node> xgd, vector<Node> wire0, int dangwei, vector<Node>& node) const
 {
 	vector<int> idnodes;
+	//确定的向量
+	double v_x = xgd[1].x - xgd[0].x;
+	double v_y = xgd[1].y - xgd[0].y;
+	double angle = ((atan2(v_x, v_y) * 180) / 3.1415926);
 	//int fenli = node.size() / (N * (xgd.size() - 1));//导线分裂数
 	switch (fenli)
 	{
+		
 	case 1:
 		break;
 	case 2:
@@ -82,8 +87,8 @@ vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, double angle
 			{
 				if (abs(Lm - S) < error)
 				{
-					double x = i.x + 0.225 * cos(angle);
-					double z = i.z + 0.225;
+					double x = i.x + 225 * cos(angle);
+					double z = i.z + 225;
 
 					for (auto& j : node)
 					{

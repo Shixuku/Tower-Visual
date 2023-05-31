@@ -106,6 +106,7 @@
     <ClCompile Include="MouseInteractorHighLightActor.cpp" />
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
+    <ClCompile Include="Spacer.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
     <ClCompile Include="TowerData_CrossArm.cpp" />
@@ -129,6 +130,7 @@
     <QtUic Include="Senior.ui" />
     <QtUic Include="SetAllSection.ui" />
     <QtUic Include="Set_Section.ui" />
+    <QtUic Include="Spacer.ui" />
     <QtUic Include="Tower_Assembly.ui" />
     <ClCompile Include="beamActor.cpp" />
     <ClCompile Include="Element.cpp" />
@@ -168,6 +170,7 @@
     <ClInclude Include="Part_Base.h" />
     <QtMoc Include="SetAllSection.h" />
     <QtMoc Include="Senior.h" />
+    <QtMoc Include="Spacer.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerData_Body.h" />
     <ClInclude Include="TowerData_CrossArm.h" />
