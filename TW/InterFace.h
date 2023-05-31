@@ -36,11 +36,15 @@ public:
     void SetupCentralWidget();//右窗口
     void TreeWidgetShow();//左窗口
 
-    vtkRenderer* m_Renderer;
+    vtkRenderer* m_Renderer;//放部件的vtk窗口
+    vtkRenderer* m_Renderer_2;//单塔实例的vtk窗口
+    vtkRenderer* m_Renderer_3;//塔线组的vtk窗口
     vtkGenericOpenGLRenderWindow* m_renderWindow;
     void ResetCamera() const;
-    void HiddeAll();
+    void HiddeAllPart();
+    void HiddeAllTower();
     void SubstaceActor(Part_Base* Part);
+    void switchRenderWindow(int index);
      Ui::InterFaceClass ui;
 
      //Set_Section* m_ab = nullptr;
