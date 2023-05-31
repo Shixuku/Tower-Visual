@@ -22,6 +22,8 @@ public:
 	//xgd_List(表格中的悬挂点) xgd_Real（加了耐张串的实际悬挂点）direction=0，1，2,3（直线 左耐张 右耐张,两边都耐张）
 	void Line_Segment(vector<Node>xgd_List, vector<Node>xgd_Real, int direction);
 	void Show_Senior();//点击高级弹出界面
+	void Creat_Distance(vector<Node>xgd_real, vector<int>num, vector<int>& l_Spacer, vector<int>& d_Spacer);//创建间隔棒离端点的距离
+	void Creat_Spacer(vector<int>L, vector<int>num,  vector<Node>xgd_Real);
 	void OK();
 	int fenlie;
 	double Rou;//单位质量
@@ -32,9 +34,11 @@ public:
 	double K;
 	int nz_len;
 
+	vector<int>L_Spacer;
+	vector<int>D_Spacer;
+	vector<int>Extreme_Point;//判断端点的类型
 	vector<Node>xgd; //列表悬挂点
 	vector<Node>xgd_real; //实际悬挂点
-	vector<int>Extreme_Point;//判断端点的类型
 	vector<Node> m_Nodes;//所有点存放的容器
 	vector<Node>Node_Temp;
 	vector<Node>Node_Base;

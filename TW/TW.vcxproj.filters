@@ -133,6 +133,18 @@
     <ClCompile Include="Element_Wire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Creat_WireData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw_Wire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Senior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Spacer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beamActor.h">
@@ -207,6 +219,12 @@
     <ClInclude Include="Element_Wire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Creat_WireData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw_Wire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="InterFace.h">
@@ -248,6 +266,12 @@
     <QtMoc Include="Wire_InterFace.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Senior.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Spacer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="T_CrossArm.ui">
@@ -284,6 +308,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Wire_InterFace.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Senior.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Spacer.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

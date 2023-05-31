@@ -274,9 +274,180 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 void Wire_InterFace::Show_Senior()
 {
 	sen = new Senior(this);
+	sen->N_Pts = ui.N_Pts->text().toInt();
 	Qt::WindowFlags flags = sen->windowFlags();
 	sen->setWindowFlags(flags | Qt::MSWindowsFixedSizeDialogHint);
 	sen->show();
+}
+
+void Wire_InterFace::Creat_Distance(vector<Node> xgd_real, vector<int> num, vector<int>& l_Spacer, vector<int>& d_Spacer)
+{
+	int c = sen->choose;//0:无 1:公式 1:指派
+	int si;//每档均分为几段 每段的长度
+	int ssi;//均次档距
+	int d_l;//每个间隔棒到左端点的距离
+	int dangwei;//间隔棒所在的档位
+
+	if (c == 1)//公式
+	{
+		if (sen->choose_way == 0)//等间距
+		{
+			for (int i = 0; i < xgd_real.size() - 1; i++)
+			{
+				double li = sqrt(pow(xgd_real[i + 1].x - xgd_real[i].x, 2) + pow(xgd_real[i + 1].y - xgd_real[i].y, 2));//档距
+				si = li / (num[i] + 1); //每档均分为几段 每段的长度
+				for (int j = 1; j < num[i] + 1; j++)
+				{
+					d_l = si * j;
+					dangwei = i + 1;
+					l_Spacer.push_back(d_l);
+					d_Spacer.push_back(dangwei);
+				}
+			}
+		}
+		else if (sen->choose_way == 1)//不等间距
+		{
+			for (int i = 0; i < xgd_real.size() - 1; i++)
+			{
+				double li = sqrt(pow(xgd_real[i + 1].x - xgd_real[i].x, 2) + pow(xgd_real[i + 1].y - xgd_real[i].y, 2));//档距
+				ssi = li / num[i]; //(均次档距)
+				if (num[i] == 1)
+				{
+					int s1 = 0.6 * ssi;
+					dangwei = i + 1;
+					l_Spacer.push_back(s1);
+					d_Spacer.push_back(dangwei);
+				}
+				else if (num[i] == 2)
+				{
+					int s1 = 0.6 * ssi;
+					int s2 = 1.6 * ssi;
+					l_Spacer.push_back(s1);
+					l_Spacer.push_back(s2);
+					for (int z = 0; z < 2; z++)
+					{
+						dangwei = i + 1;
+						d_Spacer.push_back(dangwei);
+					}
+
+				}
+				else if (num[i] == 3)
+				{
+					int s1 = 0.65 * ssi;
+					int s2 = 1.7 * ssi;
+					int s3 = 2.5 * ssi;
+					l_Spacer.push_back(s1);
+					l_Spacer.push_back(s2);
+					l_Spacer.push_back(s3);
+					for (int z = 0; z < 3; z++)
+					{
+						dangwei = i + 1;
+						d_Spacer.push_back(dangwei);
+					}
+
+				}
+				else if (num[i] == 4)
+				{
+					int s1 = 0.6 * ssi;
+					int s2 = 1.6 * ssi;
+					int s3 = 2.45 * ssi;
+					int s4 = 3.45 * ssi;
+					l_Spacer.push_back(s1);
+					l_Spacer.push_back(s2);
+					l_Spacer.push_back(s3);
+					l_Spacer.push_back(s4);
+					for (int z = 0; z < 4; z++)
+					{
+						dangwei = i + 1;
+						d_Spacer.push_back(dangwei);
+					}
+				}
+				else if (num[i] == 5)
+				{
+					int s1 = 0.6 * ssi;
+					int s2 = 1.6 * ssi;
+					int s3 = 2.4 * ssi;
+					int s4 = 3.45 * ssi;
+					int s5 = 4.45 * ssi;
+					l_Spacer.push_back(s1);
+					l_Spacer.push_back(s2);
+					l_Spacer.push_back(s3);
+					l_Spacer.push_back(s4);
+					l_Spacer.push_back(s5);
+					for (int z = 0; z < 5; z++)
+					{
+						dangwei = i + 1;
+						d_Spacer.push_back(dangwei);
+					}
+				}
+				else if (num[i] > 5)
+				{
+					int n = num[i];
+					//判断奇偶
+					if (n % 2 == 0)//偶数 
+					{
+						int s1 = 0.6 * ssi;
+						int s2 = 1.6 * ssi;
+						l_Spacer.push_back(s1);
+						l_Spacer.push_back(s2);
+						for (int m = 0; m < (n - 4) / 2; m++)
+						{
+							int sm = 1.6 * ssi + 2 * (m + 1) * ssi;
+							int ssm = 0.5 * ssi + 2 * (m + 1) * ssi;
+							l_Spacer.push_back(sm);
+							l_Spacer.push_back(ssm);
+
+						}
+						int sn1 = (n - 0.55) * ssi;
+						int sn2 = (n - 1.55) * ssi;
+						l_Spacer.push_back(sn1);
+						l_Spacer.push_back(sn2);
+						for (int z = 0; z < n; z++)
+						{
+							dangwei = i + 1;
+							d_Spacer.push_back(dangwei);
+						}
+					}
+					else
+					{
+						int s1 = 0.6 * ssi;
+						int s2 = 1.6 * ssi;
+						l_Spacer.push_back(s1);
+						l_Spacer.push_back(s2);
+						for (int m = 0; m < (n - 4) / 2; m++)
+						{
+							int sm = 1.6 * ssi + 2 * (m + 1) * ssi;
+							int ssm = 0.5 * ssi + 2 * (m + 1) * ssi;
+							l_Spacer.push_back(sm);
+							l_Spacer.push_back(ssm);
+
+						}
+						int sn1 = (n - 0.55) * ssi;
+						int sn2 = (n - 1.55) * ssi;
+						int sn3 = (n - 2.40) * ssi;
+						l_Spacer.push_back(sn1);
+						l_Spacer.push_back(sn2);
+						l_Spacer.push_back(sn3);
+						for (int z = 0; z < n; z++)
+						{
+							dangwei = i + 1;
+							d_Spacer.push_back(dangwei);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void Wire_InterFace::Creat_Spacer(vector<int> L, vector<int> num, vector<Node> xgd_Real)
+{
+	vector<int> ids;
+	for (int i = 0; i < L.size(); i++)
+	{
+		ids = cd->Find_Spacer(fenlie, L[i], N, xgd, xgd_Real, Node_Temp, num[i], m_Nodes);
+		cd->Creat_Spacer(m_Elements_Spacer, ids);
+	}
 }
 
 void Wire_InterFace::OK()
@@ -318,8 +489,8 @@ void Wire_InterFace::OK()
 	if (Extreme_Point[0] == 0 && Extreme_Point[1] == 0)//端点均不为耐张
 	{
 		Line_Segment(xgd, xgd, 0);
-		//Creat_Distance(xgd, sen->Num_Spacer, L_Spacer, D_Spacer);
-		//Creat_Spacer(L_Spacer, D_Spacer, 0, xgd);
+		Creat_Distance(xgd, sen->Num_Spacer, L_Spacer, D_Spacer);
+		Creat_Spacer(L_Spacer, D_Spacer, xgd);
 	}
 	else if (Extreme_Point[0] == 0 && Extreme_Point[1] == 1)//左端右耐张
 	{
@@ -328,8 +499,8 @@ void Wire_InterFace::OK()
 		vector<Node>xgd_real;
 		cd->Find_Real_XGD(Node_Base, nz_len, N, 1, xgd, xgd_real);
 		Line_Segment(xgd, xgd_real, 2);
-		//Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
-		//Creat_Spacer(L_Spacer, D_Spacer, 0, xgd_real);
+		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
+		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);
 	}
 	else if (Extreme_Point[0] == 1 && Extreme_Point[1] == 0)//左耐张右端
 	{
@@ -337,8 +508,8 @@ void Wire_InterFace::OK()
 		vector<Node>xgd_real;
 		cd->Find_Real_XGD(Node_Base, nz_len, N, 0, xgd, xgd_real);
 		Line_Segment(xgd, xgd_real,  1);
-		//Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
-		//Creat_Spacer(L_Spacer, D_Spacer, 0, xgd_real);
+		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
+		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);
 	}
 	else if (Extreme_Point[0] == 1 && Extreme_Point[1] == 1)//端点均为耐张
 	{
@@ -346,8 +517,8 @@ void Wire_InterFace::OK()
 		vector<Node>xgd_real;
 		cd->Find_Real_XGD(Node_Base, nz_len, N, 2, xgd, xgd_real);
 		Line_Segment(xgd, xgd_real, 3);
-		//Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
-		//Creat_Spacer(L_Spacer, D_Spacer, 0, xgd_real);
+		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
+		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);
 	}
 	m_Elements.insert(m_Elements.end(), m_Elements_Wire.begin(), m_Elements_Wire.end());
 	m_Elements.insert(m_Elements.end(), m_Elements_Spacer.begin(), m_Elements_Spacer.end());
