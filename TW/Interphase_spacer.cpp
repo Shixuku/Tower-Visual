@@ -19,7 +19,9 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 			TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
 			this->accept();
 		});
-
+	ui.stackedWidget->setCurrentIndex(0);//设置默认page
+	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
+	connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
 }
 
 Interphase_spacer::~Interphase_spacer()
@@ -34,22 +36,37 @@ void Interphase_spacer::Get_Nodes()
 	int k = 0;
 	for (auto pNode : Nodes)
 	{
-		if (k == 0)
+		int ret = ui.stackedWidget->currentIndex();
+		if (ret == 0)
 		{
+			//悬垂的点
 			int idNode = pNode->m_idNode;
-			ui.line_p1->setText(QString::number(idNode));
+			ui.lineEdit->setText(QString::number(idNode));
 			++k;
-			TP_insulator->m_node1 = pNode;
-			cout << TP_insulator->m_node1->x << "\n";
+			TP_insulator->m_node = pNode;
+			cout << TP_insulator->m_node->x << "\n";
 		}
-		else if (k == 1)
+		else if (ret == 1)
 		{
-			int idNode = pNode->m_idNode;
-			ui.line_p2->setText(QString::number(idNode));
-			++k;
-			TP_insulator->m_node2 = pNode;
-			cout << TP_insulator->m_node2->x << "\n";
+			if (k == 0)
+			{
+				//V型的点
+				int idNode = pNode->m_idNode;
+				ui.line_p1->setText(QString::number(idNode));
+				++k;
+				TP_insulator->m_node1 = pNode;
+				cout << TP_insulator->m_node1->x << "\n";
+			}
+			else if (k == 1)
+			{
+				int idNode = pNode->m_idNode;
+				ui.line_p2->setText(QString::number(idNode));
+				++k;
+				TP_insulator->m_node2 = pNode;
+				cout << TP_insulator->m_node2->x << "\n";
+			}
 		}
+
 	}
 
 
@@ -59,6 +76,7 @@ void Interphase_spacer::Get_Data()
 {
 	TP_insulator->m_H = ui.line_H->text().toDouble();
 	TP_insulator->m_splits = ui.combo_count->currentText().toInt();
+	TP_insulator->m_type = ui.stackedWidget->currentIndex() + 1;
 }
 
 
