@@ -386,9 +386,8 @@ void InterFace::ui_Management_InsData()
 void InterFace::ui_Interphase_spacer()
 {
 	Interphase_spacer* IS = new Interphase_spacer(this);
-	IS->show();
+	IS->show();//要互动只能用show
 	Point_Inqure();
-	
 }
 
 void InterFace::ui_Wire_InterFace()
@@ -396,6 +395,7 @@ void InterFace::ui_Wire_InterFace()
 	Wire_InterFace* wire = new Wire_InterFace(this);
 	wire->show();
 	Point_Inqure();
+
 }
 
 void InterFace::SaveFile()
