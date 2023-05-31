@@ -19,6 +19,7 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 			TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
 			this->accept();
 		});
+
 }
 
 Interphase_spacer::~Interphase_spacer()
