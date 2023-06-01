@@ -90,6 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AddLoadForce.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="circle.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
+    <QtUic Include="AddLoadForce.ui" />
     <QtUic Include="Assign_Section.ui" />
     <QtUic Include="InterFace.ui" />
     <QtUic Include="Interphase_spacer.ui" />
@@ -148,6 +150,7 @@
   <ItemGroup>
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="Assign_Section.h" />
+    <QtMoc Include="AddLoadForce.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="beamActor.h" />
     <ClInclude Include="circle.h" />
