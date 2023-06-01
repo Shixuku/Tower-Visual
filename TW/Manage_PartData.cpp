@@ -135,7 +135,7 @@ void Manage_PartData::Modify_Data()
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_Name);//ÃüÃû
 				t->Item = childItem;
-				m_InterFace->HiddeAll();
+				m_InterFace->HiddeAllPart();
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
 				t->Show_VTKnode(m_InterFace->m_Renderer);
@@ -177,7 +177,7 @@ void Manage_PartData::Modify_Data()
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_name);//ÃüÃû
 				t->Item = childItem;
-				m_InterFace->HiddeAll();
+				m_InterFace->HiddeAllPart();
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
 				t->Show_VTKnode(m_InterFace->m_Renderer);
@@ -219,7 +219,7 @@ void Manage_PartData::Modify_Data()
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_name);//ÃüÃû
 				t->Item = childItem;
-				m_InterFace->HiddeAll();
+				m_InterFace->HiddeAllPart();
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
 				t->Show_VTKnode(m_InterFace->m_Renderer);

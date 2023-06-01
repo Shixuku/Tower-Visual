@@ -93,7 +93,7 @@ void Manage_InsData::Modify_Data()
 
 			m_InterFace->TP.Add_Entity(tw);
 
-			m_InterFace->HiddeAll();
+			m_InterFace->HiddeAllTower();
 			for (auto& i : m_InterFace->TP)
 			{
 				if (i.second != nullptr)

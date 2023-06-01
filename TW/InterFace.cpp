@@ -26,13 +26,20 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	m_VtkWidget->setRenderWindow(m_renderWindow);
 
 	m_Renderer = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer);
+	m_renderWindow->AddRenderer(m_Renderer);//添加放部件的vtk
+
+	m_Renderer_2 = vtkRenderer::New();
+	m_renderWindow->AddRenderer(m_Renderer_2);//添加放单塔的vtk
+
+	m_Renderer_3 = vtkRenderer::New();
+	m_renderWindow->AddRenderer(m_Renderer_3);//添加放塔线组的vtk
 
 	//右边窗口
 	SetupCentralWidget();
 	//左边窗口
 	TreeWidgetShow();
-
+	//默认打开的是part的vtk窗口
+	switchRenderWindow(0);
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
 	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_Foot);
@@ -58,7 +65,14 @@ void InterFace::SetupCentralWidget()
 	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
-	m_renderWindow->Render();
+
+	m_Renderer_2->SetBackground(0.8, 0.8, 0.8);              // 底部颜色值
+	m_Renderer_2->SetBackground2(0.4, 0.4, 0.4);    // 顶部颜色值
+	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
+
+	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
+	m_Renderer_3->SetGradientBackground(1);                  // 开启渐变色背景设置
 
 	//添加坐标系
 	vtkAxesActor* axesActor = vtkAxesActor::New();
@@ -162,7 +176,8 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 
 	if (part != nullptr)
 	{
-		HiddeAll();
+		HiddeAllPart();
+		switchRenderWindow(0);
 		part->m_BeamActor->VisibilityOn();
 		part->m_TrussActor->VisibilityOn();
 		part->Node_actor->VisibilityOn();
@@ -170,7 +185,8 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 
 	if (item == ui.treeWidget->topLevelItem(3))
 	{
-		HiddeAll();
+		HiddeAllTower();
+		switchRenderWindow(1);
 		for (auto& i : TP)
 		{
 			if (i.second != nullptr)
@@ -188,6 +204,7 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 //生成塔腿
 void InterFace::ui_Foot()
 {
+	switchRenderWindow(0);
 	T_Foot* T_foot = new T_Foot(this);//ui
 	int ret = T_foot->exec();
 	if (ret == QDialog::Accepted)
@@ -198,7 +215,7 @@ void InterFace::ui_Foot()
 		T_foot->Get_Data(*t);//取数据
 		item->setText(0, t->m_Name);//子节点名称为自己命名的名称
 		t->Item = item;
-		HiddeAll();
+		HiddeAllPart();
 
 		t->Create_Mesh();
 		t->m_id = parent->childCount();//编号
@@ -218,6 +235,7 @@ void InterFace::ui_Foot()
 }
 void InterFace::ui_Body()
 {
+	switchRenderWindow(0);
 	T_Body* T_body = new T_Body(this);//ui
 	int ret = T_body->exec();
 	if (ret == QDialog::Accepted)
@@ -227,7 +245,7 @@ void InterFace::ui_Body()
 		TowerPart_body* t = new TowerPart_body;
 		T_body->Get_Data(t);
 		item->setText(0, t->m_name);
-		HiddeAll();
+		HiddeAllPart();
 		t->Item = item;
 
 		t->Create_Mesh();
@@ -245,6 +263,7 @@ void InterFace::ui_Body()
 }
 void InterFace::ui_CrossArm()
 {
+	switchRenderWindow(0);
 	T_CrossArm* T_ca = new T_CrossArm(this);//ui
 	int ret = T_ca->exec();
 	if (ret == QDialog::Accepted)
@@ -253,7 +272,7 @@ void InterFace::ui_CrossArm()
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
-		HiddeAll();
+		HiddeAllPart();
 		t->Item = item;
 		item->setText(0, t->m_name);
 		
@@ -273,6 +292,7 @@ void InterFace::ui_CrossArm()
 }
 void InterFace::ui_Tower()
 {
+	switchRenderWindow(1);
 	Tower_Assembly* T_As = new Tower_Assembly(this);//ui
 	int ret = T_As->exec();
 	if (ret == QDialog::Accepted)
@@ -303,14 +323,14 @@ void InterFace::ui_Tower()
 		tw->rotation(angle);//旋转
 		tw->move(x, y, z);//平移
 		
-		tw->Show_VTKnode(m_Renderer);
-		tw->Show_VTKtruss(m_Renderer);
-		tw->Show_VTKbeam(m_Renderer);
-		
+		tw->Show_VTKnode(m_Renderer_2);
+		tw->Show_VTKtruss(m_Renderer_2);
+		tw->Show_VTKbeam(m_Renderer_2);
+
 
 		TP.Add_Entity(tw);
 
-		HiddeAll();
+		HiddeAllTower();
 		for (auto& i : TP)
 		{
 			if (i.second != nullptr)
@@ -536,7 +556,7 @@ void InterFace::ResetCamera() const
 	m_Renderer->ResetCamera();
 }
 
-void InterFace::HiddeAll()
+void InterFace::HiddeAllPart()
 {
 	vtkPropCollection* props = m_Renderer->GetViewProps(); //iterate through and set each visibility to 0
 	props->InitTraversal();
@@ -545,6 +565,19 @@ void InterFace::HiddeAll()
 		props->GetNextProp()->VisibilityOff();
 
 		m_Renderer->ResetCamera();
+		m_renderWindow->Render();
+	}
+}
+
+void InterFace::HiddeAllTower()
+{
+	vtkPropCollection* props = m_Renderer_2->GetViewProps(); //iterate through and set each visibility to 0
+	props->InitTraversal();
+	for (int i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		props->GetNextProp()->VisibilityOff();
+
+		m_Renderer_2->ResetCamera();
 		m_renderWindow->Render();
 	}
 }
@@ -560,6 +593,34 @@ void InterFace::SubstaceActor(Part_Base* Part)
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
 
+}
+
+void InterFace::switchRenderWindow(int index)
+{
+	m_renderWindow->RemoveRenderer(m_Renderer);
+	m_renderWindow->RemoveRenderer(m_Renderer_2);
+	m_renderWindow->RemoveRenderer(m_Renderer_3);
+
+	if (index == 0)
+	{
+		m_renderWindow->AddRenderer(m_Renderer);
+		// Set up camera and other settings for Renderer 1
+		m_Renderer->ResetCamera();
+	}
+	else if (index == 1)
+	{
+		m_renderWindow->AddRenderer(m_Renderer_2);
+		// Set up camera and other settings for Renderer 2
+		m_Renderer_2->ResetCamera();
+	}
+	else if (index == 2)
+	{
+		m_renderWindow->AddRenderer(m_Renderer_3);
+		// Set up camera and other settings for Renderer 3
+		m_Renderer_3->ResetCamera();
+	}
+
+	m_renderWindow->Render();
 }
 
 double* InterFace::GetSectionData(int SectionGroup)
@@ -681,8 +742,8 @@ void InterFace::Test_mousePressEvent(QMouseEvent* event)
 void InterFace::Show_Part(Part_Base* part)
 {
 	if (part == nullptr) return;
-
-	HiddeAll();
+	switchRenderWindow(0);
+	HiddeAllPart();
 	part->m_BeamActor->VisibilityOn();
 	part->m_TrussActor->VisibilityOn();
 	for (auto& i : part->Nactor)
@@ -696,8 +757,8 @@ void InterFace::Show_Part(Part_Base* part)
 void InterFace::Show_Tower(Tower* tower)
 {
 	if (tower == nullptr) return;
-
-	HiddeAll();
+	switchRenderWindow(1);
+	HiddeAllTower();
 	tower->m_BeamActor->VisibilityOn();
 	tower->m_TrussActor->VisibilityOn();
 	for (auto& i : tower->Nactor)
