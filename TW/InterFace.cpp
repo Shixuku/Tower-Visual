@@ -15,6 +15,7 @@
 #include"Assign_Section.h"
 #include"SetAllSection.h"
 #include"Wire_InterFace.h"
+#include"AddLoadForce.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -74,15 +75,15 @@ void InterFace::SetupCentralWidget()
 	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_3->SetGradientBackground(1);                  // 开启渐变色背景设置
 
-	//添加坐标系
-	vtkAxesActor* axesActor = vtkAxesActor::New();
-	//以Widget方式,在左下角的视口中显示坐标系，可进行鼠标交互
-	vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
-	widget->SetOrientationMarker(axesActor);
-	widget->SetInteractor(m_VtkWidget->interactor());
-	widget->SetViewport(0, 0, 0.2, 0.2);
-	widget->SetEnabled(true);
-	widget->InteractiveOn();
+	////添加坐标系
+	//vtkAxesActor* axesActor = vtkAxesActor::New();
+	////以Widget方式,在左下角的视口中显示坐标系，可进行鼠标交互
+	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
+	//widget->SetOrientationMarker(axesActor);
+	//widget->SetInteractor(m_VtkWidget->interactor());
+	//widget->SetViewport(0, 0, 0.2, 0.2);
+	//widget->SetEnabled(true);
+	//widget->InteractiveOn();
 
 }
 void InterFace::TreeWidgetShow()
@@ -168,6 +169,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (item == ui.treeWidget->topLevelItem(6))
 	{
 		ui_Wire_InterFace();
+	}
+	else if (item == ui.treeWidget->topLevelItem(3)->child(0)->child(0))
+	{
+		ui_AddLoadForce(item);
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -299,6 +304,8 @@ void InterFace::ui_Tower()
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(3);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);//
+		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
+		AddLoadForce->setText(0, QString("施加荷载"));
 		Tower* tw = new Tower;
 		for (auto& i : T_As->m_ArryLeg)//塔腿
 		{
@@ -737,6 +744,13 @@ void InterFace::Test_mousePressEvent(QMouseEvent* event)
 		QPoint pos = event->pos();
 		cout << "pos.x = " << pos.x()<<"pos.y = " << pos.y() << "\n";
 	}
+}
+
+void InterFace::ui_AddLoadForce(QTreeWidgetItem* item)
+{
+	Tower* tower = OnFindTower(item);
+	AddLoadForce* addload = new AddLoadForce(tower);
+	addload->show();
 }
 
 void InterFace::Show_Part(Part_Base* part)

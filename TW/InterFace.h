@@ -26,6 +26,7 @@ class Tower_Assembly;
 class MouseInteractorHighLightActor;
 class Wire_InterFace;
 class Interphase_spacer;
+class AddLoadForce;
 class InterFace : public QMainWindow
 {
     Q_OBJECT
@@ -91,6 +92,7 @@ public slots:
     void Show_Tower(Tower* tower);
     void GetData(QStringList&);
     void Test_mousePressEvent(QMouseEvent* event);
+    void ui_AddLoadForce(QTreeWidgetItem* item);
 private:
     QFile Qf;
     QDataStream Stream;

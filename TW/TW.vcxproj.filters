@@ -145,6 +145,9 @@
     <ClCompile Include="Spacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AddLoadForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beamActor.h">
@@ -272,6 +275,9 @@
     <QtMoc Include="Spacer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="AddLoadForce.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="T_CrossArm.ui">
@@ -314,6 +320,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Spacer.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="AddLoadForce.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
