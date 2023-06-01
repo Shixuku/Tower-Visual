@@ -32,7 +32,7 @@ public:
 
 	void CreateWire(vector<Node>& node);//生成导线点
 	void CreatWire_ele(int a, int b, vector<Element_Wire>& m_Elements);//生成导线单元
-	vector<int> Find_Spacer(int fenli, double S, int N, vector<Node>xgd_List, vector<Node>xgd, vector<Node>wire0, int dangwei, vector<Node>& node)const;
+	vector<int> Find_Spacer(int fenli, double S, int N,  vector<Node>xgd, vector<Node>wire0, int dangwei)const;
 
 	void Creat_Spacer(vector<Element_Wire>& spacer, vector<int> ids);
 	void Creat_Strain_Strand(vector<Node>nz_pts, int c, vector<int>ids, vector<Node>& node, vector<Element_Wire>& m_Elements);

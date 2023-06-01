@@ -454,7 +454,7 @@ void Wire_InterFace::Creat_Spacer(vector<int> L, vector<int> num, vector<Node> x
 	vector<int> ids;
 	for (int i = 0; i < L.size(); i++)
 	{
-		ids = cd->Find_Spacer(fenlie, L[i], N, xgd, xgd_Real, Node_Temp, num[i], m_Nodes);
+		ids = cd->Find_Spacer(fenlie, L[i], N,  xgd_Real, Node_Temp, num[i]);
 		cd->Creat_Spacer(m_Elements_Spacer, ids);
 	}
 }

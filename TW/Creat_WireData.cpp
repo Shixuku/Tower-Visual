@@ -61,7 +61,7 @@ void Creat_WireData::CreatWire_ele(int a, int b, vector<Element_Wire>& m_Element
 	}
 }
 
-vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node> xgd_List, vector<Node> xgd, vector<Node> wire0, int dangwei, vector<Node>& node) const
+vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node> xgd, vector<Node> wire0, int dangwei) const
 {
 	vector<int> idnodes;
 	//确定的向量
@@ -69,85 +69,23 @@ vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node>
 	double v_y = xgd[1].y - xgd[0].y;
 	double angle = ((atan2(v_x, v_y) * 180) / 3.1415926);
 	angle = vtkMath::RadiansFromDegrees(angle);
-	//int fenli = node.size() / (N * (xgd.size() - 1));//导线分裂数
-	switch (fenli)
+	int S_l = S / 1000;
+	for (auto& i : wire0)
 	{
-		
-	case 1:
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
-	case 4:
-		for (auto& i : wire0)
+		double error = 0.0005 * sqrt(pow((xgd[dangwei].x - xgd[dangwei - 1].x), 2) + pow((xgd[dangwei].y - xgd[dangwei - 1].y), 2) ) / N;
+		double Lm = sqrt(pow(i.x - xgd[dangwei - 1].x, 2) + pow(i.y - xgd[dangwei - 1].y, 2));//所有点距第一个悬挂点的距离
+		if (i.y >= xgd[dangwei - 1].y)
 		{
-			double error = 0.000500 * sqrt(pow((xgd[dangwei].x - xgd[dangwei - 1].x), 2) + pow((xgd[dangwei].y - xgd[dangwei - 1].y), 2) + pow((xgd[dangwei].z - xgd[dangwei - 1].z), 2)) / N;
-			//double error = 0.25; 
-			double Lm = sqrt(pow(i.x - xgd[dangwei - 1].x, 2) + pow(i.y - xgd[dangwei - 1].y, 2) /* + pow(i.z - xgd[m].z, 2)*/);//所有点距第一个悬挂点的距离
-			if (i.y >= xgd[dangwei - 1].y)
+			if ((abs(Lm/1000 - S_l))  < error)
 			{
-				if ((abs(Lm - S))/1000 < error)
+				for (int k = 0; k < fenli; ++k)
 				{
-					double x = (i.x + 225 * cos(angle))/1000;
-					double z = (i.z + 225)/1000;
-
-					for (auto& j : node)
-					{
-
-						if ((abs(x - j.x/1000) < error) && (abs(i.y/1000 - j.y/1000) < error) && (abs(z - j.z/1000) < error))
-						{
-							//idnodes.push_back(j.m_idNode );
-							for (int k = 0; k < fenli; ++k)
-							{
-								idnodes.push_back(i.m_idNode + ((xgd.size() - 1) * N + 1) * k);
-
-							}
-							cout << " 间隔棒的点" << idnodes[0] << "  " << idnodes[1] << "  " << idnodes[2] << "  " << idnodes[3] << "\n";
-						}
-
-					}
+					idnodes.push_back(i.m_idNode + ((xgd.size() - 1) * N + 1) * k);
 
 				}
 			}
-
 		}
-		break;
-	case 8:
-		for (auto& i : wire0)
-		{
-			double error = 0.500 * sqrt(pow((xgd[dangwei].x - xgd[dangwei - 1].x), 2) + pow((xgd[dangwei].y - xgd[dangwei - 1].y), 2) + pow((xgd[dangwei].z - xgd[dangwei - 1].z), 2)) / N;
-			//double error = 0.25; 
-			double Lm = sqrt(pow(i.x - xgd[dangwei - 1].x, 2) + pow(i.y - xgd[dangwei - 1].y, 2) /* + pow(i.z - xgd[m].z, 2)*/);//所有点距第一个悬挂点的距离
-			if (i.y >= xgd[dangwei - 1].y)
-			{
-				if (abs(Lm - S) < error)
-				{
-					double x = i.x - 0.20 * cos(angle);
-					double z = i.z + 0.48;
 
-					for (auto& j : node)
-					{
-
-						if ((abs(x - j.x) < 1e-3) && (abs(i.y - j.y) < 1e-3) && (abs(z - j.z) < 1e-3))
-						{
-
-							for (int k = 0; k < fenli; ++k)
-							{
-								idnodes.push_back(j.m_idNode + ((xgd.size() - 1) * N + 1) * k);
-
-							}
-							cout << " 间隔棒的点" << idnodes[0] << "  " << idnodes[1] << "  " << idnodes[2] << "  " << idnodes[3] << "\n";
-						}
-
-					}
-
-				}
-			}
-
-		}
-	default:
-		break;
 	}
 	return idnodes;
 }

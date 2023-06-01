@@ -18,7 +18,7 @@ public:
 
 	void show()
 	{
-		std::cout << m_idElement << " " << m_idNode[0] << " " << m_idNode[1] << "\n";
+		std::cout << m_idElement << "," << " " << m_idNode[0] << "," << " " << m_idNode[1] << "\n";
 	}
 };
 
