@@ -539,7 +539,7 @@ void Wire_InterFace::OK()
 	Draw_Wire d;
 	vtkSmartPointer<vtkActor> m_LineActor;
 	vtkSmartPointer<vtkActor> Node_actor;
-	d.Show_Wire(m_Nodes, m_Elements, m_pInterFace->m_Renderer);
+	d.Show_Wire(m_Nodes, m_Elements, m_pInterFace->m_Renderer_2);
 }
 
 
