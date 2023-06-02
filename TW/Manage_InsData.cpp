@@ -87,9 +87,9 @@ void Manage_InsData::Modify_Data()
 			tw->rotation(angle);//Ðý×ª
 			tw->move(x, y, z);//Æ½ÒÆ
 
-			tw->Show_VTKtruss(m_InterFace->m_Renderer);
-			tw->Show_VTKbeam(m_InterFace->m_Renderer);
-			tw->Show_VTKnode(m_InterFace->m_Renderer);
+			tw->Show_VTKtruss(m_InterFace->m_Renderer_2);
+			tw->Show_VTKbeam(m_InterFace->m_Renderer_2);
+			tw->Show_VTKnode(m_InterFace->m_Renderer_2);
 
 			m_InterFace->TP.Add_Entity(tw);
 

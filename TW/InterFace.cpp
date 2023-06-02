@@ -713,7 +713,7 @@ void InterFace::Point_Inqure()
 	// Set the custom type to use for interaction.
 	vtkNew<MouseInteractorHighLightActor> style;
 	style->m_pInterFace = this;
-	style->SetDefaultRenderer(m_Renderer);
+	style->SetDefaultRenderer(m_Renderer_2);
 	renderWindowInteractor->SetInteractorStyle(style);
 
 	vtkAxesActor* Axes = vtkAxesActor::New();
@@ -724,7 +724,7 @@ void InterFace::Point_Inqure()
 	widgetAxes->SetInteractive(0);
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
-	m_Renderer->ResetCamera();
+	m_Renderer_2->ResetCamera();
 }
 
 void InterFace::GetData(QStringList& sInfo)
@@ -777,7 +777,7 @@ void InterFace::Show_Tower(Tower* tower)
 	tower->m_TrussActor->VisibilityOn();
 	for (auto& i : tower->Nactor)
 	{
-		m_Renderer->AddActor(i);
+		m_Renderer_2->AddActor(i);
 	}
 	ResetCamera();
 }

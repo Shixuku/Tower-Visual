@@ -14,9 +14,9 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 		{
 			Get_Data();
 			TP_insulator->Create_Mesh();
-			TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer);
-			TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer);
-			TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
+			TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer_2);
+			TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer_2);
+			TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer_2);
 			this->accept();
 		});
 	ui.stackedWidget->setCurrentIndex(0);//ÉèÖÃÄ¬ÈÏpage
