@@ -1,9 +1,6 @@
 #include <iostream>
 
 #include"circle.h"
-
-VTK_MODULE_INIT(vtkRenderingOpenGL2)
-VTK_MODULE_INIT(vtkInteractionStyle)
 #include <vector>
 
 vtkSmartPointer<vtkAppendPolyData> appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
