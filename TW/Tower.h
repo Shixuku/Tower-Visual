@@ -10,11 +10,12 @@
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
 #include <vtkCellArray.h>
-#include"D:/VTK/Use_VTK.h"
 #include"Part_Base.h"
 #include<Eigen/Dense>
 #include<QDataStream>
 #include<QTreeWidgetItem>
+#include <vtkAutoInit.h> 
+
 using namespace Eigen;
 class Tower
 {

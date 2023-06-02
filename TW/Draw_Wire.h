@@ -1,8 +1,8 @@
 #pragma once
-#include<vector>
-#include"Node.h"
-#include"Element_Wire.h"
-#include<iostream>
+#include <vector>
+#include "Node.h"
+#include "Element_Wire.h"
+#include <iostream>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkPolyData.h>
@@ -11,8 +11,7 @@
 #include <vtkLine.h>
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
-#include<vtkProperty.h>
-#include"D:/VTK/Use_VTK.h"
+#include <vtkProperty.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricSpline.h>
 #include <vtkCellArray.h>
