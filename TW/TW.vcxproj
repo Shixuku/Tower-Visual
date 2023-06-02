@@ -55,7 +55,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>D:\VTK\include\vtk-9.0;D:\eigen-3.4.0;$(IncludePath)</IncludePath>
+    <IncludePath>../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -64,6 +64,9 @@
       <AdditionalIncludeDirectories>C:\Users\Administrator\kaiyingbaby\QT\5.15.1\msvc2019_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>../VTK/lib_debug/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
