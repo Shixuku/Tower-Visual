@@ -187,7 +187,7 @@ void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> 
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection++));
+		m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection));
 		Beam_elementsID++;
 		node1 = node2;
 	}
@@ -201,7 +201,7 @@ void Part_Base::Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection++));
+		m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection));
 		Beam_elementsID++;
 	}
 }
@@ -210,11 +210,11 @@ void Part_Base::Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<
 {
 	size_t size = ids.size();
 	int node1 = ids[0];
-	id_TrussSection++;
+	id_TrussSection;
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection++));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
 		Truss_elementsID++;
 		node1 = node2;
 	}
@@ -227,7 +227,7 @@ void Part_Base::Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection++));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
 		Truss_elementsID++;
 	}
 }
@@ -571,7 +571,7 @@ void Part_Base::SetL(Element_Beam& EB)
 	int ipt2 = EB.m_idNode[1] - 1;
 	double x1 = m_Nodes[ipt1].x; double y1 = m_Nodes[ipt1].y; double z1 = m_Nodes[ipt1].z;
 	double x2 = m_Nodes[ipt2].x; double y2 = m_Nodes[ipt2].y; double z2 = m_Nodes[ipt2].z;
-	if (z2 - z1 > 0.01)//
+	if (abs(z2 - z1 )> 0.1)//
 	{
 		bA.setNode(x1, y1, z1, x2, y2, z2);
 		double x[6];
@@ -582,6 +582,7 @@ void Part_Base::SetL(Element_Beam& EB)
 			{
 				x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
 				y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
+				EB.MaterialID = j.ClassM;
 			}
 		}
 		bA.SetSection(x, y);
@@ -590,18 +591,22 @@ void Part_Base::SetL(Element_Beam& EB)
 		if (m_Nodes[n11].x > 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
 		{
 			bA.Set_zAxis(0, -1, 0);
+			EB.direction[3] = (0, -1, 0);
 		}
 		else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
 		{
 			bA.Set_zAxis(0, 1, 0);
+			EB.direction[3] = (0, 1, 0);
 		}
 		else if (m_Nodes[n11].x > 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
 		{
 			bA.Set_zAxis(-1, 0, 0);
+			EB.direction[3] = (-1, 0, 0);
 		}
 		else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
 		{
 			bA.Set_zAxis(1, 0, 0);
+			EB.direction[3] = (1, 0, 0);
 		}
 	}
 	else
@@ -631,6 +636,7 @@ void Part_Base::SetL(Element_Beam& EB)
 			}
 			bA.SetSection(x, y);
 			bA.Set_zAxis(0, 0, -1);
+			EB.direction[3] = (0, 0, -1);
 		}
 		else
 		{

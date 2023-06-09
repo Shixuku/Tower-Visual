@@ -8,7 +8,7 @@ public:
 	double x = 0;
 	double y = 0;
 	double z = 0;
-
+	bool restraint = 0;
 	Node() {};
 	Node(int id, double ix, double iy, double iz);
 	Node(double ix, double iy, double iz)
