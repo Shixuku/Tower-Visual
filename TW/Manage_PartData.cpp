@@ -136,9 +136,10 @@ void Manage_PartData::Modify_Data()
 				childItem->setText(0, t->m_Name);//命名
 				t->Item = childItem;
 				m_InterFace->HiddeAllPart();
+				t->Show_VTKnode(m_InterFace->m_Renderer);
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
-				t->Show_VTKnode(m_InterFace->m_Renderer);
+				
 				m_InterFace->TP_leg.Add_Entity(t);
 
 				//设置界面数据变化

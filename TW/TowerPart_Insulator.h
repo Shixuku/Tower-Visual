@@ -1,5 +1,6 @@
 #pragma once
 #include"TowerData_Insulator.h"
+#include "Part_Base.h"
 class TowerPart_Insulator :public TowerData_Insulator
 {
 public:

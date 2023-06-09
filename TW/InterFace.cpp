@@ -67,8 +67,8 @@ void InterFace::SetupCentralWidget()
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
 
-	m_Renderer_2->SetBackground(0.8, 0.8, 0.8);              // 底部颜色值
-	m_Renderer_2->SetBackground2(0.4, 0.4, 0.4);    // 顶部颜色值
+	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer_2->SetBackground2(0.8, 0.9, 0.8);			 // 顶部颜色值
 	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
 
 	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
@@ -287,7 +287,6 @@ void InterFace::ui_CrossArm()
 		t->Show_VTKtruss(m_Renderer);
 		t->Show_VTKbeam(m_Renderer);
 		
-	
 		TP_CrossArm.Add_Entity(t);//塔头
 		ResetCamera();
 
@@ -349,8 +348,8 @@ void InterFace::ui_Tower()
 		}
 		ResetCamera();
 		tower_assembles.push_back(T_As);
-		TP.Find_Entity(int(tw->m_id))->ShowNode();
-		TP.Find_Entity(int(tw->m_id))->ShowElement();
+		//TP.Find_Entity(int(tw->m_id))->ShowNode();
+		//TP.Find_Entity(int(tw->m_id))->ShowElement();
 	}
 
 }
@@ -413,7 +412,7 @@ void InterFace::ui_Management_InsData()
 void InterFace::ui_Interphase_spacer()
 {
 	Interphase_spacer* IS = new Interphase_spacer(this);
-	IS->show();//要互动只能用show
+	IS->show();
 	Point_Inqure();
 }
 

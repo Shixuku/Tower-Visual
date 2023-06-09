@@ -14,9 +14,10 @@ public:
 	~Interphase_spacer();
 
 	InterFace* m_pInterFace = nullptr;
-	TowerPart_Insulator* TP_insulator;
+	TowerPart_Insulator* TP_insulator = nullptr;
 	void Get_Nodes();
 	void Get_Data();
+
 
 private:
 	Ui::Interphase_spacerClass ui;

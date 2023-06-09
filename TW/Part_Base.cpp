@@ -30,18 +30,6 @@ void Part_Base::Show_VTKtruss(vtkRenderer* renderer)
 		line->GetPointIds()->SetId(1, m_Elements_Trusses[i].m_idNode[1] - 1);
 		lines->InsertNextCell(line);
 	}
-//	vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
-	//for (int i = 0; i < m_Nodes.size(); i++)
-	//{
-	//	vector<double> p;
-	//	p.resize(4);
-	//	p[0] = m_Nodes[i].m_idNode;//m_Nodes[0]指 编号为1的点
-	//	p[1] = m_Nodes[i].x;
-	//	p[2] = m_Nodes[i].y;
-	//	p[3] = m_Nodes[i].z;
-	//	pts->InsertNextPoint(p[1], p[2], p[3]);
-	//}
-
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
 	linesPolyData->SetLines(lines);
@@ -64,17 +52,6 @@ void Part_Base::Show_VTKbeam(vtkRenderer* renderer)
 		line->GetPointIds()->SetId(1, m_Elements_beams[i].m_idNode[1] - 1);
 		lines->InsertNextCell(line);
 	}
-	//vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
-	//for (int i = 0; i < m_Nodes.size(); i++)
-	//{
-	//	vector<double> p;
-	//	p.resize(4);
-	//	p[0] = m_Nodes[i].m_idNode;//m_Nodes[0]指 编号为1的点
-	//	p[1] = m_Nodes[i].x;
-	//	p[2] = m_Nodes[i].y;
-	//	p[3] = m_Nodes[i].z;
-	//	pts->InsertNextPoint(p[1], p[2], p[3]);
-	//}
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
 	linesPolyData->SetLines(lines);
@@ -118,8 +95,6 @@ void Part_Base::Show_VTKnode(vtkRenderer* renderer)
 
 	vtkSmartPointer<vtkPolyDataMapper> Node_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	Node_mapper->SetInputConnection(VertexFilter->GetOutputPort());
-	//auto dataArray = Node_mapper->GetInput()->GetPointData()->GetArray("Address");//取得地址数组
-	//auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//转换为整数数组
 
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
