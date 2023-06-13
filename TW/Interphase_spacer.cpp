@@ -42,9 +42,8 @@ void Interphase_spacer::Get_Nodes()
 			//Ðü´¹µÄµã
 			int idNode = pNode->m_idNode;
 			ui.lineEdit->setText(QString::number(idNode));
-			++k;
 			TP_insulator->m_node = pNode;
-			cout << TP_insulator->m_node->x << "\n";
+			//cout << TP_insulator->m_node->x << "\n";
 		}
 		else if (ret == 1)
 		{
@@ -55,7 +54,6 @@ void Interphase_spacer::Get_Nodes()
 				ui.line_p1->setText(QString::number(idNode));
 				++k;
 				TP_insulator->m_node1 = pNode;
-				cout << TP_insulator->m_node1->x << "\n";
 			}
 			else if (k == 1)
 			{
@@ -63,7 +61,6 @@ void Interphase_spacer::Get_Nodes()
 				ui.line_p2->setText(QString::number(idNode));
 				++k;
 				TP_insulator->m_node2 = pNode;
-				cout << TP_insulator->m_node2->x << "\n";
 			}
 		}
 

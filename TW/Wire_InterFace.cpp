@@ -11,7 +11,7 @@ Wire_InterFace::Wire_InterFace(QWidget *parent)
 	Initialize();
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Wire_InterFace::Insert_Data);
 	connect(ui.Pts_OK, &QPushButton::clicked, this, [=]() {int a = ui.N_Pts->text().toInt();Insert_Point_Infor(a);});
-	connect(ui.Senior_Btn, &QPushButton::clicked, this, [=]() {Show_Senior(); });
+	connect(ui.Senior_Btn, &QPushButton::clicked, this, [=]() {Show_Senior(); m_pInterFace->Close_Point();  });
 	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {Insert_Pts_to_vector();   OK(); this->close();  });
 	connect(ui.Btn_cancel, &QPushButton::clicked, this, [=]() { this->close();  });
 }

@@ -17,6 +17,8 @@
 #include <QList>
 #include<vector>
 #include"Set_Section.h"
+#include<vtkInteractorStyleTrackballCamera.h>
+
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
@@ -41,11 +43,13 @@ public:
     vtkRenderer* m_Renderer_2;//单塔实例的vtk窗口
     vtkRenderer* m_Renderer_3;//塔线组的vtk窗口
     vtkGenericOpenGLRenderWindow* m_renderWindow;
+   
     void ResetCamera() const;
     void HiddeAllPart();
     void HiddeAllTower();
     void SubstaceActor(Part_Base* Part);
     void switchRenderWindow(int index);
+    void initMenu();
      Ui::InterFaceClass ui;
 
      //Set_Section* m_ab = nullptr;
@@ -69,6 +73,8 @@ public:
      void UnSelect_Nodes();
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
      void Point_Inqure();
+     void Area_Inqure();//框选
+     void Close_Point();
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
     void Msg_CreateModel();
@@ -98,6 +104,10 @@ private:
     QDataStream Stream;
     QHBoxLayout* layout;
     QVTKOpenGLNativeWidget* m_VtkWidget;
+    // 菜单事件
+    void contextMenuEvent(QContextMenuEvent* event) override;
+    QMenu* m_pMenu = nullptr;
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> m_MainStyle; // 保存主界面的交互器样式
     
     //treeWidget
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);

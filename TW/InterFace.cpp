@@ -7,6 +7,7 @@
 #include <vtkPointData.h>//->GetArray("Address")
 #include <vtkIdTypeArray.h>
 #include"MouseInteractorHighLightActor.h"
+#include"AreaSelected_InteractorStyle.h"
 #include"Interphase_spacer.h"
 #include"T_Foot.h"
 #include"T_Body.h"
@@ -16,6 +17,8 @@
 #include"SetAllSection.h"
 #include"Wire_InterFace.h"
 #include"AddLoadForce.h"
+
+
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -34,7 +37,8 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 
 	m_Renderer_3 = vtkRenderer::New();
 	m_renderWindow->AddRenderer(m_Renderer_3);//添加放塔线组的vtk
-
+	this->setContextMenuPolicy(Qt::DefaultContextMenu);
+	initMenu();
 	//右边窗口
 	SetupCentralWidget();
 	//左边窗口
@@ -67,9 +71,9 @@ void InterFace::SetupCentralWidget()
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
 
-	m_Renderer_2->SetBackground(0.8, 0.8, 0.8);              // 底部颜色值
-	m_Renderer_2->SetBackground2(0.4, 0.4, 0.4);    // 顶部颜色值
-	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
+	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
+	m_Renderer_2->SetGradientBackground(1);
 
 	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
@@ -117,6 +121,9 @@ void InterFace::TreeWidgetShow()
 
 	QTreeWidgetItem* pNewItem9 = new QTreeWidgetItem(pNewItem5);
 	pNewItem9->setText(0, QString("根据长度赋予截面"));
+
+	QTreeWidgetItem* pNewItem12 = new QTreeWidgetItem(pNewItem5);
+	pNewItem12->setText(0, QString("创建荷载"));
 
 	QTreeWidgetItem* pNewItem10 = new QTreeWidgetItem(ui.treeWidget);
 	pNewItem10->setText(0, QString("绝缘子串"));
@@ -414,15 +421,12 @@ void InterFace::ui_Interphase_spacer()
 {
 	Interphase_spacer* IS = new Interphase_spacer(this);
 	IS->show();//要互动只能用show
-	Point_Inqure();
 }
 
 void InterFace::ui_Wire_InterFace()
 {
 	Wire_InterFace* wire = new Wire_InterFace(this);
 	wire->show();
-	Point_Inqure();
-
 }
 
 void InterFace::SaveFile()
@@ -511,6 +515,11 @@ void InterFace::OpenFile()
 	}
 	Qf.close();
 	emit Msg_CreateModel();
+}
+
+void InterFace::contextMenuEvent(QContextMenuEvent* event)
+{
+	m_pMenu->exec(QCursor::pos());
 }
 
 Part_Base* InterFace::OnFindPart(const QTreeWidgetItem* Item)
@@ -630,6 +639,20 @@ void InterFace::switchRenderWindow(int index)
 	m_renderWindow->Render();
 }
 
+void InterFace::initMenu()
+{
+	m_pMenu = new QMenu(this);
+	QAction* pAc1 = new QAction("点选");
+	QAction* pAc2 = new QAction("框选");
+	QAction* pAc3 = new QAction("取消");
+	m_pMenu->addAction(pAc1);
+	m_pMenu->addAction(pAc2);
+	m_pMenu->addAction(pAc3);
+	connect(pAc1, &QAction::triggered, [=] {Point_Inqure(); });
+	connect(pAc2, &QAction::triggered, [=] {Area_Inqure(); });
+	connect(pAc3, &QAction::triggered, [=] {Close_Point(); });
+}
+
 double* InterFace::GetSectionData(int SectionGroup)
 {
 	double* SectionData = new double;//用于接收截面数据的数组，第一个是L的长边或者圆半径，第二个是L短边或者圆环厚度，第三个是截面类型，第四个是材料编号
@@ -683,7 +706,7 @@ void InterFace::UnSelect_Nodes()
 {
 	for (auto i : m_NodeSelected)
 	{
-		if (i != nullptr) m_Renderer->RemoveActor(i);
+		if (i != nullptr) m_Renderer_2->RemoveActor(i);
 	}
 	m_NodeSelected.clear();
 }
@@ -705,8 +728,9 @@ void InterFace::Get_SelectedNode(std::list<Node*>& Nodes)
 	}
 }
 
-void InterFace::Point_Inqure()
+void InterFace::Point_Inqure()	
 {
+	UnSelect_Nodes();
 	// An interactor
 	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
 	renderWindowInteractor->SetRenderWindow(m_renderWindow);
@@ -715,16 +739,48 @@ void InterFace::Point_Inqure()
 	style->m_pInterFace = this;
 	style->SetDefaultRenderer(m_Renderer_2);
 	renderWindowInteractor->SetInteractorStyle(style);
-
 	vtkAxesActor* Axes = vtkAxesActor::New();
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
 	widgetAxes->SetOrientationMarker(Axes);
 	widgetAxes->SetInteractor(renderWindowInteractor);
 	widgetAxes->SetEnabled(1);
-	widgetAxes->SetInteractive(0);
+	widgetAxes->SetInteractive(1);
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
-	m_Renderer_2->ResetCamera();
+	//m_Renderer_2->ResetCamera();
+}
+
+void InterFace::Area_Inqure()
+{
+	UnSelect_Nodes();
+	// 保存主界面的交互器样式
+	m_MainStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+	// An interactor
+	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
+	renderWindowInteractor->SetRenderWindow(m_renderWindow);
+	// Set the custom type to use for interaction.
+	vtkNew<AreaSelected_InteractorStyle> Framestyle;
+	Framestyle->m_pInterFace = this;
+	Framestyle->SetDefaultRenderer(m_Renderer_2);
+	renderWindowInteractor->SetInteractorStyle(Framestyle);
+	vtkAxesActor* Axes = vtkAxesActor::New();
+	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
+	widgetAxes->SetOrientationMarker(Axes);
+	widgetAxes->SetInteractor(renderWindowInteractor);
+	widgetAxes->SetEnabled(1);
+	widgetAxes->SetInteractive(1);
+	renderWindowInteractor->Initialize();
+	renderWindowInteractor->Start();
+}
+
+void InterFace::Close_Point()
+{
+	UnSelect_Nodes();
+	// 保存主界面的交互器样式
+	m_MainStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+	// 在需要切换回主界面时，使用保存的交互器样式重新设置交互器
+	m_renderWindow->GetInteractor()->SetInteractorStyle(m_MainStyle);
+	
 }
 
 void InterFace::GetData(QStringList& sInfo)
