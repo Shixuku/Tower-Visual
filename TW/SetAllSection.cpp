@@ -21,7 +21,7 @@ SetAllSection::~SetAllSection()
 
 void SetAllSection::Create_combobox()
 {
-	TowerSize = m_pInterFace->ui.treeWidget->topLevelItem(3)->childCount();//塔腿数量
+	TowerSize = m_pInterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔腿数量
 
 
 	for (int i = 0; i < TowerSize; i++)

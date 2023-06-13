@@ -23,7 +23,7 @@ void Manage_InsData::Set_headertext()
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 
-	int T_tower = m_InterFace->ui.treeWidget->topLevelItem(3)->childCount();//塔实例数量
+	int T_tower = m_InterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔实例数量
 	
 	ui.tableWidget->setRowCount(T_tower);//设置行数
 
@@ -35,7 +35,7 @@ void Manage_InsData::Set_headertext()
 		Tower* tower = ve_tower[i];//!
 		//设置名称//设置节点单元数量
 		int E_num = tower->m_Elements_beams.size() + tower->m_Elements_Trusses.size();
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(3)->child(i)->text(0);
+		QString name = m_InterFace->ui.treeWidget->topLevelItem(1)->child(i)->text(0);
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(name));
 		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(tower->m_Nodes.size())));
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(E_num)));
@@ -62,8 +62,8 @@ void Manage_InsData::Modify_Data()
 		if (ret == QDialog::Accepted)
 		{
 			//新增
-			QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(3);
-			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(3)->child(Index);
+			QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(1);
+			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
 			Tower* tw = new Tower;
 			for (auto& i : T_As->m_ArryLeg)//塔腿
 			{
@@ -139,7 +139,7 @@ void Manage_InsData::Delete_Data()
 		{
 			ui.tableWidget->removeRow(Index);//删掉表格中的那一行
 			//删掉m_InterFace子节点
-			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(3)->child(Index);
+			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
 			delete(childItem);
 			//需要删掉界面的指针
 			std::vector<Tower_Assembly*>::iterator it = m_InterFace->tower_assembles.begin();

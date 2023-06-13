@@ -33,19 +33,14 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 		{
 			Set_table(Tier);
 		}
-		
 		});
 
 	connect(ui.combo_b, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_body()));
 	connect(ui.combo_g, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_gem()));
 
-	//初始化数值
-	ui.line_L0->setText("7000");
-	ui.line_Ln->setText("4000");
-	ui.line_z0->setText("0");
 	ui.tabWidget->setCurrentIndex(0);//设置tab第一页最先显示
 
-	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(1)->childCount() + 1;//塔腿数量
+	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount() + 1;//塔腿数量
 	QString str("塔身部件-");
 	str += QString::number(T_bodys);     //str转字符
 	ui.part_name->setText(str);//设置初始值
