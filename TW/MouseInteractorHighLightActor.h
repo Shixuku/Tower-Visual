@@ -2,6 +2,8 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkProperty.h>
 #include <vtkPointPicker.h>
+#include <vtkAreaPicker.h>
+
 class InterFace;
 class MouseInteractorHighLightActor :public vtkInteractorStyleTrackballCamera
 {
@@ -21,12 +23,14 @@ public:
 
 	virtual void OnLeftButtonDown() override;
 
-	void Get_PickedNode(vtkPointPicker* Picker, bool bAppand);
+	void Get_PickedNode(vtkPointPicker* Picker, bool bAppend);
+
 
 	InterFace* m_pInterFace = nullptr;
 
 private:
 	vtkActor* LastPickedActor;
 	vtkProperty* LastPickedProperty;
+
 };
 

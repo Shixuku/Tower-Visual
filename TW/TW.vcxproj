@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AddLoadForce.cpp" />
+    <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="circle.cpp" />
@@ -154,6 +155,7 @@
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="Assign_Section.h" />
     <QtMoc Include="AddLoadForce.h" />
+    <ClInclude Include="AreaSelected_InteractorStyle.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="beamActor.h" />
     <ClInclude Include="circle.h" />
