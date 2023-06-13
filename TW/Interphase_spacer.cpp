@@ -1,11 +1,14 @@
 #include "Interphase_spacer.h"
 #include"InterFace.h"
 #include"TowerPart_Insulator.h"
+#include"TowerPart_CrossArm.h"
+#include<QMessageBox.h>
 Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
 	Q_ASSERT(m_pInterFace != nullptr);
+	TP_insulator = new TowerPart_Insulator;
 
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Interphase_spacer::reject);
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Interphase_spacer::Get_Nodes);
@@ -13,11 +16,10 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 	connect(ui.btn_ok, &QPushButton::clicked, this, [=]()
 		{
 			Get_Data();
-			TP_insulator->Create_Mesh();
-			TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer_2);
-			TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer_2);
-			TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer_2);
-			this->accept();
+			//this->accept();
+			ui.lineEdit->clear();
+			ui.line_p1->clear();
+			ui.line_p2->clear();
 		});
 	ui.stackedWidget->setCurrentIndex(0);//设置默认page
 	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
@@ -25,12 +27,12 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 }
 
 Interphase_spacer::~Interphase_spacer()
-{}
+{
+}
 
 void Interphase_spacer::Get_Nodes()
 {
 	//取点编号
-	TP_insulator = new TowerPart_Insulator;
 	std::list<Node*> Nodes;
 	m_pInterFace->Get_SelectedNode(Nodes);
 	int k = 0;
@@ -43,7 +45,6 @@ void Interphase_spacer::Get_Nodes()
 			int idNode = pNode->m_idNode;
 			ui.lineEdit->setText(QString::number(idNode));
 			TP_insulator->m_node = pNode;
-			//cout << TP_insulator->m_node->x << "\n";
 		}
 		else if (ret == 1)
 		{
@@ -63,17 +64,57 @@ void Interphase_spacer::Get_Nodes()
 				TP_insulator->m_node2 = pNode;
 			}
 		}
-
 	}
-
 
 }
 
 void Interphase_spacer::Get_Data()
 {
-	TP_insulator->m_H = ui.line_H->text().toDouble();
-	TP_insulator->m_splits = ui.combo_count->currentText().toInt();
-	TP_insulator->m_type = ui.stackedWidget->currentIndex() + 1;
+	int index = ui.stackedWidget->currentIndex();
+	//选择悬垂串但是没选点的情况
+	if (index == 0 && TP_insulator->m_node == nullptr)
+	{
+		QMessageBox::information(this, "Tips", "请选择悬垂绝缘子挂点！");
+	}
+	//选择V型串但是点没选完的情况
+	else if (index == 1 && (TP_insulator->m_node1 == nullptr || TP_insulator->m_node2 == nullptr))
+	{
+		QMessageBox::information(this, "Tips", "请选择V型绝缘子挂点！");
+	}
+	else
+	{
+		TP_insulator->m_H = ui.line_H->text().toDouble();
+		TP_insulator->m_splits = ui.combo_count->currentText().toInt();
+		TP_insulator->m_type = index + 1;
+		if (TP_insulator->m_type == 1)
+		{
+			//修改
+			int a = m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔头数量
+			for (int i = 1; i < a + 1; i++)
+			{
+				TowerPart_CrossArm* towerPart_crossarm = m_pInterFace->TP_CrossArm.Find_Entity(i);
+				//对塔头的点进行循环
+				for (auto& i : towerPart_crossarm->m_Nodes)
+				{
+					if (abs(TP_insulator->m_node->x - i.x) < 1e-1 && abs(TP_insulator->m_node->y - i.y) < 1e-1 &&
+						abs(TP_insulator->m_node->z - i.z) < 1e-1)
+					{
+						//取数据
+						TP_insulator->m_W1 = towerPart_crossarm->m_bodyButtomL;//取塔身宽
+						TP_insulator->m_W2 = towerPart_crossarm->m_c2Wb;//取横担宽
+						TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + towerPart_crossarm->Get_SumL();//取横担长
+					}
+
+				}
+			}
+
+		}
+		TP_insulator->Create_Mesh();
+		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer_2);
+		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer_2);
+		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer_2);
+
+	}
 }
 
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Interphase_spacer</string>
+   <string>绝缘子串</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,2,1">
    <item>
@@ -27,6 +27,12 @@
           <widget class="QRadioButton" name="rdb_I">
            <property name="text">
             <string>悬垂</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -127,17 +133,17 @@
           <widget class="QComboBox" name="combo_count">
            <item>
             <property name="text">
-             <string>4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>1</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4</string>
             </property>
            </item>
            <item>

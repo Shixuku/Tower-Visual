@@ -27,7 +27,7 @@ void Manage_PartData::Set_headertext()
 	ui.tableWidget->verticalHeader()->setVisible(false);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
-	LLI T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->childCount();//塔腿数量
+	LLI T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount();//塔腿数量
 	ui.tableWidget->setRowCount(T_legs);//塔腿行数
 
 	QVector<TowerPart_leg*> ve_leg;//!
@@ -37,7 +37,7 @@ void Manage_PartData::Set_headertext()
 	{
 		TowerPart_leg* leg = ve_leg[i];//!
 
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(i)->text(0);
+		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(i)->text(0);
 		int E_num = leg->m_Elements_beams.size() + leg->m_Elements_Trusses.size();
 		//设置名称、节点单元数量
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(name));
@@ -56,7 +56,7 @@ void Manage_PartData::Set_headertext()
 	ui.tableWidget_2->verticalHeader()->setVisible(false);
 	ui.tableWidget_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget_2->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
-	LLI T_bodys = m_InterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔腿数量;
+	LLI T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔腿数量;
 	ui.tableWidget_2->setRowCount(T_bodys);//塔身行数
 
 	QVector<TowerPart_body*> ve_body;//!
@@ -65,7 +65,7 @@ void Manage_PartData::Set_headertext()
 	for (int i = 0; i < T_bodys; i++)
 	{
 		TowerPart_body* body = ve_body[i];//
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(1)->child(i)->text(0);
+		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(i)->text(0);
 		int E_num = body->m_Elements_beams.size() + body->m_Elements_Trusses.size();
 		//设置节点单元数量
 		ui.tableWidget_2->setItem(i, 0, new QTableWidgetItem(name));
@@ -84,7 +84,7 @@ void Manage_PartData::Set_headertext()
 	ui.tableWidget_3->verticalHeader()->setVisible(false);
 	ui.tableWidget_3->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget_3->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
-	LLI T_heads = m_InterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔腿数量;
+	LLI T_heads = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount();//塔腿数量;
 	ui.tableWidget_3->setRowCount(T_heads);//塔头行数
 
 	QVector<TowerPart_CrossArm*> ve_head;//!
@@ -94,7 +94,7 @@ void Manage_PartData::Set_headertext()
 	{
 		//设置名称//设置节点单元数量
 		TowerPart_CrossArm* arm = ve_head[i];//!
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(2)->child(i)->text(0);
+		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(i)->text(0);
 		int E_num = arm->m_Elements_beams.size() + arm->m_Elements_Trusses.size();
 
 		ui.tableWidget_3->setItem(i, 0, new QTableWidgetItem(name));
@@ -127,8 +127,8 @@ void Manage_PartData::Modify_Data()
 			if (ret == QDialog::Accepted)
 			{
 				//新增
-				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0);
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(Index);
+				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(Index);
 				TowerPart_leg* t = new TowerPart_leg;
 				T_foot->Get_Data(*t);
 				t->Create_Mesh();
@@ -136,9 +136,10 @@ void Manage_PartData::Modify_Data()
 				childItem->setText(0, t->m_Name);//命名
 				t->Item = childItem;
 				m_InterFace->HiddeAllPart();
+				t->Show_VTKnode(m_InterFace->m_Renderer);
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
-				t->Show_VTKnode(m_InterFace->m_Renderer);
+				
 				m_InterFace->TP_leg.Add_Entity(t);
 
 				//设置界面数据变化
@@ -169,8 +170,8 @@ void Manage_PartData::Modify_Data()
 			if (ret == QDialog::Accepted )
 			{
 				//新增
-				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(1);
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
+				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
 				TowerPart_body* t = new TowerPart_body;
 				T_body->Get_Data(t);
 				t->Create_Mesh();
@@ -211,8 +212,8 @@ void Manage_PartData::Modify_Data()
 			if (ret == QDialog::Accepted)
 			{
 				//新增
-				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(2);
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(2)->child(Index);
+				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
 				TowerPart_CrossArm* t = new TowerPart_CrossArm;
 				T_crossArm->Get_Data(*t);
 				t->Create_Mesh();
@@ -271,7 +272,7 @@ void Manage_PartData::Delete_Data()
 			{
 				ui.tableWidget->removeRow(Index);//删掉表格中的那一行
 				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(Index);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(Index);
 				delete(childItem);
 				//需要删掉界面的指针
 				std::vector<T_Foot*>::iterator it = m_InterFace->t_foots.begin();
@@ -298,7 +299,7 @@ void Manage_PartData::Delete_Data()
 			{
 				ui.tableWidget_2->removeRow(Index);//删掉表格中的那一行
 				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
 				delete(childItem);
 				//需要删掉界面的指针
 				std::vector<T_Body*>::iterator it = m_InterFace->t_bodys.begin();
@@ -325,7 +326,7 @@ void Manage_PartData::Delete_Data()
 			{
 				ui.tableWidget_3->removeRow(Index);//删掉表格中的那一行
 				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(2)->child(Index);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
 				delete(childItem);
 				//需要删掉界面的指针
 				std::vector<T_CrossArm*>::iterator it = m_InterFace->t_crossarms.begin();

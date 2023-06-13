@@ -7,9 +7,16 @@ public:
 	int m_splits;//导线分裂数
 	int m_type;//绝缘子类型
 	double m_H;//绝缘子高度
-	Node* m_node;//悬垂点
-	Node* m_node1;//V型点1
-	Node* m_node2;//V型点2
+	Node* m_node = nullptr;//悬垂点
+	Node* m_node1 = nullptr;//V型点1
+	Node* m_node2 = nullptr;//V型点2
+
+	double m_W1;//连接塔身边宽
+	double m_W2;//悬臂端宽
+	double m_L2;//悬臂端长
+
 	double Get_y(double x);
+	double Get_y_I(double x);
+
 };
 

@@ -75,6 +75,7 @@ void InterFace::SetupCentralWidget()
 	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_2->SetGradientBackground(1);
 
+
 	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_3->SetGradientBackground(1);                  // 开启渐变色背景设置
@@ -95,92 +96,126 @@ void InterFace::TreeWidgetShow()
 	layout->addWidget(m_VtkWidget);//布局中加入控件
 	ui.treeWidget->header()->setVisible(false);//设置表头不可见
 
-	QTreeWidgetItem* pNewItem1 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem1->setText(0, QString("塔腿部件"));
+	QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
+	creat_tower_part->setText(0, QString("生成杆塔部件"));
 
-	QTreeWidgetItem* pNewItem2 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem2->setText(0, QString("塔身部件"));
+	QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
+	part_leg->setText(0, QString("塔腿部件"));
 
-	QTreeWidgetItem* pNewItem3 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem3->setText(0, QString("塔头部件"));
+	QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
+	part_body->setText(0, QString("塔身部件"));
 
-	QTreeWidgetItem* pNewItem4 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem4->setText(0, QString("生成杆塔实例"));
+	QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
+	part_head->setText(0, QString("塔头部件"));
 
-	QTreeWidgetItem* pNewItem5 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem5->setText(0, QString("属性"));
+	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_tower_instance->setText(0, QString("生成杆塔实例"));
 
-	QTreeWidgetItem* pNewItem6 = new QTreeWidgetItem(pNewItem5);
-	pNewItem6->setText(0, QString("材料属性"));
+	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
+	attribute->setText(0, QString("属性"));
 
-	QTreeWidgetItem* pNewItem7 = new QTreeWidgetItem(pNewItem5);
-	pNewItem7->setText(0, QString("截面属性"));
+	QTreeWidgetItem* att_material = new QTreeWidgetItem(attribute);
+	att_material->setText(0, QString("材料属性"));
 
-	QTreeWidgetItem* pNewItem8 = new QTreeWidgetItem(pNewItem5);
-	pNewItem8->setText(0, QString("赋予截面"));
+	QTreeWidgetItem* att_section = new QTreeWidgetItem(attribute);
+	att_section->setText(0, QString("截面属性"));
 
-	QTreeWidgetItem* pNewItem9 = new QTreeWidgetItem(pNewItem5);
+	QTreeWidgetItem* assign_section = new QTreeWidgetItem(attribute);
+	assign_section->setText(0, QString("赋予截面"));
+
+	QTreeWidgetItem* pNewItem9 = new QTreeWidgetItem(attribute);
 	pNewItem9->setText(0, QString("根据长度赋予截面"));
 
-	QTreeWidgetItem* pNewItem12 = new QTreeWidgetItem(pNewItem5);
-	pNewItem12->setText(0, QString("创建荷载"));
+	QTreeWidgetItem* Loads = new QTreeWidgetItem(ui.treeWidget);
+	Loads->setText(0, QString("荷载"));
 
-	QTreeWidgetItem* pNewItem10 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem10->setText(0, QString("绝缘子串"));
+	QTreeWidgetItem* creat_loads = new QTreeWidgetItem(Loads);
+	creat_loads->setText(0, QString("创建载荷"));
 
-	QTreeWidgetItem* pNewItem11 = new QTreeWidgetItem(ui.treeWidget);
-	pNewItem11->setText(0, QString("导线建模"));
+	QTreeWidgetItem* edit_loads = new QTreeWidgetItem(Loads);
+	edit_loads->setText(0, QString("编辑载荷"));
+
+	QTreeWidgetItem* creat_constraints = new QTreeWidgetItem(Loads);
+	creat_constraints->setText(0, QString("创建约束"));
+
+	QTreeWidgetItem* edit_constraints = new QTreeWidgetItem(Loads);
+	edit_constraints->setText(0, QString("编辑约束"));
+
+	QTreeWidgetItem* insulator_string = new QTreeWidgetItem(ui.treeWidget);
+	insulator_string->setText(0, QString("绝缘子串"));
+
+	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
+	Wire_modeling->setText(0, QString("导线建模"));
 }
 
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 {
-	if (item == ui.treeWidget->topLevelItem(0))
+	//生成杆塔部件
+	if (item == ui.treeWidget->topLevelItem(0)->child(0))
 	{
 		ui_Foot();
 	}
-
-	else if (item == ui.treeWidget->topLevelItem(1))
+	else if (item == ui.treeWidget->topLevelItem(0)->child(1))
 	{
 		ui_Body();
 	}
-
-	else if (item == ui.treeWidget->topLevelItem(2))
+	else if (item == ui.treeWidget->topLevelItem(0)->child(2))
 	{
-		if (ui.treeWidget->topLevelItem(1)->childCount() == 0)
+		if (ui.treeWidget->topLevelItem(0)->child(1)->childCount() == 0)
 		{
 			QMessageBox::information(this, "Tips", "请先创建塔身！");
 		}
-		else { ui_CrossArm(); }
-			
+		else { ui_CrossArm(); }	
 	}
-	else if (item == ui.treeWidget->topLevelItem(3))
+	//生成杆塔实例
+	else if (item == ui.treeWidget->topLevelItem(1))
 	{
 		ui_Tower();
 	}
-	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
+	//属性
+	else if (item == ui.treeWidget->topLevelItem(2)->child(1))
 	{
 		ui_Section();
 	}
-	else if (item == ui.treeWidget->topLevelItem(4)->child(2))
+	else if (item == ui.treeWidget->topLevelItem(2)->child(2))
 	{
 		ui_SetSection();
 	}
-	else if (item == ui.treeWidget->topLevelItem(4)->child(3))
+	else if (item == ui.treeWidget->topLevelItem(2)->child(3))
 	{
 		ui_SetAllSection();
 	}
-	else if (item == ui.treeWidget->topLevelItem(5))
+	//荷载
+	else if (item == ui.treeWidget->topLevelItem(3)->child(0))
+	{
+		
+	}
+	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
+	{
+		
+	}
+	else if (item == ui.treeWidget->topLevelItem(3)->child(2))
+	{
+		
+	}
+	else if (item == ui.treeWidget->topLevelItem(3)->child(3))
+	{
+		
+	}
+	//绝缘子串
+	else if (item == ui.treeWidget->topLevelItem(4))
 	{
 		ui_Interphase_spacer();
 	}
-	else if (item == ui.treeWidget->topLevelItem(6))
+	//导线建模
+	else if (item == ui.treeWidget->topLevelItem(5))
 	{
 		ui_Wire_InterFace();
 	}
-	else if (item == ui.treeWidget->topLevelItem(3)->child(0)->child(0))
-	{
-		ui_AddLoadForce(item);
-	}
+	//else if (item == ui.treeWidget->topLevelItem(3)->child(0)->child(0))
+	//{
+	//	ui_AddLoadForce(item);
+	//}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -195,7 +230,7 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 		part->Node_actor->VisibilityOn();
 	}
 
-	if (item == ui.treeWidget->topLevelItem(3))
+	if (item == ui.treeWidget->topLevelItem(1))
 	{
 		HiddeAllTower();
 		switchRenderWindow(1);
@@ -221,7 +256,7 @@ void InterFace::ui_Foot()
 	int ret = T_foot->exec();
 	if (ret == QDialog::Accepted)
 	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0);
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		TowerPart_leg* t = new TowerPart_leg;
 		T_foot->Get_Data(*t);//取数据
@@ -252,7 +287,7 @@ void InterFace::ui_Body()
 	int ret = T_body->exec();
 	if (ret == QDialog::Accepted)
 	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(int(1));
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		TowerPart_body* t = new TowerPart_body;
 		T_body->Get_Data(t);
@@ -280,7 +315,7 @@ void InterFace::ui_CrossArm()
 	int ret = T_ca->exec();
 	if (ret == QDialog::Accepted)
 	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
@@ -294,7 +329,6 @@ void InterFace::ui_CrossArm()
 		t->Show_VTKtruss(m_Renderer);
 		t->Show_VTKbeam(m_Renderer);
 		
-	
 		TP_CrossArm.Add_Entity(t);//塔头
 		ResetCamera();
 
@@ -309,10 +343,10 @@ void InterFace::ui_Tower()
 	int ret = T_As->exec();
 	if (ret == QDialog::Accepted)
 	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(3);
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);//
-		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
-		AddLoadForce->setText(0, QString("施加荷载"));
+		//QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
+		//AddLoadForce->setText(0, QString("施加荷载"));
 		Tower* tw = new Tower;
 		for (auto& i : T_As->m_ArryLeg)//塔腿
 		{
@@ -356,8 +390,8 @@ void InterFace::ui_Tower()
 		}
 		ResetCamera();
 		tower_assembles.push_back(T_As);
-		TP.Find_Entity(int(tw->m_id))->ShowNode();
-		TP.Find_Entity(int(tw->m_id))->ShowElement();
+		//TP.Find_Entity(int(tw->m_id))->ShowNode();
+		//TP.Find_Entity(int(tw->m_id))->ShowElement();
 	}
 
 }
@@ -376,15 +410,15 @@ void InterFace::ui_Section()
 		int id = MS.size() + 1;//从1开始排序
 		Section* section = new Section(ia, ib, id, ClassSection, iM);
 		MS.push_back(Section(ia, ib, id, ClassSection, iM));
-		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->childCount(); i++)//新键一个，塔腿里放一个
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(0)->childCount(); i++)//新键一个，塔腿里放一个
 		{
 			TP_leg.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
-		for (int i = 0; i < ui.treeWidget->topLevelItem(1)->childCount(); i++)//新键一个，塔身里放一个
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(1)->childCount(); i++)//新键一个，塔身里放一个
 		{
 			TP_body.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
-		for (int i = 0; i < ui.treeWidget->topLevelItem(2)->childCount(); i++)//新键一个，塔头里放一个
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(2)->childCount(); i++)//新键一个，塔头里放一个
 		{
 			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
@@ -420,6 +454,7 @@ void InterFace::ui_Management_InsData()
 void InterFace::ui_Interphase_spacer()
 {
 	Interphase_spacer* IS = new Interphase_spacer(this);
+
 	IS->show();//要互动只能用show
 }
 
@@ -478,7 +513,7 @@ void InterFace::OpenFile()
 
 			for (int i = 0; i < TP_leg.size(); i++)
 			{
-				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0);
+				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, QString("塔腿部件" + str));
@@ -488,7 +523,7 @@ void InterFace::OpenFile()
 
 			for (int i = 0; i < TP_body.size(); i++)
 			{
-				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
+				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, QString("塔身部件" + str));
@@ -496,7 +531,7 @@ void InterFace::OpenFile()
 			}
 			for (int i = 0; i < TP_CrossArm.size(); i++)
 			{
-				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
+				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, QString("横担部件" + str));
@@ -504,7 +539,7 @@ void InterFace::OpenFile()
 			}
 			for (int i = 0; i < TP.size(); i++)
 			{
-				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(3);
+				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, QString("输电塔" + str));

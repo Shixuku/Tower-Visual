@@ -43,7 +43,7 @@ T_CrossArm::T_CrossArm(InterFace* interFace, QWidget *parent)
 	ui.line_c2H->setText("500"); ui.line_c2W0->setText("1292"); ui.line_c2Wn->setText("1287");
 
 	ui.combo_bodypos->setCurrentIndex(2);//设置combobox初始index
-	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(2)->childCount() + 1;//塔身数量
+	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount() + 1;//塔身数量
 	QString str("塔头部件-");
 	str += QString::number(T_bodys);     //str转字符
 	ui.part_name->setText(str);//设置初始值
@@ -193,10 +193,10 @@ void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
 void T_CrossArm::Set_combobox()
 {
 	//塔身段
-	int a= m_InterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔身段数量
+	int a= m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔身段数量
 	for (int i = 0; i < a; i++)
 	{
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(1)->child(i)->text(0);
+		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(i)->text(0);
 		ui.combo_body->addItem(name);
 	}
 	//层数

@@ -156,9 +156,9 @@ void Assign_Section::Add_created_section()
 
 void Assign_Section::Create_combobox()
 {
-	T_legs = m_pInterFace->ui.treeWidget->topLevelItem(0)->childCount();//塔腿数量
-	T_bodys = m_pInterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔身数量
-	T_heads = m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔头数量
+	T_legs = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount();//塔腿数量
+	T_bodys = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔身数量
+	T_heads = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount();//塔头数量
 
 	for (int i = 0; i < T_legs; i++)
 	{
