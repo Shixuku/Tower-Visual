@@ -33,7 +33,7 @@ public:
 	Set_Section* Section = nullptr;
 	vtkSmartPointer<vtkActor> linesactor;
 
-
+	int id_Part = 0;//将找到的part作为成员变量
 	int T_legs = 0;
 	int T_bodys = 0;//塔身数量
 	int T_heads = 0;//塔头数量

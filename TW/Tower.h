@@ -63,7 +63,7 @@ public:
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;
 	//std::vector<vtkSmartPointer<vtkActor>>NactorTower;
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
-	
+	vector<int>RestraintNode;
 	void addPart(Part_Base* part);
 
 	void Check();
@@ -85,6 +85,7 @@ protected:
 	void addNodeToTower(Part_Base* part);
 	void addElementToTower(Part_Base* part);
 	void addSectionToTower(Part_Base* part);
+	void addRestraintNode(Part_Base* part);
 };
 //xxxxxxxxx
 

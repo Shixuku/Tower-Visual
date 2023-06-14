@@ -33,8 +33,8 @@ void Section::GetLIxyz()
 	B_Iz = b * (2 * a3 * a - 4 * a3 * b + 8 * a2 * b2 - 6 * a * b3 + b3 * b) / (24 * a - 12 * b);
 	B_Iyz = 0;
 	double L2 = a, t2 = b;
-	////B_J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
-	//	L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
+	B_J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
+	L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
 	S = 2 * a * b - b * b;
 	double R2 = S / PI;
 	R = sqrt(R2);
@@ -49,7 +49,7 @@ void Section::GetOIxyz()
 	B_Iy = PI / 64 * (D4 - d4);
 	B_Iz = PI / 64 * (D4 - d4);
 	B_Iyz = 0;
-	//B_J = (PI / 32) * (pow(a, 4) - pow(a - 2 * (a-b), 4));
+	B_J = (PI / 32) * (pow(a, 4) - pow(a - 2 * (a-b), 4));
 	S = PI * a * a - PI * b * b;
 	double R2 = S / PI;
 	R = sqrt(R2);
@@ -63,4 +63,8 @@ Part_Type Section::My_PartType() const
 int Section::Get_id() const
 {
 	return m_id;
+}
+
+Section::Section()
+{
 }

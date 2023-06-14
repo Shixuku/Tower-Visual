@@ -76,12 +76,12 @@ void AddLoadForce::Get_Data()
 			m_tower->Load.push_back(LoadForce(id, idNode, direction, i_y, 0, 1));
 		}
 		double i_z = ui.lineEdit_4->text().toDouble();
-				if (i_y != 0)
+		if (i_z != 0)
 		{
 			int id = m_tower->Load.size() + 1;
 			int idNode = idNodes[i];
 			int direction = 1;
-			m_tower->Load.push_back(LoadForce(id, idNode, direction, i_y, 0, 1));
+			m_tower->Load.push_back(LoadForce(id, idNode, direction, i_z, 0, 1));
 		}
 	}
 

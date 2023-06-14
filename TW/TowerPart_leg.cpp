@@ -64,6 +64,7 @@ void TowerPart_leg::Type1(int iQuadrant)
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 
 	}
+	InPutRestraintNode({ node[0] });//放入脚点
 	//生成单元
 	Creat_Beams(m_Elements_beams, { node[0],node[6],node[7],node[1] });//一串梁单元
 	Creat_Beams(m_Elements_beams, { node[0],node[8],node[9],node[2] });//一串梁单元
@@ -101,7 +102,7 @@ void TowerPart_leg::Type2(int iQuadrant)
 	{
 		node[i] = Creat_Node(Node2[i].x, Node2[i].y, Node2[i].z);
 	}
-
+	InPutRestraintNode({ node[0] });//放入脚点
 	//生成单元
 
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[5],node[1] });//一串梁单元
@@ -134,7 +135,7 @@ void TowerPart_leg::Type3(int iQuadrant)
 	{
 		node[i] = Creat_Node(Node3[i].x, Node3[i].y, Node3[i].z);
 	}
-
+	InPutRestraintNode({ node[0] });//放入脚点
 	//生成单元
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1] });//一串梁单元
 	Creat_Beams(m_Elements_beams, { node[0],node[5],node[2] });//一串梁单元

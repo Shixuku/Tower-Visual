@@ -190,6 +190,7 @@
 		MaterialTxT();
 		BeamSectionTxT();
 		TrussSectionTxT();
+		fout.close();
 	}
 
 	void Tower::NodeTxT()
@@ -209,12 +210,10 @@
 		fout << BeamSize << " \n";
 		for (int i = 0; i < m_Elements_beams.size(); i++)
 		{
-			fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] <<"  "<< m_Elements_beams[i].MaterialID
-				<<"  " << m_Elements_beams [i].ClassSectionID<<"  "<< m_Elements_beams[i].AxialForce<<"  "<< m_Elements_beams[i].direction[0]<<"  " <<
-				m_Elements_beams[i].direction[1] << "  " << 
+			fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] <<"  "<< m_Elements_beams[i].MaterialID+1
+				<<"  " << m_Elements_beams [i].ClassSectionID+1<<"  "<< m_Elements_beams[i].AxialForce<<"  "<< m_Elements_beams[i].direction[0]<<"  " <<
+				m_Elements_beams[i].direction[1] << "  " <<
 				m_Elements_beams[i].direction[2] << "  " << "\n";
-
-
 		}
 	}
 
@@ -224,8 +223,8 @@
 		fout << TressSize << " \n";
 		for (int i = 0; i < m_Elements_Trusses.size(); i++)
 		{
-			fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
-				<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
+			fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID+1
+				<< "  " << m_Elements_Trusses[i].ClassSectionID +1<< "  " << m_Elements_beams[i].AxialForce << "\n";
 		}
 	}
 
@@ -255,7 +254,7 @@
 		fout << SectionSize << "\n";
 		for (int i = 0; i < SectionSize; i++)
 		{
-			fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  "  << "\n";
+			fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  "  << pSection[i].B_J << "\n";
 
 		}
 	}
@@ -273,22 +272,14 @@
 
 	void Tower::RestraintTxT()
 	{
-		fout << 24 << "/n";
-		for (int i = 0; i < 4; i++)
+		cout << "start RestraintNode" << "\n";
+		for (int i = 0; i < RestraintNode.size(); i++)
 		{
-			int temp = 0;
-			for (int j = 0; j < m_Nodes.size(); j++)
+			for (int j = 0; j < 6; j++)
 			{
-				if (m_Nodes[j].restraint = true&&i==temp)
-				{
-					for (int m = 0; m < 6; m++)
-					{
-						fout << (m+1) * (i + 1)  << "  " << m_Nodes[j].m_idNode << "  " << m << "  " << 0 << "\n";
-					}
-				}
+				fout << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
 			}
 		}
-
 	}
 
 	void Tower::addPart(Part_Base* part)
@@ -296,7 +287,8 @@
 		if (!part) return;
 		addNodeToTower(part);
 		addElementToTower(part);
-
+		addSectionToTower(part);
+		addRestraintNode(part);
 	}
 
 	void Tower::Check()
@@ -628,7 +620,7 @@
 
 		for (size_t i = 0; i < tpart; ++i)//Truss
 		{
-			Element* pE = &part->m_Elements_Trusses[i];
+			Element_Truss* pE = &part->m_Elements_Trusses[i];
 			this->m_Elements.push_back(part->m_Elements_Trusses[i]);
 			size_t total = this->m_Elements.size() - 1;
 			this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
@@ -640,7 +632,8 @@
 			this->m_Elements_Trusses[totalT].m_idElement = total + 1;//放入实例的杆单元
 			this->m_Elements_Trusses[totalT].m_idNode[0] = part->Find_tower_idNode(pE->m_idNode[0]);
 			this->m_Elements_Trusses[totalT].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
-
+			this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
+			this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
 		}
 		for (size_t i = 0; i < bpart; ++i)
 		{
@@ -661,21 +654,31 @@
 			this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 			this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 			this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
+			cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
 		}
 	}
 
 	void Tower::addSectionToTower(Part_Base* part)
 	{
-		int SectionSize = part->pSection.size();
+		int SectionSize = part->pMaterial.size();
 		for (int i = 0; i < SectionSize; i++)
 		{
-			double ia= part->pSection[i].a; 
-			double ib = part->pSection[i].b; 
-			int id = part->pSection[i].m_id;
-			int iClassSe= part->pSection[i].ClassSe; 
-			int iClassM = part->pSection[i].ClassM;
-			//Section section(ia, ib, id, iClassSe, iClassM);
-			//pSection.push_back(section);
+			double ia= part->pMaterial[i].a;
+			double ib = part->pMaterial[i].b;
+			int id = part->pMaterial[i].m_id;
+			int iClassSe= part->pMaterial[i].ClassSe;
+			int iClassM = part->pMaterial[i].ClassM;
+			pSection.push_back(Section(ia, ib, id, iClassSe, iClassM));
+		}
+	}
+
+	void Tower::addRestraintNode(Part_Base* part)
+	{
+		size_t ResNode = part->RestraintNode.size();
+		for (int i = 0; i < ResNode; i++)
+		{
+            this->RestraintNode.push_back(part->RestraintNode[i]);
+			RestraintNode[i] = part->Find_tower_idNode(part->RestraintNode[i]);
 		}
 	}
 

@@ -387,10 +387,6 @@ void InterFace::ui_Section()
 		{
 			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
-		for (int i = 0; i < ui.treeWidget->topLevelItem(2)->childCount(); i++)//新键一个，塔头里放一个
-		{
-			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
-		}
 		Ms.Add_Entity(section);
 	}
 }
@@ -605,6 +601,10 @@ void InterFace::SubstaceActor(Part_Base* Part)
 	{
 		m_Renderer->AddActor(i);
 		cout << "number of actor :" << i << "\n";
+	}
+	for (auto& i : Part->m_Elements_beams)
+	{
+		cout << i.m_idElement << "  " << i.direction[0] << "  " << i.direction[1] << "  " << i.direction[2] << "\n";
 	}
 	cout << "Number of actor:" << Part->Nactor.size() << "\n";
 	m_renderWindow->Render();
@@ -840,6 +840,8 @@ void InterFace::Show_Part(Part_Base* part)
 
 	ResetCamera();
 }
+
+
 
 void InterFace::Show_Tower(Tower* tower)
 {
