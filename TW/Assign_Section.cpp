@@ -42,6 +42,13 @@ Assign_Section::Assign_Section(InterFace* InterFace, QWidget* parent)
 	connect(ui.btn_finish, &QPushButton::clicked, this, [=]()
 		{
 			m_pInterFace->m_Renderer->RemoveActor(linesactor);
+			int size = m_pInterFace->TP_leg.Find_Entity(id_Part)->m_Elements_beams.size();
+			for (int i = 0; i < size; i++)
+			{
+				cout << "梁的方向" << m_pInterFace->TP_leg.Find_Entity(id_Part)->m_Elements_beams[i].direction[0] << "  "
+				<< m_pInterFace->TP_leg.Find_Entity(id_Part)->m_Elements_beams[i].direction[1] << "  "
+				<< m_pInterFace->TP_leg.Find_Entity(id_Part)->m_Elements_beams[i].direction[2] << "\n";
+			}	
 			this->reject();
 		});
 
@@ -54,7 +61,7 @@ Assign_Section::~Assign_Section()
 
 void Assign_Section::ShowComboVTK()
 {
-	int id_Part = 0;
+	
 	T_legs = m_pInterFace->ui.treeWidget->topLevelItem(0)->childCount();//塔腿数量
 	T_bodys = m_pInterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔身数量
 	T_heads = m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔头数量

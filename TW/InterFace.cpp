@@ -212,10 +212,14 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Wire_InterFace();
 	}
-	//else if (item == ui.treeWidget->topLevelItem(3)->child(0)->child(0))
-	//{
-	//	ui_AddLoadForce(item);
-	//}
+	else if (isChildOfTopLevelItem3(item))
+	{
+		ui_AddLoadForce(item);
+	}
+	else if (isChildOfTopLevelItem3OutPut(item))
+	{
+		CreateOutPut(item);
+	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -345,6 +349,10 @@ void InterFace::ui_Tower()
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);//
+		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
+		AddLoadForce->setText(0, QString("施加荷载"));
+		OutPut->setText(0, QString("输出计算文件"));
 		//QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
 		//AddLoadForce->setText(0, QString("施加荷载"));
 		Tower* tw = new Tower;
@@ -640,10 +648,26 @@ void InterFace::SubstaceActor(Part_Base* Part)
 		m_Renderer->AddActor(i);
 		cout << "number of actor :" << i << "\n";
 	}
+	for (auto& i : Part->m_Elements_beams)
+	{
+		cout << i.m_idElement << "  " << i.direction[0] << "  " << i.direction[1] << "  " << i.direction[2] << "\n";
+	}
 	cout << "Number of actor:" << Part->Nactor.size() << "\n";
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
 
+}
+
+void InterFace::ShowLoadactor(Tower* tower)
+{
+	for (auto& i : tower->m_LoadActor)
+	{
+		m_Renderer_2->AddActor(i);
+		cout << "number of actor :" << i << "\n";
+	}
+	cout << "Number of actor:" << tower->m_LoadActor.size() << "\n";
+	m_renderWindow->Render();
+	m_Renderer->ResetCamera();
 }
 
 void InterFace::switchRenderWindow(int index)
@@ -806,6 +830,49 @@ void InterFace::Area_Inqure()
 	widgetAxes->SetInteractive(1);
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
+	renderWindowInteractor->TerminateApp();
+	// 清除 m_Renderer_2 相关资源
+	Axes->Delete();
+	widgetAxes->Delete();
+	widgetAxes->EnabledOff();
+	widgetAxes->SetInteractor(nullptr);
+	widgetAxes->SetOrientationMarker(nullptr);
+	widgetAxes->Delete();
+
+	// 清除交互器
+	renderWindowInteractor->RemoveAllObservers();
+}
+
+bool InterFace::isChildOfTopLevelItem3(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
+	int childCount = topLevelItem3->childCount();
+
+	for (int i = 0; i < childCount; i++)
+	{
+		QTreeWidgetItem* childItem = topLevelItem3->child(i);
+		if (item == childItem->child(0))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool InterFace::isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
+	int childCount = topLevelItem3->childCount();
+
+	for (int i = 0; i < childCount; i++)
+	{
+		QTreeWidgetItem* childItem = topLevelItem3->child(i);
+		if (item == childItem->child(1))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void InterFace::Close_Point()
@@ -817,6 +884,8 @@ void InterFace::Close_Point()
 	m_renderWindow->GetInteractor()->SetInteractorStyle(m_MainStyle);
 	
 }
+
+
 
 void InterFace::GetData(QStringList& sInfo)
 {
@@ -839,9 +908,16 @@ void InterFace::Test_mousePressEvent(QMouseEvent* event)
 
 void InterFace::ui_AddLoadForce(QTreeWidgetItem* item)
 {
-	Tower* tower = OnFindTower(item);
-	AddLoadForce* addload = new AddLoadForce(tower);
+	Tower* tower = OnFindTower(item->parent());
+	AddLoadForce* addload = new AddLoadForce(tower,this);
 	addload->show();
+	Point_Inqure();
+}
+
+void InterFace::CreateOutPut(QTreeWidgetItem* item)
+{
+	Tower* tower = OnFindTower(item->parent());
+	tower->CreateOutPut();
 }
 
 void InterFace::Show_Part(Part_Base* part)
@@ -858,6 +934,8 @@ void InterFace::Show_Part(Part_Base* part)
 
 	ResetCamera();
 }
+
+
 
 void InterFace::Show_Tower(Tower* tower)
 {

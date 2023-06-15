@@ -10,7 +10,7 @@ class Base
 {
 public:
 	int m_id;
-
+	Base() = default;
 	//void 
 };
 
