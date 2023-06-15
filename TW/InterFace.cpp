@@ -746,17 +746,6 @@ void InterFace::Point_Inqure()
 	widgetAxes->SetInteractive(0);
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
-	renderWindowInteractor->TerminateApp();
-	// 清除 m_Renderer_2 相关资源
-	Axes->Delete();
-	widgetAxes->Delete();
-	widgetAxes->EnabledOff();
-	widgetAxes->SetInteractor(nullptr);
-	widgetAxes->SetOrientationMarker(nullptr);
-	widgetAxes->Delete();
-
-	// 清除交互器
-	renderWindowInteractor->RemoveAllObservers();
 }
 
 bool InterFace::isChildOfTopLevelItem3(QTreeWidgetItem* item)

@@ -272,7 +272,7 @@
 
 	void Tower::RestraintTxT()
 	{
-		cout << "start RestraintNode" << "\n";
+		fout << "24" << "\n";
 		for (int i = 0; i < RestraintNode.size(); i++)
 		{
 			for (int j = 0; j < 6; j++)
