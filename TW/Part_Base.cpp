@@ -8,7 +8,7 @@
 #include "vtkLineSource.h"
 #include<vtkTubeFilter.h>
 #include"Element_Beam.h"
-
+#pragma execution_character_set("utf-8")
 int Part_Base::Get_id() const
 {
 	return m_id;
@@ -62,6 +62,16 @@ void Part_Base::Show_VTKbeam(vtkRenderer* renderer)
 	m_BeamActor->SetMapper(mapper);
 	m_BeamActor->GetProperty()->SetColor(0, 0, 0);//设置颜色(0,0,0)表示黑色
 	renderer->AddActor(m_BeamActor);
+}
+
+void Part_Base::ShowMessage()
+{
+	for (int i = 0; i < m_Elements_beams.size(); i++)
+	{
+		cout << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].direction[0] << "  "
+			<< m_Elements_beams[i].direction[1] << "  " << m_Elements_beams[i].direction[2] << "\n";
+	}
+	
 }
 
 void Part_Base::Show_VTKnode(vtkRenderer* renderer)
@@ -159,10 +169,31 @@ void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> 
 	size_t size = ids.size();
 	int node1 = ids[0];
 	id_BeamSection++;
+	double iDirection[3];
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection++));
+		if (m_Nodes[node1-1].x > 0 && m_Nodes[node1-1].y > 0 && m_Nodes[node1-1].z != m_Nodes[node2-1].z)
+		{
+			iDirection[0] = 0;iDirection[1] = -1;iDirection[2] = 0;
+		}
+		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = 0;iDirection[1] = 1;iDirection[2] = 0;
+		}
+		else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = -1;iDirection[1] = 0;iDirection[2] = 0;
+		}
+		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = 1;iDirection[1] = 0;iDirection[2] = 0;
+		}
+		else
+		{
+			iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
+		}
+		m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
 		Beam_elementsID++;
 		node1 = node2;
 	}
@@ -172,11 +203,32 @@ void Part_Base::Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>
 {
 	size_t size = ids.size();
 	id_BeamSection++;
+	double iDirection[3];
 	for (int i = 0; i < size; i += 2)
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection++));
+		if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = 0;iDirection[1] = -1;iDirection[2] = 0;
+		}
+		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = 0;iDirection[1] = 1;iDirection[2] = 0;
+		}
+		else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = -1;iDirection[1] = 0;iDirection[2] = 0;	
+		}
+		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		{
+			iDirection[0] = 1;iDirection[1] = 0;iDirection[2] = 0;
+		}
+		else
+		{
+			iDirection[0] = 0;iDirection[1] = 0;iDirection[2] = -1;
+		}
+		m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
 		Beam_elementsID++;
 	}
 }
@@ -189,7 +241,7 @@ void Part_Base::Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection++));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
 		Truss_elementsID++;
 		node1 = node2;
 	}
@@ -198,13 +250,19 @@ void Part_Base::Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<
 void Part_Base::Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector<int> ids)
 {
 	size_t size = ids.size();
+	id_TrussSection++;
 	for (int i = 0; i < size; i += 2)
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection++));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
 		Truss_elementsID++;
 	}
+}
+
+void Part_Base::InPutRestraintNode(vector<int> ids)
+{
+	RestraintNode.push_back(ids[0]);
 }
 
 int Part_Base::Creat_Node(double x, double y, double z)
@@ -219,8 +277,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 	int Judg = 0;
 	for (int i = 0; i < SIZE; i++)
 	{
-
-		if (abs(m_Nodes[i].x - x) < 1e-5 && abs(m_Nodes[i].y - y) < 1e-5 && abs(m_Nodes[i].z - z) < 1e-5)
+		if (abs(m_Nodes[i].x - x) < 1 && abs(m_Nodes[i].y - y) < 1 && abs(m_Nodes[i].z - z) < 1)
 		{
 			return m_Nodes[i].m_idNode; //重节点
 			i = SIZE;
@@ -481,7 +538,7 @@ void Part_Base::SubstaceActor(Element_Beam& beam)
 
 	for (auto i : pMaterial)
 	{
-		if (i.m_id = beam.ClassSectionID)
+		if (i.m_id == beam.ClassSectionID)
 		{
 			switch (i.ClassSe)
 			{
@@ -517,9 +574,10 @@ void Part_Base::AssginSectionGroup(int ElementGroup, int SectionGroup)
 	{
 		for (auto i : m_Elements_Trusses)
 		{
-			if (i.sectionID = ElementGroup - BeamMaxGroup)
+			if (i.sectionID == ElementGroup - BeamMaxGroup)
 			{
 				i.ClassSectionID = SectionGroup;
+
 			}
 		}
 	}
@@ -544,9 +602,13 @@ void Part_Base::SetL(Element_Beam& EB)
 	beamActor bA;
 	int ipt1 = EB.m_idNode[0] - 1; //id
 	int ipt2 = EB.m_idNode[1] - 1;
+	double n1 = EB.direction[0];
+	double n2 = EB.direction[1];
+	double n3 = EB.direction[2];
+	cout << "点" << EB.m_idNode[0] - 1 << "  " << EB.m_idNode[1] - 1 << "\n";
 	double x1 = m_Nodes[ipt1].x; double y1 = m_Nodes[ipt1].y; double z1 = m_Nodes[ipt1].z;
 	double x2 = m_Nodes[ipt2].x; double y2 = m_Nodes[ipt2].y; double z2 = m_Nodes[ipt2].z;
-	if (z2 - z1 > 0.01)//
+	if (abs(z2 - z1 )> 0.1)//
 	{
 		bA.setNode(x1, y1, z1, x2, y2, z2);
 		double x[6];
@@ -557,27 +619,11 @@ void Part_Base::SetL(Element_Beam& EB)
 			{
 				x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
 				y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
+				EB.MaterialID = j.ClassM;
 			}
 		}
 		bA.SetSection(x, y);
-		int n11 = EB.m_idNode[0] - 1;
-		int n12 = EB.m_idNode[1] - 1;
-		if (m_Nodes[n11].x > 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-		{
-			bA.Set_zAxis(0, -1, 0);
-		}
-		else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-		{
-			bA.Set_zAxis(0, 1, 0);
-		}
-		else if (m_Nodes[n11].x > 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-		{
-			bA.Set_zAxis(-1, 0, 0);
-		}
-		else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-		{
-			bA.Set_zAxis(1, 0, 0);
-		}
+		bA.Set_zAxis(n1, n2, n3);
 	}
 	else
 	{
@@ -605,7 +651,7 @@ void Part_Base::SetL(Element_Beam& EB)
 				}
 			}
 			bA.SetSection(x, y);
-			bA.Set_zAxis(0, 0, -1);
+			bA.Set_zAxis(n1, n2, n3);
 		}
 		else
 		{
@@ -655,21 +701,4 @@ void Part_Base::SetCir(Element_Beam& beam)
 	Nactor.push_back(actor);
 
 
-}
-
-void Part_Base::GetmL()
-{
-	for (auto i : m_Elements_beams)
-	{
-		int ipt1 = i.m_idNode[0] - 1; //id
-		int ipt2 = i.m_idNode[1] - 1;
-		double x1 = m_Nodes[ipt1].x; double y1 = m_Nodes[ipt1].y; double z1 = m_Nodes[ipt1].z;
-		double x2 = m_Nodes[ipt2].x; double y2 = m_Nodes[ipt2].y; double z2 = m_Nodes[ipt2].z;
-		double Vx[3];
-		Vx[0] = x2 - x1;
-		Vx[1] = y2 - y1;
-		Vx[2] = z2 - z1;
-		double m_L = sqrt(Vx[0] * Vx[0] + Vx[1] * Vx[1] + Vx[2] * Vx[2]);
-		cout << m_L << "\n";
-	}
 }

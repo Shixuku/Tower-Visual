@@ -48,6 +48,7 @@ public:
     void HiddeAllPart();
     void HiddeAllTower();
     void SubstaceActor(Part_Base* Part);
+    void ShowLoadactor(Tower* tower);
     void switchRenderWindow(int index);
     void initMenu();
      Ui::InterFaceClass ui;
@@ -73,6 +74,8 @@ public:
      void UnSelect_Nodes();
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
      void Point_Inqure();
+     bool isChildOfTopLevelItem3(QTreeWidgetItem* item);
+     bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);
      void Area_Inqure();//¿òÑ¡
      void Close_Point();
 signals://ÐÅºÅ
@@ -99,6 +102,7 @@ public slots:
     void GetData(QStringList&);
     void Test_mousePressEvent(QMouseEvent* event);
     void ui_AddLoadForce(QTreeWidgetItem* item);
+    void CreateOutPut(QTreeWidgetItem* item);
 private:
     QFile Qf;
     QDataStream Stream;

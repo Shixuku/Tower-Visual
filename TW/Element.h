@@ -12,7 +12,7 @@ public:
 
 	int sectionID = 0;//截面组号
 	int ClassSectionID = 0;//这个单元用的截面的编号
-
+	int MaterialID = 0;//获得的截面的编号
 	void show()const;
 	void showid()const;
 

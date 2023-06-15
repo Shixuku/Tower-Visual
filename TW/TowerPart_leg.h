@@ -29,14 +29,5 @@ public:
 
 	QString m_Name;
 
-	//void SaveTo(QDataStream& fin)const
-	//{
-	//	
-	//}
-
-	//void Input(QDataStream& fin)
-	//{
-	//	
-	//}
 };
 

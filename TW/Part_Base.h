@@ -52,11 +52,11 @@ public:
 	std::vector<Section>pMaterial;
 	map<int, Section>pSection;
 	vtkSmartPointer<vtkActor> Node_actor;//黄瞻
-
+	vector<int>RestraintNode;//放入约束节点
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);
-
+	void ShowMessage();
 
 	//void show_SectionBeam(double a, double b, int section, int M, int group, bool IsBeam);
 
@@ -68,8 +68,6 @@ public:
 
 	void SetL(Element_Beam& beam);
 	void SetCir(Element_Beam& beam);
-
-	void GetmL();
 
 	virtual void Clear_Part(); //清除部件的节点和单元
 
@@ -83,7 +81,7 @@ public:
 
 	void Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<int>ids);//生成杆单元
 	void Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector<int>ids);//生成杆单元
-
+	void InPutRestraintNode(vector<int>ids);//将4个脚点放入单元
 	int Creat_Node(double x, double y, double z);//生成节点
 
 	virtual void SaveTo(QDataStream& fin)const;

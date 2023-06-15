@@ -148,6 +148,9 @@
     <ClCompile Include="AddLoadForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LoadForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="AreaSelected_InteractorStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -229,6 +232,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Draw_Wire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AreaSelected_InteractorStyle.h">

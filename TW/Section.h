@@ -10,11 +10,15 @@ public:
 	string Name;
 	int m_id=0;
 	int Get_id()const;
+	Section();
+
+
 
 	//梁的截面属性
 	double B_Iy=0;
 	double B_Iz = 0;
 	double B_Iyz = 0;
+	double B_J = 0;
 	//杆的截面属性
 	double S = 0;//面积
 	double R = 0;//直径
