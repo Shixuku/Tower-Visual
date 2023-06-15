@@ -1,9 +1,10 @@
 #include <iostream>
-
+#include <vtkLine.h>
+#include <vtkTubeFilter.h>
 #include"circle.h"
 #include <vector>
 
-vtkSmartPointer<vtkAppendPolyData> appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+
 
 void circle::ConstuctRotationMatrix(vtkMatrix4x4* transformMatrix)
 {
@@ -48,6 +49,8 @@ void circle::ConstuctRotationMatrix(vtkMatrix4x4* transformMatrix)
 /* 创建环形截面，三角区域 */
 void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 {
+	vtkSmartPointer<vtkLinearExtrusionFilter> extrusionFilter = vtkSmartPointer<vtkLinearExtrusionFilter>::New();
+	vtkSmartPointer<vtkAppendPolyData> appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
 	vtkSmartPointer<vtkPoints> innerCirclePoints = vtkSmartPointer<vtkPoints>::New();
 	vtkSmartPointer<vtkPoints> outerCirclePoints = vtkSmartPointer<vtkPoints>::New();
 	vtkSmartPointer<vtkCellArray> innerCircleCells = vtkSmartPointer<vtkCellArray>::New();
@@ -132,6 +135,7 @@ void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 	mapper->SetInputConnection(triangleFilter->GetOutputPort());
 
 	actor->SetMapper(mapper);
+
 }
 
 
