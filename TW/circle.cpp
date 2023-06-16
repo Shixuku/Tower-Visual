@@ -50,7 +50,7 @@ void circle::ConstuctRotationMatrix(vtkMatrix4x4* transformMatrix)
 void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 {
 	vtkSmartPointer<vtkLinearExtrusionFilter> extrusionFilter = vtkSmartPointer<vtkLinearExtrusionFilter>::New();
-	vtkSmartPointer<vtkAppendPolyData> appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+	vtkSmartPointer<vtkAppendPolyData> appendPolyData = vtkSmartPointer<vtkAppendPolyData>::New();
 	vtkSmartPointer<vtkPoints> innerCirclePoints = vtkSmartPointer<vtkPoints>::New();
 	vtkSmartPointer<vtkPoints> outerCirclePoints = vtkSmartPointer<vtkPoints>::New();
 	vtkSmartPointer<vtkCellArray> innerCircleCells = vtkSmartPointer<vtkCellArray>::New();
@@ -117,11 +117,11 @@ void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 	outerCirclePolyData->SetPolys(outerCircleCells);
 
 	// Append outer circle to polydata
-	appendFilter->AddInputData(polyData);
-	appendFilter->AddInputData(outerCirclePolyData);
-	appendFilter->Update();
+	appendPolyData->AddInputData(polyData);
+	appendPolyData->AddInputData(outerCirclePolyData);
+	appendPolyData->Update();
 
-	extrusionFilter->SetInputData(appendFilter->GetOutput());
+	extrusionFilter->SetInputData(appendPolyData->GetOutput());
 	extrusionFilter->SetExtrusionTypeToNormalExtrusion();
 	extrusionFilter->SetVector(endPoint[0] - startPoint[0], endPoint[1] - startPoint[1], endPoint[2] - startPoint[2]);
 	extrusionFilter->Update();
@@ -137,47 +137,6 @@ void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 	actor->SetMapper(mapper);
 
 }
-
-
-
-
-//void circle::CreateActor()
-//{
-//	
-//
-//
-//	extrusionFilter->SetInputData(appendFilter->GetOutput());
-//	extrusionFilter->SetExtrusionTypeToNormalExtrusion();
-//	extrusionFilter->SetVector(endPoint[0] - startPoint[0], endPoint[1] - startPoint[1], endPoint[2] - startPoint[2]);
-//	extrusionFilter->Update();
-//	// Convert to triangle mesh
-//	vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-//	triangleFilter->SetInputConnection(extrusionFilter->GetOutputPort());
-//	triangleFilter->Update();
-//
-//	// Create mapper and actor
-//	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//	mapper->SetInputConnection(triangleFilter->GetOutputPort());
-//
-//	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-//	actor->SetMapper(mapper);
-//
-//	//// Create renderer, render window, and interactor
-//	//vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-//	//vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-//	//renderWindow->AddRenderer(renderer);
-//	//vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-//	//interactor->SetRenderWindow(renderWindow);
-//
-//	//// Add actor to renderer and set background color
-//	//renderer->AddActor(actor);
-//	//renderer->SetBackground(0.2, 0.3, 0.4);
-//
-//	//// Start interactor
-//	//renderWindow->Render();
-//	//interactor->Start();
-//
-//}
 
 void circle::SetNode(double x1, double y1, double z1, double x2, double y2, double z2)
 {
