@@ -76,6 +76,7 @@ public:
      void Point_Inqure();
      bool isChildOfTopLevelItem3(QTreeWidgetItem* item);
      bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);
+     bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);
      void Area_Inqure();//¿òÑ¡
      void Close_Point();
 signals://ÐÅºÅ
@@ -103,6 +104,7 @@ public slots:
     void Test_mousePressEvent(QMouseEvent* event);
     void ui_AddLoadForce(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
+    void CreateInp(QTreeWidgetItem* item);
 private:
     QFile Qf;
     QDataStream Stream;
