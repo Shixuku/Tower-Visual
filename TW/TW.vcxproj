@@ -99,6 +99,7 @@
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
+    <ClCompile Include="CreateAbaqusInp.cpp" />
     <ClCompile Include="Creat_WireData.cpp" />
     <ClCompile Include="Draw_Wire.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="beamActor.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="ClassSection.h" />
+    <ClInclude Include="CreateAbaqusInp.h" />
     <ClInclude Include="Creat_WireData.h" />
     <ClInclude Include="Draw_Wire.h" />
     <ClInclude Include="Element.h" />

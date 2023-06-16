@@ -17,7 +17,7 @@
 #include"SetAllSection.h"
 #include"Wire_InterFace.h"
 #include"AddLoadForce.h"
-
+#include"CreateAbaqusInp.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
@@ -220,6 +220,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateOutPut(item);
 	}
+	else if (isChildOfTopLevelItem3Inp(item))
+	{
+		CreateInp(item);
+	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -351,8 +355,10 @@ void InterFace::ui_Tower()
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);//
 		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
 		AddLoadForce->setText(0, QString("施加荷载"));
 		OutPut->setText(0, QString("输出计算文件"));
+		Inp->setText(0, QString("输出ABAQUS计算文件"));
 		//QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
 		//AddLoadForce->setText(0, QString("施加荷载"));
 		Tower* tw = new Tower;
@@ -875,6 +881,22 @@ bool InterFace::isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item)
 	return false;
 }
 
+bool InterFace::isChildOfTopLevelItem3Inp(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
+	int childCount = topLevelItem3->childCount();
+
+	for (int i = 0; i < childCount; i++)
+	{
+		QTreeWidgetItem* childItem = topLevelItem3->child(i);
+		if (item == childItem->child(2))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
@@ -918,6 +940,13 @@ void InterFace::CreateOutPut(QTreeWidgetItem* item)
 {
 	Tower* tower = OnFindTower(item->parent());
 	tower->CreateOutPut();
+}
+
+void InterFace::CreateInp(QTreeWidgetItem* item)
+{
+	Tower* tower = OnFindTower(item->parent());
+	CreateAbaqusInp Inp;
+	Inp.CreateInp(tower);
 }
 
 void InterFace::Show_Part(Part_Base* part)
