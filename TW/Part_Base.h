@@ -61,7 +61,8 @@ public:
 	//void show_SectionBeam(double a, double b, int section, int M, int group, bool IsBeam);
 
 	void SubstaceActor(Element_Beam& beam);
-	void AssginSectionGroup(int ElementGroup, int SectionGroup);
+	//void AssginSectionGroup(int ElementGroup, int SectionGroup);
+	void AssginSectionGroup(QSet<int> Group, int SectionGroup);
 
 	void AddAllSection(vector<Section>Ma);
 	void AddNewSection(double ia, double ib, int id, int iClassSe, int iClassM);

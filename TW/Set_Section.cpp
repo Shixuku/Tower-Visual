@@ -55,7 +55,7 @@ void Set_Section::SendSlots()
 {
 	QStringList strs;
 	ClassSection = ui.comboBox->currentIndex();
-	ClassMa =ui.comboBox_2->currentIndex();
+	ClassMa =ui.comboBox_2->currentIndex()+1;
 	QString Ma = QString::number(ClassMa);
 	QString s;
 	if (ClassSection == 0)

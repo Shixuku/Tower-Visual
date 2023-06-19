@@ -8,7 +8,10 @@
 #include "vtkLineSource.h"
 #include<vtkTubeFilter.h>
 #include"Element_Beam.h"
+#include<iostream>
+#include<string>
 #pragma execution_character_set("utf-8")
+using namespace std;
 int Part_Base::Get_id() const
 {
 	return m_id;
@@ -554,34 +557,45 @@ void Part_Base::SubstaceActor(Element_Beam& beam)
 
 }
 
-void Part_Base::AssginSectionGroup(int ElementGroup, int SectionGroup)
+void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 {
 	int BeamSize = m_Elements_beams.size() - 1;
 	int BeamMaxGroup = m_Elements_beams[BeamSize].sectionID;
-	if (ElementGroup <= BeamMaxGroup)
-	{
 
-		for (auto i : m_Elements_beams)
+	for (auto& ElementGroup : Group)
+	{
+		if (ElementGroup <= BeamMaxGroup)
 		{
-			if (i.sectionID == ElementGroup)
+
+			for (auto& i : m_Elements_beams)
 			{
-				i.ClassSectionID = SectionGroup;
-				SubstaceActor(i);
+				if (i.sectionID == ElementGroup)
+				{
+					i.ClassSectionID = SectionGroup;
+					SubstaceActor(i);
+				}
+			}
+		}
+		else
+		{
+			for (auto& i : m_Elements_Trusses)
+			{
+				if (i.sectionID == ElementGroup - BeamMaxGroup)
+				{
+					i.ClassSectionID = SectionGroup;
+					for (auto& j : pMaterial)
+					{
+						if (i.ClassSectionID == j.m_id)
+						{
+							i.MaterialID = j.ClassM;
+						}
+					}
+				}
 			}
 		}
 	}
-	else
-	{
-		for (auto i : m_Elements_Trusses)
-		{
-			if (i.sectionID == ElementGroup - BeamMaxGroup)
-			{
-				i.ClassSectionID = SectionGroup;
 
-			}
-		}
-	}
-
+	
 }
 
 void Part_Base::AddAllSection(vector<Section>Ma)
@@ -648,6 +662,7 @@ void Part_Base::SetL(Element_Beam& EB)
 				{
 					x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
 					y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
+					EB.MaterialID = j.ClassM;
 				}
 			}
 			bA.SetSection(x, y);
@@ -664,6 +679,7 @@ void Part_Base::SetL(Element_Beam& EB)
 				{
 					x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
 					y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
+					EB.MaterialID = j.ClassM;
 				}
 			}
 			bA.SetSection(x, y);
