@@ -4,6 +4,8 @@
 #include<QMessageBox.h>
 #include<QTextCodec>
 #include<QStringLiteral>
+#include<QList>
+#include<QSet>
 Assign_Section::Assign_Section(InterFace* InterFace, QWidget* parent)
 	: QDialog(parent)
 {
@@ -346,8 +348,18 @@ void Assign_Section::assigh_section(Part_Base* Part)
 	int id = ui.Section_Lists->item(section_row, 5)->text().toDouble();//找到这个截面的编号
 
 	int group_row = ui.Group_Lists->currentRow() + 1;//取得单元分组信息
+	QList<QTableWidgetItem*> selectedItems = ui.Group_Lists->selectedItems();
 
-	Part->AssginSectionGroup(group_row, id);
+	// 存储选中行的索引
+	QSet<int> selectedRows;
+
+	// 提取行号
+	for (const auto* item : selectedItems) {
+		int row = item->row()+1;
+		selectedRows.insert(row);
+	}
+
+	Part->AssginSectionGroup(selectedRows, id);
 	m_pInterFace->SubstaceActor(Part);
 
 }

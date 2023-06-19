@@ -9,7 +9,30 @@
 	#include <vtkTubeFilter.h>
 	#include <iostream>
 	#include<fstream>
-	void Tower::Show_VTKtruss(vtkRenderer* renderer)
+void Tower::VectorToMap()
+{
+	// 将 vectorNode 中的元素插入到 map 中
+	for (const auto& data : m_Nodes) 
+	{
+		NodeData.insert(std::make_pair(data.m_idNode, data));
+	}
+	// 将 vectorBeam 中的元素插入到 map 中
+	for (const auto& data : m_Elements_beams)
+	{
+		BeamData.insert(std::make_pair(data.m_idElement, data));
+	}
+	// 将 vectorTruss 中的元素插入到 map 中
+	for (const auto& data : m_Elements_Trusses)
+	{
+		TrussData.insert(std::make_pair(data.m_idElement, data));
+	}
+	// 将 vectorSection 中的元素插入到 map 中
+	for (const auto& data : pSection)
+	{
+		SectionData.insert(std::make_pair(data.m_id, data));
+	}
+}
+void Tower::Show_VTKtruss(vtkRenderer* renderer)
 	{
 		vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 		vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
@@ -210,8 +233,8 @@
 		fout << BeamSize << " \n";
 		for (int i = 0; i < m_Elements_beams.size(); i++)
 		{
-			fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] <<"  "<< m_Elements_beams[i].MaterialID+1
-				<<"  " << m_Elements_beams [i].ClassSectionID+1<<"  "<< m_Elements_beams[i].AxialForce<<"  "<< m_Elements_beams[i].direction[0]<<"  " <<
+			fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] <<"  "<< m_Elements_beams[i].MaterialID
+				<<"  " << m_Elements_beams [i].ClassSectionID<<"  "<< m_Elements_beams[i].AxialForce<<"  "<< m_Elements_beams[i].direction[0]<<"  " <<
 				m_Elements_beams[i].direction[1] << "  " <<
 				m_Elements_beams[i].direction[2] << "  " << "\n";
 		}
@@ -223,8 +246,8 @@
 		fout << TressSize << " \n";
 		for (int i = 0; i < m_Elements_Trusses.size(); i++)
 		{
-			fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID+1
-				<< "  " << m_Elements_Trusses[i].ClassSectionID +1<< "  " << m_Elements_beams[i].AxialForce << "\n";
+			fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
+				<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
 		}
 	}
 

@@ -16,6 +16,7 @@
 #include<QTreeWidgetItem>
 #include <vtkAutoInit.h> 
 #include"LoadForce.h"
+#include <map>
 using namespace Eigen;
 class Tower
 {
@@ -44,6 +45,12 @@ public:
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	vector<LoadForce>Load;//荷载的容器
 	vector<Section>pSection;//截面的容器
+
+	void VectorToMap();
+	map<int, Node>NodeData;
+	map<int, Element_Beam>BeamData;
+	map<int, Element_Truss>TrussData;
+	map<int, Section>SectionData;
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
