@@ -37,6 +37,6 @@ public:
 	void Creat_Spacer(vector<Element_Wire>& spacer, vector<int> ids);
 	void Creat_Strain_Strand(vector<Node>nz_pts, int c, vector<int>ids, vector<Node>& node, vector<Element_Wire>& m_Elements);
 	void Find_Real_XGD(vector<Node>wire_temp, double L, int N, int choose, vector<Node>list_xgd, vector<Node>& real_xgd);
-
+	void Creat_Sag_Wire(double sag,int N, vector<Node> node, vector<Node>& m_node);
 };
 

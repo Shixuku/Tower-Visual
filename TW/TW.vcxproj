@@ -100,6 +100,8 @@
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
+    <ClCompile Include="Constrained_image.cpp" />
+    <ClCompile Include="Create_Constraint.cpp" />
     <ClCompile Include="Creat_WireData.cpp" />
     <ClCompile Include="Draw_Wire.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
@@ -131,6 +133,7 @@
     <QtRcc Include="TW.qrc" />
     <QtUic Include="AddLoadForce.ui" />
     <QtUic Include="Assign_Section.ui" />
+    <QtUic Include="Create_Constraint.ui" />
     <QtUic Include="InterFace.ui" />
     <QtUic Include="Interphase_spacer.ui" />
     <QtUic Include="Manage_PartData.ui" />
@@ -163,6 +166,8 @@
     <ClInclude Include="circle.h" />
     <ClInclude Include="ClassSection.h" />
     <ClInclude Include="CreateAbaqusInp.h" />
+    <QtMoc Include="Create_Constraint.h" />
+    <ClInclude Include="Constrained_image.h" />
     <ClInclude Include="Creat_WireData.h" />
     <ClInclude Include="Draw_Wire.h" />
     <ClInclude Include="Element.h" />

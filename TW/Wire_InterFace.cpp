@@ -132,8 +132,15 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			xgd_1.push_back(Node(xgd_Real[i].x, xgd_Real[i].y, xgd_Real[i].z));
 
 		};
-		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
-		//cd->CreatWire_ele( 1 + p , p  * N *  + 1, m_Elements_Wire);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd_1, m_Nodes);
+		}
+
 	}
 	else if (fenlie == 2)
 	{
@@ -145,8 +152,17 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			xgd_2.push_back(Node(xgd_Real[i].x - 225 * cos(angle), xgd_Real[i].y + 225 * sin(angle), xgd_Real[i].z));
 
 		};
-		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd_1, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_2, m_Nodes);
+		}
+		
 	}
 	else if (fenlie == 4)
 	{
@@ -162,10 +178,21 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			xgd_4.push_back(Node(xgd_Real[i].x + 225 * cos(angle), xgd_Real[i].y - 225 * sin(angle), xgd_Real[i].z - 225));
 
 		};
-		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd_1, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_2, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_3, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_4, m_Nodes);
+		}
+		
 	}
 	else if (fenlie == 6)
 	{
@@ -184,12 +211,24 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			xgd_5.push_back(Node(xgd_Real[i].x - 200 * cos(angle), xgd_Real[i].y + 200 * sin(angle), xgd_Real[i].z - 346));
 			xgd_6.push_back(Node(xgd_Real[i].x - 346 * cos(angle), xgd_Real[i].y + 346 * sin(angle), xgd_Real[i].z));
 		};
-		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_5(xgd_5, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_6(xgd_6, rou, yingli, N, m_Nodes);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_5(xgd_5, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_6(xgd_6, rou, yingli, N, m_Nodes);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd_1, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_2, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_3, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_4, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_5, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_6, m_Nodes);
+		}
 	}
 	else if (fenlie == 8)
 	{
@@ -212,14 +251,29 @@ void Wire_InterFace::Line_Segment(vector<Node> xgd_List, vector<Node> xgd_Real, 
 			xgd_7.push_back(Node(xgd_Real[i].x - 480 * cos(angle), xgd_Real[i].y + 480 * sin(angle), xgd_Real[i].z - 200));
 			xgd_8.push_back(Node(xgd_Real[i].x - 480 * cos(angle), xgd_Real[i].y + 480 * sin(angle), xgd_Real[i].z + 200));
 		};
-		Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_5(xgd_5, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_6(xgd_6, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_7(xgd_7, rou, yingli, N, m_Nodes);
-		Creat_WireData wire_8(xgd_8, rou, yingli, N, m_Nodes);
+		
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_1(xgd_1, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_2(xgd_2, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_3(xgd_3, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_4(xgd_4, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_5(xgd_5, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_6(xgd_6, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_7(xgd_7, rou, yingli, N, m_Nodes);
+			Creat_WireData wire_8(xgd_8, rou, yingli, N, m_Nodes);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd_1, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_2, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_3, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_4, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_5, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_6, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_7, m_Nodes);
+			cd->Creat_Sag_Wire(Sag, N, xgd_8, m_Nodes);
+		}
 	}
 	//创建单元
 	for (int i = 0; i < fenlie; i++)
@@ -466,14 +520,15 @@ void Wire_InterFace::OK()
 	double* p3 = new double[1];
 	double* p4 = new double[1];
 	double* p5 = new double[1];
-	sen->Draw_Wire(p1, p2, p3, p4, p5);//N kg/m mm*mm MPa 
+	double* p6 = new double[1];
+	sen->Draw_Wire(p1, p2, p3, p4, p5, p6);//N kg/m mm*mm MPa 
 	Rou = p1[0] * 0.001;//单位质量
 	yingli = p2[0];//应力
 	N = p3[0] ; //导线分段数
 	area = p4[0];//截面积
 	nz_len = p5[0];//耐张串长度
+	Sag = p6[0];
 	rou = Rou * 10 / area;
-	K = rou / yingli;
 	int fenlie_num = ui.Divide_choose->currentIndex();//分裂数
 	if (fenlie_num == 0)//1
 	{
@@ -503,28 +558,51 @@ void Wire_InterFace::OK()
 	}
 	else if (Extreme_Point[0] == 0 && Extreme_Point[1] == 1)//左端右耐张
 	{
-
-		Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
 		vector<Node>xgd_real;
-		cd->Find_Real_XGD(Node_Base, nz_len, N, 1, xgd, xgd_real);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 1, xgd, xgd_real);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 1, xgd, xgd_real);
+		}
 		Line_Segment(xgd, xgd_real, 2);
 		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
 		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);
 	}
 	else if (Extreme_Point[0] == 1 && Extreme_Point[1] == 0)//左耐张右端
 	{
-		Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
 		vector<Node>xgd_real;
-		cd->Find_Real_XGD(Node_Base, nz_len, N, 0, xgd, xgd_real);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 0, xgd, xgd_real);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 0, xgd, xgd_real);
+		}
 		Line_Segment(xgd, xgd_real,  1);
 		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
 		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);
 	}
 	else if (Extreme_Point[0] == 1 && Extreme_Point[1] == 1)//端点均为耐张
 	{
-		Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
 		vector<Node>xgd_real;
-		cd->Find_Real_XGD(Node_Base, nz_len, N, 2, xgd, xgd_real);
+		if (sen->Type_find = 0)
+		{
+			Creat_WireData wire_base(xgd, rou, yingli, N, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 2, xgd, xgd_real);
+		}
+		else if (sen->Type_find = 1)
+		{
+			cd->Creat_Sag_Wire(Sag, N, xgd, Node_Base);
+			cd->Find_Real_XGD(Node_Base, nz_len, N, 2, xgd, xgd_real);
+		}
 		Line_Segment(xgd, xgd_real, 3);
 		Creat_Distance(xgd_real, sen->Num_Spacer, L_Spacer, D_Spacer);
 		Creat_Spacer(L_Spacer, D_Spacer, xgd_real);

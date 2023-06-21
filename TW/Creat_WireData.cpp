@@ -61,28 +61,27 @@ void Creat_WireData::CreatWire_ele(int a, int b, vector<Element_Wire>& m_Element
 	}
 }
 
-vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node> xgd, vector<Node> wire0, int dangwei) const
+vector<int> Creat_WireData::Find_Spacer(int fenli, double S, int N, vector<Node> xgd, vector<Node> wire0, int dangwei) const//有bug 
 {
 	vector<int> idnodes;
-	//确定的向量
-	double v_x = xgd[1].x - xgd[0].x;
-	double v_y = xgd[1].y - xgd[0].y;
-	double angle = ((atan2(v_x, v_y) * 180) / 3.1415926);
-	angle = vtkMath::RadiansFromDegrees(angle);
 	int S_l = S / 1000;
 	for (auto& i : wire0)
 	{
-		double error = 0.0005 * sqrt(pow((xgd[dangwei].x - xgd[dangwei - 1].x), 2) + pow((xgd[dangwei].y - xgd[dangwei - 1].y), 2) ) / N;
-		double Lm = sqrt(pow(i.x - xgd[dangwei - 1].x, 2) + pow(i.y - xgd[dangwei - 1].y, 2));//所有点距第一个悬挂点的距离
+		double error = 0.0005 * (sqrt(pow((xgd[dangwei].x - xgd[dangwei - 1].x), 2) + pow((xgd[dangwei].y - xgd[dangwei - 1].y), 2)) / N);
+		double Lm = 0.001 * sqrt(pow(i.x - xgd[dangwei - 1].x, 2) + pow(i.y - xgd[dangwei - 1].y, 2));//所有点距第一个悬挂点的距离
 		if (i.y >= xgd[dangwei - 1].y)
 		{
-			if ((abs(Lm/1000 - S_l))  < error)
+			if ((abs(Lm - S_l))  < error)
 			{
 				for (int k = 0; k < fenli; ++k)
 				{
 					idnodes.push_back(i.m_idNode + ((xgd.size() - 1) * N + 1) * k);
 
 				}
+			}
+			else if ((abs(Lm - S_l)) - error < 0.1)
+			{
+
 			}
 		}
 
@@ -174,5 +173,40 @@ void Creat_WireData::Find_Real_XGD(vector<Node> wire_temp, double L, int N, int 
 			}
 		}
 
+	}
+}
+
+void Creat_WireData::Creat_Sag_Wire(double sag,int N, vector<Node> node, vector<Node>& m_node)
+{
+	for (int i = 0; i < node.size() - 1; i++)
+	{
+		double lxi = sqrt((node[i].x - node[i + 1].x) * (node[i].x - node[i + 1].x) + (node[i].y - node[i + 1].y) * (node[i].y - node[i + 1].y));//档距
+		double  hi = node[i + 1].z - node[i].z;//高差
+		double l_maxi = sqrt(hi * hi + lxi * lxi);
+		double beita = lxi / l_maxi;//cos(B);
+		double k = sag * ((8 * beita) / (lxi * lxi));
+		double Li = (2 / k) * sinh(k * lxi / 2); //线长
+		double li = node[i + 1].x - node[i].x; //两点x之差
+		double mi = node[i + 1].y - node[i].y; //两点y之差
+		double nni = sqrt(li * li + mi * mi); //二维中两点之差
+		double dxi = li / N;
+		double dyi = mi / N;
+		double dzi = nni / N;
+		double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
+
+		if (i > 0 && i < node.size())node.pop_back(); //删除重节点
+		for (int j = 0; j < N + 1; j++)
+		{
+			double Zi = j * dzi;
+			double x = j * dxi + node[i].x;
+			double y = j * dyi + node[i].y;
+			double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+				sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + node[i].z;
+			m_node.push_back(Node(x, y, z));
+		}
+	}
+	for (int i = 0; i < m_node.size(); i++)
+	{
+		m_node[i].m_idNode = i + 1;//给节点赋编号
 	}
 }
