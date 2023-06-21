@@ -154,6 +154,12 @@
     <ClCompile Include="AreaSelected_InteractorStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Create_Constraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Constrained_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beamActor.h">
@@ -240,6 +246,9 @@
     <ClInclude Include="AreaSelected_InteractorStyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Constrained_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="InterFace.h">
@@ -290,6 +299,9 @@
     <QtMoc Include="AddLoadForce.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Create_Constraint.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="T_CrossArm.ui">
@@ -335,6 +347,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="AddLoadForce.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Create_Constraint.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -31,7 +31,7 @@ public:
 	double area;//截面积
 	int N; //导线分段数
 	double rou;//bizai
-	double K;
+	double Sag;
 	int nz_len;
 
 	vector<int>L_Spacer;

@@ -29,6 +29,7 @@ class MouseInteractorHighLightActor;
 class Wire_InterFace;
 class Interphase_spacer;
 class AddLoadForce;
+class Create_Constraint;
 class InterFace : public QMainWindow
 {
     Q_OBJECT
@@ -74,6 +75,7 @@ public:
      void Add_Select(vtkSmartPointer<vtkActor> pActor);
      void UnSelect_Nodes();
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
+     void Get_SelectedNode(std::set<Node*>& Nodes);
      void Point_Inqure();
      bool isChildOfTopLevelItem3(QTreeWidgetItem* item);//取载荷
      bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);//计算文件
@@ -82,6 +84,15 @@ public:
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      void Area_Inqure();//框选
      void Close_Point();
+     vector<int> con_id;
+     vector<Node>Con_Nodes;
+     Node* Find_Node(int id, vector<Node>& node,vector<Node>&Con_node);
+     void Insert_Data();
+     void handleOkButtonClicked();
+     QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
+     QMap<int, int> idMap; // 存储ID与索引的映射关系
+     int index = 0;
+  
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
     void Msg_CreateModel();
@@ -96,6 +107,7 @@ public slots:
     void ui_Management_InsData();
     void ui_Interphase_spacer();
     void ui_Wire_InterFace();
+    void ui_Constraint();
     void SaveFile();
     void OpenFile();
     void ui_Section();
@@ -108,6 +120,9 @@ public slots:
     void ui_AddLoadForce(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
     void CreateInp(QTreeWidgetItem* item);
+    void Constraint_Tips();//点击创建边界条件弹出界面下放确认
+    void Delete_Constraint();//点击约束删除Widget里面的控件]
+  
 private:
     QFile Qf;
     QDataStream Stream;
@@ -116,6 +131,11 @@ private:
     // 菜单事件
     void contextMenuEvent(QContextMenuEvent* event) override;
     QMenu* m_pMenu = nullptr;
+    QHBoxLayout* layout_Tips;
+    QLabel* label;
+    QLineEdit* Node_Edit;
+    QPushButton* OK_Btn;
+    QPushButton* Ensure_Btn;
     vtkSmartPointer<vtkInteractorStyleTrackballCamera> m_MainStyle; // 保存主界面的交互器样式
     
     //treeWidget
