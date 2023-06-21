@@ -177,13 +177,13 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Section();
 	}
-	else if (item == ui.treeWidget->topLevelItem(2)->child(2))
+	else if (isChildOfPartSetSection(item))
 	{
-		ui_SetSection();
+		ui_SetSection(item);
 	}
-	else if (item == ui.treeWidget->topLevelItem(2)->child(3))
+	else if (isChildOfPartSetAllSection(item))
 	{
-		ui_SetAllSection();
+		ui_SetAllSection(item);
 	}
 	//荷载
 	else if (item == ui.treeWidget->topLevelItem(3)->child(0))
@@ -224,6 +224,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateInp(item);
 	}
+
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -231,11 +232,12 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 
 	if (part != nullptr)
 	{
-		HiddeAllPart();
-		switchRenderWindow(0);
-		part->m_BeamActor->VisibilityOn();
-		part->m_TrussActor->VisibilityOn();
-		part->Node_actor->VisibilityOn();
+		//HiddeAllPart();
+		//switchRenderWindow(0);
+		//part->m_BeamActor->VisibilityOn();
+		//part->m_TrussActor->VisibilityOn();
+		//part->Node_actor->VisibilityOn();
+		Show_Part(part);
 	}
 
 	if (item == ui.treeWidget->topLevelItem(1))
@@ -266,6 +268,7 @@ void InterFace::ui_Foot()
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		AddPartFunction(item);
 		TowerPart_leg* t = new TowerPart_leg;
 		T_foot->Get_Data(*t);//取数据
 		item->setText(0, t->m_Name);//子节点名称为自己命名的名称
@@ -297,6 +300,7 @@ void InterFace::ui_Body()
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		AddPartFunction(item);
 		TowerPart_body* t = new TowerPart_body;
 		T_body->Get_Data(t);
 		item->setText(0, t->m_name);
@@ -325,6 +329,7 @@ void InterFace::ui_CrossArm()
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		AddPartFunction(item);
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
 		HiddeAllPart();
@@ -439,15 +444,33 @@ void InterFace::ui_Section()
 		Ms.Add_Entity(section);
 	}
 }
-void InterFace::ui_SetSection()
+void InterFace::ui_SetSection(QTreeWidgetItem* item)
 {
-	Assign_Section* assign_Section = new Assign_Section(this);
+
+	Part_Base* Part = OnFindPart(item->parent());
+	Show_Part(Part);
+	Assign_Section* assign_Section = new Assign_Section(this,Part);
 	assign_Section->show();
 
 }
-void InterFace::ui_SetAllSection()
+void InterFace::ui_SetAllSection(QTreeWidgetItem* item)
 {
-	SetAllSection* SetAll = new SetAllSection(this);
+	Part_Base* Part = OnFindPart(item->parent());
+	Show_Part(Part);
+	for (auto i : Part->m_Elements_beams)
+	{
+		int ipt1 = i.m_idNode[0] - 1; //id
+		int ipt2 = i.m_idNode[1] - 1;
+		double x1 = Part->m_Nodes[ipt1].x; double y1 = Part->m_Nodes[ipt1].y; double z1 = Part->m_Nodes[ipt1].z;
+		double x2 = Part->m_Nodes[ipt2].x; double y2 = Part->m_Nodes[ipt2].y; double z2 = Part->m_Nodes[ipt2].z;
+		double Vx[3];
+		Vx[0] = x2 - x1;
+		Vx[1] = y2 - y1;
+		Vx[2] = z2 - z1;
+		double m_L = sqrt(Vx[0] * Vx[0] + Vx[1] * Vx[1] + Vx[2] * Vx[2]);
+		cout << m_L << "\n";
+	}
+	SetAllSection* SetAll = new SetAllSection(this,Part);
 	SetAll->show();
 
 }
@@ -718,6 +741,20 @@ void InterFace::initMenu()
 	connect(pAc3, &QAction::triggered, [=] {Close_Point(); });
 }
 
+void InterFace::AddPartFunction(QTreeWidgetItem* item)
+{
+
+	//保存指针到part的赋予截面
+	QTreeWidgetItem* assign_section = new QTreeWidgetItem(item);
+	assign_section->setText(0, QString("赋予截面"));
+
+	//保存指针到part的根据长度赋予截面
+	QTreeWidgetItem* SetAllSection = new QTreeWidgetItem(item);
+	SetAllSection->setText(0, QString("根据长度赋予截面"));
+
+
+}
+
 double* InterFace::GetSectionData(int SectionGroup)
 {
 	double* SectionData = new double;//用于接收截面数据的数组，第一个是L的长边或者圆半径，第二个是L短边或者圆环厚度，第三个是截面类型，第四个是材料编号
@@ -897,6 +934,77 @@ bool InterFace::isChildOfTopLevelItem3Inp(QTreeWidgetItem* item)
 	return false;
 }
 
+bool InterFace::isChildOfPartSetSection(QTreeWidgetItem* item)
+{//三个部件的item
+	QTreeWidgetItem* LegPart = ui.treeWidget->topLevelItem(0)->child(0);
+	QTreeWidgetItem* BodyPart = ui.treeWidget->topLevelItem(0)->child(1);
+	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
+	int LegchildCount = LegPart->childCount();//取得有几个塔腿部件循环
+	for (int i = 0; i < LegchildCount; i++)
+	{
+		QTreeWidgetItem* childItem = LegPart->child(i);
+		if (item == childItem->child(0))
+		{
+			return true;
+		}
+	}
+	int BodychildCount = BodyPart->childCount();//取得有几个塔身部件循环
+	for (int i = 0; i < BodychildCount; i++)
+	{
+		QTreeWidgetItem* childItem = BodyPart->child(i);
+		if (item == childItem->child(0))
+		{
+			return true;
+		}
+	}
+	int ArmchildCount = ArmPart->childCount();//取得有几个塔头部件循环
+	for (int i = 0; i < ArmchildCount; i++)
+	{
+		QTreeWidgetItem* childItem = ArmPart->child(i);
+		if (item == childItem->child(0))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
+{
+	//三个部件的item
+	QTreeWidgetItem* LegPart = ui.treeWidget->topLevelItem(0)->child(0);
+	QTreeWidgetItem* BodyPart = ui.treeWidget->topLevelItem(0)->child(1);
+	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
+	int LegchildCount = LegPart->childCount();//取得有几个塔腿部件循环
+	for (int i = 0; i < LegchildCount; i++)
+	{
+		QTreeWidgetItem* childItem = LegPart->child(i);
+		if (item == childItem->child(1))
+		{
+			return true;
+		}
+	}
+	int BodychildCount = BodyPart->childCount();//取得有几个塔身部件循环
+	for (int i = 0; i < BodychildCount; i++)
+	{
+		QTreeWidgetItem* childItem = BodyPart->child(i);
+		if (item == childItem->child(1))
+		{
+			return true;
+		}
+	}
+	int ArmchildCount = ArmPart->childCount();//取得有几个塔头部件循环
+	for (int i = 0; i < ArmchildCount; i++)
+	{
+		QTreeWidgetItem* childItem = ArmPart->child(i);
+		if (item == childItem->child(1))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
@@ -960,7 +1068,7 @@ void InterFace::Show_Part(Part_Base* part)
 	{
 		i->VisibilityOn();
 	}
-
+	SubstaceActor(part);
 	ResetCamera();
 }
 

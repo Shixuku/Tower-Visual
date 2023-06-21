@@ -51,6 +51,7 @@ public:
     void ShowLoadactor(Tower* tower);
     void switchRenderWindow(int index);
     void initMenu();
+    void AddPartFunction(QTreeWidgetItem* item);
      Ui::InterFaceClass ui;
 
      //Set_Section* m_ab = nullptr;
@@ -74,9 +75,11 @@ public:
      void UnSelect_Nodes();
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
      void Point_Inqure();
-     bool isChildOfTopLevelItem3(QTreeWidgetItem* item);
-     bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);
-     bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);
+     bool isChildOfTopLevelItem3(QTreeWidgetItem* item);//取载荷
+     bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);//计算文件
+     bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);//ABAQUS计算文件
+     bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
+     bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      void Area_Inqure();//框选
      void Close_Point();
 signals://信号
@@ -96,8 +99,8 @@ public slots:
     void SaveFile();
     void OpenFile();
     void ui_Section();
-    void ui_SetSection();
-    void ui_SetAllSection();
+    void ui_SetSection(QTreeWidgetItem* item);
+    void ui_SetAllSection(QTreeWidgetItem* item);
     void Show_Part(Part_Base* part);
     void Show_Tower(Tower* tower);
     void GetData(QStringList&);

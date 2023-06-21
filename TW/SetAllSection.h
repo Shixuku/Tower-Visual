@@ -4,19 +4,20 @@
 #include"InterFace.h"
 #include "ui_SetAllSection.h"
 #include"Tower.h"
-
+#include"Part_Base.h"
+#include<QList>
+#include<QSet>
 class InterFace;
 class SetAllSection : public QDialog
 {
 	Q_OBJECT
 
 public:
-	SetAllSection(InterFace* InterFace, QWidget* parent = nullptr);
+	SetAllSection(InterFace* InterFace, Part_Base*Part, QWidget* parent = nullptr);
 	~SetAllSection();
-	void Create_combobox();
-	void ShowComboVTK();
-	void Assgin(Tower* tower);
+	void Assgin(Part_Base* part);
 	InterFace* m_pInterFace = nullptr;
+	Part_Base* m_Part = nullptr;
 	void Get_Data();
 	void table_Section_Lists();
 	int T_legs = 0;
