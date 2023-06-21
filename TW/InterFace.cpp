@@ -67,7 +67,6 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
-
 }
 
 void InterFace::SetupCentralWidget()
@@ -1045,8 +1044,6 @@ void InterFace::Close_Point()
 	
 }
 
-
-
 void InterFace::GetData(QStringList& sInfo)
 {
 	QList<QString> list;
@@ -1217,7 +1214,7 @@ void InterFace::Insert_Data()
 		}
 	}
 
-	connect(OK_Btn, &QPushButton::clicked, this, &InterFace::handleOkButtonClicked);
+	connect(OK_Btn, &QPushButton::clicked, this, [=]() {handleOkButtonClicked(); Close_Point(); });
 
 	connect(Ensure_Btn, &QPushButton::clicked, this, &InterFace::Delete_Constraint);
 
