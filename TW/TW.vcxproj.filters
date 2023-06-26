@@ -1,356 +1,142 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
-    <Filter Include="Translation Files">
-      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
-      <Extensions>ts</Extensions>
-    </Filter>
+    <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
+    <ClCompile Include="Assign_Section.cpp" />
+    <ClCompile Include="Base.cpp" />
+    <ClCompile Include="circle.cpp" />
+    <ClCompile Include="ClassSection.cpp" />
+    <ClCompile Include="CreateAbaqusInp.cpp" />
+    <ClCompile Include="Constrained_image.cpp" />
+    <ClCompile Include="Create_Constraint.cpp" />
+    <ClCompile Include="ConcentrateForce.cpp" />
+    <ClCompile Include="Creat_Loads.cpp" />
+    <ClCompile Include="Creat_WireData.cpp" />
+    <ClCompile Include="Draw_Wire.cpp" />
+    <ClCompile Include="Element_Wire.cpp" />
+    <ClCompile Include="Gravity.cpp" />
+    <ClCompile Include="Interphase_spacer.cpp" />
+    <ClCompile Include="LoadForce.cpp" />
+    <ClCompile Include="Manage_Loads.cpp" />
+    <ClCompile Include="Manage_PartData.cpp" />
+    <ClCompile Include="Manage_InsData.cpp" />
+    <ClCompile Include="Polynomial.cpp" />
+    <ClCompile Include="Senior.cpp" />
+    <ClCompile Include="SetAllSection.cpp" />
+    <ClCompile Include="Set_Section.cpp" />
+    <ClCompile Include="MouseInteractorHighLightActor.cpp" />
+    <ClCompile Include="MultiSelectComboBox.cpp" />
+    <ClCompile Include="Section.cpp" />
+    <ClCompile Include="Spacer.cpp" />
+    <ClCompile Include="test_pic_focusforce.cpp" />
+    <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="TowerData_Body.cpp" />
+    <ClCompile Include="TowerData_CrossArm.cpp" />
+    <ClCompile Include="TowerData_Insulator.cpp" />
+    <ClCompile Include="TowerData_leg.cpp" />
+    <ClCompile Include="TowerPart_body.cpp" />
+    <ClCompile Include="TowerPart_CrossArm.cpp" />
+    <ClCompile Include="TowerPart_Insulator.cpp" />
+    <ClCompile Include="TowerPart_leg.cpp" />
+    <ClCompile Include="Tower_Assembly.cpp" />
+    <ClCompile Include="T_Body.cpp" />
+    <ClCompile Include="T_CrossArm.cpp" />
+    <ClCompile Include="T_Foot.cpp" />
+    <ClCompile Include="Wind.cpp" />
+    <ClCompile Include="Wire_InterFace.cpp" />
+    <ClCompile Include="beamActor.cpp" />
+    <ClCompile Include="Element.cpp" />
+    <ClCompile Include="Element_Beam.cpp" />
+    <ClCompile Include="Element_Truss.cpp" />
+    <ClCompile Include="InterFace.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Part_Base.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="AddLoadForce.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="TW.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
+    <ClInclude Include="AreaSelected_InteractorStyle.h" />
+    <ClInclude Include="Base.h" />
+    <ClInclude Include="beamActor.h" />
+    <ClInclude Include="circle.h" />
+    <ClInclude Include="ClassSection.h" />
+    <ClInclude Include="CreateAbaqusInp.h" />
+    <ClInclude Include="Constrained_image.h" />
+    <ClInclude Include="Creat_WireData.h" />
+    <ClInclude Include="Draw_Wire.h" />
+    <ClInclude Include="Element.h" />
+    <ClInclude Include="Element_Beam.h" />
+    <ClInclude Include="Element_Truss.h" />
+    <ClInclude Include="Element_Wire.h" />
+    <ClInclude Include="LoadForce.h" />
+    <ClInclude Include="Manage_Entity.h" />
+    <ClInclude Include="MouseInteractorHighLightActor.h" />
+    <ClInclude Include="Section.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Part_Base.h" />
+    <ClInclude Include="test_pic_focusforce.h" />
+    <ClInclude Include="Tower.h" />
+    <ClInclude Include="TowerData_Body.h" />
+    <ClInclude Include="TowerData_CrossArm.h" />
+    <ClInclude Include="TowerData_Insulator.h" />
+    <ClInclude Include="TowerData_Layer.h" />
+    <ClInclude Include="TowerData_LayerArm.h" />
+    <ClInclude Include="TowerData_leg.h" />
+    <ClInclude Include="TowerPart_body.h" />
+    <ClInclude Include="TowerPart_CrossArm.h" />
+    <ClInclude Include="TowerPart_Insulator.h" />
+    <ClInclude Include="TowerPart_leg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="beamActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Element.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Element_Beam.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Element_Truss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InterFace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Part_Base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="T_Body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="T_CrossArm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="T_Foot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tower.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tower_Assembly.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerData_Body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerData_CrossArm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerData_leg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerPart_body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerPart_CrossArm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerPart_leg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiSelectComboBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Manage_PartData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interphase_spacer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseInteractorHighLightActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Manage_InsData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Assign_Section.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="circle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClassSection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Section.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Set_Section.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SetAllSection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerPart_Insulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TowerData_Insulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Wire_InterFace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Element_Wire.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Creat_WireData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Draw_Wire.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Senior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Spacer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AddLoadForce.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadForce.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AreaSelected_InteractorStyle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Create_Constraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Constrained_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <QtMoc Include="Wind.h" />
+    <QtMoc Include="Wire_InterFace.h" />
+    <QtMoc Include="Assign_Section.h" />
+    <QtMoc Include="Create_Constraint.h" />
+    <QtMoc Include="Creat_Loads.h" />
+    <QtMoc Include="ConcentrateForce.h" />
+    <QtMoc Include="Manage_PartData.h" />
+    <QtMoc Include="Interphase_spacer.h" />
+    <QtMoc Include="Gravity.h" />
+    <QtMoc Include="MultiSelectComboBox.h" />
+    <QtMoc Include="Manage_InsData.h" />
+    <QtMoc Include="Set_Section.h" />
+    <QtMoc Include="Manage_Loads.h" />
+    <QtMoc Include="Polynomial.h" />
+    <QtMoc Include="SetAllSection.h" />
+    <QtMoc Include="Senior.h" />
+    <QtMoc Include="Spacer.h" />
+    <QtMoc Include="Tower_Assembly.h" />
+    <QtMoc Include="T_Foot.h" />
+    <QtMoc Include="T_CrossArm.h" />
+    <QtMoc Include="T_Body.h" />
+    <QtMoc Include="InterFace.h" />
+    <QtMoc Include="AddLoadForce.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="beamActor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Element.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Element_Beam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Element_Truss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Manage_Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Part_Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tower.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_Body.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_CrossArm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_Layer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_LayerArm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_leg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerPart_body.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerPart_CrossArm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerPart_leg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseInteractorHighLightActor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassSection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Section.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerPart_Insulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TowerData_Insulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Element_Wire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Creat_WireData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw_Wire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadForce.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AreaSelected_InteractorStyle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constrained_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <QtRcc Include="TW.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="InterFace.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="T_Body.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="T_CrossArm.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="T_Foot.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Tower_Assembly.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="MultiSelectComboBox.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Manage_PartData.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Interphase_spacer.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Manage_InsData.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Assign_Section.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Set_Section.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="SetAllSection.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Wire_InterFace.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Senior.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Spacer.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="AddLoadForce.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Create_Constraint.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="T_CrossArm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="T_Foot.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Tower_Assembly.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="InterFace.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="T_Body.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Manage_PartData.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Interphase_spacer.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Manage_InsData.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Assign_Section.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Set_Section.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="SetAllSection.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Wire_InterFace.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Senior.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Spacer.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="AddLoadForce.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Create_Constraint.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
+    <QtUic Include="Assign_Section.ui" />
+    <QtUic Include="ConcentrateForce.ui" />
+    <QtUic Include="Creat_Loads.ui" />
+    <QtUic Include="Gravity.ui" />
+    <QtUic Include="Create_Constraint.ui" />
+    <QtUic Include="InterFace.ui" />
+    <QtUic Include="Interphase_spacer.ui" />
+    <QtUic Include="Manage_Loads.ui" />
+    <QtUic Include="Manage_PartData.ui" />
+    <QtUic Include="Manage_InsData.ui" />
+    <QtUic Include="Polynomial.ui" />
+    <QtUic Include="Senior.ui" />
+    <QtUic Include="SetAllSection.ui" />
+    <QtUic Include="Set_Section.ui" />
+    <QtUic Include="Spacer.ui" />
+    <QtUic Include="Tower_Assembly.ui" />
+    <QtUic Include="T_Body.ui" />
+    <QtUic Include="T_CrossArm.ui" />
+    <QtUic Include="T_Foot.ui" />
+    <QtUic Include="Wind.ui" />
+    <QtUic Include="Wire_InterFace.ui" />
+    <QtUic Include="AddLoadForce.ui" />
   </ItemGroup>
 </Project>

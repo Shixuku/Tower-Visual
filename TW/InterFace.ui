@@ -86,7 +86,8 @@
     <property name="title">
      <string>视图(View)</string>
     </property>
-    <addaction name="actionNodes"/>
+    <addaction name="actioninit"/>
+    <addaction name="actionYoZ"/>
    </widget>
    <widget class="QMenu" name="menu_Set">
     <property name="title">
@@ -212,9 +213,14 @@
     <string>Read</string>
    </property>
   </action>
-  <action name="actionNodes">
+  <action name="actioninit">
    <property name="text">
-    <string>Nodes</string>
+    <string>init</string>
+   </property>
+  </action>
+  <action name="actionYoZ">
+   <property name="text">
+    <string>YoZ</string>
    </property>
   </action>
  </widget>

@@ -78,8 +78,7 @@ public:
 
 	void move(double dx, double dy, double dz);
 	void rotation( double angle);
-
-
+	
 	virtual enum Part_Type My_PartType()const
 	{
 		return ET_Tower;
@@ -90,6 +89,7 @@ public:
 	vtkSmartPointer<vtkPoints> m_pts;
 protected:
 	void addNodeToTower(Part_Base* part);
+	
 	void addElementToTower(Part_Base* part);
 	void addSectionToTower(Part_Base* part);
 	void addRestraintNode(Part_Base* part);

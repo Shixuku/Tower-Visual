@@ -53,7 +53,7 @@ void Manage_InsData::Modify_Data()
 	int Index = ui.tableWidget->currentRow();//获取表格所在行数--currentRow()从0开始
 	if (ui.tableWidget->item(Index, 1) == nullptr || ui.tableWidget->item(Index, 1)->text().isEmpty())
 	{
-		QMessageBox::information(this, "Tips", "请选择要修改的塔腿部件！");
+		QMessageBox::information(this, "Tips", "请选择要修改的杆塔实例！");
 	}
 	else
 	{
