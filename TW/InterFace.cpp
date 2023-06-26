@@ -84,7 +84,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 			m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
 			m_renderWindow->Render();
 		});
-	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
+	
 }
 
 void InterFace::SetupCentralWidget()
@@ -1186,7 +1186,7 @@ void InterFace::Constraint_Tips()
 
 	// 设置布局管理器
 	ui.widget_2->setLayout(layout_Tips);
-	
+	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
 }
 
 void InterFace::Delete_Constraint()
@@ -1248,10 +1248,13 @@ void InterFace::Insert_Data()
 		}
 	}
 
-	connect(OK_Btn, &QPushButton::clicked, this, [=]() {handleOkButtonClicked(); Close_Point(); });
+	connect(OK_Btn, &QPushButton::clicked, this, [=]() {
+		handleOkButtonClicked();
+		disconnect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
+		Close_Point(); });
 
 	connect(Ensure_Btn, &QPushButton::clicked, this, &InterFace::Delete_Constraint);
-
+	
 }
 
 void InterFace::handleOkButtonClicked()
