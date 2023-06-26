@@ -20,8 +20,13 @@ public:
 
 	InterFace* m_InterFace = nullptr;
 	void Set_combobox();
+	void Initialize();
 private:
 	Ui::T_CrossArmClass ui;
 public slots:
 	void Change_combo_Tier();//第二种方法，用选择的方式
+
+	void Change_Picture_BU();
+	void Change_Picture_S();
+	void Change_Picture_gemian();
 };

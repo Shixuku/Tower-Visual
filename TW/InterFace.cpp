@@ -4,6 +4,7 @@
 #include<QMessageBox.h>
 #include"Manage_PartData.h"
 #include"Manage_InsData.h"
+#include"Manage_Loads.h"
 #include <vtkPointData.h>//->GetArray("Address")
 #include <vtkIdTypeArray.h>
 #include"MouseInteractorHighLightActor.h"
@@ -20,6 +21,9 @@
 #include"Create_Constraint.h"
 #include <QLineEdit>
 #include"CreateAbaqusInp.h"
+#include"ConcentrateForce.h"
+#include"Creat_Loads.h"
+#include"test_pic_focusforce.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
@@ -66,6 +70,20 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
+	connect(ui.actioninit, &QAction::triggered, this, [=]()
+		{
+			m_Renderer->GetActiveCamera()->SetPosition(0, 0, 100000);
+			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
+			m_Renderer->GetActiveCamera()->SetViewUp(0, 1, 0);
+			m_renderWindow->Render();
+		});
+	connect(ui.actionYoZ, &QAction::triggered, this, [=]()
+		{
+			m_Renderer->GetActiveCamera()->SetPosition(100000, 0, 0);
+			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
+			m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
+			m_renderWindow->Render();
+		});
 	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
 }
 
@@ -74,7 +92,7 @@ void InterFace::SetupCentralWidget()
 	//更改背景颜色
 	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
+	m_Renderer->SetGradientBackground(1);    
 
 	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
@@ -138,7 +156,7 @@ void InterFace::TreeWidgetShow()
 	creat_loads->setText(0, QString("创建载荷"));
 
 	QTreeWidgetItem* edit_loads = new QTreeWidgetItem(Loads);
-	edit_loads->setText(0, QString("编辑载荷"));
+	edit_loads->setText(0, QString("管理载荷"));
 
 	QTreeWidgetItem* creat_constraints = new QTreeWidgetItem(Loads);
 	creat_constraints->setText(0, QString("创建边界条件"));
@@ -151,6 +169,7 @@ void InterFace::TreeWidgetShow()
 
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
 	Wire_modeling->setText(0, QString("导线建模"));
+
 }
 
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -193,11 +212,11 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	//荷载
 	else if (item == ui.treeWidget->topLevelItem(3)->child(0))
 	{
-		
+		ui_Creat_Loads();
 	}
 	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
 	{
-		
+		ui_Manage_Loads();
 	}
 	else if (item == ui.treeWidget->topLevelItem(3)->child(2))
 	{
@@ -399,9 +418,7 @@ void InterFace::ui_Tower()
 		tw->Show_VTKtruss(m_Renderer_2);
 		tw->Show_VTKbeam(m_Renderer_2);
 
-
 		TP.Add_Entity(tw);
-
 		HiddeAllTower();
 		for (auto& i : TP)
 		{
@@ -505,7 +522,16 @@ void InterFace::ui_Wire_InterFace()
 	Wire_InterFace* wire = new Wire_InterFace(this);
 	wire->show();
 }
-
+void InterFace::ui_Creat_Loads()
+{
+	Creat_Loads* creat_load = new Creat_Loads(this);
+	creat_load->show();
+}
+void InterFace::ui_Manage_Loads()
+{
+	Manage_Loads* manage_loads = new Manage_Loads(this);
+	manage_loads->show();
+}
 void InterFace::ui_Constraint()
 {
 	Create_Constraint* con = new Create_Constraint(this);
@@ -1064,6 +1090,14 @@ void InterFace::Test_mousePressEvent(QMouseEvent* event)
 }
 
 void InterFace::ui_AddLoadForce(QTreeWidgetItem* item)
+{
+	Tower* tower = OnFindTower(item->parent());
+	AddLoadForce* addload = new AddLoadForce(tower, this);
+	addload->show();
+	Point_Inqure();
+}
+
+void InterFace::ui_ConcentratedForce(QTreeWidgetItem* item)
 {
 	Tower* tower = OnFindTower(item->parent());
 	AddLoadForce* addload = new AddLoadForce(tower,this);

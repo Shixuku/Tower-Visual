@@ -16,7 +16,7 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 	connect(ui.btn_ok, &QPushButton::clicked, this, [=]()
 		{
 			Get_Data();
-			//this->accept();
+			
 			ui.lineEdit->clear();
 			ui.line_p1->clear();
 			ui.line_p2->clear();
@@ -24,6 +24,7 @@ Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
 	ui.stackedWidget->setCurrentIndex(0);//设置默认page
 	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
 	connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
+
 }
 
 Interphase_spacer::~Interphase_spacer()
@@ -104,16 +105,14 @@ void Interphase_spacer::Get_Data()
 						TP_insulator->m_W2 = towerPart_crossarm->m_c2Wb;//取横担宽
 						TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + towerPart_crossarm->Get_SumL();//取横担长
 					}
-
 				}
 			}
-
 		}
 		TP_insulator->Create_Mesh();
 		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer_2);
 		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer_2);
 		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer_2);
-
+		this->accept();
 	}
 }
 

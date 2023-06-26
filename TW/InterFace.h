@@ -30,6 +30,8 @@ class Wire_InterFace;
 class Interphase_spacer;
 class AddLoadForce;
 class Create_Constraint;
+class ConcentrateForce;
+//class Manage_Loads;
 class InterFace : public QMainWindow
 {
     Q_OBJECT
@@ -55,17 +57,18 @@ public:
     void AddPartFunction(QTreeWidgetItem* item);
      Ui::InterFaceClass ui;
 
-     //Set_Section* m_ab = nullptr;
      Manage_Entity<TowerPart_leg> TP_leg;
      Manage_Entity<TowerPart_body> TP_body;
      Manage_Entity<TowerPart_CrossArm> TP_CrossArm;
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
+     
      vector<T_Foot*> t_foots;
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
      vector<Tower_Assembly*> tower_assembles;
-
+     vector<ConcentrateForce*> concentrateforce;
+    
      std::vector<Section>MS;
      double* GetSectionData(int SectionGroup);
      std::vector<QStringList> Scetion_lists;
@@ -123,6 +126,9 @@ public slots:
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
   
+    void ui_ConcentratedForce(QTreeWidgetItem* item);
+    void ui_Creat_Loads();
+    void ui_Manage_Loads();
 private:
     QFile Qf;
     QDataStream Stream;
