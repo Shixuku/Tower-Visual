@@ -7,7 +7,6 @@
 #include<vtkLineSource.h>
 #include<vtkRenderWindowInteractor.h>
 #include<vtkProperty.h>
-#include"D:/VTK/Use_VTK.h"
 
 void test_pic_focusforce::creat(vtkRenderer* renderer)
 {
