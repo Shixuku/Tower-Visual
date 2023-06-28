@@ -24,6 +24,7 @@
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
 #include"test_pic_focusforce.h"
+#include"Wind.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
@@ -170,6 +171,9 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
 	Wire_modeling->setText(0, QString("导线建模"));
 
+	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
+	WIndLoad->setText(0, QString("创建风载荷"));
+
 }
 
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -247,6 +251,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (isChildOfTopLevelItem3Inp(item))
 	{
 		CreateInp(item);
+	}
+	else if (item == ui.treeWidget->topLevelItem(6))
+	{
+		ui_Wind();
 	}
 
 }
@@ -1198,6 +1206,19 @@ void InterFace::Delete_Constraint()
 		QWidget* widget = item->widget();
 		delete widget;
 		delete item;
+	}
+}
+
+void InterFace::ui_Wind()
+{
+	if (wd == nullptr)
+	{
+		wd = new Wind(this);
+		wd->show();
+	}
+	else
+	{
+		wd->show();
 	}
 }
 
