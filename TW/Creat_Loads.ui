@@ -58,6 +58,11 @@
           <string>多项式函数</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>冰荷载</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>

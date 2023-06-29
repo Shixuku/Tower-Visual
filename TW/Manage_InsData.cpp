@@ -115,7 +115,7 @@ void Manage_InsData::Modify_Data()
 			{
 				ui.tableWidget->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			}
-			m_InterFace->ResetCamera();
+			m_InterFace->m_Renderer_2->ResetCamera();
 		}
 	}
 }

@@ -5,30 +5,31 @@
 #include"Wind.h"
 #include"Polynomial.h"
 #include"InterFace.h"
+#include"IceLoad.h"
 
 #pragma execution_character_set("utf-8")
-Creat_Loads::Creat_Loads(InterFace* pInterFace, QWidget *parent): QDialog(parent)
+Creat_Loads::Creat_Loads(Tower* tower,QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
-	m_InterFace = pInterFace;
-	
+
+	m_pInterFace = dynamic_cast<InterFace*>(parent);
+	Q_ASSERT(m_pInterFace != nullptr);
+	m_tower = tower;
+
 	//命名方式暂时处理成这样
-	ui.line_name->setText("Load-" + QString::number(m_InterFace->concentrateforce.size() + 1));
+	//ui.line_name->setText("Load-" + QString::number(m_pInterFace->concentrateforce.size() + 1));
+	ui.line_name->setText("Load - 1");
 	//按钮响应事件
 	connect(ui.btn_continue, &QPushButton::clicked, this, [=]()
 		{
 			btn_continue_clicked();
 			this->accept();
 		});
-	connect(ui.btn_cancle, &QPushButton::clicked, this, &Creat_Loads::reject);
-	
-
+	connect(ui.btn_cancle, &QPushButton::clicked, this, &Creat_Loads::reject);	
 }
 
 Creat_Loads::~Creat_Loads()
-{
-
-}
+{}
 
 void Creat_Loads::btn_continue_clicked()
 {
@@ -59,5 +60,9 @@ void Creat_Loads::btn_continue_clicked()
 		Polynomial* polynomial = new Polynomial;
 		polynomial->show();
 	}
-	
+	else if (index == 4)
+	{//多项式函数
+		IceLoad* iceLoad = new IceLoad;
+		iceLoad->show();
+	}
 }

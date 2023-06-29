@@ -2,7 +2,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPoints.h>
@@ -17,6 +16,7 @@
 #include <vtkAutoInit.h> 
 #include"LoadForce.h"
 #include <map>
+#include <vtkPointData.h>
 using namespace Eigen;
 class Tower
 {
@@ -55,7 +55,11 @@ public:
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
-	void Show_Load(vtkRenderer* renderer);//画力的箭头
+
+	//画集中力
+	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	ofstream fout;           //创建ofstream
 	void CreateOutPut();//创建txt文件
 	void NodeTxT();
@@ -69,7 +73,6 @@ public:
 	vtkSmartPointer<vtkActor> m_BeamActor;
 	vtkSmartPointer<vtkActor> m_TrussActor;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;
-	//std::vector<vtkSmartPointer<vtkActor>>NactorTower;
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
 	vector<int>RestraintNode;
 	vector<int>SuspensionNode;
