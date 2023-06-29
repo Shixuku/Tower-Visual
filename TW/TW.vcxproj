@@ -114,6 +114,7 @@
     <ClCompile Include="Manage_PartData.cpp" />
     <ClCompile Include="Manage_InsData.cpp" />
     <ClCompile Include="Polynomial.cpp" />
+    <ClCompile Include="RandomWind.cpp" />
     <ClCompile Include="Senior.cpp" />
     <ClCompile Include="SetAllSection.cpp" />
     <ClCompile Include="Set_Section.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="T_CrossArm.cpp" />
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="Wind.cpp" />
+    <ClCompile Include="WindList.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="AddLoadForce.ui" />
@@ -152,6 +154,7 @@
     <QtUic Include="Manage_PartData.ui" />
     <QtUic Include="Manage_InsData.ui" />
     <QtUic Include="Polynomial.ui" />
+    <QtUic Include="RandomWind.ui" />
     <QtUic Include="Senior.ui" />
     <QtUic Include="SetAllSection.ui" />
     <QtUic Include="Set_Section.ui" />
@@ -170,9 +173,11 @@
     <QtUic Include="T_CrossArm.ui" />
     <QtUic Include="T_Foot.ui" />
     <QtUic Include="Wind.ui" />
+    <QtUic Include="WindList.ui" />
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="WindList.h" />
     <ClInclude Include="TowerWireGroup.h" />
     <QtMoc Include="TowerWireGroupAssembly.h" />
     <QtMoc Include="Wind.h" />
@@ -206,6 +211,7 @@
     <QtMoc Include="Manage_Loads.h" />
     <ClInclude Include="MouseInteractorHighLightActor.h" />
     <QtMoc Include="Polynomial.h" />
+    <QtMoc Include="RandomWind.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Part_Base.h" />

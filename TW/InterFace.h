@@ -32,6 +32,8 @@ class Interphase_spacer;
 class AddLoadForce;
 class Create_Constraint;
 class ConcentrateForce;
+class Wind;
+
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -98,6 +100,9 @@ public:
      QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
      QMap<int, int> idMap; // 存储ID与索引的映射关系
      int index = 0;
+     //HZ
+     //风
+     Wind* wd = nullptr;
   
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
@@ -128,6 +133,7 @@ public slots:
     void CreateInp(QTreeWidgetItem* item);
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
+    void ui_Wind();
   
     void ui_ConcentratedForce(QTreeWidgetItem* item);
     void ui_Creat_Loads();
