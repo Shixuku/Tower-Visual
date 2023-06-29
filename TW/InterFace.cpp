@@ -43,6 +43,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	m_Renderer_3 = vtkRenderer::New();
 	m_renderWindow->AddRenderer(m_Renderer_3);//添加放塔线组的vtk
 	this->setContextMenuPolicy(Qt::DefaultContextMenu);
+	m_CurrentRenderer = nullptr;
 	initMenu();
 	//右边窗口
 	SetupCentralWidget();
@@ -303,6 +304,11 @@ void InterFace::ui_Foot()
 		t_foots.push_back(T_foot);
 		
 	}
+
+}
+
+void InterFace::ui_WireTest()
+{
 
 }
 void InterFace::ui_Body()
@@ -620,6 +626,10 @@ void InterFace::OpenFile()
 
 void InterFace::contextMenuEvent(QContextMenuEvent* event)
 {
+	// 获取当前选中的 m_Renderer
+	vtkRenderWindowInteractor* interactor = m_renderWindow->GetInteractor();
+	int* clickPos = interactor->GetEventPosition();
+	m_CurrentRenderer = interactor->FindPokedRenderer(clickPos[0], clickPos[1]);
 	m_pMenu->exec(QCursor::pos());
 }
 
@@ -744,6 +754,7 @@ void InterFace::ShowLoadactor(Tower* tower)
 
 void InterFace::switchRenderWindow(int index)
 {
+	Close_Point();
 	m_renderWindow->RemoveRenderer(m_Renderer);
 	m_renderWindow->RemoveRenderer(m_Renderer_2);
 	m_renderWindow->RemoveRenderer(m_Renderer_3);
@@ -861,7 +872,7 @@ void InterFace::UnSelect_Nodes()
 {
 	for (auto i : m_NodeSelected)
 	{
-		if (i != nullptr) m_Renderer_2->RemoveActor(i);
+		if (i != nullptr) m_CurrentRenderer->RemoveActor(i);
 	}
 	m_NodeSelected.clear();
 }
@@ -904,23 +915,30 @@ void InterFace::Get_SelectedNode(std::set<Node*>& Nodes)
 void InterFace::Point_Inqure()	
 {
 	UnSelect_Nodes();
-	// An interactor
+	// 创建交互器
 	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
 	renderWindowInteractor->SetRenderWindow(m_renderWindow);
-	// Set the custom type to use for interaction.
+
+	// 设置自定义交互类型
 	vtkNew<MouseInteractorHighLightActor> style;
 	style->m_pInterFace = this;
-	style->SetDefaultRenderer(m_Renderer_2);
+
+	// 使用当前选中的 m_Renderer
+	style->SetDefaultRenderer(m_CurrentRenderer);
+
 	renderWindowInteractor->SetInteractorStyle(style);
+
+	// 创建坐标轴部件
 	vtkAxesActor* Axes = vtkAxesActor::New();
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
 	widgetAxes->SetOrientationMarker(Axes);
 	widgetAxes->SetInteractor(renderWindowInteractor);
 	widgetAxes->SetEnabled(1);
 	widgetAxes->SetInteractive(1);
+
+	// 初始化交互器并启动
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
-	//m_Renderer_2->ResetCamera();
 }
 
 void InterFace::Area_Inqure()
@@ -1125,8 +1143,6 @@ void InterFace::Show_Part(Part_Base* part)
 	m_Renderer->ResetCamera();
 }
 
-
-
 void InterFace::Show_Tower(Tower* tower)
 {
 	if (tower == nullptr) return;
@@ -1211,6 +1227,7 @@ void InterFace::ui_Wind()
 		wd->show();
 	}
 }
+
 
 void InterFace::Insert_Data()
 {

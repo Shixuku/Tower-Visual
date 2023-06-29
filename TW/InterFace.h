@@ -99,6 +99,8 @@ public:
      //HZ
      //风
      Wind* wd = nullptr;
+     vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
+ 
   
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
@@ -130,6 +132,7 @@ public slots:
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
     void ui_Wind();
+    void ui_WireTest();
   
     //void ui_ConcentratedForce(QTreeWidgetItem* item);
 
@@ -154,4 +157,7 @@ private:
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
+
+   
+
 };
