@@ -29,9 +29,9 @@ class Tower_Assembly;
 class MouseInteractorHighLightActor;
 class Wire_InterFace;
 class Interphase_spacer;
-class AddLoadForce;
 class Create_Constraint;
 class ConcentrateForce;
+class Creat_Loads;
 class Wind;
 
 //class Manage_Loads;
@@ -50,7 +50,6 @@ public:
     vtkRenderer* m_Renderer_3;//塔线组的vtk窗口
     vtkGenericOpenGLRenderWindow* m_renderWindow;
    
-    void ResetCamera() const;
     void HiddeAllPart();
     void HiddeAllTower();
     void SubstaceActor(Part_Base* Part);
@@ -71,7 +70,6 @@ public:
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
      vector<Tower_Assembly*> tower_assembles;
-     vector<ConcentrateForce*> concentrateforce;
     
      std::vector<Section>MS;
      double* GetSectionData(int SectionGroup);
@@ -84,9 +82,7 @@ public:
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
      void Get_SelectedNode(std::set<Node*>& Nodes);
      void Point_Inqure();
-     bool isChildOfTopLevelItem3(QTreeWidgetItem* item);//取载荷
-     bool isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item);//计算文件
-     bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);//ABAQUS计算文件
+     bool isChildOfTower(QTreeWidgetItem* item, int childNumber);//取载荷
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
@@ -128,16 +124,16 @@ public slots:
     void Show_Tower(Tower* tower);
     void GetData(QStringList&);
     void Test_mousePressEvent(QMouseEvent* event);
-    void ui_AddLoadForce(QTreeWidgetItem* item);
+    void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
     void CreateInp(QTreeWidgetItem* item);
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
     void ui_Wind();
   
-    void ui_ConcentratedForce(QTreeWidgetItem* item);
-    void ui_Creat_Loads();
-    void ui_Manage_Loads();
+    //void ui_ConcentratedForce(QTreeWidgetItem* item);
+
+    void ui_ManageLoads();
     void ui_TowerWireGroup();
 private:
     QFile Qf;

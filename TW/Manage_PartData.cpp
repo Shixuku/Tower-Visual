@@ -153,7 +153,7 @@ void Manage_PartData::Modify_Data()
 				{
 					ui.tableWidget->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 				}
-				m_InterFace->ResetCamera();
+				m_InterFace->m_Renderer->ResetCamera();
 			}
 		}
 		break;
@@ -195,7 +195,7 @@ void Manage_PartData::Modify_Data()
 				{
 					ui.tableWidget_2->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 				}
-				m_InterFace->ResetCamera();
+				m_InterFace->m_Renderer->ResetCamera();
 			}
 		}
 		break;
@@ -237,7 +237,7 @@ void Manage_PartData::Modify_Data()
 				{
 					ui.tableWidget_3->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 				}
-				m_InterFace->ResetCamera();
+				m_InterFace->m_Renderer->ResetCamera();
 			}
 
 		}

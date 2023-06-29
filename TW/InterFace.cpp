@@ -17,13 +17,11 @@
 #include"Assign_Section.h"
 #include"SetAllSection.h"
 #include"Wire_InterFace.h"
-#include"AddLoadForce.h"
 #include"Create_Constraint.h"
 #include <QLineEdit>
 #include"CreateAbaqusInp.h"
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
-#include"test_pic_focusforce.h"
 #include"TowerWireGroup.h"
 #include"Wind.h"
 
@@ -66,8 +64,6 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 			else { ui_CrossArm(); }
 		});
 	
-	
-
 	connect(ui.menuSave, &QAction::triggered, this, &InterFace::SaveFile);
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
@@ -99,7 +95,6 @@ void InterFace::SetupCentralWidget()
 	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_2->SetGradientBackground(1);
-
 
 	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
 	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
@@ -179,7 +174,7 @@ void InterFace::TreeWidgetShow()
 	WIndLoad->setText(0, QString("创建风载荷"));
 
 }
-
+//双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 {
 	//生成杆塔部件
@@ -218,13 +213,9 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_SetAllSection(item);
 	}
 	//荷载
-	else if (item == ui.treeWidget->topLevelItem(4)->child(0))
-	{
-		ui_Creat_Loads();
-	}
 	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
 	{
-		ui_Manage_Loads();
+		ui_ManageLoads();
 	}
 	else if (item == ui.treeWidget->topLevelItem(4)->child(2))
 	{
@@ -244,15 +235,15 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Wire_InterFace();
 	}
-	else if (isChildOfTopLevelItem3(item))
+	else if (isChildOfTower(item,0))
 	{
-		ui_AddLoadForce(item);
+		ui_CreatLoads(item);
 	}
-	else if (isChildOfTopLevelItem3OutPut(item))
+	else if (isChildOfTower(item, 1))
 	{
 		CreateOutPut(item);
 	}
-	else if (isChildOfTopLevelItem3Inp(item))
+	else if (isChildOfTower(item, 2))
 	{
 		CreateInp(item);
 	}
@@ -268,35 +259,21 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
+	//部件切换
 	Part_Base* part = OnFindPart(item);
 
 	if (part != nullptr)
 	{
-		//HiddeAllPart();
-		//switchRenderWindow(0);
-		//part->m_BeamActor->VisibilityOn();
-		//part->m_TrussActor->VisibilityOn();
-		//part->Node_actor->VisibilityOn();
 		Show_Part(part);
 	}
 
-	if (item == ui.treeWidget->topLevelItem(1))
+	if (item->parent() == ui.treeWidget->topLevelItem(1))
 	{
-		HiddeAllTower();
-		switchRenderWindow(1);
-		for (auto& i : TP)
-		{
-			if (i.second != nullptr)
-			{
-				i.second->m_BeamActor->VisibilityOn();
-				i.second->m_TrussActor->VisibilityOn();
-				i.second->Node_actor->VisibilityOn();
-			}
-		}
+		Tower* tower = OnFindTower(item);
+		Show_Tower(tower);
 	}
-	ResetCamera();
-}
 
+}
 
 //生成塔腿
 void InterFace::ui_Foot()
@@ -322,11 +299,8 @@ void InterFace::ui_Foot()
 		t->Show_VTKbeam(m_Renderer);
 
 		TP_leg.Add_Entity(t);
-		ResetCamera();
-
+		m_Renderer->ResetCamera();
 		t_foots.push_back(T_foot);
-	/*	TP_leg.Find_Entity(int(t->m_id))->ShowNode();
-		TP_leg.Find_Entity(int(t->m_id))->ShowElement();*/
 		
 	}
 
@@ -354,7 +328,7 @@ void InterFace::ui_Body()
 		t->Show_VTKbeam(m_Renderer);
 	
 		TP_body.Add_Entity(t);
-		ResetCamera();
+		m_Renderer->ResetCamera();
 
 		t_bodys.push_back(T_body);
 	
@@ -385,7 +359,7 @@ void InterFace::ui_CrossArm()
 		t->Show_VTKbeam(m_Renderer);
 		
 		TP_CrossArm.Add_Entity(t);//塔头
-		ResetCamera();
+		m_Renderer->ResetCamera();
 
 		t_crossarms.push_back(T_ca);//塔头对话框
 
@@ -399,15 +373,8 @@ void InterFace::ui_Tower()
 	if (ret == QDialog::Accepted)
 	{
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
-		QTreeWidgetItem* item = new QTreeWidgetItem(parent);//
-		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
-		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
-		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
-		AddLoadForce->setText(0, QString("施加荷载"));
-		OutPut->setText(0, QString("输出计算文件"));
-		Inp->setText(0, QString("输出ABAQUS计算文件"));
-		//QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);
-		//AddLoadForce->setText(0, QString("施加荷载"));
+		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		AddPartFunction(item);
 		Tower* tw = new Tower;
 		for (auto& i : T_As->m_ArryLeg)//塔腿
 		{
@@ -430,6 +397,7 @@ void InterFace::ui_Tower()
 			}
 		}
 		tw->Check();
+		HiddeAllTower();
 
 		tw->Item = item;
 		item->setText(0, T_As->Get_name());
@@ -445,20 +413,13 @@ void InterFace::ui_Tower()
 		tw->Show_VTKbeam(m_Renderer_2);
 
 		TP.Add_Entity(tw);
-		HiddeAllTower();
-		for (auto& i : TP)
-		{
-			if (i.second != nullptr)
-			{
-				i.second->m_BeamActor->VisibilityOn();
-				i.second->m_TrussActor->VisibilityOn();
-				i.second->Node_actor->VisibilityOn();
-			}
-		}
-		ResetCamera();
+
+		tw->m_BeamActor->VisibilityOn();
+		tw->m_TrussActor->VisibilityOn();
+		tw->Node_actor->VisibilityOn();
+
+		m_Renderer_2->ResetCamera();
 		tower_assembles.push_back(T_As);
-		//TP.Find_Entity(int(tw->m_id))->ShowNode();
-		//TP.Find_Entity(int(tw->m_id))->ShowElement();
 	}
 
 }
@@ -494,7 +455,6 @@ void InterFace::ui_Section()
 }
 void InterFace::ui_SetSection(QTreeWidgetItem* item)
 {
-
 	Part_Base* Part = OnFindPart(item->parent());
 	Show_Part(Part);
 	Assign_Section* assign_Section = new Assign_Section(this,Part);
@@ -550,16 +510,13 @@ void InterFace::ui_Wire_InterFace()
 	Wire_InterFace* wire = new Wire_InterFace(this);
 	wire->show();
 }
-void InterFace::ui_Creat_Loads()
+
+void InterFace::ui_ManageLoads()
 {
-	Creat_Loads* creat_load = new Creat_Loads(this);
-	creat_load->show();
-}
-void InterFace::ui_Manage_Loads()
-{
-	Manage_Loads* manage_loads = new Manage_Loads(this);
+	Manage_Loads* manage_loads = new Manage_Loads;
 	manage_loads->show();
 }
+
 void InterFace::ui_TowerWireGroup()
 {
 	switchRenderWindow(2);
@@ -730,11 +687,6 @@ TowerData_CrossArm* InterFace::OnFindCrossAem(const QTreeWidgetItem* Item)
 	return nullptr;
 }
 
-void InterFace::ResetCamera() const
-{
-	m_Renderer->ResetCamera();
-}
-
 void InterFace::HiddeAllPart()
 {
 	vtkPropCollection* props = m_Renderer->GetViewProps(); //iterate through and set each visibility to 0
@@ -834,14 +786,24 @@ void InterFace::initMenu()
 
 void InterFace::AddPartFunction(QTreeWidgetItem* item)
 {
-
-	//保存指针到part的赋予截面
-	QTreeWidgetItem* assign_section = new QTreeWidgetItem(item);
-	assign_section->setText(0, QString("赋予截面"));
-
-	//保存指针到part的根据长度赋予截面
-	QTreeWidgetItem* SetAllSection = new QTreeWidgetItem(item);
-	SetAllSection->setText(0, QString("根据长度赋予截面"));
+	if (item->parent()->parent() == ui.treeWidget->topLevelItem(0))
+	{
+		//保存指针到part的赋予截面
+		QTreeWidgetItem* assign_section = new QTreeWidgetItem(item);
+		assign_section->setText(0, QString("赋予截面"));
+		//保存指针到part的根据长度赋予截面
+		QTreeWidgetItem* SetAllSection = new QTreeWidgetItem(item);
+		SetAllSection->setText(0, QString("根据长度赋予截面"));
+	}
+	if (item->parent()== ui.treeWidget->topLevelItem(1))
+	{
+		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
+		AddLoadForce->setText(0, QString("施加荷载"));
+		OutPut->setText(0, QString("输出计算文件"));
+		Inp->setText(0, QString("输出ABAQUS计算文件"));
+	}
 
 
 }
@@ -948,7 +910,7 @@ void InterFace::Point_Inqure()
 	// Set the custom type to use for interaction.
 	vtkNew<MouseInteractorHighLightActor> style;
 	style->m_pInterFace = this;
-	style->SetDefaultRenderer(m_Renderer);
+	style->SetDefaultRenderer(m_Renderer_2);
 	renderWindowInteractor->SetInteractorStyle(style);
 	vtkAxesActor* Axes = vtkAxesActor::New();
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
@@ -995,7 +957,7 @@ void InterFace::Area_Inqure()
 	renderWindowInteractor->RemoveAllObservers();
 }
 
-bool InterFace::isChildOfTopLevelItem3(QTreeWidgetItem* item)
+bool InterFace::isChildOfTower(QTreeWidgetItem* item, int childNumber)
 {
 	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
 	int childCount = topLevelItem3->childCount();
@@ -1003,39 +965,7 @@ bool InterFace::isChildOfTopLevelItem3(QTreeWidgetItem* item)
 	for (int i = 0; i < childCount; i++)
 	{
 		QTreeWidgetItem* childItem = topLevelItem3->child(i);
-		if (item == childItem->child(0))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool InterFace::isChildOfTopLevelItem3OutPut(QTreeWidgetItem* item)
-{
-	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
-	int childCount = topLevelItem3->childCount();
-
-	for (int i = 0; i < childCount; i++)
-	{
-		QTreeWidgetItem* childItem = topLevelItem3->child(i);
-		if (item == childItem->child(1))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool InterFace::isChildOfTopLevelItem3Inp(QTreeWidgetItem* item)
-{
-	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
-	int childCount = topLevelItem3->childCount();
-
-	for (int i = 0; i < childCount; i++)
-	{
-		QTreeWidgetItem* childItem = topLevelItem3->child(i);
-		if (item == childItem->child(2))
+		if (item == childItem->child(childNumber))
 		{
 			return true;
 		}
@@ -1158,20 +1088,13 @@ void InterFace::Test_mousePressEvent(QMouseEvent* event)
 	}
 }
 
-void InterFace::ui_AddLoadForce(QTreeWidgetItem* item)
+void InterFace::ui_CreatLoads(QTreeWidgetItem* item)
 {
 	Tower* tower = OnFindTower(item->parent());
-	AddLoadForce* addload = new AddLoadForce(tower, this);
-	addload->show();
-	Point_Inqure();
-}
-
-void InterFace::ui_ConcentratedForce(QTreeWidgetItem* item)
-{
-	Tower* tower = OnFindTower(item->parent());
-	AddLoadForce* addload = new AddLoadForce(tower,this);
-	addload->show();
-	Point_Inqure();
+	Show_Tower(tower);//!!
+	Creat_Loads* creat_load = new Creat_Loads(tower, this);
+	creat_load->show();
+	
 }
 
 void InterFace::CreateOutPut(QTreeWidgetItem* item)
@@ -1199,7 +1122,7 @@ void InterFace::Show_Part(Part_Base* part)
 		i->VisibilityOn();
 	}
 	SubstaceActor(part);
-	ResetCamera();
+	m_Renderer->ResetCamera();
 }
 
 
@@ -1211,11 +1134,17 @@ void InterFace::Show_Tower(Tower* tower)
 	HiddeAllTower();
 	tower->m_BeamActor->VisibilityOn();
 	tower->m_TrussActor->VisibilityOn();
-	for (auto& i : tower->Nactor)
+	tower->Node_actor->VisibilityOn();
+	//for (auto& i : tower->Nactor)
+	//{
+	//	m_Renderer_2->AddActor(i);
+	//}
+	for (auto& i : tower->m_LoadActor)
 	{
 		m_Renderer_2->AddActor(i);
+		i->VisibilityOn();
 	}
-	ResetCamera();
+	m_Renderer_2->ResetCamera();
 }
 
 void InterFace::Constraint_Tips()
@@ -1363,7 +1292,6 @@ void InterFace::handleOkButtonClicked()
 	ui_Constraint();
 	qDebug() << Con_Nodes.size() << endl;
 }
-
 
 Node* InterFace::Find_Node(int id, vector<Node>& node, vector<Node>& Con_node)
 {

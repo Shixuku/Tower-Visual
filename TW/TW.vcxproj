@@ -93,7 +93,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AddLoadForce.cpp" />
     <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
@@ -108,6 +107,7 @@
     <ClCompile Include="Draw_Wire.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
     <ClCompile Include="Gravity.cpp" />
+    <ClCompile Include="IceLoad.cpp" />
     <ClCompile Include="Interphase_spacer.cpp" />
     <ClCompile Include="LoadForce.cpp" />
     <ClCompile Include="Manage_Loads.cpp" />
@@ -122,7 +122,6 @@
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="Spacer.cpp" />
-    <ClCompile Include="test_pic_focusforce.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
     <ClCompile Include="TowerData_CrossArm.cpp" />
@@ -142,12 +141,12 @@
     <ClCompile Include="WindList.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
-    <QtUic Include="AddLoadForce.ui" />
     <QtUic Include="Assign_Section.ui" />
     <QtUic Include="ConcentrateForce.ui" />
     <QtUic Include="Creat_Loads.ui" />
     <QtUic Include="Gravity.ui" />
     <QtUic Include="Create_Constraint.ui" />
+    <QtUic Include="IceLoad.ui" />
     <QtUic Include="InterFace.ui" />
     <QtUic Include="Interphase_spacer.ui" />
     <QtUic Include="Manage_Loads.ui" />
@@ -183,7 +182,6 @@
     <QtMoc Include="Wind.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="Assign_Section.h" />
-    <QtMoc Include="AddLoadForce.h" />
     <ClInclude Include="AreaSelected_InteractorStyle.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="beamActor.h" />
@@ -202,6 +200,7 @@
     <QtMoc Include="Manage_PartData.h" />
     <QtMoc Include="Interphase_spacer.h" />
     <ClInclude Include="Element_Wire.h" />
+    <QtMoc Include="IceLoad.h" />
     <ClInclude Include="LoadForce.h" />
     <QtMoc Include="Gravity.h" />
     <ClInclude Include="Manage_Entity.h" />
@@ -218,7 +217,6 @@
     <QtMoc Include="SetAllSection.h" />
     <QtMoc Include="Senior.h" />
     <QtMoc Include="Spacer.h" />
-    <ClInclude Include="test_pic_focusforce.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerData_Body.h" />
     <ClInclude Include="TowerData_CrossArm.h" />

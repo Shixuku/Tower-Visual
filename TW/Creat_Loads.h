@@ -3,18 +3,19 @@
 #include <QDialog>
 #include "ui_Creat_Loads.h"
 #include<QString>
-//#include<vector>
+#include"Tower.h"
 class InterFace;
-class ConcentrateForce;
+class Tower;
 class Creat_Loads : public QDialog
 {
 	Q_OBJECT
 
 public:
-	Creat_Loads(InterFace* pInterFace, QWidget *parent = nullptr);
+	Creat_Loads(Tower* tower, QWidget* parent = nullptr);
 	~Creat_Loads();
 	void btn_continue_clicked();
-	InterFace* m_InterFace = nullptr;
+	InterFace* m_pInterFace = nullptr;
+	Tower* m_tower = new Tower;
 	QString m_str;//取名称
 	QString m_itemText;//取载荷类型
 private:

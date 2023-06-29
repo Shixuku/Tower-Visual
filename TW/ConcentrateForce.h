@@ -5,8 +5,9 @@
 #include<vector>
 #include<iostream>
 #include"Node.h"
-class test_pic_focusforce;
+
 class Creat_Loads;
+class Tower;
 class ConcentrateForce : public QDialog
 {
 	Q_OBJECT
@@ -15,7 +16,8 @@ public:
 	ConcentrateForce(Creat_Loads* creat_loads, QWidget *parent = nullptr);
 	~ConcentrateForce();
 	Creat_Loads* m_pCreat_loads = nullptr;
-	test_pic_focusforce* ff = nullptr;//画集中力的类
+	Tower* m_pTower = nullptr;
+	
 	std::vector< Node*>m_ffNodes;//点集合
 	void initialization();
 	void Get_Nodes();
