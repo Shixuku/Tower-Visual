@@ -10,6 +10,7 @@
 #include "TowerPart_leg.h"
 #include "TowerPart_body.h"
 #include "TowerPart_CrossArm.h"
+#include"TowerPart_Insulator.h"
 #include "Tower.h"
 #include<QFileDialog>
 #include <QString>
@@ -18,7 +19,7 @@
 #include<vector>
 #include"Set_Section.h"
 #include<vtkInteractorStyleTrackballCamera.h>
-
+#include"TowerWireGroupAssembly.h"
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
@@ -31,8 +32,6 @@ class Interphase_spacer;
 class AddLoadForce;
 class Create_Constraint;
 class ConcentrateForce;
-class Wind;
-
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -62,6 +61,7 @@ public:
      Manage_Entity<TowerPart_leg> TP_leg;
      Manage_Entity<TowerPart_body> TP_body;
      Manage_Entity<TowerPart_CrossArm> TP_CrossArm;
+     Manage_Entity<TowerPart_Insulator> towerPartInsulator;
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
      
@@ -87,6 +87,7 @@ public:
      bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);//ABAQUS计算文件
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
+     bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
      void Area_Inqure();//框选
      void Close_Point();
      vector<int> con_id;
@@ -97,9 +98,6 @@ public:
      QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
      QMap<int, int> idMap; // 存储ID与索引的映射关系
      int index = 0;
-     //HZ
-     //风
-     Wind* wd = nullptr;
   
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
@@ -113,7 +111,7 @@ public slots:
     void ui_Tower();
     void ui_Management_PartData();
     void ui_Management_InsData();
-    void ui_Interphase_spacer();
+    void ui_Interphase_spacer(QTreeWidgetItem* item);
     void ui_Wire_InterFace();
     void ui_Constraint();
     void SaveFile();
@@ -130,11 +128,11 @@ public slots:
     void CreateInp(QTreeWidgetItem* item);
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
-    void ui_Wind();
   
     void ui_ConcentratedForce(QTreeWidgetItem* item);
     void ui_Creat_Loads();
     void ui_Manage_Loads();
+    void ui_TowerWireGroup();
 private:
     QFile Qf;
     QDataStream Stream;
@@ -153,5 +151,5 @@ private:
     //treeWidget
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);
     Tower* OnFindTower(const QTreeWidgetItem* Item);
-   
+    TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
 };

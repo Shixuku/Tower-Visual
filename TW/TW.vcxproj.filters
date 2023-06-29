@@ -53,8 +53,6 @@
     <ClCompile Include="Part_Base.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="AddLoadForce.cpp" />
-    <ClCompile Include="WindList.cpp" />
-    <ClCompile Include="RandomWind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h" />
@@ -113,8 +111,6 @@
     <QtMoc Include="T_Body.h" />
     <QtMoc Include="InterFace.h" />
     <QtMoc Include="AddLoadForce.h" />
-    <QtMoc Include="WindList.h" />
-    <QtMoc Include="RandomWind.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="TW.qrc" />
@@ -142,7 +138,5 @@
     <QtUic Include="Wind.ui" />
     <QtUic Include="Wire_InterFace.ui" />
     <QtUic Include="AddLoadForce.ui" />
-    <QtUic Include="WindList.ui" />
-    <QtUic Include="RandomWind.ui" />
   </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
 #include"test_pic_focusforce.h"
-#include"Wind.h"
+#include"TowerWireGroup.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
@@ -135,6 +135,9 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
 	creat_tower_instance->setText(0, QString("生成杆塔实例"));
 
+	QTreeWidgetItem* creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_towerwire_instance->setText(0, QString("生成塔线组实例"));
+
 	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
 	attribute->setText(0, QString("属性"));
 
@@ -170,9 +173,6 @@ void InterFace::TreeWidgetShow()
 
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
 	Wire_modeling->setText(0, QString("导线建模"));
-
-	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
-	WIndLoad->setText(0, QString("创建风载荷"));
 
 }
 
@@ -214,29 +214,29 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_SetAllSection(item);
 	}
 	//荷载
-	else if (item == ui.treeWidget->topLevelItem(3)->child(0))
+	else if (item == ui.treeWidget->topLevelItem(4)->child(0))
 	{
 		ui_Creat_Loads();
 	}
-	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
+	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
 	{
 		ui_Manage_Loads();
 	}
-	else if (item == ui.treeWidget->topLevelItem(3)->child(2))
+	else if (item == ui.treeWidget->topLevelItem(4)->child(2))
 	{
 		Constraint_Tips();
 	}
-	else if (item == ui.treeWidget->topLevelItem(3)->child(3))
+	else if (item == ui.treeWidget->topLevelItem(4)->child(3))
 	{
 		
 	}
 	//绝缘子串
-	else if (item == ui.treeWidget->topLevelItem(4))
+	else if (isChildOfPartSetSpacer(item))
 	{
-		ui_Interphase_spacer();
+		ui_Interphase_spacer(item);
 	}
 	//导线建模
-	else if (item == ui.treeWidget->topLevelItem(5))
+	else if (item == ui.treeWidget->topLevelItem(6))
 	{
 		ui_Wire_InterFace();
 	}
@@ -252,11 +252,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateInp(item);
 	}
-	else if (item == ui.treeWidget->topLevelItem(6))
+	else if (item == ui.treeWidget->topLevelItem(2))
 	{
-		ui_Wind();
+		ui_TowerWireGroup();
 	}
-
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -362,6 +361,8 @@ void InterFace::ui_CrossArm()
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		AddPartFunction(item);
+		QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
+		spacer->setText(0, QString("添加绝缘子串"));
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
 		HiddeAllPart();
@@ -410,6 +411,14 @@ void InterFace::ui_Tower()
 		for (auto& i : T_As->m_ArryHead)//塔头
 		{
 			tw->addPart(TP_CrossArm.Find_Entity(i));
+			int crossArm = TP_CrossArm.Find_Entity(i)->m_id;
+			for (auto& i : towerPartInsulator)
+			{
+				if (i.second->ArmId == crossArm)
+				{
+					tw->addPart(i.second);
+				}
+			}
 		}
 		tw->Check();
 
@@ -518,9 +527,11 @@ void InterFace::ui_Management_InsData()
 	ins_data->show();
 }
 
-void InterFace::ui_Interphase_spacer()
+void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 {
-	Interphase_spacer* IS = new Interphase_spacer(this);
+	TowerData_CrossArm* Arm = OnFindCrossAem(item->parent());
+	Part_Base* part = OnFindPart(item->parent());
+	Interphase_spacer* IS = new Interphase_spacer(Arm,this);
 
 	IS->show();//要互动只能用show
 }
@@ -539,6 +550,13 @@ void InterFace::ui_Manage_Loads()
 {
 	Manage_Loads* manage_loads = new Manage_Loads(this);
 	manage_loads->show();
+}
+void InterFace::ui_TowerWireGroup()
+{
+	switchRenderWindow(2);
+	TowerWireGroup* towerWireGroup = new TowerWireGroup;
+	TowerWireGroupAssembly* towerWireGroupAssembly = new TowerWireGroupAssembly(this, towerWireGroup);
+	towerWireGroupAssembly->show();
 }
 void InterFace::ui_Constraint()
 {
@@ -681,6 +699,25 @@ Tower* InterFace::OnFindTower(const QTreeWidgetItem* Item)
 		++it;
 	}
 
+	return nullptr;
+}
+
+TowerData_CrossArm* InterFace::OnFindCrossAem(const QTreeWidgetItem* Item)
+{
+	QTreeWidgetItemIterator it(ui.treeWidget);
+	while (*it)
+	{
+		//QTreeWidgetItem是否满足条件---这里的条件可以自己修改
+		if ((*it) == Item)
+		{
+			for (auto& i : TP_CrossArm)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			return nullptr;
+		}
+		++it;
+	}
 	return nullptr;
 }
 
@@ -902,7 +939,7 @@ void InterFace::Point_Inqure()
 	// Set the custom type to use for interaction.
 	vtkNew<MouseInteractorHighLightActor> style;
 	style->m_pInterFace = this;
-	style->SetDefaultRenderer(m_Renderer_2);
+	style->SetDefaultRenderer(m_Renderer);
 	renderWindowInteractor->SetInteractorStyle(style);
 	vtkAxesActor* Axes = vtkAxesActor::New();
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
@@ -1068,6 +1105,21 @@ bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
 	return false;
 }
 
+bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
+	int ArmchildCount = ArmPart->childCount();//取得有几个塔头部件循环
+	for (int i = 0; i < ArmchildCount; i++)
+	{
+		QTreeWidgetItem* childItem = ArmPart->child(i);
+		if (item == childItem->child(2))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
@@ -1209,19 +1261,6 @@ void InterFace::Delete_Constraint()
 	}
 }
 
-void InterFace::ui_Wind()
-{
-	if (wd == nullptr)
-	{
-		wd = new Wind(this);
-		wd->show();
-	}
-	else
-	{
-		wd->show();
-	}
-}
-
 void InterFace::Insert_Data()
 {
 	set<Node*> Nodes;
@@ -1275,7 +1314,7 @@ void InterFace::Insert_Data()
 		Close_Point(); });
 
 	connect(Ensure_Btn, &QPushButton::clicked, this, &InterFace::Delete_Constraint);
-	
+
 }
 
 void InterFace::handleOkButtonClicked()

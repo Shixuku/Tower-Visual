@@ -66,6 +66,8 @@ public:
 				Read_Stream<TowerPart_body>(s); break;
 			case Part_Type::ET_PartCrossArm:
 				Read_Stream<TowerPart_CrossArm>(s); break;
+			case Part_Type::ET_PartInsulator:
+				Read_Stream<TowerPart_Insulator>(s); break;
 			case Part_Type::ET_Tower:
 				Read_Stream<Tower>(s); break;
 			

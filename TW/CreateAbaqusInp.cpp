@@ -13,6 +13,7 @@ void CreateAbaqusInp::CreateInp(Tower* tower)
 	Inpout << "*Heading" << "\n";
 	Inpout << "*Preprint, echo=NO, model=NO, history=NO, contact=NO" << "\n";
 	Inpout << "*Part, name=Part-1" << "\n";
+	Inpout << "*Assembly, name=Assembly" << "\n";
 	Inpout << "*End Part" << "\n";
 	Inpout << "*Assembly, name=Assembly" << "\n";
 	Inpout << "*Instance, name=Part-1-1, part=Part-1" << "\n";

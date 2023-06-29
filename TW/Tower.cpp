@@ -9,6 +9,10 @@
 	#include <vtkTubeFilter.h>
 	#include <iostream>
 	#include<fstream>
+int Tower::FindGroupIdNode(int idNode) const
+{
+	return TowerToGroup[idNode - 1];
+}
 void Tower::VectorToMap()
 {
 	// 将 vectorNode 中的元素插入到 map 中
@@ -312,6 +316,8 @@ void Tower::Show_VTKtruss(vtkRenderer* renderer)
 		addElementToTower(part);
 		addSectionToTower(part);
 		addRestraintNode(part);
+		addSuspensionNode(part);
+		part->part_to_tower.clear();
 	}
 
 	void Tower::Check()
@@ -702,6 +708,16 @@ void Tower::Show_VTKtruss(vtkRenderer* renderer)
 		{
             this->RestraintNode.push_back(part->RestraintNode[i]);
 			RestraintNode[i] = part->Find_tower_idNode(part->RestraintNode[i]);
+		}
+	}
+
+	void Tower::addSuspensionNode(Part_Base* part)
+	{
+		size_t SusNode = part->SuspensionNode.size();
+		for (int i = 0; i < SusNode; i++)
+		{
+			this->SuspensionNode.push_back(part->SuspensionNode[i]);
+			SuspensionNode[i] = part->Find_tower_idNode(part->SuspensionNode[i]);
 		}
 	}
 

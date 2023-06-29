@@ -31,11 +31,12 @@ void TowerPart_Insulator::Get_split1()
 	Node1[0] = *m_node1;
 	Node1[1] = *m_node2;
 	double disX = m_node2->x - m_node1->x;//两点之间长度
-	Node1[2].x = m_node1->x + disX / 2;		Node1[2].y= Get_y(Node1[2].x);		Node1[2].z = m_node1->z - m_H;
+	Node1[2].x = m_node1->x + disX / 2;		Node1[2].y= Get_y(Node1[2].x);		Node1[2].z = m_node1->z - m_H;//11
 	for (int i = 0; i < 3; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
+	InPutSuspension({ node[2] });
 	//生成单元
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2],node[1] });
 }
@@ -47,11 +48,12 @@ void TowerPart_Insulator::Get_split1_I()
 	Node1[0] = *m_node;
 	Node1[1].x = Node1[0].x;
 	Node1[1].y = Node1[0].y;
-	Node1[1].z = Node1[0].z - m_H;
+	Node1[1].z = Node1[0].z - m_H;//1111
 	for (int i = 0; i < 2; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
+	InPutSuspension({ node[1] });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 }
 
@@ -60,11 +62,12 @@ void TowerPart_Insulator::Get_split2()
 	Node Node1[5];
 	int node[5];
 	Get_Nodes4(450, Node1);
-	interpolation(Node1[2], Node1[3], 0.5, Node1[4]);
+	interpolation(Node1[2], Node1[3], 0.5, Node1[4]);///111
 	for (int i = 0; i < 5; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
+	InPutSuspension({ node[4] });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2], node[4],node[3],node[1] });
 }
 
@@ -73,10 +76,11 @@ void TowerPart_Insulator::Get_split2_I()
 	Node Node1[4];
 	int node[4];
 	Get_Nodes4_I(450, Node1);
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)///n[1]
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
+	InPutSuspension({ node[1] });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 	Creat_Trusses(m_Elements_Trusses, { node[2],node[1],node[3] });
 }
@@ -100,13 +104,13 @@ void TowerPart_Insulator::Get_split4(int m_type)
 	}
 	Node1[4].z = Node1[2].z - 450;
 	Node1[5].z = Node1[3].z - 450;
-	interpolation(Node1[2], Node1[5], 0.5, Node1[6]);
+	interpolation(Node1[2], Node1[5], 0.5, Node1[6]);//11
 
 	for (int i = 0; i < 7; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	
+	InPutSuspension({ node[6] });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -151,13 +155,13 @@ void TowerPart_Insulator::Get_split6(int m_type)
 	Node1[5].z = Node1[3].z - b;
 	Node1[6].z = Node1[2].z - 2 * b;
 	Node1[7].z = Node1[3].z - 2 * b;
-	interpolation(Node1[4], Node1[5], 0.5, Node1[8]);
+	interpolation(Node1[4], Node1[5], 0.5, Node1[8]);//11
 
 	for (int i = 0; i < 9; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-
+	InPutSuspension({ node[8] });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -208,12 +212,13 @@ void TowerPart_Insulator::Get_split8(int m_type)
 	Node1[7].z = Node1[3].z - b - 400;
 	Node1[8].z = Node1[2].z - 2 * b - 400;
 	Node1[9].z = Node1[2].z - 2 * b - 400;
-	interpolation(Node1[2], Node1[9], 0.5, Node1[10]);
+	interpolation(Node1[2], Node1[9], 0.5, Node1[10]);//1111
 
 	for (int i = 0; i < 11; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
+	InPutSuspension({ node[10] });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });

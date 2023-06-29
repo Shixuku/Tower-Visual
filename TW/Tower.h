@@ -45,7 +45,8 @@ public:
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	vector<LoadForce>Load;//荷载的容器
 	vector<Section>pSection;//截面的容器
-
+	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
+	int FindGroupIdNode(int idNode) const;
 	void VectorToMap();
 	map<int, Node>NodeData;
 	map<int, Element_Beam>BeamData;
@@ -71,6 +72,7 @@ public:
 	//std::vector<vtkSmartPointer<vtkActor>>NactorTower;
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
 	vector<int>RestraintNode;
+	vector<int>SuspensionNode;
 	void addPart(Part_Base* part);
 
 	void Check();
@@ -93,6 +95,7 @@ protected:
 	void addElementToTower(Part_Base* part);
 	void addSectionToTower(Part_Base* part);
 	void addRestraintNode(Part_Base* part);
+	void addSuspensionNode(Part_Base* part);
 };
 //xxxxxxxxx
 

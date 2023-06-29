@@ -1,15 +1,15 @@
 #include "Interphase_spacer.h"
 #include"InterFace.h"
 #include"TowerPart_Insulator.h"
-#include"TowerPart_CrossArm.h"
 #include<QMessageBox.h>
-Interphase_spacer::Interphase_spacer(QWidget* parent): QDialog(parent)
+Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm,QWidget* parent): QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
+	Arm = CrossArm;
 	Q_ASSERT(m_pInterFace != nullptr);
 	TP_insulator = new TowerPart_Insulator;
-
+	
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Interphase_spacer::reject);
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Interphase_spacer::Get_Nodes);
 
@@ -89,30 +89,27 @@ void Interphase_spacer::Get_Data()
 		TP_insulator->m_type = index + 1;
 		if (TP_insulator->m_type == 1)
 		{
-			//修改
-			int a = m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔头数量
-			for (int i = 1; i < a + 1; i++)
+
+			//对塔头的点进行循环
+			for (auto& i : Arm->m_Nodes)
 			{
-				TowerPart_CrossArm* towerPart_crossarm = m_pInterFace->TP_CrossArm.Find_Entity(i);
-				//对塔头的点进行循环
-				for (auto& i : towerPart_crossarm->m_Nodes)
+				if (abs(TP_insulator->m_node->x - i.x) < 1e-1 && abs(TP_insulator->m_node->y - i.y) < 1e-1 &&
+					abs(TP_insulator->m_node->z - i.z) < 1e-1)
 				{
-					if (abs(TP_insulator->m_node->x - i.x) < 1e-1 && abs(TP_insulator->m_node->y - i.y) < 1e-1 &&
-						abs(TP_insulator->m_node->z - i.z) < 1e-1)
-					{
-						//取数据
-						TP_insulator->m_W1 = towerPart_crossarm->m_bodyButtomL;//取塔身宽
-						TP_insulator->m_W2 = towerPart_crossarm->m_c2Wb;//取横担宽
-						TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + towerPart_crossarm->Get_SumL();//取横担长
-					}
+					//取数据
+					TP_insulator->m_W1 = Arm->m_bodyButtomL;//取塔身宽
+					TP_insulator->m_W2 = Arm->m_c2Wb;//取横担宽
+					TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + Arm->Get_SumL();//取横担长
 				}
+
 			}
 		}
+		TP_insulator->ArmId = Arm->m_id;
 		TP_insulator->Create_Mesh();
-		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer_2);
-		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer_2);
-		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer_2);
-		this->accept();
+		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer);
+		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer);
+		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
+		m_pInterFace->towerPartInsulator.Add_Entity(TP_insulator);
 	}
 }
 

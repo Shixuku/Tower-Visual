@@ -13,3 +13,5 @@ double TowerData_leg::Get_PracticlL(int i) const
 	return P_L;
 }
 
+
+

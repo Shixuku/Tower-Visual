@@ -51,8 +51,8 @@ void Creat_Loads::btn_continue_clicked()
 	}
 	else if (index == 2)
 	{//稳定风
-		//Wind* wind = new Wind;
-		//wind->show();
+		Wind* wind = new Wind;
+		wind->show();
 	}
 	else if (index == 3)
 	{//多项式函数
