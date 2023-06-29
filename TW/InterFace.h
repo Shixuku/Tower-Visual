@@ -10,6 +10,7 @@
 #include "TowerPart_leg.h"
 #include "TowerPart_body.h"
 #include "TowerPart_CrossArm.h"
+#include"TowerPart_Insulator.h"
 #include "Tower.h"
 #include<QFileDialog>
 #include <QString>
@@ -18,7 +19,7 @@
 #include<vector>
 #include"Set_Section.h"
 #include<vtkInteractorStyleTrackballCamera.h>
-
+#include"TowerWireGroupAssembly.h"
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
@@ -60,6 +61,7 @@ public:
      Manage_Entity<TowerPart_leg> TP_leg;
      Manage_Entity<TowerPart_body> TP_body;
      Manage_Entity<TowerPart_CrossArm> TP_CrossArm;
+     Manage_Entity<TowerPart_Insulator> towerPartInsulator;
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
      
@@ -85,6 +87,7 @@ public:
      bool isChildOfTopLevelItem3Inp(QTreeWidgetItem* item);//ABAQUS计算文件
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
+     bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
      void Area_Inqure();//框选
      void Close_Point();
      vector<int> con_id;
@@ -108,7 +111,7 @@ public slots:
     void ui_Tower();
     void ui_Management_PartData();
     void ui_Management_InsData();
-    void ui_Interphase_spacer();
+    void ui_Interphase_spacer(QTreeWidgetItem* item);
     void ui_Wire_InterFace();
     void ui_Constraint();
     void SaveFile();
@@ -129,6 +132,7 @@ public slots:
     void ui_ConcentratedForce(QTreeWidgetItem* item);
     void ui_Creat_Loads();
     void ui_Manage_Loads();
+    void ui_TowerWireGroup();
 private:
     QFile Qf;
     QDataStream Stream;
@@ -147,5 +151,5 @@ private:
     //treeWidget
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);
     Tower* OnFindTower(const QTreeWidgetItem* Item);
-   
+    TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
 };

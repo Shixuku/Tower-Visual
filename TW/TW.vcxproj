@@ -131,6 +131,8 @@
     <ClCompile Include="TowerPart_CrossArm.cpp" />
     <ClCompile Include="TowerPart_Insulator.cpp" />
     <ClCompile Include="TowerPart_leg.cpp" />
+    <ClCompile Include="TowerWireGroup.cpp" />
+    <ClCompile Include="TowerWireGroupAssembly.cpp" />
     <ClCompile Include="Tower_Assembly.cpp" />
     <ClCompile Include="T_Body.cpp" />
     <ClCompile Include="T_CrossArm.cpp" />
@@ -154,6 +156,7 @@
     <QtUic Include="SetAllSection.ui" />
     <QtUic Include="Set_Section.ui" />
     <QtUic Include="Spacer.ui" />
+    <QtUic Include="TowerWireGroupAssembly.ui" />
     <QtUic Include="Tower_Assembly.ui" />
     <ClCompile Include="beamActor.cpp" />
     <ClCompile Include="Element.cpp" />
@@ -170,6 +173,8 @@
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TowerWireGroup.h" />
+    <QtMoc Include="TowerWireGroupAssembly.h" />
     <QtMoc Include="Wind.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="Assign_Section.h" />

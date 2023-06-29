@@ -268,6 +268,11 @@ void Part_Base::InPutRestraintNode(vector<int> ids)
 	RestraintNode.push_back(ids[0]);
 }
 
+void Part_Base::InPutSuspension(vector<int> ids)
+{
+	SuspensionNode.push_back(ids[0]);
+}
+
 int Part_Base::Creat_Node(double x, double y, double z)
 {
 

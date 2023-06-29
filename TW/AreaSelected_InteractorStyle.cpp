@@ -123,6 +123,8 @@ void AreaSelected_InteractorStyle::Get_PickedNode(vtkSmartPointer<vtkPointPicker
         ActorSelected->PickableOff();
         m_pInterFace->m_Renderer_2->AddActor(ActorSelected);
         m_pInterFace->m_Renderer_2->Render();
+        m_pInterFace->m_Renderer->AddActor(ActorSelected);
+        m_pInterFace->m_Renderer->Render();
         //		m_pInterFace->m_NodeSelected.push_back(ActorSelected);
         m_pInterFace->Add_Select(ActorSelected);
 

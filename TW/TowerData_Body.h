@@ -18,6 +18,6 @@ public:
 	double Get_SumH();
 	double Get_LayerH(int i);//得到i层高度
 	double Get_LayerL(int i);//得到i层上宽度
-	
+
 };
 
