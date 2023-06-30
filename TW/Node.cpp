@@ -17,5 +17,5 @@ void Node::SaveTo(QDataStream& fin) const
 
 void Node::Input(QDataStream& fin)
 {
-	fin >> m_idNode >> x >> y >> z;
+	fin >> m_idNode >> x >> y >> z >> restraint >> groupTowerId;
 }

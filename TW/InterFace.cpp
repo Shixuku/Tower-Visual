@@ -22,7 +22,6 @@
 #include"CreateAbaqusInp.h"
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
-#include"TowerWireGroup.h"
 #include"Wind.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
@@ -132,7 +131,7 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
 	creat_tower_instance->setText(0, QString("生成杆塔实例"));
 
-	QTreeWidgetItem* creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
 	creat_towerwire_instance->setText(0, QString("生成塔线组实例"));
 
 	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
@@ -201,7 +200,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Tower();
 	}
 	//属性
-	else if (item == ui.treeWidget->topLevelItem(2)->child(1))
+	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
 	{
 		ui_Section();
 	}
@@ -232,9 +231,9 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Interphase_spacer(item);
 	}
 	//导线建模
-	else if (item == ui.treeWidget->topLevelItem(6))
+	else if (isChildOfTowerwiregroupWireModeling(item))
 	{
-		ui_Wire_InterFace();
+		ui_Wire_InterFace(item);
 	}
 	else if (isChildOfTower(item,0))
 	{
@@ -511,9 +510,15 @@ void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 	IS->show();//要互动只能用show
 }
 
-void InterFace::ui_Wire_InterFace()
+void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 {
-	Wire_InterFace* wire = new Wire_InterFace(this);
+	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
+	cout << "test Group data :" << "\n";
+	for (int i = 0; i < towerWireGroup->m_Nodes.size(); i++)
+	{
+		cout << "test x:" << towerWireGroup->m_Nodes[i].x << "test y:" << towerWireGroup->m_Nodes[i].y << "test z:" << towerWireGroup->m_Nodes[i].z << "\n";
+	}
+	Wire_InterFace* wire = new Wire_InterFace(towerWireGroup,this);
 	wire->show();
 }
 
@@ -687,6 +692,25 @@ TowerData_CrossArm* InterFace::OnFindCrossAem(const QTreeWidgetItem* Item)
 		if ((*it) == Item)
 		{
 			for (auto& i : TP_CrossArm)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			return nullptr;
+		}
+		++it;
+	}
+	return nullptr;
+}
+
+TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
+{
+	QTreeWidgetItemIterator it(ui.treeWidget);
+	while (*it)
+	{
+		//QTreeWidgetItem是否满足条件---这里的条件可以自己修改
+		if ((*it) == Item)
+		{
+			for (auto& i : TWG)
 			{
 				if (i.second->Item == *it) return i.second;
 			}
@@ -1070,6 +1094,21 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 	{
 		QTreeWidgetItem* childItem = ArmPart->child(i);
 		if (item == childItem->child(2))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
+	for (int i = 0; i < towerWireGroupChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
+		if (item == childItem->child(1))
 		{
 			return true;
 		}

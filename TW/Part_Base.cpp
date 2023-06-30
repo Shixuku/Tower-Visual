@@ -332,6 +332,12 @@ void Part_Base::SaveTo(QDataStream& fin) const
 	}
 	fin << id_BeamSection;
 	fin << id_TrussSection;
+	int nSuspension = SuspensionNode.size();
+	fin << nSuspension;
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin << SuspensionNode[i];
+	}
 }
 
 void Part_Base::Input(QDataStream& fin)
@@ -360,7 +366,13 @@ void Part_Base::Input(QDataStream& fin)
 	}
 	fin >> id_BeamSection;
 	fin >> id_TrussSection;
-
+	int nSuspension;
+	fin >> nSuspension;
+	SuspensionNode.resize(nSuspension);
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin >> SuspensionNode[i];
+	}
 }
 
 //void Part_Base::show_SectionBeam(double a, double b, int section, int M, int group, bool IsBeam)

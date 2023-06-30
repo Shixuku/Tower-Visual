@@ -1,10 +1,87 @@
 #include "TowerWireGroup.h"
 
+int TowerWireGroup::Get_id() const
+{
+	return 0;
+}
+void TowerWireGroup::SaveTo(QDataStream& fin) const
+{
+	fin << groupId;
+	int nNode = m_Nodes.size();
+	fin << nNode;
+	for (int i = 0; i < nNode; ++i)
+	{
+		m_Nodes[i].SaveTo(fin);
+	}
+	int nbeam = m_Elements_beams.size();
+	fin << nbeam;
+	for (int i = 0; i < nbeam; ++i)
+	{
+		m_Elements_beams[i].SaveTo(fin);
+	}
+	int nTruss = m_Elements_Trusses.size();
+	fin << nTruss;
+	for (int i = 0; i < nTruss; ++i)
+	{
+		m_Elements_Trusses[i].SaveTo(fin);
+	}
+	int nSuspension = SuspensionNode.size();
+	fin << nSuspension;
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin << SuspensionNode[i];
+	}
+		
+}
+
+void TowerWireGroup::Input(QDataStream& fin)
+{
+	fin >> groupId;
+	int nNode;
+	fin >> nNode;
+	m_Nodes.resize(nNode);
+	for (int i = 0; i < nNode; ++i)
+	{
+		m_Nodes[i].Input(fin);
+	}
+	int nbeam;
+	fin >> nbeam;
+	m_Elements_beams.resize(nbeam);
+	for (int i = 0; i < nbeam; ++i)
+	{
+		m_Elements_beams[i].Input(fin);
+	}
+	int nTruss;
+	fin >> nTruss;
+	m_Elements_Trusses.resize(nTruss);
+	for (int i = 0; i < nTruss; ++i)
+	{
+		m_Elements_Trusses[i].Input(fin);
+	}
+	int nSuspension;
+	fin >> nSuspension;
+	SuspensionNode.resize(nSuspension);
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin >> SuspensionNode[i];
+	}
+}
+
+void TowerWireGroup::VectorToMap()
+{
+	for (const auto& data : m_Nodes)
+	{
+		NodeData.insert(std::make_pair(data.m_idNode, data));
+	}
+}
+
 void TowerWireGroup::AddTowerToGroup(Tower* tower, int towerId, double dx, double dy, double dz, double dAngle)
 {
 	AddTowerNode(tower, towerId, dx, dy, dz);
 	AddTowerElement(tower, towerId);
 	rotation(dAngle, towerId);
+	AddSuspensionNode(tower);
+	tower->TowerToGroup.clear();
 }
 
 void TowerWireGroup::AddTowerNode(Tower* tower, int towerId, double dx, double dy, double dz)
@@ -21,7 +98,7 @@ void TowerWireGroup::AddTowerNode(Tower* tower, int towerId, double dx, double d
 		this->m_Nodes[total].x += dx;
 		this->m_Nodes[total].y += dy;
 		this->m_Nodes[total].z += dz;
-		this->m_Nodes[total].m_idNode = 1;
+		this->m_Nodes[total].m_idNode = total+1;
 		this->m_Nodes[total].groupTowerId = towerId;
 		tower->TowerToGroup.push_back(total+1);
 	}
@@ -70,6 +147,17 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
 		this->m_Elements_beams[totalT].groupTowerId = towerId;
+	}
+}
+
+void TowerWireGroup::AddSuspensionNode(Tower* tower)
+{
+	size_t SusNode = tower->SuspensionNode.size();
+	for (int i = 0; i < SusNode; i++)
+	{
+		this->SuspensionNode.push_back(tower->SuspensionNode[i]);
+		size_t totalT = this->SuspensionNode.size() - 1;
+		SuspensionNode[totalT] = tower->FindGroupIdNode(tower->SuspensionNode[i]);
 	}
 }
 

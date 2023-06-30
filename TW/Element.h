@@ -17,8 +17,8 @@ public:
 	void show()const;
 	void showid()const;
 
-	void SaveTo(QDataStream& fin) const;
-	void Input(QDataStream& fin);
+	virtual void SaveTo(QDataStream& fin) const;
+	virtual void Input(QDataStream& fin);
 
 };
 
