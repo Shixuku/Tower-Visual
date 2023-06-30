@@ -12,6 +12,7 @@
 #include "TowerPart_CrossArm.h"
 #include"TowerPart_Insulator.h"
 #include "Tower.h"
+#include"TowerWireGroup.h"
 #include<QFileDialog>
 #include <QString>
 #include <QDebug>
@@ -33,7 +34,7 @@ class Create_Constraint;
 class ConcentrateForce;
 class Creat_Loads;
 class Wind;
-
+class TowerWireGroup;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -49,6 +50,7 @@ public:
     vtkRenderer* m_Renderer_2;//单塔实例的vtk窗口
     vtkRenderer* m_Renderer_3;//塔线组的vtk窗口
     vtkGenericOpenGLRenderWindow* m_renderWindow;
+    QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
    
     void HiddeAllPart();
     void HiddeAllTower();
@@ -65,7 +67,7 @@ public:
      Manage_Entity<TowerPart_Insulator> towerPartInsulator;
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
-     
+     Manage_Entity<TowerWireGroup> TWG;
      vector<T_Foot*> t_foots;
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
@@ -86,6 +88,7 @@ public:
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
+     bool isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item);//将塔线建模放在塔线组下去找到
      void Area_Inqure();//框选
      void Close_Point();
      vector<int> con_id;
@@ -115,7 +118,7 @@ public slots:
     void ui_Management_PartData();
     void ui_Management_InsData();
     void ui_Interphase_spacer(QTreeWidgetItem* item);
-    void ui_Wire_InterFace();
+    void ui_Wire_InterFace(QTreeWidgetItem* item);
     void ui_Constraint();
     void SaveFile();
     void OpenFile();
@@ -157,7 +160,7 @@ private:
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
-
+    TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
    
 
 };

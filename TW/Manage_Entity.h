@@ -70,7 +70,8 @@ public:
 				Read_Stream<TowerPart_Insulator>(s); break;
 			case Part_Type::ET_Tower:
 				Read_Stream<Tower>(s); break;
-			
+			case Part_Type::ET_TowerWireGroup:
+				Read_Stream<TowerWireGroup>(s); break;
 			default:
 			{
 				QString cs("不支持的对象类型");

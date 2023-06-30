@@ -2,15 +2,22 @@
 #include"InterFace.h"
 #include"Senior.h"
 
-Wire_InterFace::Wire_InterFace(QWidget *parent)
+Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
+	towerWireGroup = TowerWireGroup;
 	Q_ASSERT(m_pInterFace != nullptr);
 	Initialize();
-	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Wire_InterFace::Insert_Data);
-	connect(ui.Pts_OK, &QPushButton::clicked, this, [=]() {int a = ui.N_Pts->text().toInt();Insert_Point_Infor(a);});
+//	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Wire_InterFace::Insert_Data);
+	connect(ui.Pts_OK, &QPushButton::clicked, this, [=]() 
+	{
+		int a = towerWireGroup->SuspensionNode.size();
+	    Insert_Point_Infor(a);
+		Insert_Data();
+	});
+
 	connect(ui.Senior_Btn, &QPushButton::clicked, this, [=]() {Show_Senior(); m_pInterFace->Close_Point();  });
 	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {Insert_Pts_to_vector();   OK(); this->close();  });
 	connect(ui.Btn_cancel, &QPushButton::clicked, this, [=]() { this->close();  });
@@ -99,18 +106,21 @@ void Wire_InterFace::Initialize()
 
 void Wire_InterFace::Insert_Data()
 {
-	std::list<Node*> Nodes;
-	m_pInterFace->Get_SelectedNode(Nodes);
-	int k = 0;
-	for (auto pNode : Nodes)
-	{
-		int idNode = pNode->m_idNode;
-		ui.Section_Lists->setItem(k, 0, new QTableWidgetItem(QString::number(idNode)));
-		ui.Section_Lists->setItem(k, 1, new QTableWidgetItem(QString::number(pNode->x/1000)));
-		ui.Section_Lists->setItem(k, 2, new QTableWidgetItem(QString::number(pNode->y/1000)));
-		ui.Section_Lists->setItem(k, 3, new QTableWidgetItem(QString::number(pNode->z/1000)));
-		++k;
+	//std::list<Node*> Nodes;
+	//m_pInterFace->Get_SelectedNode(Nodes);
+	int k = towerWireGroup->SuspensionNode.size();
+	towerWireGroup->VectorToMap();
 
+	for (int i=0;i<k;i++)
+	{
+		int idNode = towerWireGroup->SuspensionNode[i];
+		ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(idNode)));
+		double x = towerWireGroup->NodeData[towerWireGroup->SuspensionNode[i]].x;
+		ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(x/1000)));
+		double y = towerWireGroup->NodeData[towerWireGroup->SuspensionNode[i]].y;
+		ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(y/1000)));
+		double z = towerWireGroup->NodeData[towerWireGroup->SuspensionNode[i]].z;
+		ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(z/1000)));
 	}
 }
 
@@ -617,7 +627,7 @@ void Wire_InterFace::OK()
 	Draw_Wire d;
 	vtkSmartPointer<vtkActor> m_LineActor;
 	vtkSmartPointer<vtkActor> Node_actor;
-	d.Show_Wire(m_Nodes, m_Elements, m_pInterFace->m_Renderer_2);
+	d.Show_Wire(m_Nodes, m_Elements, m_pInterFace->m_Renderer_3);
 }
 
 

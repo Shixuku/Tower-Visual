@@ -24,9 +24,10 @@ public:
 	double y ;//杆塔位移的y分量
 	double z ;//杆塔位移的z分量
 	double angle ;//杆塔的转角
+	void CreatTowerWierGroupItem();
 public slots:
 	void onComboBoxIndexChanged(int index);
-	
+
 private:
 	Ui::TowerWireGroupClass ui;
 };
