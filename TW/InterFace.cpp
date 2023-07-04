@@ -22,35 +22,34 @@
 #include"CreateAbaqusInp.h"
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
-#include"TowerWireGroup.h"
 #include"Wind.h"
 
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
-	layout = new QHBoxLayout(ui.widget);//Éú³É²¼¾Ö,widget×¨ÃÅ·ÅÉú³ÉµÄËş
-	m_VtkWidget = new QVTKOpenGLNativeWidget();//Éú³É¿Ø¼ş
+	layout = new QHBoxLayout(ui.widget);//ç”Ÿæˆå¸ƒå±€,widgetä¸“é—¨æ”¾ç”Ÿæˆçš„å¡”
+	m_VtkWidget = new QVTKOpenGLNativeWidget();//ç”Ÿæˆæ§ä»¶
 
 	m_renderWindow = vtkGenericOpenGLRenderWindow::New();
 	m_VtkWidget->setRenderWindow(m_renderWindow);
 
 	m_Renderer = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer);//Ìí¼Ó·Å²¿¼şµÄvtk
+	m_renderWindow->AddRenderer(m_Renderer);//æ·»åŠ æ”¾éƒ¨ä»¶çš„vtk
 
 	m_Renderer_2 = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer_2);//Ìí¼Ó·Åµ¥ËşµÄvtk
+	m_renderWindow->AddRenderer(m_Renderer_2);//æ·»åŠ æ”¾å•å¡”çš„vtk
 
 	m_Renderer_3 = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer_3);//Ìí¼Ó·ÅËşÏß×éµÄvtk
+	m_renderWindow->AddRenderer(m_Renderer_3);//æ·»åŠ æ”¾å¡”çº¿ç»„çš„vtk
 	this->setContextMenuPolicy(Qt::DefaultContextMenu);
 	m_CurrentRenderer = nullptr;
 	initMenu();
-	//ÓÒ±ß´°¿Ú
+	//å³è¾¹çª—å£
 	SetupCentralWidget();
-	//×ó±ß´°¿Ú
+	//å·¦è¾¹çª—å£
 	TreeWidgetShow();
 	
-	//Ä¬ÈÏ´ò¿ªµÄÊÇpartµÄvtk´°¿Ú
+	//é»˜è®¤æ‰“å¼€çš„æ˜¯partçš„vtkçª—å£
 	switchRenderWindow(0);
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
@@ -60,7 +59,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 		{
 			if (ui.treeWidget->topLevelItem(1)->childCount() == 0)
 			{
-				QMessageBox::information(this, "Tips", "ÇëÏÈ´´½¨ËşÉí£¡");
+				QMessageBox::information(this, "Tips", "è¯·å…ˆåˆ›å»ºå¡”èº«ï¼");
 			}
 			else { ui_CrossArm(); }
 		});
@@ -88,22 +87,22 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 
 void InterFace::SetupCentralWidget()
 {
-	//¸ü¸Ä±³¾°ÑÕÉ«
-	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // µ×²¿ÑÕÉ«Öµ
-	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // ¶¥²¿ÑÕÉ«Öµ
+	//æ›´æ”¹èƒŒæ™¯é¢œè‰²
+	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // åº•éƒ¨é¢œè‰²å€¼
+	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // é¡¶éƒ¨é¢œè‰²å€¼
 	m_Renderer->SetGradientBackground(1);    
 
-	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // µ×²¿ÑÕÉ«Öµ
-	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // ¶¥²¿ÑÕÉ«Öµ
+	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // åº•éƒ¨é¢œè‰²å€¼
+	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // é¡¶éƒ¨é¢œè‰²å€¼
 	m_Renderer_2->SetGradientBackground(1);
 
-	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // µ×²¿ÑÕÉ«Öµ
-	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // ¶¥²¿ÑÕÉ«Öµ
-	m_Renderer_3->SetGradientBackground(1);                  // ¿ªÆô½¥±äÉ«±³¾°ÉèÖÃ
+	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // åº•éƒ¨é¢œè‰²å€¼
+	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // é¡¶éƒ¨é¢œè‰²å€¼
+	m_Renderer_3->SetGradientBackground(1);                  // å¼€å¯æ¸å˜è‰²èƒŒæ™¯è®¾ç½®
 
-	////Ìí¼Ó×ø±êÏµ
+	////æ·»åŠ åæ ‡ç³»
 	//vtkAxesActor* axesActor = vtkAxesActor::New();
-	////ÒÔWidget·½Ê½,ÔÚ×óÏÂ½ÇµÄÊÓ¿ÚÖĞÏÔÊ¾×ø±êÏµ£¬¿É½øĞĞÊó±ê½»»¥
+	////ä»¥Widgetæ–¹å¼,åœ¨å·¦ä¸‹è§’çš„è§†å£ä¸­æ˜¾ç¤ºåæ ‡ç³»ï¼Œå¯è¿›è¡Œé¼ æ ‡äº¤äº’
 	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
 	//widget->SetOrientationMarker(axesActor);
 	//widget->SetInteractor(m_VtkWidget->interactor());
@@ -114,71 +113,71 @@ void InterFace::SetupCentralWidget()
 }
 void InterFace::TreeWidgetShow()
 {
-	layout->addWidget(m_VtkWidget);//²¼¾ÖÖĞ¼ÓÈë¿Ø¼ş
-	ui.treeWidget->header()->setVisible(false);//ÉèÖÃ±íÍ·²»¿É¼û
+	layout->addWidget(m_VtkWidget);//å¸ƒå±€ä¸­åŠ å…¥æ§ä»¶
+	ui.treeWidget->header()->setVisible(false);//è®¾ç½®è¡¨å¤´ä¸å¯è§
 
 	QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_part->setText(0, QString("Éú³É¸ËËş²¿¼ş"));
+	creat_tower_part->setText(0, QString("ç”Ÿæˆæ†å¡”éƒ¨ä»¶"));
 
 	QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
-	part_leg->setText(0, QString("ËşÍÈ²¿¼ş"));
+	part_leg->setText(0, QString("å¡”è…¿éƒ¨ä»¶"));
 
 	QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
-	part_body->setText(0, QString("ËşÉí²¿¼ş"));
+	part_body->setText(0, QString("å¡”èº«éƒ¨ä»¶"));
 
 	QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
-	part_head->setText(0, QString("ËşÍ·²¿¼ş"));
+	part_head->setText(0, QString("å¡”å¤´éƒ¨ä»¶"));
 
 	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_instance->setText(0, QString("Éú³É¸ËËşÊµÀı"));
+	creat_tower_instance->setText(0, QString("ç”Ÿæˆæ†å¡”å®ä¾‹"));
 
-	QTreeWidgetItem* creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_towerwire_instance->setText(0, QString("Éú³ÉËşÏß×éÊµÀı"));
+	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_towerwire_instance->setText(0, QString("ç”Ÿæˆå¡”çº¿ç»„å®ä¾‹"));
 
 	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
-	attribute->setText(0, QString("ÊôĞÔ"));
+	attribute->setText(0, QString("å±æ€§"));
 
 	QTreeWidgetItem* att_material = new QTreeWidgetItem(attribute);
-	att_material->setText(0, QString("²ÄÁÏÊôĞÔ"));
+	att_material->setText(0, QString("ææ–™å±æ€§"));
 
 	QTreeWidgetItem* att_section = new QTreeWidgetItem(attribute);
-	att_section->setText(0, QString("½ØÃæÊôĞÔ"));
+	att_section->setText(0, QString("æˆªé¢å±æ€§"));
 
 	QTreeWidgetItem* assign_section = new QTreeWidgetItem(attribute);
-	assign_section->setText(0, QString("¸³Óè½ØÃæ"));
+	assign_section->setText(0, QString("èµ‹äºˆæˆªé¢"));
 
 	QTreeWidgetItem* pNewItem9 = new QTreeWidgetItem(attribute);
-	pNewItem9->setText(0, QString("¸ù¾İ³¤¶È¸³Óè½ØÃæ"));
+	pNewItem9->setText(0, QString("æ ¹æ®é•¿åº¦èµ‹äºˆæˆªé¢"));
 
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(ui.treeWidget);
-	Loads->setText(0, QString("ºÉÔØ"));
+	Loads->setText(0, QString("è·è½½"));
 
 	QTreeWidgetItem* creat_loads = new QTreeWidgetItem(Loads);
-	creat_loads->setText(0, QString("´´½¨ÔØºÉ"));
+	creat_loads->setText(0, QString("åˆ›å»ºè½½è·"));
 
 	QTreeWidgetItem* edit_loads = new QTreeWidgetItem(Loads);
-	edit_loads->setText(0, QString("¹ÜÀíÔØºÉ"));
+	edit_loads->setText(0, QString("ç®¡ç†è½½è·"));
 
 	QTreeWidgetItem* creat_constraints = new QTreeWidgetItem(Loads);
-	creat_constraints->setText(0, QString("´´½¨±ß½çÌõ¼ş"));
+	creat_constraints->setText(0, QString("åˆ›å»ºè¾¹ç•Œæ¡ä»¶"));
 
 	QTreeWidgetItem* edit_constraints = new QTreeWidgetItem(Loads);
-	edit_constraints->setText(0, QString("±à¼­±ß½çÌõ¼ş"));
+	edit_constraints->setText(0, QString("ç¼–è¾‘è¾¹ç•Œæ¡ä»¶"));
 
 	QTreeWidgetItem* insulator_string = new QTreeWidgetItem(ui.treeWidget);
-	insulator_string->setText(0, QString("¾øÔµ×Ó´®"));
+	insulator_string->setText(0, QString("ç»ç¼˜å­ä¸²"));
 
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
-	Wire_modeling->setText(0, QString("µ¼Ïß½¨Ä£"));
+	Wire_modeling->setText(0, QString("å¯¼çº¿å»ºæ¨¡"));
 
 	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
-	WIndLoad->setText(0, QString("´´½¨·çÔØºÉ"));
+	WIndLoad->setText(0, QString("åˆ›å»ºé£è½½è·"));
 
 }
-//Ë«»÷Ê÷itemÏàÓ¦ÊÂ¼ş
+//åŒå‡»æ ‘itemç›¸åº”äº‹ä»¶
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 {
-	//Éú³É¸ËËş²¿¼ş
+	//ç”Ÿæˆæ†å¡”éƒ¨ä»¶
 	if (item == ui.treeWidget->topLevelItem(0)->child(0))
 	{
 		ui_Foot();
@@ -191,17 +190,17 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		if (ui.treeWidget->topLevelItem(0)->child(1)->childCount() == 0)
 		{
-			QMessageBox::information(this, "Tips", "ÇëÏÈ´´½¨ËşÉí£¡");
+			QMessageBox::information(this, "Tips", "è¯·å…ˆåˆ›å»ºå¡”èº«ï¼");
 		}
 		else { ui_CrossArm(); }	
 	}
-	//Éú³É¸ËËşÊµÀı
+	//ç”Ÿæˆæ†å¡”å®ä¾‹
 	else if (item == ui.treeWidget->topLevelItem(1))
 	{
 		ui_Tower();
 	}
-	//ÊôĞÔ
-	else if (item == ui.treeWidget->topLevelItem(2)->child(1))
+	//å±æ€§
+	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
 	{
 		ui_Section();
 	}
@@ -213,7 +212,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_SetAllSection(item);
 	}
-	//ºÉÔØ
+	//è·è½½
 	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
 	{
 		ui_ManageLoads();
@@ -226,15 +225,15 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		
 	}
-	//¾øÔµ×Ó´®
+	//ç»ç¼˜å­ä¸²
 	else if (isChildOfPartSetSpacer(item))
 	{
 		ui_Interphase_spacer(item);
 	}
-	//µ¼Ïß½¨Ä£
-	else if (item == ui.treeWidget->topLevelItem(6))
+	//å¯¼çº¿å»ºæ¨¡
+	else if (isChildOfTowerwiregroupWireModeling(item))
 	{
-		ui_Wire_InterFace();
+		ui_Wire_InterFace(item);
 	}
 	else if (isChildOfTower(item,0))
 	{
@@ -260,7 +259,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
-	//²¿¼şÇĞ»»
+	//éƒ¨ä»¶åˆ‡æ¢
 	Part_Base* part = OnFindPart(item);
 
 	if (part != nullptr)
@@ -276,7 +275,7 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 
 }
 
-//Éú³ÉËşÍÈ
+//ç”Ÿæˆå¡”è…¿
 void InterFace::ui_Foot()
 {
 	switchRenderWindow(0);
@@ -288,13 +287,13 @@ void InterFace::ui_Foot()
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		AddPartFunction(item);
 		TowerPart_leg* t = new TowerPart_leg;
-		T_foot->Get_Data(*t);//È¡Êı¾İ
-		item->setText(0, t->m_Name);//×Ó½ÚµãÃû³ÆÎª×Ô¼ºÃüÃûµÄÃû³Æ
+		T_foot->Get_Data(*t);//å–æ•°æ®
+		item->setText(0, t->m_Name);//å­èŠ‚ç‚¹åç§°ä¸ºè‡ªå·±å‘½åçš„åç§°
 		t->Item = item;
 		HiddeAllPart();
 
 		t->Create_Mesh();
-		t->m_id = parent->childCount();//±àºÅ
+		t->m_id = parent->childCount();//ç¼–å·
 		t->Show_VTKnode(m_Renderer);
 		t->Show_VTKtruss(m_Renderer);
 		t->Show_VTKbeam(m_Renderer);
@@ -351,7 +350,7 @@ void InterFace::ui_CrossArm()
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		AddPartFunction(item);
 		QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
-		spacer->setText(0, QString("Ìí¼Ó¾øÔµ×Ó´®"));
+		spacer->setText(0, QString("æ·»åŠ ç»ç¼˜å­ä¸²"));
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
 		HiddeAllPart();
@@ -364,10 +363,10 @@ void InterFace::ui_CrossArm()
 		t->Show_VTKtruss(m_Renderer);
 		t->Show_VTKbeam(m_Renderer);
 		
-		TP_CrossArm.Add_Entity(t);//ËşÍ·
+		TP_CrossArm.Add_Entity(t);//å¡”å¤´
 		m_Renderer->ResetCamera();
 
-		t_crossarms.push_back(T_ca);//ËşÍ·¶Ô»°¿ò
+		t_crossarms.push_back(T_ca);//å¡”å¤´å¯¹è¯æ¡†
 
 	}
 }
@@ -382,15 +381,15 @@ void InterFace::ui_Tower()
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 		AddPartFunction(item);
 		Tower* tw = new Tower;
-		for (auto& i : T_As->m_ArryLeg)//ËşÍÈ
+		for (auto& i : T_As->m_ArryLeg)//å¡”è…¿
 		{
 			tw->addPart(TP_leg.Find_Entity(i));
 		}
-		for (auto& i : T_As->m_ArryBody)//ËşÉí¶Î
+		for (auto& i : T_As->m_ArryBody)//å¡”èº«æ®µ
 		{
 			tw->addPart(TP_body.Find_Entity(i));
 		}
-		for (auto& i : T_As->m_ArryHead)//ËşÍ·
+		for (auto& i : T_As->m_ArryHead)//å¡”å¤´
 		{
 			tw->addPart(TP_CrossArm.Find_Entity(i));
 			int crossArm = TP_CrossArm.Find_Entity(i)->m_id;
@@ -407,12 +406,12 @@ void InterFace::ui_Tower()
 
 		tw->Item = item;
 		item->setText(0, T_As->Get_name());
-		tw->m_id = TP.size() + 1;//±àºÅ
+		tw->m_id = TP.size() + 1;//ç¼–å·
 		
 		double x = 0; double y = 0; double z = 0; double angle = 0;
-		T_As->Get_Movedata(x, y, z, angle);//µÃµ½Æ½ÒÆĞı×ª½Ç¶È
-		tw->rotation(angle);//Ğı×ª
-		tw->move(x, y, z);//Æ½ÒÆ
+		T_As->Get_Movedata(x, y, z, angle);//å¾—åˆ°å¹³ç§»æ—‹è½¬è§’åº¦
+		tw->rotation(angle);//æ—‹è½¬
+		tw->move(x, y, z);//å¹³ç§»
 		
 		tw->Show_VTKnode(m_Renderer_2);
 		tw->Show_VTKtruss(m_Renderer_2);
@@ -435,24 +434,24 @@ void InterFace::ui_Section()
 	int ret = M_ab->exec();
 	if (ret == QDialog::Accepted)
 	{
-		int ClassSection = 0;//È¡µÃ¸Ã½ØÃæÀàĞÍµÄ²ÎÊı
+		int ClassSection = 0;//å–å¾—è¯¥æˆªé¢ç±»å‹çš„å‚æ•°
 		ClassSection = M_ab->ClassSection;
 		string NameSection = M_ab->name;
 		double ia = M_ab->a;
 		double ib = M_ab->b;
 		int iM = M_ab->ClassMa;
-		int id = MS.size() + 1;//´Ó1¿ªÊ¼ÅÅĞò
+		int id = MS.size() + 1;//ä»1å¼€å§‹æ’åº
 		Section* section = new Section(ia, ib, id, ClassSection, iM);
 		MS.push_back(Section(ia, ib, id, ClassSection, iM));
-		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(0)->childCount(); i++)//ĞÂ¼üÒ»¸ö£¬ËşÍÈÀï·ÅÒ»¸ö
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(0)->childCount(); i++)//æ–°é”®ä¸€ä¸ªï¼Œå¡”è…¿é‡Œæ”¾ä¸€ä¸ª
 		{
 			TP_leg.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
-		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(1)->childCount(); i++)//ĞÂ¼üÒ»¸ö£¬ËşÉíÀï·ÅÒ»¸ö
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(1)->childCount(); i++)//æ–°é”®ä¸€ä¸ªï¼Œå¡”èº«é‡Œæ”¾ä¸€ä¸ª
 		{
 			TP_body.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
-		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(2)->childCount(); i++)//ĞÂ¼üÒ»¸ö£¬ËşÍ·Àï·ÅÒ»¸ö
+		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(2)->childCount(); i++)//æ–°é”®ä¸€ä¸ªï¼Œå¡”å¤´é‡Œæ”¾ä¸€ä¸ª
 		{
 			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
 		}
@@ -471,7 +470,7 @@ void InterFace::ui_SetAllSection(QTreeWidgetItem* item)
 {
 	Part_Base* Part = OnFindPart(item->parent());
 	Show_Part(Part);
-	//ÏÔÊ¾ËùÓĞµ¥Ôª³¤¶È
+	//æ˜¾ç¤ºæ‰€æœ‰å•å…ƒé•¿åº¦
 	for (auto i : Part->m_Elements_beams)
 	{
 		int ipt1 = i.m_idNode[0] - 1; //id
@@ -509,13 +508,19 @@ void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 	Part_Base* part = OnFindPart(item->parent());
 	Interphase_spacer* IS = new Interphase_spacer(Arm,this);
 
-	IS->show();//Òª»¥¶¯Ö»ÄÜÓÃshow
+	IS->show();//è¦äº’åŠ¨åªèƒ½ç”¨show
 }
 
-void InterFace::ui_Wire_InterFace()
+void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 {
-	
 	Wire_InterFace* wire = new Wire_InterFace(this);
+	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
+	cout << "test Group data :" << "\n";
+	for (int i = 0; i < towerWireGroup->m_Nodes.size(); i++)
+	{
+		cout << "test x:" << towerWireGroup->m_Nodes[i].x << "test y:" << towerWireGroup->m_Nodes[i].y << "test z:" << towerWireGroup->m_Nodes[i].z << "\n";
+	}
+	Wire_InterFace* wire = new Wire_InterFace(towerWireGroup,this);
 	wire->show();
 }
 
@@ -540,7 +545,7 @@ void InterFace::ui_Constraint()
 
 void InterFace::SaveFile()
 {
-	QString str = QFileDialog::getSaveFileName(this, "±£´æ", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
+	QString str = QFileDialog::getSaveFileName(this, "ä¿å­˜", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
 
 	if (str != nullptr)
 	{
@@ -551,7 +556,7 @@ void InterFace::SaveFile()
 		Stream.setDevice(&Qf);
 		if (!Qf.isOpen())
 		{
-			cout << "ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n";
+			cout << "æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n";
 		}
 		else
 		{
@@ -565,7 +570,7 @@ void InterFace::SaveFile()
 }
 void InterFace::OpenFile()
 {
-	QString str = QFileDialog::getOpenFileName(this, "´ò¿ª", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
+	QString str = QFileDialog::getOpenFileName(this, "æ‰“å¼€", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
 
 	if (str != nullptr)
 	{
@@ -576,7 +581,7 @@ void InterFace::OpenFile()
 		Stream.setDevice(&Qf);
 		if (!Qf.isOpen())
 		{
-			cout << "ÎÄ¼ş´ò¿ªÊ§°Ü£¡\n";
+			cout << "æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼\n";
 		}
 		else
 		{
@@ -589,8 +594,8 @@ void InterFace::OpenFile()
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str×ª×Ö·û
-				item->setText(0, QString("ËşÍÈ²¿¼ş" + str));
+				QString str = QString::number(parent->childCount());     //strè½¬å­—ç¬¦
+				item->setText(0, QString("å¡”è…¿éƒ¨ä»¶" + str));
 				TP_leg.Find_Entity(i + 1)->Item = item;
 				//TP_leg[i]->Item = item;
 			}
@@ -599,24 +604,24 @@ void InterFace::OpenFile()
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str×ª×Ö·û
-				item->setText(0, QString("ËşÉí²¿¼ş" + str));
+				QString str = QString::number(parent->childCount());     //strè½¬å­—ç¬¦
+				item->setText(0, QString("å¡”èº«éƒ¨ä»¶" + str));
 				TP_body.Find_Entity(i + 1)->Item = item;
 			}
 			for (int i = 0; i < TP_CrossArm.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str×ª×Ö·û
-				item->setText(0, QString("ºáµ£²¿¼ş" + str));
+				QString str = QString::number(parent->childCount());     //strè½¬å­—ç¬¦
+				item->setText(0, QString("æ¨ªæ‹…éƒ¨ä»¶" + str));
 				TP_CrossArm.Find_Entity(i + 1)->Item = item;
 			}
 			for (int i = 0; i < TP.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str×ª×Ö·û
-				item->setText(0, QString("ÊäµçËş" + str));
+				QString str = QString::number(parent->childCount());     //strè½¬å­—ç¬¦
+				item->setText(0, QString("è¾“ç”µå¡”" + str));
 				TP.Find_Entity(i + 1)->Item = item;
 			}
 
@@ -628,7 +633,7 @@ void InterFace::OpenFile()
 
 void InterFace::contextMenuEvent(QContextMenuEvent* event)
 {
-	// »ñÈ¡µ±Ç°Ñ¡ÖĞµÄ m_Renderer
+	// è·å–å½“å‰é€‰ä¸­çš„ m_Renderer
 	vtkRenderWindowInteractor* interactor = m_renderWindow->GetInteractor();
 	int* clickPos = interactor->GetEventPosition();
 	m_CurrentRenderer = interactor->FindPokedRenderer(clickPos[0], clickPos[1]);
@@ -640,7 +645,7 @@ Part_Base* InterFace::OnFindPart(const QTreeWidgetItem* Item)
 	QTreeWidgetItemIterator it(ui.treeWidget);
 	while (*it)
 	{
-		//QTreeWidgetItemÊÇ·ñÂú×ãÌõ¼ş---ÕâÀïµÄÌõ¼ş¿ÉÒÔ×Ô¼ºĞŞ¸Ä
+		//QTreeWidgetItemæ˜¯å¦æ»¡è¶³æ¡ä»¶---è¿™é‡Œçš„æ¡ä»¶å¯ä»¥è‡ªå·±ä¿®æ”¹
 		if ((*it) == Item)
 		{
 			for (auto& i : TP_leg)
@@ -685,10 +690,29 @@ TowerData_CrossArm* InterFace::OnFindCrossAem(const QTreeWidgetItem* Item)
 	QTreeWidgetItemIterator it(ui.treeWidget);
 	while (*it)
 	{
-		//QTreeWidgetItemÊÇ·ñÂú×ãÌõ¼ş---ÕâÀïµÄÌõ¼ş¿ÉÒÔ×Ô¼ºĞŞ¸Ä
+		//QTreeWidgetItemæ˜¯å¦æ»¡è¶³æ¡ä»¶---è¿™é‡Œçš„æ¡ä»¶å¯ä»¥è‡ªå·±ä¿®æ”¹
 		if ((*it) == Item)
 		{
 			for (auto& i : TP_CrossArm)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			return nullptr;
+		}
+		++it;
+	}
+	return nullptr;
+}
+
+TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
+{
+	QTreeWidgetItemIterator it(ui.treeWidget);
+	while (*it)
+	{
+		//QTreeWidgetItemæ˜¯å¦æ»¡è¶³æ¡ä»¶---è¿™é‡Œçš„æ¡ä»¶å¯ä»¥è‡ªå·±ä¿®æ”¹
+		if ((*it) == Item)
+		{
+			for (auto& i : TWG)
 			{
 				if (i.second->Item == *it) return i.second;
 			}
@@ -786,9 +810,9 @@ void InterFace::switchRenderWindow(int index)
 void InterFace::initMenu()
 {
 	m_pMenu = new QMenu(this);
-	QAction* pAc1 = new QAction("µãÑ¡");
-	QAction* pAc2 = new QAction("¿òÑ¡");
-	QAction* pAc3 = new QAction("È¡Ïû");
+	QAction* pAc1 = new QAction("ç‚¹é€‰");
+	QAction* pAc2 = new QAction("æ¡†é€‰");
+	QAction* pAc3 = new QAction("å–æ¶ˆ");
 	m_pMenu->addAction(pAc1);
 	m_pMenu->addAction(pAc2);
 	m_pMenu->addAction(pAc3);
@@ -801,21 +825,21 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 {
 	if (item->parent()->parent() == ui.treeWidget->topLevelItem(0))
 	{
-		//±£´æÖ¸Õëµ½partµÄ¸³Óè½ØÃæ
+		//ä¿å­˜æŒ‡é’ˆåˆ°partçš„èµ‹äºˆæˆªé¢
 		QTreeWidgetItem* assign_section = new QTreeWidgetItem(item);
-		assign_section->setText(0, QString("¸³Óè½ØÃæ"));
-		//±£´æÖ¸Õëµ½partµÄ¸ù¾İ³¤¶È¸³Óè½ØÃæ
+		assign_section->setText(0, QString("èµ‹äºˆæˆªé¢"));
+		//ä¿å­˜æŒ‡é’ˆåˆ°partçš„æ ¹æ®é•¿åº¦èµ‹äºˆæˆªé¢
 		QTreeWidgetItem* SetAllSection = new QTreeWidgetItem(item);
-		SetAllSection->setText(0, QString("¸ù¾İ³¤¶È¸³Óè½ØÃæ"));
+		SetAllSection->setText(0, QString("æ ¹æ®é•¿åº¦èµ‹äºˆæˆªé¢"));
 	}
 	if (item->parent()== ui.treeWidget->topLevelItem(1))
 	{
-		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//Ê©¼ÓÔØºÉ°´Å¥
-		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//Ê©¼ÓÔØºÉ°´Å¥
-		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//Ê©¼ÓÔØºÉ°´Å¥
-		AddLoadForce->setText(0, QString("Ê©¼ÓºÉÔØ"));
-		OutPut->setText(0, QString("Êä³ö¼ÆËãÎÄ¼ş"));
-		Inp->setText(0, QString("Êä³öABAQUS¼ÆËãÎÄ¼ş"));
+		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//æ–½åŠ è½½è·æŒ‰é’®
+		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//æ–½åŠ è½½è·æŒ‰é’®
+		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//æ–½åŠ è½½è·æŒ‰é’®
+		AddLoadForce->setText(0, QString("æ–½åŠ è·è½½"));
+		OutPut->setText(0, QString("è¾“å‡ºè®¡ç®—æ–‡ä»¶"));
+		Inp->setText(0, QString("è¾“å‡ºABAQUSè®¡ç®—æ–‡ä»¶"));
 	}
 
 
@@ -823,7 +847,7 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 double* InterFace::GetSectionData(int SectionGroup)
 {
-	double* SectionData = new double;//ÓÃÓÚ½ÓÊÕ½ØÃæÊı¾İµÄÊı×é£¬µÚÒ»¸öÊÇLµÄ³¤±ß»òÕßÔ²°ë¾¶£¬µÚ¶ş¸öÊÇL¶Ì±ß»òÕßÔ²»·ºñ¶È£¬µÚÈı¸öÊÇ½ØÃæÀàĞÍ£¬µÚËÄ¸öÊÇ²ÄÁÏ±àºÅ
+	double* SectionData = new double;//ç”¨äºæ¥æ”¶æˆªé¢æ•°æ®çš„æ•°ç»„ï¼Œç¬¬ä¸€ä¸ªæ˜¯Lçš„é•¿è¾¹æˆ–è€…åœ†åŠå¾„ï¼Œç¬¬äºŒä¸ªæ˜¯LçŸ­è¾¹æˆ–è€…åœ†ç¯åšåº¦ï¼Œç¬¬ä¸‰ä¸ªæ˜¯æˆªé¢ç±»å‹ï¼Œç¬¬å››ä¸ªæ˜¯ææ–™ç¼–å·
 	for (auto i : MS)
 	{
 		if (i.m_id == SectionGroup)
@@ -840,20 +864,20 @@ double* InterFace::GetSectionData(int SectionGroup)
 	return nullptr;
 }
 
-//µ¼Ïß²¿·Ö
+//å¯¼çº¿éƒ¨åˆ†
 void InterFace::Add_Select(vtkSmartPointer<vtkActor> pActor)
 {
 	std::list<Node*> idNodes;
-	Get_SelectedNode(idNodes);//ÒÑ¾­Ñ¡ÖĞµÄ½Úµã
+	Get_SelectedNode(idNodes);//å·²ç»é€‰ä¸­çš„èŠ‚ç‚¹
 
-	auto dataArray = pActor->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//È¡µÃµØÖ·Êı×é
-	auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//×ª»»ÎªÕûÊıÊı×é
+	auto dataArray = pActor->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//å–å¾—åœ°å€æ•°ç»„
+	auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//è½¬æ¢ä¸ºæ•´æ•°æ•°ç»„
 	if (ptrArray != nullptr)
-	{//×ª»»³É¹¦
-		vtkIdType nPts = ptrArray->GetNumberOfValues();//¶ÔÏóµÄ¸öÊı
+	{//è½¬æ¢æˆåŠŸ
+		vtkIdType nPts = ptrArray->GetNumberOfValues();//å¯¹è±¡çš„ä¸ªæ•°
 		for (vtkIdType k = 0; k < nPts; k++)
-		{//ÌáÈ¡Ã¿¸ö¶ÔÏóµÄÖ¸Õë
-			Node* pEntity = (Node*)(ptrArray->GetValue(k));//½«Ã¿¸öÔªËØµÄÖµ×ª»»Îª¶ÔÏóÖ¸Õë
+		{//æå–æ¯ä¸ªå¯¹è±¡çš„æŒ‡é’ˆ
+			Node* pEntity = (Node*)(ptrArray->GetValue(k));//å°†æ¯ä¸ªå…ƒç´ çš„å€¼è½¬æ¢ä¸ºå¯¹è±¡æŒ‡é’ˆ
 			bool bFind = false;
 			for (auto i : idNodes)
 			{
@@ -882,14 +906,14 @@ void InterFace::Get_SelectedNode(std::list<Node*>& Nodes)
 {
 	for (auto i : m_NodeSelected)
 	{
-		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//È¡µÃµØÖ·Êı×é
-		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//×ª»»ÎªÕûÊıÊı×é
+		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//å–å¾—åœ°å€æ•°ç»„
+		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//è½¬æ¢ä¸ºæ•´æ•°æ•°ç»„
 		if (ptrArray != nullptr)
-		{//×ª»»³É¹¦
-			vtkIdType nPts = ptrArray->GetNumberOfValues();//¶ÔÏóµÄ¸öÊı
+		{//è½¬æ¢æˆåŠŸ
+			vtkIdType nPts = ptrArray->GetNumberOfValues();//å¯¹è±¡çš„ä¸ªæ•°
 			for (vtkIdType k = 0; k < nPts; k++)
-			{//ÌáÈ¡Ã¿¸ö¶ÔÏóµÄÖ¸Õë
-				Node* pEntity = (Node*)(ptrArray->GetValue(k));//½«Ã¿¸öÔªËØµÄÖµ×ª»»Îª¶ÔÏóÖ¸Õë
+			{//æå–æ¯ä¸ªå¯¹è±¡çš„æŒ‡é’ˆ
+				Node* pEntity = (Node*)(ptrArray->GetValue(k));//å°†æ¯ä¸ªå…ƒç´ çš„å€¼è½¬æ¢ä¸ºå¯¹è±¡æŒ‡é’ˆ
 				Nodes.push_back(pEntity);
 			}
 		}
@@ -900,14 +924,14 @@ void InterFace::Get_SelectedNode(std::set<Node*>& Nodes)
 {
 	for (auto i : m_NodeSelected)
 	{
-		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//È¡µÃµØÖ·Êı×é
-		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//×ª»»ÎªÕûÊıÊı×é
+		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//å–å¾—åœ°å€æ•°ç»„
+		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//è½¬æ¢ä¸ºæ•´æ•°æ•°ç»„
 		if (ptrArray != nullptr)
-		{//×ª»»³É¹¦
-			vtkIdType nPts = ptrArray->GetNumberOfValues();//¶ÔÏóµÄ¸öÊı
+		{//è½¬æ¢æˆåŠŸ
+			vtkIdType nPts = ptrArray->GetNumberOfValues();//å¯¹è±¡çš„ä¸ªæ•°
 			for (vtkIdType k = 0; k < nPts; k++)
-			{//ÌáÈ¡Ã¿¸ö¶ÔÏóµÄÖ¸Õë
-				Node* pEntity = (Node*)(ptrArray->GetValue(k));//½«Ã¿¸öÔªËØµÄÖµ×ª»»Îª¶ÔÏóÖ¸Õë
+			{//æå–æ¯ä¸ªå¯¹è±¡çš„æŒ‡é’ˆ
+				Node* pEntity = (Node*)(ptrArray->GetValue(k));//å°†æ¯ä¸ªå…ƒç´ çš„å€¼è½¬æ¢ä¸ºå¯¹è±¡æŒ‡é’ˆ
 				Nodes.insert(pEntity);
 			}
 		}
@@ -917,20 +941,20 @@ void InterFace::Get_SelectedNode(std::set<Node*>& Nodes)
 void InterFace::Point_Inqure()	
 {
 	UnSelect_Nodes();
-	// ´´½¨½»»¥Æ÷
+	// åˆ›å»ºäº¤äº’å™¨
 	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
 	renderWindowInteractor->SetRenderWindow(m_renderWindow);
 
-	// ÉèÖÃ×Ô¶¨Òå½»»¥ÀàĞÍ
+	// è®¾ç½®è‡ªå®šä¹‰äº¤äº’ç±»å‹
 	vtkNew<MouseInteractorHighLightActor> style;
 	style->m_pInterFace = this;
 
-	// Ê¹ÓÃµ±Ç°Ñ¡ÖĞµÄ m_Renderer
+	// ä½¿ç”¨å½“å‰é€‰ä¸­çš„ m_Renderer
 	style->SetDefaultRenderer(m_CurrentRenderer);
 
 	renderWindowInteractor->SetInteractorStyle(style);
 
-	// ´´½¨×ø±êÖá²¿¼ş
+	// åˆ›å»ºåæ ‡è½´éƒ¨ä»¶
 	vtkAxesActor* Axes = vtkAxesActor::New();
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
 	widgetAxes->SetOrientationMarker(Axes);
@@ -938,7 +962,7 @@ void InterFace::Point_Inqure()
 	widgetAxes->SetEnabled(1);
 	widgetAxes->SetInteractive(1);
 
-	// ³õÊ¼»¯½»»¥Æ÷²¢Æô¶¯
+	// åˆå§‹åŒ–äº¤äº’å™¨å¹¶å¯åŠ¨
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
 }
@@ -946,7 +970,7 @@ void InterFace::Point_Inqure()
 void InterFace::Area_Inqure()
 {
 	UnSelect_Nodes();
-	// ±£´æÖ÷½çÃæµÄ½»»¥Æ÷ÑùÊ½
+	// ä¿å­˜ä¸»ç•Œé¢çš„äº¤äº’å™¨æ ·å¼
 	m_MainStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
 	// An interactor
 	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
@@ -965,7 +989,7 @@ void InterFace::Area_Inqure()
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
 	renderWindowInteractor->TerminateApp();
-	// Çå³ı m_Renderer_2 Ïà¹Ø×ÊÔ´
+	// æ¸…é™¤ m_Renderer_2 ç›¸å…³èµ„æº
 	Axes->Delete();
 	widgetAxes->Delete();
 	widgetAxes->EnabledOff();
@@ -973,7 +997,7 @@ void InterFace::Area_Inqure()
 	widgetAxes->SetOrientationMarker(nullptr);
 	widgetAxes->Delete();
 
-	// Çå³ı½»»¥Æ÷
+	// æ¸…é™¤äº¤äº’å™¨
 	renderWindowInteractor->RemoveAllObservers();
 }
 
@@ -994,11 +1018,11 @@ bool InterFace::isChildOfTower(QTreeWidgetItem* item, int childNumber)
 }
 
 bool InterFace::isChildOfPartSetSection(QTreeWidgetItem* item)
-{//Èı¸ö²¿¼şµÄitem
+{//ä¸‰ä¸ªéƒ¨ä»¶çš„item
 	QTreeWidgetItem* LegPart = ui.treeWidget->topLevelItem(0)->child(0);
 	QTreeWidgetItem* BodyPart = ui.treeWidget->topLevelItem(0)->child(1);
 	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
-	int LegchildCount = LegPart->childCount();//È¡µÃÓĞ¼¸¸öËşÍÈ²¿¼şÑ­»·
+	int LegchildCount = LegPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”è…¿éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < LegchildCount; i++)
 	{
 		QTreeWidgetItem* childItem = LegPart->child(i);
@@ -1007,7 +1031,7 @@ bool InterFace::isChildOfPartSetSection(QTreeWidgetItem* item)
 			return true;
 		}
 	}
-	int BodychildCount = BodyPart->childCount();//È¡µÃÓĞ¼¸¸öËşÉí²¿¼şÑ­»·
+	int BodychildCount = BodyPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”èº«éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < BodychildCount; i++)
 	{
 		QTreeWidgetItem* childItem = BodyPart->child(i);
@@ -1016,7 +1040,7 @@ bool InterFace::isChildOfPartSetSection(QTreeWidgetItem* item)
 			return true;
 		}
 	}
-	int ArmchildCount = ArmPart->childCount();//È¡µÃÓĞ¼¸¸öËşÍ·²¿¼şÑ­»·
+	int ArmchildCount = ArmPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”å¤´éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < ArmchildCount; i++)
 	{
 		QTreeWidgetItem* childItem = ArmPart->child(i);
@@ -1030,11 +1054,11 @@ bool InterFace::isChildOfPartSetSection(QTreeWidgetItem* item)
 
 bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
 {
-	//Èı¸ö²¿¼şµÄitem
+	//ä¸‰ä¸ªéƒ¨ä»¶çš„item
 	QTreeWidgetItem* LegPart = ui.treeWidget->topLevelItem(0)->child(0);
 	QTreeWidgetItem* BodyPart = ui.treeWidget->topLevelItem(0)->child(1);
 	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
-	int LegchildCount = LegPart->childCount();//È¡µÃÓĞ¼¸¸öËşÍÈ²¿¼şÑ­»·
+	int LegchildCount = LegPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”è…¿éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < LegchildCount; i++)
 	{
 		QTreeWidgetItem* childItem = LegPart->child(i);
@@ -1043,7 +1067,7 @@ bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
 			return true;
 		}
 	}
-	int BodychildCount = BodyPart->childCount();//È¡µÃÓĞ¼¸¸öËşÉí²¿¼şÑ­»·
+	int BodychildCount = BodyPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”èº«éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < BodychildCount; i++)
 	{
 		QTreeWidgetItem* childItem = BodyPart->child(i);
@@ -1052,7 +1076,7 @@ bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
 			return true;
 		}
 	}
-	int ArmchildCount = ArmPart->childCount();//È¡µÃÓĞ¼¸¸öËşÍ·²¿¼şÑ­»·
+	int ArmchildCount = ArmPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”å¤´éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < ArmchildCount; i++)
 	{
 		QTreeWidgetItem* childItem = ArmPart->child(i);
@@ -1067,7 +1091,7 @@ bool InterFace::isChildOfPartSetAllSection(QTreeWidgetItem* item)
 bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 {
 	QTreeWidgetItem* ArmPart = ui.treeWidget->topLevelItem(0)->child(2);
-	int ArmchildCount = ArmPart->childCount();//È¡µÃÓĞ¼¸¸öËşÍ·²¿¼şÑ­»·
+	int ArmchildCount = ArmPart->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”å¤´éƒ¨ä»¶å¾ªç¯
 	for (int i = 0; i < ArmchildCount; i++)
 	{
 		QTreeWidgetItem* childItem = ArmPart->child(i);
@@ -1079,12 +1103,27 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 	return false;
 }
 
+bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	int towerWireGroupChildCount = towerWireGroup->childCount();//å–å¾—æœ‰å‡ ä¸ªå¡”çº¿ç»„å¾ªç¯
+	for (int i = 0; i < towerWireGroupChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
+		if (item == childItem->child(1))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
-	// ±£´æÖ÷½çÃæµÄ½»»¥Æ÷ÑùÊ½
+	// ä¿å­˜ä¸»ç•Œé¢çš„äº¤äº’å™¨æ ·å¼
 	m_MainStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-	// ÔÚĞèÒªÇĞ»»»ØÖ÷½çÃæÊ±£¬Ê¹ÓÃ±£´æµÄ½»»¥Æ÷ÑùÊ½ÖØĞÂÉèÖÃ½»»¥Æ÷
+	// åœ¨éœ€è¦åˆ‡æ¢å›ä¸»ç•Œé¢æ—¶ï¼Œä½¿ç”¨ä¿å­˜çš„äº¤äº’å™¨æ ·å¼é‡æ–°è®¾ç½®äº¤äº’å™¨
 	m_renderWindow->GetInteractor()->SetInteractorStyle(m_MainStyle);
 	
 }
@@ -1168,7 +1207,7 @@ void InterFace::Show_Tower(Tower* tower)
 void InterFace::Constraint_Tips()
 {
 	
-	// ÒÆ³ıÏÖÓĞµÄ²¼¾Ö¹ÜÀíÆ÷
+	// ç§»é™¤ç°æœ‰çš„å¸ƒå±€ç®¡ç†å™¨
 	QLayout* currentLayout = ui.widget_2->layout();
 	if (currentLayout)
 	{
@@ -1182,32 +1221,32 @@ void InterFace::Constraint_Tips()
 		delete currentLayout;
 	}
 	
-	// ´´½¨ĞÂµÄ²¼¾Ö¹ÜÀíÆ÷
+	// åˆ›å»ºæ–°çš„å¸ƒå±€ç®¡ç†å™¨
 	layout_Tips = new QHBoxLayout(ui.widget_2);
 
-	// ´´½¨±êÇ©
-	label = new QLabel("Ñ¡ÔñÒª´´½¨±ß½çÌõ¼şµÄ½Úµã", ui.widget_2);
+	// åˆ›å»ºæ ‡ç­¾
+	label = new QLabel("é€‰æ‹©è¦åˆ›å»ºè¾¹ç•Œæ¡ä»¶çš„èŠ‚ç‚¹", ui.widget_2);
 
-	// ´´½¨ĞĞ±à¼­
+	// åˆ›å»ºè¡Œç¼–è¾‘
 	Node_Edit = new QLineEdit(ui.widget_2);
 
-	// ÖØĞÂ´´½¨°´Å¥
+	// é‡æ–°åˆ›å»ºæŒ‰é’®
 	OK_Btn = new QPushButton("OK", ui.widget_2);
 	Ensure_Btn = new QPushButton("Ensure", ui.widget_2);
-	// Ìí¼Óµ½²¼¾Ö¹ÜÀíÆ÷ÖĞ
+	// æ·»åŠ åˆ°å¸ƒå±€ç®¡ç†å™¨ä¸­
 	layout_Tips->addWidget(label);
 	layout_Tips->addWidget(Node_Edit);
 	layout_Tips->addWidget(OK_Btn);
 	layout_Tips->addWidget(Ensure_Btn);
 
-	// ÉèÖÃ²¼¾Ö¹ÜÀíÆ÷
+	// è®¾ç½®å¸ƒå±€ç®¡ç†å™¨
 	ui.widget_2->setLayout(layout_Tips);
 	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
 }
 
 void InterFace::Delete_Constraint()
 {
-	// Çå¿Õ²¼¾Ö¹ÜÀíÆ÷ÖĞµÄ¿Ø¼ş
+	// æ¸…ç©ºå¸ƒå±€ç®¡ç†å™¨ä¸­çš„æ§ä»¶
 	QLayoutItem* item;
 	while ((item = layout_Tips->takeAt(0)) != nullptr)
 	{
@@ -1237,8 +1276,8 @@ void InterFace::Insert_Data()
 {
 	set<Node*> Nodes;
 	Get_SelectedNode(Nodes);
-	//QMap<int, QVector<double>> nodeCoordinates; // ´æ´¢½Úµã×ø±êĞÅÏ¢
-	//QMap<int, int> idMap; // ´æ´¢IDÓëË÷ÒıµÄÓ³Éä¹ØÏµ
+	//QMap<int, QVector<double>> nodeCoordinates; // å­˜å‚¨èŠ‚ç‚¹åæ ‡ä¿¡æ¯
+	//QMap<int, int> idMap; // å­˜å‚¨IDä¸ç´¢å¼•çš„æ˜ å°„å…³ç³»
 	QString existingText = Node_Edit->text();
 	QStringList existingIds = existingText.split(" ", Qt::SkipEmptyParts);
 	
@@ -1250,8 +1289,8 @@ void InterFace::Insert_Data()
 		if (!existingIds.contains(idStr))
 		{
 			QVector<double> coordinates = { pNode->x, pNode->y, pNode->z };
-			nodeCoordinates[index] = coordinates; // ´æ´¢×ø±êĞÅÏ¢
-			idMap[idNode] = index; // ´æ´¢IDÓëË÷ÒıµÄÓ³Éä¹ØÏµ
+			nodeCoordinates[index] = coordinates; // å­˜å‚¨åæ ‡ä¿¡æ¯
+			idMap[idNode] = index; // å­˜å‚¨IDä¸ç´¢å¼•çš„æ˜ å°„å…³ç³»
 
 			if (!existingText.isEmpty())
 				existingText += " ";
@@ -1267,14 +1306,14 @@ void InterFace::Insert_Data()
 	{
 		if (QApplication::keyboardModifiers() == Qt::ShiftModifier)
 		{
-			Node_Edit->setText(existingText.trimmed()); // ×·¼ÓËùÓĞĞÂµÄidµ½lineEdit
+			Node_Edit->setText(existingText.trimmed()); // è¿½åŠ æ‰€æœ‰æ–°çš„idåˆ°lineEdit
 		}
 		else
 		{
 			if (existingIds.size() > 1)
 			{
-				QString clickedId = existingIds.last(); // »ñÈ¡×îºóÒ»¸öµã»÷µÄ½ÚµãID
-				existingText = clickedId; // Ö»±£Áô×îºóÒ»¸öµã»÷µÄ½ÚµãID
+				QString clickedId = existingIds.last(); // è·å–æœ€åä¸€ä¸ªç‚¹å‡»çš„èŠ‚ç‚¹ID
+				existingText = clickedId; // åªä¿ç•™æœ€åä¸€ä¸ªç‚¹å‡»çš„èŠ‚ç‚¹ID
 			}
 			Node_Edit->setText(existingText);
 		}
@@ -1292,11 +1331,11 @@ void InterFace::Insert_Data()
 void InterFace::handleOkButtonClicked()
 {
 	QStringList allIds = Node_Edit->text().split(" ", Qt::SkipEmptyParts);
-	// Ê¹ÓÃËùÓĞÏÔÊ¾µÄID£¬Ö´ĞĞÏàÓ¦µÄ²Ù×÷
+	// ä½¿ç”¨æ‰€æœ‰æ˜¾ç¤ºçš„IDï¼Œæ‰§è¡Œç›¸åº”çš„æ“ä½œ
 	for (const QString& id : allIds)
 	{
 		int nodeId = id.toInt();
-		// »ñÈ¡ID¶ÔÓ¦µÄ×ø±êĞÅÏ¢
+		// è·å–IDå¯¹åº”çš„åæ ‡ä¿¡æ¯
 		if (idMap.contains(nodeId))
 		{
 			int index = idMap[nodeId];
@@ -1305,7 +1344,7 @@ void InterFace::handleOkButtonClicked()
 			double y = coordinates[1];
 			double z = coordinates[2];
 			Con_Nodes.push_back(Node(x, y, z));
-			// Êä³ö×ø±êĞÅÏ¢
+			// è¾“å‡ºåæ ‡ä¿¡æ¯
 			qDebug() << "ID: " << id << " X: " << x << " Y: " << y << " Z: " << z;
 		}
 	}
@@ -1324,7 +1363,7 @@ Node* InterFace::Find_Node(int id, vector<Node>& node, vector<Node>& Con_node)
 			Con_node.push_back(Node(i.x, i.y, i.z));
 		}
 	}
-	cout << "Ã»ÕÒµ½£¡\n";
+	cout << "æ²¡æ‰¾åˆ°ï¼\n";
 	return nullptr;
 }
 

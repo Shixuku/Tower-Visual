@@ -33,6 +33,8 @@ void Element::SaveTo(QDataStream& fin) const
 	}
 	fin << sectionID;
 	fin << ClassSectionID;
+	fin << MaterialID;
+	fin << groupTowerId;
 }
 
 void Element::Input(QDataStream& fin)

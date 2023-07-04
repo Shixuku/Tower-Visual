@@ -6,7 +6,7 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 	ui.setupUi(this);
 	m_pInterFace = InterFace;
 	towerWireGroup = TowerWireGroup;
-	
+	towerWireGroup->groupId = m_pInterFace->TWG.size() + 1;
 	CreateComBox();
 	TableTowerLists();
 	connect(ui.comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -15,16 +15,21 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			GetTowerSetData();
 			int Index = ui.comboBox->currentIndex()+1;
 			mTower = m_pInterFace->TP.Find_Entity(Index);
-			TowerWireGroup->AddTowerToGroup(mTower, Index,x,y,z, angle);
+			int towerId = ui.tableWidget->rowCount() + 1;
+			towerWireGroup->AddTowerToGroup(mTower, towerId,x,y,z, angle);
 		});
 	connect(ui.BtnOk, &QPushButton::clicked, this, [=]()
 		{
-			TowerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_3);
-			TowerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_3);
-			TowerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_3);
-			TowerWireGroup->ShowNode();
-			TowerWireGroup->ShowBeamElement();
-			TowerWireGroup->ShowTrussElement();
+			towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_3);
+			towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_3);
+			towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_3);
+			towerWireGroup->ShowNode();
+			towerWireGroup->ShowBeamElement();
+			towerWireGroup->ShowTrussElement();
+			CreatTowerWierGroupItem();
+			towerWireGroup->VectorToMap();
+			m_pInterFace->TWG.Add_Entity(towerWireGroup);
+			m_pInterFace->m_Renderer_3->ResetCamera();
 			this->reject();
 		});
 }
@@ -81,6 +86,24 @@ void TowerWireGroupAssembly::GetTowerSetData()//将数据放进表里
 	QString iAngle = QString::number(angle);
 	ui.tableWidget->setItem(irow, 4, new QTableWidgetItem(iAngle));
 	ui.tableWidget->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+}
+void TowerWireGroupAssembly::CreatTowerWierGroupItem()
+{
+	QTreeWidgetItem* towerWierGroupItem = new QTreeWidgetItem(m_pInterFace->creat_towerwire_instance);
+	QString str = QString::number(m_pInterFace->creat_towerwire_instance->childCount());     //塔线组的item
+	towerWierGroupItem->setText(0, QString("塔线实例" + str));
+	//放入每个杆塔
+	QTreeWidgetItem* GroupTower = new QTreeWidgetItem(towerWierGroupItem);
+	GroupTower->setText(0, QString("杆塔"));
+	for (int i = 0; i < ui.tableWidget->rowCount(); i++)
+	{
+        QTreeWidgetItem* GroupTowerItem = new QTreeWidgetItem(GroupTower);
+		QString str = QString::number(towerWierGroupItem->childCount());     //str转字符
+		GroupTowerItem->setText(0, QString("杆塔编号" + str));
+	}
+	towerWireGroup->Item = towerWierGroupItem;
+	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
+	Wire_modeling->setText(0, QString("导线建模"));
 }
 void TowerWireGroupAssembly::onComboBoxIndexChanged(int index)
 {

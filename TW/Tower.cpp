@@ -544,6 +544,12 @@ void Tower::SaveTo(QDataStream& fin) const
 	{
 		m_Elements_Trusses[i].SaveTo(fin);
 	}
+	int nSuspension = SuspensionNode.size();
+	fin << nSuspension;
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin << SuspensionNode[i];
+	}
 }
 
 void Tower::Input(QDataStream& fin)
@@ -569,6 +575,13 @@ void Tower::Input(QDataStream& fin)
 	for (int i = 0; i < nTruss; ++i)
 	{
 		m_Elements_Trusses[i].Input(fin);
+	}
+	int nSuspension ;
+	fin >> nSuspension;
+	SuspensionNode.resize(nSuspension);
+	for (int i = 0; i < nSuspension; ++i)
+	{
+		fin >> SuspensionNode[i];
 	}
 }
 
@@ -777,7 +790,8 @@ void Tower::addRestraintNode(Part_Base* part)
 		for (int i = 0; i < SusNode; i++)
 		{
 			this->SuspensionNode.push_back(part->SuspensionNode[i]);
-			SuspensionNode[i] = part->Find_tower_idNode(part->SuspensionNode[i]);
+			size_t totalT = this->SuspensionNode.size() - 1;
+			SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
 		}
 	}
 

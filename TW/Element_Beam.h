@@ -8,5 +8,7 @@ public:
 	~Element_Beam();
 	Element_Beam();
 	Element_Beam(int id, int idNode1, int idNode2, int idsection,double iDirection[3]);
+	void SaveTo(QDataStream& fin) const override;
+	void Input(QDataStream& fin) override;
 };
 
