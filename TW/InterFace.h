@@ -21,6 +21,7 @@
 #include"Set_Section.h"
 #include<vtkInteractorStyleTrackballCamera.h>
 #include"TowerWireGroupAssembly.h"
+
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
