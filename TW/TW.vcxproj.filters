@@ -176,6 +176,18 @@
     <ClCompile Include="Wire_InterFace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RandomWind.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerWireGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerWireGroupAssembly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -268,6 +280,9 @@
     <ClInclude Include="TowerPart_leg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TowerWireGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -339,6 +354,15 @@
     <QtMoc Include="Wire_InterFace.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="WindList.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TowerWireGroupAssembly.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="RandomWind.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -405,6 +429,15 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Wire_InterFace.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RandomWind.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TowerWireGroupAssembly.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="WindList.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

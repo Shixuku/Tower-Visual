@@ -28,9 +28,16 @@ public:
 	void ReadData();
 	void BtnOk();
 	double CountUz(double h);//计算风压系数
+	void CountElePara();//计算单元相关参数
+	void CountWindForce();//计算风载荷
 	int ExampleNum = 0;
 	int id_Part = 0;
-	int num;//分析实例的节点个数
+	int num_node;//分析实例的节点个数
+	int num_ele;//分析实例的单元个数
+	double alf;
+	std::vector<double>Uz_node;//每个节点的风压系数
+	std::vector<double>Uz_ele;//每个单元的风压系数
+	std::vector<double>L_ele;//每个单元的长度
 	InterFace* m_pInterFace = nullptr;
 	WindList* w_l = nullptr;
 	RandomWind* ran = nullptr;

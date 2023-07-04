@@ -20,6 +20,9 @@
 #include"Set_Section.h"
 #include<vtkInteractorStyleTrackballCamera.h>
 #include"TowerWireGroupAssembly.h"
+
+#include"D:\dllAnalyse\Use_Analyse.h"
+
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
