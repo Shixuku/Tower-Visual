@@ -65,7 +65,7 @@
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../VTK/lib_debug/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../VTK/lib_debug/*.lib;../dllAnalyse/lib_debug/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
