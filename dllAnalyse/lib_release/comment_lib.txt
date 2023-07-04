@@ -1,0 +1,6 @@
+#ifndef D__dllAnalyse_lib_release
+#define D__dllAnalyse_lib_release
+
+#pragma comment(lib,"D:\\dllAnalyse\\lib_release\\DLL_ansys.lib")
+
+#endif

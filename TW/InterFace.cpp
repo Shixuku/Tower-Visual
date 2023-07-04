@@ -308,7 +308,7 @@ void InterFace::ui_Foot()
 
 void InterFace::ui_WireTest()
 {
-
+	switchRenderWindow(0);
 }
 void InterFace::ui_Body()
 {
@@ -470,6 +470,7 @@ void InterFace::ui_SetAllSection(QTreeWidgetItem* item)
 {
 	Part_Base* Part = OnFindPart(item->parent());
 	Show_Part(Part);
+	//显示所有单元长度
 	for (auto i : Part->m_Elements_beams)
 	{
 		int ipt1 = i.m_idNode[0] - 1; //id
@@ -1259,10 +1260,12 @@ void InterFace::ui_Wind()
 	if (wd == nullptr)
 	{
 		wd = new Wind(this);
+		wd->CreateCombobox();
 		wd->show();
 	}
 	else
 	{
+		wd->CreateCombobox();
 		wd->show();
 	}
 }
