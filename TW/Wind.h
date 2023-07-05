@@ -7,6 +7,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <QVTKOpenGLNativeWidget.h>
 #include"Tower.h"
+#include"CreatWire.h"
 #pragma execution_character_set("utf-8")
 class InterFace;
 class WindList;
@@ -48,5 +49,5 @@ private:
 	vtkSmartPointer<vtkRenderWindow> renderWindow;
 	QVTKOpenGLNativeWidget* m_VtkWidget;
 	vtkSmartPointer<vtkRenderer> m_Renderer;
-	Tower* m_pTower=nullptr;  // Tower 类型的成员变量，用于保存 Show_Tower 方法的结果
+	CreatWire* m_pcreatWire =nullptr;  // Tower 类型的成员变量，用于保存 Show_Tower 方法的结果
 };

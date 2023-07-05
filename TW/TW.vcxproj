@@ -102,12 +102,12 @@
     <ClCompile Include="Constrained_image.cpp" />
     <ClCompile Include="Create_Constraint.cpp" />
     <ClCompile Include="ConcentrateForce.cpp" />
+    <ClCompile Include="CreatWire.cpp" />
     <ClCompile Include="Creat_Loads.cpp" />
-    <ClCompile Include="Creat_WireData.cpp" />
-    <ClCompile Include="Draw_Wire.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="IceLoad.cpp" />
+    <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Interphase_spacer.cpp" />
     <ClCompile Include="LoadForce.cpp" />
     <ClCompile Include="Manage_Loads.cpp" />
@@ -121,7 +121,6 @@
     <ClCompile Include="MouseInteractorHighLightActor.cpp" />
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
-    <ClCompile Include="Spacer.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
     <ClCompile Include="TowerData_CrossArm.cpp" />
@@ -139,6 +138,7 @@
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="Wind.cpp" />
     <ClCompile Include="WindList.cpp" />
+    <ClCompile Include="WireData.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
@@ -176,11 +176,15 @@
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreatWire.h" />
+    <ClInclude Include="Instance.h" />
+    <ClInclude Include="WireData.h" />
+    <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="WindList.h" />
+    <QtMoc Include="Senior.h" />
     <ClInclude Include="TowerWireGroup.h" />
     <QtMoc Include="TowerWireGroupAssembly.h" />
     <QtMoc Include="Wind.h" />
-    <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="Assign_Section.h" />
     <ClInclude Include="AreaSelected_InteractorStyle.h" />
     <ClInclude Include="Base.h" />
@@ -192,8 +196,6 @@
     <ClInclude Include="Constrained_image.h" />
     <QtMoc Include="Creat_Loads.h" />
     <QtMoc Include="ConcentrateForce.h" />
-    <ClInclude Include="Creat_WireData.h" />
-    <ClInclude Include="Draw_Wire.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Element_Beam.h" />
     <ClInclude Include="Element_Truss.h" />
@@ -215,8 +217,6 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="Part_Base.h" />
     <QtMoc Include="SetAllSection.h" />
-    <QtMoc Include="Senior.h" />
-    <QtMoc Include="Spacer.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerData_Body.h" />
     <ClInclude Include="TowerData_CrossArm.h" />

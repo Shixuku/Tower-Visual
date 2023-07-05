@@ -29,13 +29,14 @@ class T_Body;
 class T_CrossArm;
 class Tower_Assembly;
 class MouseInteractorHighLightActor;
-class Wire_InterFace;
 class Interphase_spacer;
 class Create_Constraint;
 class ConcentrateForce;
 class Creat_Loads;
 class Wind;
 class TowerWireGroup;
+class Wire_InterFace;
+class CreatWire;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -55,6 +56,7 @@ public:
    
     void HiddeAllPart();
     void HiddeAllTower();
+    void HiddeAllWire();
     void SubstaceActor(Part_Base* Part);
     void ShowLoadactor(Tower* tower);
     void switchRenderWindow(int index);
@@ -69,6 +71,7 @@ public:
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
      Manage_Entity<TowerWireGroup> TWG;
+     Manage_Entity<CreatWire> creatWire;
      vector<T_Foot*> t_foots;
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
@@ -128,6 +131,7 @@ public slots:
     void ui_SetAllSection(QTreeWidgetItem* item);
     void Show_Part(Part_Base* part);
     void Show_Tower(Tower* tower);
+    void Show_Wire(CreatWire* wire);
     void GetData(QStringList&);
     void Test_mousePressEvent(QMouseEvent* event);
     void ui_CreatLoads(QTreeWidgetItem* item);
@@ -136,7 +140,8 @@ public slots:
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
     void ui_Wind();
-    void ui_WireTest();
+    void ui_SingleWire();
+  
   
     //void ui_ConcentratedForce(QTreeWidgetItem* item);
 
