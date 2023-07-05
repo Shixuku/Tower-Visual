@@ -53,16 +53,10 @@
     <ClCompile Include="Creat_Loads.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Creat_WireData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Create_Constraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreateAbaqusInp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Draw_Wire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Element.cpp">
@@ -119,16 +113,10 @@
     <ClCompile Include="Section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Senior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Set_Section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SetAllSection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Spacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="T_Body.cpp">
@@ -173,9 +161,6 @@
     <ClCompile Include="Wind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Wire_InterFace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RandomWind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -186,6 +171,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WindList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wire_InterFace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Senior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WireData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatWire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -208,13 +208,7 @@
     <ClInclude Include="Constrained_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Creat_WireData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CreateAbaqusInp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw_Wire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Element.h">
@@ -283,6 +277,15 @@
     <ClInclude Include="TowerWireGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WireData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatWire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -324,16 +327,10 @@
     <QtMoc Include="Polynomial.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Senior.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="Set_Section.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="SetAllSection.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Spacer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="T_Body.h">
@@ -351,9 +348,6 @@
     <QtMoc Include="Wind.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Wire_InterFace.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="WindList.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -361,6 +355,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="RandomWind.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Wire_InterFace.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Senior.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -401,9 +401,6 @@
     <QtUic Include="Polynomial.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="Senior.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="Set_Section.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -428,9 +425,6 @@
     <QtUic Include="Wind.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="Wire_InterFace.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="RandomWind.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -438,6 +432,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="WindList.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Wire_InterFace.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Senior.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

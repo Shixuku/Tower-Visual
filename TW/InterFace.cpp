@@ -16,14 +16,14 @@
 #include"Tower_Assembly.h"
 #include"Assign_Section.h"
 #include"SetAllSection.h"
-#include"Wire_InterFace.h"
 #include"Create_Constraint.h"
 #include <QLineEdit>
 #include"CreateAbaqusInp.h"
 #include"ConcentrateForce.h"
 #include"Creat_Loads.h"
 #include"Wind.h"
-
+#include"Wire_InterFace.h"
+#include"CreatWire.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -70,17 +70,17 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(ui.actioninit, &QAction::triggered, this, [=]()
 		{
-			m_Renderer->GetActiveCamera()->SetPosition(0, 0, 100000);
+			/*m_Renderer->GetActiveCamera()->SetPosition(0, 0, 100000);
 			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
 			m_Renderer->GetActiveCamera()->SetViewUp(0, 1, 0);
-			m_renderWindow->Render();
+			m_renderWindow->Render();*/
 		});
 	connect(ui.actionYoZ, &QAction::triggered, this, [=]()
 		{
-			m_Renderer->GetActiveCamera()->SetPosition(100000, 0, 0);
+			/*m_Renderer->GetActiveCamera()->SetPosition(100000, 0, 0);
 			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
 			m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-			m_renderWindow->Render();
+			m_renderWindow->Render();*/
 		});
 	
 }
@@ -173,6 +173,9 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
 	WIndLoad->setText(0, QString("创建风载荷"));
 
+	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
+	CreatWire->setText(0, QString("单导实例"));
+
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -255,7 +258,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Wind();
 	}
-
+	else if (item == ui.treeWidget->topLevelItem(8))
+	{
+		ui_SingleWire();
+	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -304,11 +310,6 @@ void InterFace::ui_Foot()
 		
 	}
 
-}
-
-void InterFace::ui_WireTest()
-{
-	switchRenderWindow(0);
 }
 void InterFace::ui_Body()
 {
@@ -514,13 +515,16 @@ void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 {
 	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
-	cout << "test Group data :" << "\n";
-	for (int i = 0; i < towerWireGroup->m_Nodes.size(); i++)
+	Wire_InterFace* w = new Wire_InterFace(towerWireGroup,this);
+	int ret = w->exec();
+	if (ret == QDialog::Accepted)
 	{
-		cout << "test x:" << towerWireGroup->m_Nodes[i].x << "test y:" << towerWireGroup->m_Nodes[i].y << "test z:" << towerWireGroup->m_Nodes[i].z << "\n";
+		CreatWire* t = new CreatWire;
+		w->Get_Data(*t);//取数据
+		t->Create_Mesh();
+		t->Show_VTKnode(m_Renderer);
+		t->Show_VTKtruss(m_Renderer);
 	}
-	Wire_InterFace* wire = new Wire_InterFace(towerWireGroup,this);
-	wire->show();
 }
 
 void InterFace::ui_ManageLoads()
@@ -744,6 +748,19 @@ void InterFace::HiddeAllTower()
 		props->GetNextProp()->VisibilityOff();
 
 		m_Renderer_2->ResetCamera();
+		m_renderWindow->Render();
+	}
+}
+
+void InterFace::HiddeAllWire()
+{
+	vtkPropCollection* props = m_Renderer_3->GetViewProps(); //iterate through and set each visibility to 0
+	props->InitTraversal();
+	for (int i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		props->GetNextProp()->VisibilityOff();
+
+		m_Renderer_3->ResetCamera();
 		m_renderWindow->Render();
 	}
 }
@@ -1203,6 +1220,16 @@ void InterFace::Show_Tower(Tower* tower)
 	m_Renderer_2->ResetCamera();
 }
 
+void InterFace::Show_Wire(CreatWire* wire)
+{
+	if (wire == nullptr) return;
+	switchRenderWindow(3);
+	HiddeAllWire();
+	wire->m_TrussActor->VisibilityOn();
+	wire->Node_actor->VisibilityOn();
+	m_Renderer_3->ResetCamera();
+}
+
 void InterFace::Constraint_Tips()
 {
 	
@@ -1270,6 +1297,27 @@ void InterFace::ui_Wind()
 	}
 }
 
+void InterFace::ui_SingleWire()
+{
+	switchRenderWindow(2);
+	TowerWireGroup* towerWireGroup = nullptr;
+	Wire_InterFace* w = new Wire_InterFace(towerWireGroup, this);
+	int ret = w->exec();
+	if (ret == QDialog::Accepted)
+	{
+		CreatWire* t = new CreatWire;
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
+		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		item->setText(0, "导线");
+		w->Get_Data(*t);//取数据
+		t->m_id = creatWire.size() + 1;
+		t->Item = item;
+		t->Create_Mesh();
+		t->Show_VTKnode(m_Renderer_3);
+		t->Show_VTKtruss(m_Renderer_3);
+		creatWire.Add_Entity(t);
+	}
+}
 
 void InterFace::Insert_Data()
 {

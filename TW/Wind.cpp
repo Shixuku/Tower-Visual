@@ -65,11 +65,11 @@ void Wind::Initialize()
 
 void Wind::CreateCombobox()
 {
-	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔腿数量
+	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(8)->childCount();//塔腿数量
 	
 	for (int i = 0; i < ExampleNum; i++)
 	{
-		ui.object_com->addItem("杆塔实例" + QString::number(i + 1));
+		ui.object_com->addItem("导线实例" + QString::number(i + 1));
 		
 	}
 }
@@ -82,10 +82,10 @@ void Wind::ShowObject()
 	{
 		id_Part = Index + 1;
 		m_Renderer->RemoveAllViewProps();  // 清空当前显示的所有actor
-		m_pTower = m_pInterFace->TP.Find_Entity(id_Part);
-		m_pInterFace->Show_Tower(m_pTower);
-		m_pTower->Show_VTKbeam(m_Renderer);
-		m_pTower->Show_VTKtruss(m_Renderer);
+		m_pcreatWire = m_pInterFace->creatWire.Find_Entity(id_Part);
+		m_pInterFace->Show_Wire(m_pcreatWire);
+		m_pcreatWire->Show_VTKbeam(m_Renderer);
+		m_pcreatWire->Show_VTKtruss(m_Renderer);
 	}
 	m_Renderer->ResetCamera();
 	ui.widget_5->update();
@@ -148,7 +148,7 @@ void Wind::ReadData()
 	ui.tableWidget->setRowCount(num_ele);  // 默认N行
 	for (int i = 0; i < num_ele; i++)
 	{
-		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pTower->m_Elements[i].m_idElement)));
+		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements[i].m_idElement)));
 		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number((L_ele[i]))));
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(Uz_ele[i])));
 		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i])));
@@ -163,14 +163,14 @@ void Wind::ReadData()
 
 void Wind::BtnOk()
 {
-	if (m_pTower == nullptr)
+	if (m_pcreatWire == nullptr)
 	{
 		QMessageBox::warning(this, "提示", "请创建分析对象！");
 		return;
 	}
 
-	num_node = m_pTower->m_Nodes.size();
-	num_ele = m_pTower->m_Elements.size();
+	num_node = m_pcreatWire->m_Nodes.size();
+	num_ele = m_pcreatWire->m_Elements.size();
 	bool groundSelected = false;
 
 	QList<QRadioButton*> radioButtons = { ui.rad_A, ui.rad_B, ui.rad_C, ui.rad_D };
@@ -238,7 +238,7 @@ void Wind::CountElePara()
 	// 算每个节点的风压系数
 	for (int k = 0; k < num_node; k++)
 	{
-		const auto& node = m_pTower->m_Nodes[k];
+		const auto& node = m_pcreatWire->m_Nodes[k];
 		double uz = CountUz((node.z + 14000) / 1000);
 		Uz_node.push_back(uz);
 	}
@@ -246,11 +246,11 @@ void Wind::CountElePara()
 	// 计算每个单元的长度和风压系数
 	for (int i = 0; i < num_ele; i++)
 	{
-		const auto& ele = m_pTower->m_Elements[i];
+		const auto& ele = m_pcreatWire->m_Elements[i];
 		int ipt1 = ele.m_idNode[0] - 1; // id
 		int ipt2 = ele.m_idNode[1] - 1;
-		const auto& node1 = m_pTower->m_Nodes[ipt1];
-		const auto& node2 = m_pTower->m_Nodes[ipt2];
+		const auto& node1 = m_pcreatWire->m_Nodes[ipt1];
+		const auto& node2 = m_pcreatWire->m_Nodes[ipt2];
 
 		double Vx[3];
 		Vx[0] = (node2.x - node1.x) / 1000;
