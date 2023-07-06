@@ -6,7 +6,7 @@
 #include"InterFace.h"
 #include<QCloseEvent>
 #include"Part_Base.h"
-
+#include"Section.h"
 class InterFace;
 
 class Assign_Section : public QDialog
@@ -30,7 +30,7 @@ public:
 	//void Create_combobox();
 
 	InterFace* m_pInterFace = nullptr;
-	Set_Section* Section = nullptr;
+	Set_Section* set_section = nullptr;
 	Part_Base* m_Part = nullptr;
 	vtkSmartPointer<vtkActor> linesactor;
 

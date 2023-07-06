@@ -42,12 +42,15 @@ void SetAllSection::Assgin(Part_Base* Part)
 			double Setm_L = ui.tableWidget->item(j, 3)->text().toDouble();//找到这个截面的长度
 			if (abs(Setm_L - m_L) < 1e-1)
 			{
-				int id = Part->pMaterial.size()+1;
+				int id = Part->pSection.size()+1;
 				double a = ui.tableWidget->item(j, 1)->text().toDouble();
 				double b = ui.tableWidget->item(j, 2)->text().toDouble();
 				int ClassSe = ui.tableWidget->item(j, 0)->text().toInt();
 				int ClassM= ui.tableWidget->item(j,4)->text().toInt();
-				Part->pMaterial.push_back(Section(a, b, id, ClassSe, ClassM));
+				//Part->pSection.push_back(Section(a, b, id, ClassSe, ClassM));
+				Part->pSection.push_back(id);
+				Section* section = new Section(a, b, id, ClassSe, ClassM);
+				m_pInterFace->Ms.Add_Entity(section);
 				QSet<int>group_row;
 				group_row.insert(i.sectionID);
 				Part->AssginSectionGroup(group_row, id);

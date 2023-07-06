@@ -17,15 +17,13 @@
 #include"LoadForce.h"
 #include <map>
 #include <vtkPointData.h>
+#include "Base.h"
 using namespace Eigen;
-class Tower
+class Tower :public Base
 {
 public:
 	//子类节点添加到父类里面
 	Tower();
-
-	int m_id;
-	int Get_id()const;
 
 	QString m_name;
 	void SaveTo(QDataStream& fin)const;
@@ -36,7 +34,8 @@ public:
 	void ShowTrussElement()const;//显示所有杆单元
 	void ShowBeamElement()const;//显示所有梁单元
 	void Show_Beam(int BeamID, int SectionClass, double a, double b);
-	void AddNewSection(double ia, double ib, int id, int iClassSe, int iClassM);
+	void AddNewSection(int id);
+	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
 	vector<Node> m_Nodes;//节点合集
 
 	vector<Element> m_Elements;//单元合集
@@ -44,7 +43,7 @@ public:
 	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	vector<LoadForce>Load;//荷载的容器
-	vector<Section>pSection;//截面的容器
+	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	int FindGroupIdNode(int idNode) const;
 	void VectorToMap();
@@ -92,11 +91,12 @@ public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;
 	vtkSmartPointer<vtkPoints> m_pts;
+	//InterFace* m_pInterFace = nullptr;
 protected:
 	void addNodeToTower(Part_Base* part);
 	
 	void addElementToTower(Part_Base* part);
-	void addSectionToTower(Part_Base* part);
+	//void addSectionToTower(Part_Base* part);
 	void addRestraintNode(Part_Base* part);
 	void addSuspensionNode(Part_Base* part);
 };

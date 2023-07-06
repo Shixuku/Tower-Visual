@@ -27,6 +27,8 @@
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
+	Base::set_InterFace(this);
+
 	layout = new QHBoxLayout(ui.widget);//生成布局,widget专门放生成的塔
 	m_VtkWidget = new QVTKOpenGLNativeWidget();//生成控件
 
@@ -82,6 +84,14 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 			m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
 			m_renderWindow->Render();*/
 		});
+	connect(ui.actionXoZ, &QAction::triggered, this, [=]()
+		{
+			//m_Renderer->GetActiveCamera()->SetPosition(1, 0, 0);
+			//m_Renderer->GetActiveCamera()->SetFocalPoint(0, 100000, 0);
+			//m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
+			//m_renderWindow->Render();
+		});
+	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::caculate);
 	
 }
 
@@ -270,7 +280,8 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 
 	if (part != nullptr)
 	{
-		Show_Part(part);
+		if (item->parent()->parent() == ui.treeWidget->topLevelItem(0))
+			Show_Part(part);
 	}
 
 	if (item->parent() == ui.treeWidget->topLevelItem(1))
@@ -402,6 +413,7 @@ void InterFace::ui_Tower()
 				}
 			}
 		}
+
 		tw->Check();
 		HiddeAllTower();
 
@@ -423,6 +435,14 @@ void InterFace::ui_Tower()
 		tw->m_BeamActor->VisibilityOn();
 		tw->m_TrussActor->VisibilityOn();
 		tw->Node_actor->VisibilityOn();
+		
+		//所有截面编号加入Tower
+		vector<int> idSections;
+		for (auto& i : Ms)
+		{
+			idSections.push_back(i.second->m_id);
+		}
+		tw->AddNewSection(idSections);
 
 		m_Renderer_2->ResetCamera();
 		tower_assembles.push_back(T_As);
@@ -435,28 +455,31 @@ void InterFace::ui_Section()
 	int ret = M_ab->exec();
 	if (ret == QDialog::Accepted)
 	{
-		int ClassSection = 0;//取得该截面类型的参数
-		ClassSection = M_ab->ClassSection;
-		string NameSection = M_ab->name;
-		double ia = M_ab->a;
-		double ib = M_ab->b;
-		int iM = M_ab->ClassMa;
-		int id = MS.size() + 1;//从1开始排序
-		Section* section = new Section(ia, ib, id, ClassSection, iM);
-		MS.push_back(Section(ia, ib, id, ClassSection, iM));
+		//int ClassSection = 0;//取得该截面类型的参数
+		//ClassSection = M_ab->ClassSection;
+		//string NameSection = M_ab->name;
+		//double ia = M_ab->a;
+		//double ib = M_ab->b;
+		//int iM = M_ab->ClassMa;
+
+		//所有截面编号加入Part
+		vector<int> idSections;
+		for (auto& i : Ms)
+		{
+			idSections.push_back(i.second->m_id);
+		}
 		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(0)->childCount(); i++)//新键一个，塔腿里放一个
 		{
-			TP_leg.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
+			TP_leg.Find_Entity(i + 1)->AddNewSection(idSections);
 		}
 		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(1)->childCount(); i++)//新键一个，塔身里放一个
 		{
-			TP_body.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
+			TP_body.Find_Entity(i + 1)->AddNewSection(idSections);
 		}
 		for (int i = 0; i < ui.treeWidget->topLevelItem(0)->child(2)->childCount(); i++)//新键一个，塔头里放一个
 		{
-			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(ia, ib, id, ClassSection, iM);
+			TP_CrossArm.Find_Entity(i + 1)->AddNewSection(idSections);
 		}
-		Ms.Add_Entity(section);
 	}
 }
 void InterFace::ui_SetSection(QTreeWidgetItem* item)
@@ -566,7 +589,9 @@ void InterFace::SaveFile()
 			TP_leg.Save(Stream);
 			TP_body.Save(Stream);
 			TP_CrossArm.Save(Stream);
+			//towerPartInsulator.Save(Stream);//绝缘子串
 			TP.Save(Stream);
+			//TWG.Save(Stream);
 		}
 		Qf.close();
 	}
@@ -588,45 +613,67 @@ void InterFace::OpenFile()
 		}
 		else
 		{
-			TP_leg.Read(Stream);
-			TP_body.Read(Stream);
-			TP_CrossArm.Read(Stream);
-			TP.Read(Stream);
-
-			for (int i = 0; i < TP_leg.size(); i++)
+			int legSize = TP_leg.size();
+			int bodysize = TP_body.size();
+			int crossArmSize = TP_CrossArm.size();
+			int towerSize = TP.size();
+			int twgsize = TWG.size();
+			TP_leg.Read(Stream, legSize);
+			TP_body.Read(Stream, bodysize);
+			TP_CrossArm.Read(Stream, crossArmSize);
+			//towerPartInsulator.Read(Stream);
+			TP.Read(Stream, towerSize);
+			//TWG.Read(Stream, twgsize);
+			for (int i = legSize; i < TP_leg.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("塔腿部件" + str));
+				item->setText(0, QString("读塔腿部件" + str));
+				//QString str = TP_leg.Find_Entity(i + 1)->m_Name;//名字没有换过来
+				//item->setText(0, str);
 				TP_leg.Find_Entity(i + 1)->Item = item;
+				AddPartFunction(item);
+
 				//TP_leg[i]->Item = item;
 			}
 
-			for (int i = 0; i < TP_body.size(); i++)
+			for (int i = bodysize; i < TP_body.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("塔身部件" + str));
+				item->setText(0, QString("读塔身部件" + str));
 				TP_body.Find_Entity(i + 1)->Item = item;
+				AddPartFunction(item);
 			}
-			for (int i = 0; i < TP_CrossArm.size(); i++)
+			for (int i = crossArmSize; i < TP_CrossArm.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("横担部件" + str));
+				item->setText(0, QString("读横担部件" + str));
 				TP_CrossArm.Find_Entity(i + 1)->Item = item;
+				AddPartFunction(item);
+				QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
+				spacer->setText(0, QString("添加绝缘子串"));
 			}
-			for (int i = 0; i < TP.size(); i++)
+			for (int i = towerSize; i < TP.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("输电塔" + str));
+				item->setText(0, QString("读输电塔" + str));
 				TP.Find_Entity(i + 1)->Item = item;
 			}
+			//for (int i = twgsize; i < TWG.size(); i++)
+			//{
+			//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
+			//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+			//	QString str = QString::number(parent->childCount());     //str转字符
+			//	item->setText(0, QString("读塔线组" + str));
+			//	//TWG.Find_Entity(i + 1)->Item = item;
+			//}
 
 		}
 	}
@@ -861,23 +908,56 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 }
 
-double* InterFace::GetSectionData(int SectionGroup)
+void InterFace::caculate()
 {
-	double* SectionData = new double;//用于接收截面数据的数组，第一个是L的长边或者圆半径，第二个是L短边或者圆环厚度，第三个是截面类型，第四个是材料编号
-	for (auto i : MS)
-	{
-		if (i.m_id == SectionGroup)
-		{
-			SectionData[0] = i.a;
-			SectionData[1] = i.b;
-			SectionData[2] = i.ClassSe;
-			SectionData[3] = i.ClassM;
-			return SectionData;
-		}
+	QString str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
 
+	if (str != nullptr)
+	{
+		qDebug() << str;
+
+		if (s) delete s;//释放之前的对象
+		s = GetStructure();//生成structure类对象
+		s->Input(str);
 	}
-	return nullptr;
-	return nullptr;
+	else
+	{
+		return;
+	}
+	QString FilePath("./");//计算结果文件路径
+	int idNode = 1;//要输出的点的编号
+	s->set_outInfo(FilePath, idNode);
+
+	//设置参数...
+	s->setDiffEqSolver(S_InterFace::STATICS);
+	s->setElementType(S_InterFace::Beam_CR);
+
+	if (s->getMethod() == S_InterFace::STATICS)
+	{
+		s->setStep(2);
+	}
+	else
+	{//动力分析
+		s->set_beta(0.25);
+		s->set_gama(0.5);
+		s->setTimeStep(0.05);
+		s->setStep(400);
+		s->set_Galloping(true);
+	}
+	s->set_stol(1e-8);
+	s->setMaxIterations(50);
+
+	clock_t start, end;//计时
+	start = clock();
+	s->execute();//计算
+	end = clock();
+	int Totalit = s->getTotalIterations();
+	qDebug() << "总迭代次数： " << Totalit;
+	double rtime = (end - start);
+	qDebug() << "计算总耗时： " << rtime << " ms";
+
+	//
+	vector<Node_Base*> ptr_nodes = s->GetNodes();
 }
 
 //导线部分
@@ -1190,8 +1270,24 @@ void InterFace::Show_Part(Part_Base* part)
 	if (part == nullptr) return;
 	switchRenderWindow(0);
 	HiddeAllPart();
-	part->m_BeamActor->VisibilityOn();
-	part->m_TrussActor->VisibilityOn();
+	if (part->m_BeamActor != nullptr)
+	{
+		part->Node_actor->VisibilityOn();
+		part->m_BeamActor->VisibilityOn();
+		part->m_TrussActor->VisibilityOn();
+	}
+	else
+	{ 
+		part->Show_VTKnode(m_Renderer);
+		part->Show_VTKtruss(m_Renderer);
+		part->Show_VTKbeam(m_Renderer);
+	}
+	////part->m_BeamActor->VisibilityOn();
+	//for (auto& i : part->m_BeamActors)
+	//{
+	//	m_Renderer->AddActor(i);
+	//	//cout << "number of actor :" << i << "\n";
+	//}
 	for (auto& i : part->Nactor)
 	{
 		i->VisibilityOn();
@@ -1205,13 +1301,20 @@ void InterFace::Show_Tower(Tower* tower)
 	if (tower == nullptr) return;
 	switchRenderWindow(1);
 	HiddeAllTower();
-	tower->m_BeamActor->VisibilityOn();
-	tower->m_TrussActor->VisibilityOn();
-	tower->Node_actor->VisibilityOn();
-	//for (auto& i : tower->Nactor)
-	//{
-	//	m_Renderer_2->AddActor(i);
-	//}
+
+	if (tower->m_BeamActor != nullptr)
+	{
+		tower->Node_actor->VisibilityOn();
+		tower->m_BeamActor->VisibilityOn();
+		tower->m_TrussActor->VisibilityOn();
+	}
+	else
+	{
+		tower->Show_VTKnode(m_Renderer_2);
+		tower->Show_VTKtruss(m_Renderer_2);
+		tower->Show_VTKbeam(m_Renderer_2);
+	}
+
 	for (auto& i : tower->m_LoadActor)
 	{
 		m_Renderer_2->AddActor(i);

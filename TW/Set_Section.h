@@ -6,14 +6,14 @@
 #include"Section.h"
 #include<vector>
 #include<iostream>
-
+#include"InterFace.h"
 class Set_Section : public QDialog
 {
 	Q_OBJECT
 
 public:
-	Set_Section(QWidget *parent = nullptr);
-
+	Set_Section(InterFace* m_pInterFace, QWidget* parent = nullptr);
+	InterFace* m_pInterFace = nullptr;
 	~Set_Section();
 	std::vector<Section>Classs;
 	void Get_Data();

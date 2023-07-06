@@ -12,10 +12,6 @@
 #include<string>
 #pragma execution_character_set("utf-8")
 using namespace std;
-int Part_Base::Get_id() const
-{
-	return m_id;
-}
 
 int Part_Base::Find_tower_idNode(int idNode) const
 {
@@ -41,6 +37,7 @@ void Part_Base::Show_VTKtruss(vtkRenderer* renderer)
 	m_TrussActor = vtkSmartPointer<vtkActor>::New();
 	m_TrussActor->SetMapper(mapper);
 	m_TrussActor->GetProperty()->SetColor(0, 0, 0);//设置颜色(0,0,0)表示黑色
+
 	renderer->AddActor(m_TrussActor);
 }
 
@@ -65,6 +62,7 @@ void Part_Base::Show_VTKbeam(vtkRenderer* renderer)
 	m_BeamActor->SetMapper(mapper);
 	m_BeamActor->GetProperty()->SetColor(0, 0, 0);//设置颜色(0,0,0)表示黑色
 	renderer->AddActor(m_BeamActor);
+	
 }
 
 void Part_Base::ShowMessage()
@@ -309,9 +307,9 @@ int Part_Base::Creat_Node(double x, double y, double z)
 
 }
 
-void Part_Base::SaveTo(QDataStream& fin) const
+void Part_Base::SaveTo(QDataStream& fin) const//写
 {
-	fin << m_id;
+	fin << m_id;//
 	int nNode = m_Nodes.size();
 	fin << nNode;
 	for (int i = 0; i < nNode; ++i)
@@ -332,12 +330,14 @@ void Part_Base::SaveTo(QDataStream& fin) const
 	}
 	fin << id_BeamSection;
 	fin << id_TrussSection;
-	int nSuspension = SuspensionNode.size();
+	//缺截面
+	int nSuspension = SuspensionNode.size();//悬挂点
 	fin << nSuspension;
 	for (int i = 0; i < nSuspension; ++i)
 	{
 		fin << SuspensionNode[i];
 	}
+
 }
 
 void Part_Base::Input(QDataStream& fin)
@@ -373,6 +373,7 @@ void Part_Base::Input(QDataStream& fin)
 	{
 		fin >> SuspensionNode[i];
 	}
+
 }
 
 //void Part_Base::show_SectionBeam(double a, double b, int section, int M, int group, bool IsBeam)
@@ -555,12 +556,13 @@ void Part_Base::Input(QDataStream& fin)
 
 void Part_Base::SubstaceActor(Element_Beam& beam)
 {
-
-	for (auto i : pMaterial)
+	InterFace* pInterFace = Base::Get_InterFace();
+	for (auto i : pSection)
 	{
-		if (i.m_id == beam.ClassSectionID)
+		Section* pSection = pInterFace->Ms.Find_Entity(i);
+		if (i == beam.ClassSectionID)
 		{
-			switch (i.ClassSe)
+			switch (pSection->ClassSe)
 			{
 			case 0:
 				SetL(beam);
@@ -600,11 +602,13 @@ void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 				if (i.sectionID == ElementGroup - BeamMaxGroup)
 				{
 					i.ClassSectionID = SectionGroup;
-					for (auto& j : pMaterial)
+					InterFace* pInterFace = Base::Get_InterFace();
+					for (auto j : pSection)
 					{
-						if (i.ClassSectionID == j.m_id)
+						Section* pSection = pInterFace->Ms.Find_Entity(j);
+						if (i.ClassSectionID == pSection->m_id)
 						{
-							i.MaterialID = j.ClassM;
+							i.MaterialID = pSection->ClassM;
 						}
 					}
 				}
@@ -615,17 +619,9 @@ void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 	
 }
 
-void Part_Base::AddAllSection(vector<Section>Ma)
+void Part_Base::AddNewSection(int id)
 {
-	for (auto i : Ma)
-	{
-		pMaterial.push_back(i);
-	}
-}
-
-void Part_Base::AddNewSection(double ia, double ib, int id, int iClassSe, int iClassM)
-{
-	pMaterial.push_back(Section(ia, ib, id, iClassSe, iClassM));
+	pSection.push_back(id);
 }
 
 void Part_Base::SetL(Element_Beam& EB)
@@ -636,7 +632,7 @@ void Part_Base::SetL(Element_Beam& EB)
 	double n1 = EB.direction[0];
 	double n2 = EB.direction[1];
 	double n3 = EB.direction[2];
-	cout << "点" << EB.m_idNode[0] - 1 << "  " << EB.m_idNode[1] - 1 << "\n";
+//	cout << "点" << EB.m_idNode[0] - 1 << "  " << EB.m_idNode[1] - 1 << "\n";
 	double x1 = m_Nodes[ipt1].x; double y1 = m_Nodes[ipt1].y; double z1 = m_Nodes[ipt1].z;
 	double x2 = m_Nodes[ipt2].x; double y2 = m_Nodes[ipt2].y; double z2 = m_Nodes[ipt2].z;
 	if (abs(z2 - z1 )> 0.1)//
@@ -644,13 +640,16 @@ void Part_Base::SetL(Element_Beam& EB)
 		bA.setNode(x1, y1, z1, x2, y2, z2);
 		double x[6];
 		double y[6];
-		for (auto& j : pMaterial)
+
+		InterFace* pInterFace = Base::Get_InterFace();
+		for (auto i : pSection)
 		{
-			if (EB.ClassSectionID == j.m_id)
+			Section* pSection = pInterFace->Ms.Find_Entity(i);
+			if (EB.ClassSectionID == i)
 			{
-				x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
-				y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
-				EB.MaterialID = j.ClassM;
+				x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
+				y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
+				EB.MaterialID = pSection->ClassM;
 			}
 		}
 		bA.SetSection(x, y);
@@ -673,13 +672,15 @@ void Part_Base::SetL(Element_Beam& EB)
 			bA.setNode(x1, y1, z1, x2, y2, z2);
 			double x[6];
 			double y[6];
-			for (auto& j : pMaterial)
+			InterFace* pInterFace = Base::Get_InterFace();
+			for (auto i : pSection)
 			{
-				if (EB.ClassSectionID == j.m_id)
+				Section* pSection = pInterFace->Ms.Find_Entity(i);
+				if (EB.ClassSectionID == i)
 				{
-					x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
-					EB.MaterialID = j.ClassM;
+					x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
+					y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
+					EB.MaterialID = pSection->ClassM;
 				}
 			}
 			bA.SetSection(x, y);
@@ -690,13 +691,15 @@ void Part_Base::SetL(Element_Beam& EB)
 			bA.setNode(x2, y2, z2, x1, y1, z1);
 			double x[6];
 			double y[6];
-			for (auto& j : pMaterial)
+			for (auto& j : pSection)
 			{
-				if (EB.ClassSectionID == j.m_id)
+				InterFace* pInterFace = Base::Get_InterFace();
+				for (auto i : pSection)
 				{
-					x[0] = 0; x[1] = j.a; x[2] = j.a; x[3] = j.b; x[4] = j.b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = j.b; y[3] = j.b; y[4] = j.a; y[5] = j.a;
-					EB.MaterialID = j.ClassM;
+					Section* pSection = pInterFace->Ms.Find_Entity(i);
+					x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
+					y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
+					EB.MaterialID = pSection->ClassM;
 				}
 			}
 			bA.SetSection(x, y);
@@ -719,12 +722,14 @@ void Part_Base::SetCir(Element_Beam& beam)
 	C.SetNode(x1, y1, z1, x2, y2, z2);//设置节点
 	double x = 0;
 	double y = 0;
-	for (auto& j : pMaterial)
+	InterFace* pInterFace = Base::Get_InterFace();
+	for (auto i : pSection)
 	{
-		if (beam.ClassSectionID == j.m_id)
+		Section* pSection = pInterFace->Ms.Find_Entity(i);
+		if (beam.ClassSectionID == i)
 		{
-			x = j.a;
-			y = j.b;
+			x = pSection->a;
+			y = pSection->b;
 
 		}
 	}

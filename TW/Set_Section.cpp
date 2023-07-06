@@ -5,10 +5,10 @@
 #pragma execution_character_set("utf-8")
 using namespace std;
 
-Set_Section::Set_Section(QWidget *parent): QDialog(parent)
+Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
-
+	m_pInterFace = InterFace;
 	connect(ui.btn_ok, &QPushButton::clicked, this, &Set_Section::SendSlots);
 
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Set_Section::reject);
@@ -55,7 +55,7 @@ void Set_Section::SendSlots()
 {
 	QStringList strs;
 	ClassSection = ui.comboBox->currentIndex();
-	ClassMa =ui.comboBox_2->currentIndex()+1;
+	ClassMa = ui.comboBox_2->currentIndex() + 1;
 	QString Ma = QString::number(ClassMa);
 	QString s;
 	if (ClassSection == 0)
@@ -74,11 +74,23 @@ void Set_Section::SendSlots()
 	a = ui.LEdit_a->text().toDouble();
 	b = ui.LEdit_b->text().toDouble();
 	int iM = ClassMa;
-	//Classs.push_back(M_Section(name, Index, a, b, iM));
+
+	////修改的部分
+	//Section section;
+	//section.a = ui.LEdit_a->text().toDouble();
+	//section.b = ui.LEdit_b->text().toDouble();
+	//section.ClassM= ui.comboBox_2->currentIndex() + 1;
+	//section.ClassSe= ui.comboBox->currentIndex();
+	//m_pInterFace->MS.push_back(section);
+	int id = m_pInterFace->Ms.size() + 1;
+	Section* section = new Section(a, b, id, ClassSection, iM);
+	m_pInterFace->Ms.Add_Entity(section);
+
 	//第一次调用完之后，删除数据
 	ui.LEdit_a->clear();
 	ui.LEdit_b->clear();
 	ui.LEdit_name->clear();
+
 }
 
 

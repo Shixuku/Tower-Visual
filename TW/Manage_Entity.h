@@ -15,11 +15,11 @@ private:
 	LLI m_idMax;//当前最大编号
 
 	template <class T2>
-	void Read_Stream(QDataStream& s)
+	void Read_Stream(QDataStream& s,int size)
 	{
 		T2* pEntity = new T2;
 		pEntity->Input(s);
-		LLI idEntity = pEntity->Get_id();//对象编号
+		LLI idEntity = pEntity->Get_id() + size;//对象编号
 
 		//清除原来编号的对象
 		auto iFind = this->find(idEntity);
@@ -38,7 +38,7 @@ public:
 	void Save(QDataStream& s) const
 	{//存储数据
 		LLI n = this->size();
-		qDebug() << "n = " << n;
+		qDebug() << "n = " << n;//个数
 		s << n;//存入对象个数
 		for (const auto& i : *this)
 		{
@@ -47,7 +47,7 @@ public:
 			pEntity->SaveTo(s);
 		}
 	}
-	void Read(QDataStream& s)
+	void Read(QDataStream& s,int size)
 	{//读取数据
 		LLI n = 0;
 		s >> n;//读出对象个数
@@ -61,17 +61,17 @@ public:
 			switch (iType)
 			{
 			case Part_Type::ET_PartLeg:
-				Read_Stream<TowerPart_leg>(s); break;
+				Read_Stream<TowerPart_leg>(s, size); break;
 			case Part_Type::ET_PartBody:
-				Read_Stream<TowerPart_body>(s); break;
+				Read_Stream<TowerPart_body>(s, size); break;
 			case Part_Type::ET_PartCrossArm:
-				Read_Stream<TowerPart_CrossArm>(s); break;
-			case Part_Type::ET_PartInsulator:
-				Read_Stream<TowerPart_Insulator>(s); break;
+				Read_Stream<TowerPart_CrossArm>(s, size); break;
+			//case Part_Type::ET_PartInsulator:
+			//	Read_Stream<TowerPart_Insulator>(s); break;
 			case Part_Type::ET_Tower:
-				Read_Stream<Tower>(s); break;
-			case Part_Type::ET_TowerWireGroup:
-				Read_Stream<TowerWireGroup>(s); break;
+				Read_Stream<Tower>(s, size); break;
+			//case Part_Type::ET_TowerWireGroup:
+			//	Read_Stream<TowerWireGroup>(s, size); break;
 			default:
 			{
 				QString cs("不支持的对象类型");

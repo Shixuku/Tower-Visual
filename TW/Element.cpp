@@ -48,5 +48,7 @@ void Element::Input(QDataStream& fin)
 	}
 	fin >> sectionID;
 	fin >> ClassSectionID;
+	fin >> MaterialID;
+	fin >> groupTowerId;
 }
 

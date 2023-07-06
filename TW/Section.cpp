@@ -60,11 +60,6 @@ Part_Type Section::My_PartType() const
 	return ET_Section;
 }
 
-int Section::Get_id() const
-{
-	return m_id;
-}
-
 Section::Section()
 {
 }
