@@ -22,6 +22,10 @@
 #include<vtkInteractorStyleTrackballCamera.h>
 #include"TowerWireGroupAssembly.h"
 
+//fl_Dll
+#include"S_InterFace.h"
+#include"Node_Base.h"
+
 #pragma execution_character_set("utf-8")
 
 class T_Foot;
@@ -76,9 +80,13 @@ public:
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
      vector<Tower_Assembly*> tower_assembles;
+     void caculate();
     
-     std::vector<Section>MS;
-     double* GetSectionData(int SectionGroup);
+     //std::vector<Section>MS;
+
+     //std::vector<Section>MS;//新建的截面
+
+ 
      std::vector<QStringList> Scetion_lists;
 
      //导线部分
@@ -107,7 +115,8 @@ public:
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
- 
+     //计算
+     S_InterFace* s = nullptr;
   
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分

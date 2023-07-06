@@ -4,15 +4,11 @@
 #include"Base.h"
 # define PI acos(-1)
 using namespace std;
-class Section:public Base
+class Section: public Base
 {
 public:
 	string Name;
-	int m_id=0;
-	int Get_id()const;
 	Section();
-
-
 
 	//ÁºµÄ½ØÃæÊôĞÔ
 	double B_Iy=0;

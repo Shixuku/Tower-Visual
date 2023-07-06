@@ -9,6 +9,8 @@
 	#include <vtkTubeFilter.h>
 	#include <iostream>
 	#include<fstream>
+#include"InterFace.h"
+
 int Tower::FindGroupIdNode(int idNode) const
 {
 	return TowerToGroup[idNode - 1];
@@ -43,9 +45,12 @@ void Tower::VectorToMap()
 		TrussData.insert(std::make_pair(data.m_idElement, data));
 	}
 	// 将 vectorSection 中的元素插入到 map 中
-	for (const auto& data : pSection)
+
+	//jrf
+	InterFace* pInterFace = Base::Get_InterFace();
+	for (auto& i : pInterFace->Ms)
 	{
-		SectionData.insert(std::make_pair(data.m_id, data));
+		SectionData.insert(std::make_pair(i.second->m_id, *i.second));
 	}
 }
 void Tower::Show_VTKtruss(vtkRenderer* renderer)
@@ -297,7 +302,9 @@ void Tower::BeamTxT()
 	fout << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID
+		//m_Elements_beams[i].ClassSectionID  截面号
+
+		fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID//材料号
 			<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "  " << m_Elements_beams[i].direction[0] << "  " <<
 			m_Elements_beams[i].direction[1] << "  " <<
 			m_Elements_beams[i].direction[2] << "  " << "\n";
@@ -337,28 +344,36 @@ void Tower::MaterialTxT()
 
 void Tower::BeamSectionTxT()
 {
-	int SectionSize = pSection.size();
+	//int SectionSize = pSection.size();
+	//fout << SectionSize << "\n";
+	//for (int i = 0; i < SectionSize; i++)
+	//{
+	//	fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  " << pSection[i].B_J << "\n";
+	//}
+	InterFace* pInterFace = Base::Get_InterFace();
+	int SectionSize = pInterFace->Ms.size();
 	fout << SectionSize << "\n";
-	for (int i = 0; i < SectionSize; i++)
+	for (auto& i : pInterFace->Ms)
 	{
-		fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  " << pSection[i].B_J << "\n";
-
+		fout << i.second->m_id << "  " << i.second->S << "  " << i.second->B_Iy << "  " << i.second->B_Iz << "  " << i.second->B_J << "\n";
 	}
 }
 
 void Tower::TrussSectionTxT()
 {
-	int SectionSize = pSection.size();
+	InterFace* pInterFace = Base::Get_InterFace();
+	int SectionSize = pInterFace->Ms.size();
 	fout << SectionSize << "\n";
-	for (int i = 0; i < SectionSize; i++)
+	for (auto& i : pInterFace->Ms)
 	{
-		fout << pSection[i].m_id << "  " << pSection[i].S << "\n";
-
+		fout << i.second->m_id << "  " << i.second->S << "\n";
 	}
 }
 
 void Tower::RestraintTxT()
 {
+	int a = 24;//只考虑塔脚的4个完全约束
+	fout << a << "\n";
 	cout << "start RestraintNode" << "\n";
 	for (int i = 0; i < RestraintNode.size(); i++)
 	{
@@ -369,16 +384,16 @@ void Tower::RestraintTxT()
 	}
 }
 
-	void Tower::addPart(Part_Base* part)
-	{
-		if (!part) return;
-		addNodeToTower(part);
-		addElementToTower(part);
-		addSectionToTower(part);
-		addRestraintNode(part);
-		addSuspensionNode(part);
-		part->part_to_tower.clear();
-	}
+void Tower::addPart(Part_Base* part)
+{
+	if (!part) return;
+	addNodeToTower(part);
+	addElementToTower(part);
+	//addSectionToTower(part);//不每次都把截面添加进去，只能添加一次
+	addRestraintNode(part);
+	addSuspensionNode(part);
+	part->part_to_tower.clear();
+}
 
 void Tower::Check()
 {
@@ -516,11 +531,6 @@ void Tower::addNodeToTower(Part_Base* part)
 
 Tower::Tower()
 {
-}
-
-int Tower::Get_id() const
-{
-	return m_id;
 }
 
 void Tower::SaveTo(QDataStream& fin) const
@@ -709,9 +719,9 @@ void Tower::Show_Beam(int BeamID, int SectionClass, double a, double b)
 
 }
 
-void Tower::AddNewSection(double ia, double ib, int id, int iClassSe, int iClassM)
+void Tower::AddNewSection(int id)
 {
-	// pSection.push_back(Section(ia, ib, id, iClassSe, iClassM));
+	 pSection.push_back(id);
 }
 
 void Tower::addElementToTower(Part_Base* part)
@@ -760,19 +770,21 @@ void Tower::addElementToTower(Part_Base* part)
 	}
 }
 
-void Tower::addSectionToTower(Part_Base* part)
-{
-	int SectionSize = part->pMaterial.size();
-	for (int i = 0; i < SectionSize; i++)
-	{
-		double ia = part->pMaterial[i].a;
-		double ib = part->pMaterial[i].b;
-		int id = part->pMaterial[i].m_id;
-		int iClassSe = part->pMaterial[i].ClassSe;
-		int iClassM = part->pMaterial[i].ClassM;
-		pSection.push_back(Section(ia, ib, id, iClassSe, iClassM));
-	}
-}
+//void Tower::addSectionToTower(Part_Base* part)
+//{
+//	int SectionSize = part->pSection.size();
+//	for (int i = 0; i < SectionSize; i++)
+//	{
+//		double ia = part->pSection[i].a;
+//		double ib = part->pSection[i].b;
+//		int id = part->pSection[i].m_id;
+//		int iClassSe = part->pSection[i].ClassSe;
+//		int iClassM = part->pSection[i].ClassM;
+//
+//		pSection.push_back(Section(ia, ib, id, iClassSe, iClassM));
+//		
+//	}
+//}
 
 void Tower::addRestraintNode(Part_Base* part)
 {
@@ -784,14 +796,14 @@ void Tower::addRestraintNode(Part_Base* part)
 	}
 }
 
-	void Tower::addSuspensionNode(Part_Base* part)
+void Tower::addSuspensionNode(Part_Base* part)
+{
+	size_t SusNode = part->SuspensionNode.size();
+	for (int i = 0; i < SusNode; i++)
 	{
-		size_t SusNode = part->SuspensionNode.size();
-		for (int i = 0; i < SusNode; i++)
-		{
-			this->SuspensionNode.push_back(part->SuspensionNode[i]);
-			size_t totalT = this->SuspensionNode.size() - 1;
-			SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
-		}
+		this->SuspensionNode.push_back(part->SuspensionNode[i]);
+		size_t totalT = this->SuspensionNode.size() - 1;
+		SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
 	}
+}
 

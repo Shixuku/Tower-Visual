@@ -6,24 +6,19 @@
 #include<QStringLiteral>
 #include<QList>
 #include<QSet>
+
 Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 
-
 	m_pInterFace = InterFace;
 	m_Part = Part;
 	Q_ASSERT(m_pInterFace != nullptr);
 
-	//Create_combobox();
-	ma_ab2 = new Set_Section;
+	ma_ab2 = new Set_Section(m_pInterFace);
 	table_Section_Lists();//设置截面表格
 	Add_created_section();//添加已经创建的截面
-
-	//connect(ui.comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(ShowComboVTK()));
-	//void (QComboBox:: * intChanged)(int) = &QComboBox::currentIndexChanged;
-	//connect(ui.comboBox, intChanged, this, &Assign_Section::ShowComboVTK);
 
 	//点击组数，会显示高亮（在原来的基础上新建一个actor）
 	table_Group_Lists(Part);
@@ -47,8 +42,9 @@ Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* pa
 		double ia = ma_ab2->a;
 		double ib = ma_ab2->b;
 		int iM = ma_ab2->ClassMa;
-		int id = Part->pMaterial.size() + 1;//从1开始排序
-		Part->AddNewSection(ia, ib, id, ClassSection, iM);
+
+		int id = m_pInterFace->Ms.size() + 1;//从1开始排序
+
 		int irow = ui.Section_Lists->rowCount();
 		ui.Section_Lists->setRowCount(irow + 1);
 		QString QName = QString::fromStdString(NameSection);;
@@ -85,15 +81,10 @@ Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* pa
 
 	}});
 	//添加截面
-	connect(ma_ab2, SIGNAL(SendData(QStringList&)), this, SLOT(GetData(QStringList&)));
+	//connect(ma_ab2, SIGNAL(SendData(QStringList&)), this, SLOT(GetData(QStringList&)));
+	connect(ma_ab2, SIGNAL(SendData(QStringList&)), m_pInterFace, SLOT(GetData(QStringList&)));
 	//删除已添加的截面
 	connect(ui.btn_delete, &QPushButton::clicked, this, &Assign_Section::table_Section_Lists_delete);
-
-	//点击组数，会显示高亮（在原来的基础上新建一个actor）
-	//connect(ui.Group_Lists, &QTableWidget::itemClicked, this, &Assign_Section::highlight_actor);
-
-	//指派截面
-	//connect(ui.btn_assign, &QPushButton::clicked, this, &Assign_Section::assigh_section);
 
 	//点击完成按钮，会删除高亮的actor
 	connect(ui.btn_finish, &QPushButton::clicked, this, [=]()
@@ -110,54 +101,6 @@ Assign_Section::~Assign_Section()
 
 }
 
-//void Assign_Section::ShowComboVTK()
-//{
-//	
-//	T_legs = m_pInterFace->ui.treeWidget->topLevelItem(0)->childCount();//塔腿数量
-//	T_bodys = m_pInterFace->ui.treeWidget->topLevelItem(1)->childCount();//塔身数量
-//	T_heads = m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();//塔头数量
-//	int Index = ui.comboBox->currentIndex();
-//	if (Index < T_legs)
-//	{
-//		id_Part = Index + 1;
-//		//return m_pInterFace->TP_leg.Find_Entity(id_Part);
-//		m_pInterFace->Show_Part(m_pInterFace->TP_leg.Find_Entity(id_Part));
-//		table_Group_Lists(m_pInterFace->TP_leg.Find_Entity(id_Part));
-//		//点击组数，会显示高亮（在原来的基础上新建一个actor）
-//		connect(ui.Group_Lists, &QTableWidget::itemClicked, this, [=]()
-//			{highlight_actor(m_pInterFace->TP_leg.Find_Entity(id_Part));
-//		m_pInterFace->m_renderWindow->Render(); });
-//
-//		//指派截面
-//		connect(ui.btn_assign, &QPushButton::clicked, this, [=]() 
-//			{assigh_section(m_pInterFace->TP_leg.Find_Entity(id_Part)); });
-//
-//	}	
-//	else if (Index < T_legs+ T_bodys)
-//	{
-//		id_Part = Index + 1- T_legs;
-//		m_pInterFace->Show_Part(m_pInterFace->TP_body.Find_Entity(id_Part));
-//		table_Group_Lists(m_pInterFace->TP_body.Find_Entity(id_Part));
-//		connect(ui.Group_Lists, &QTableWidget::itemClicked, this, [=]() 
-//			{highlight_actor(m_pInterFace->TP_body.Find_Entity(id_Part)); });
-//		//指派截面
-//		connect(ui.btn_assign, &QPushButton::clicked, this, [=]()
-//			{assigh_section(m_pInterFace->TP_body.Find_Entity(id_Part)); });
-//	}
-//	else if (Index < T_legs + T_bodys+ T_heads)
-//	{
-//		id_Part = Index + 1 - T_legs- T_bodys;
-//		m_pInterFace->Show_Part(m_pInterFace->TP_CrossArm.Find_Entity(id_Part));
-//		connect(ui.Group_Lists, &QTableWidget::itemClicked, this, [=]() 
-//			{highlight_actor(m_pInterFace->TP_CrossArm.Find_Entity(id_Part)); });
-//		//指派截面
-//		connect(ui.btn_assign, &QPushButton::clicked, this, [=]()
-//			{assigh_section(m_pInterFace->TP_CrossArm.Find_Entity(id_Part)); });
-//	}
-//
-//
-//}
-
 //设置截面列表
 void Assign_Section::table_Section_Lists()
 {
@@ -173,17 +116,18 @@ void Assign_Section::table_Section_Lists()
 //将创建好的截面数据放入截面表
 void Assign_Section::Add_created_section()
 {
-	for (int j = 0; j < m_pInterFace->MS.size(); j++)
+	for (auto& i: m_pInterFace->Ms)
 	{
+		Section* pSection = i.second;  //取出截面指针
 		int irow = ui.Section_Lists->rowCount();
 		ui.Section_Lists->setRowCount(irow + 1);
 
-		QString QName = QString::fromStdString(m_pInterFace->MS[j].Name);
+		QString QName = QString::fromStdString(pSection->Name);
 		ui.Section_Lists->setItem(irow, 0, new QTableWidgetItem(QName));
 		ui.Section_Lists->item(irow, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
 		QString s;
-		if (m_pInterFace->MS[j].ClassSe == 0)
+		if (pSection->ClassSe == 0)
 		{
 			s = "L型";
 		}
@@ -194,43 +138,24 @@ void Assign_Section::Add_created_section()
 		ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
 		ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-		QString ia = QString::number(m_pInterFace->MS[j].a);
+		QString ia = QString::number(pSection->a);
 		ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
 		ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-		QString ib = QString::number(m_pInterFace->MS[j].b);
+		QString ib = QString::number(pSection->b);
 		ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
 		ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-		QString iM = QString::number(m_pInterFace->MS[j].ClassM);
+		QString iM = QString::number(pSection->ClassM);
 		ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
 		ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-		QString id = QString::number(m_pInterFace->MS[j].m_id);
+		QString id = QString::number(pSection->m_id);
 		ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
 		ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	}
 }
 
-//void Assign_Section::Create_combobox()
-//{
-//	T_legs = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount();//塔腿数量
-//	T_bodys = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔身数量
-//	T_heads = m_pInterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount();//塔头数量
-//
-//	for (int i = 0; i < T_legs; i++)
-//	{
-//		ui.comboBox->addItem("塔腿部件" + QString::number(i + 1));
-//	}
-//	for (int i = 0; i < T_bodys; i++)
-//	{
-//		ui.comboBox->addItem("塔身部件" + QString::number(i + 1));
-//	}
-//	for (int i = 0; i < T_heads; i++)
-//	{
-//		ui.comboBox->addItem("塔头部件" + QString::number(i + 1));
-//	}
-//}
 
 //设置单元组列表
 void Assign_Section::table_Group_Lists(Part_Base* Part)
@@ -258,23 +183,6 @@ void Assign_Section::table_Group_Lists(Part_Base* Part)
 	ui.Group_Lists->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
-//功能——添加截面
-//void Assign_Section::GetData(QStringList& sInfo)
-//{
-//	//添加行，并且将信息放进去
-//	int irow = ui.Section_Lists->rowCount();
-//	ui.Section_Lists->setRowCount(irow + 1);
-//
-//	for (int i = 0; i < headertext.count(); i++)
-//	{
-//		QString str= sInfo[i];
-//
-//		ui.Section_Lists->setItem(irow, i, new QTableWidgetItem(str));
-//		ui.Section_Lists->item(irow, i)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-//		qDebug() << str;
-//	}
-//
-//}
 
 //功能——删除截面
 void Assign_Section::table_Section_Lists_delete()
@@ -394,7 +302,7 @@ void Assign_Section::assigh_section(Part_Base* Part)
 {
 	int section_row = ui.Section_Lists->currentRow();//取得截面信息
 
-	int id = ui.Section_Lists->item(section_row, 5)->text().toDouble();//找到这个截面的编号
+	int id = ui.Section_Lists->item(section_row, 5)->text().toInt();//找到这个截面的编号
 
 	int group_row = ui.Group_Lists->currentRow() + 1;//取得单元分组信息
 	QList<QTableWidgetItem*> selectedItems = ui.Group_Lists->selectedItems();

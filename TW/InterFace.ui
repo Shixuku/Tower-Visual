@@ -15,25 +15,8 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="1">
-     <widget class="QWidget" name="widget_3" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="btn_part">
-         <property name="text">
-          <string>管理部件数据</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btn_ins">
-         <property name="text">
-          <string>管理实例数据</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+    <item row="0" column="3">
+     <widget class="QWidget" name="widget" native="true"/>
     </item>
     <item row="0" column="1">
      <widget class="QTreeWidget" name="treeWidget">
@@ -53,11 +36,42 @@
       </column>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QWidget" name="widget" native="true"/>
-    </item>
     <item row="1" column="3">
      <widget class="QWidget" name="widget_2" native="true"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QWidget" name="widget_3" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="btn_part">
+         <property name="text">
+          <string>管理部件数据</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_ins">
+         <property name="text">
+          <string>管理实例数据</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_caculate">
+         <property name="text">
+          <string>计算</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_display">
+         <property name="text">
+          <string>显示结果</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -86,8 +100,6 @@
     <property name="title">
      <string>视图(View)</string>
     </property>
-    <addaction name="actioninit"/>
-    <addaction name="actionYoZ"/>
    </widget>
    <widget class="QMenu" name="menu_Set">
     <property name="title">
@@ -127,15 +139,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
+   <addaction name="actioninit"/>
+   <addaction name="actionYoZ"/>
+   <addaction name="actionXoZ"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionNew">
+  <action name="actioninit">
    <property name="icon">
-    <iconset resource="tubiao.qrc">
-     <normaloff>:/xinjian.jfif</normaloff>:/xinjian.jfif</iconset>
+    <iconset>
+     <normaloff>:/TW/init.png</normaloff>:/TW/init.png</iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -144,28 +156,16 @@
     <string>新建</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="actionYoZ">
    <property name="icon">
     <iconset>
-     <normaloff>:/dakai.jfif</normaloff>:/dakai.jfif</iconset>
+     <normaloff>:/TW/YOZ.png</normaloff>:/TW/YOZ.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
    </property>
    <property name="toolTip">
-    <string>打开</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/baocun.png</normaloff>:/baocun.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save</string>
-   </property>
-   <property name="toolTip">
-    <string>保存</string>
+    <string>YOZ</string>
    </property>
   </action>
   <action name="actionLeg">
@@ -205,29 +205,30 @@
   </action>
   <action name="menuSave">
    <property name="text">
-    <string>Save</string>
+    <string>保存</string>
    </property>
   </action>
   <action name="actionRead">
    <property name="text">
-    <string>Read</string>
+    <string>读取</string>
    </property>
   </action>
-  <action name="actioninit">
-   <property name="text">
-    <string>init</string>
+  <action name="actionXoZ">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/TW/XOZ.png</normaloff>:/TW/XOZ.png</iconset>
    </property>
-  </action>
-  <action name="actionYoZ">
    <property name="text">
-    <string>YoZ</string>
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>XOZ</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="InterFace.qrc"/>
-  <include location="tubiao.qrc"/>
+  <include location="TW.qrc"/>
  </resources>
  <connections/>
 </ui>

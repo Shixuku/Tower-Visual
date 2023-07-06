@@ -12,7 +12,7 @@ void Node::show() const
 
 void Node::SaveTo(QDataStream& fin) const
 {
-	fin << m_idNode << x << y << z;
+	fin << m_idNode << x << y << z << restraint << groupTowerId;
 }
 
 void Node::Input(QDataStream& fin)

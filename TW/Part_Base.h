@@ -24,9 +24,6 @@ class InterFace;
 class Part_Base :public Base
 {
 public:
-	int m_id;
-	int Get_id()const;
-
 	int m_nodeID = 0;//节点编号
 	vector<Node> m_Nodes;//节点合集
 
@@ -46,11 +43,12 @@ public:
 	int Find_tower_idNode(int idNode) const;
 
 	InterFace* m_pInterFace = nullptr;
-	vtkSmartPointer<vtkActor> m_BeamActor;
+	vtkSmartPointer<vtkActor> m_BeamActor;//梁actor合集
 	vtkSmartPointer<vtkActor> m_TrussActor;
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
-	std::vector<Section>pMaterial;
-	map<int, Section>pSection;
+	//std::vector<Section>pSection;
+	std::vector<int>pSection;
+	//map<int, Section>pSection;
 	vtkSmartPointer<vtkActor> Node_actor;//黄瞻
 	vector<int>RestraintNode;//放入约束节点
 	vector<int>SuspensionNode;//放入挂线点
@@ -59,14 +57,11 @@ public:
 	void Show_VTKbeam(vtkRenderer* renderer);
 	void ShowMessage();
 
-	//void show_SectionBeam(double a, double b, int section, int M, int group, bool IsBeam);
-
 	void SubstaceActor(Element_Beam& beam);
-	//void AssginSectionGroup(int ElementGroup, int SectionGroup);
 	void AssginSectionGroup(QSet<int> Group, int SectionGroup);
 
-	void AddAllSection(vector<Section>Ma);
-	void AddNewSection(double ia, double ib, int id, int iClassSe, int iClassM);
+	void AddNewSection(int id);
+	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
 
 	void SetL(Element_Beam& beam);
 	void SetCir(Element_Beam& beam);
