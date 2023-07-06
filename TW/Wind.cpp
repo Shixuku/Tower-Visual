@@ -4,6 +4,7 @@
 #include <cmath>
 #include <QMessageBox>
 #include"RandomWind.h"
+#include<math.h>
 
 Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
 {
@@ -140,7 +141,7 @@ void Wind::ReadData()
 	//	ui.tableWidget->setItem(k, 2, new QTableWidgetItem(QString::number(uz)));
 	//}
 	QStringList headerLabels;
-	headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(kN)";
+	headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(N)";
 	ui.tableWidget->setColumnCount(headerLabels.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
 	ui.tableWidget->verticalHeader()->setVisible(false);
@@ -148,10 +149,10 @@ void Wind::ReadData()
 	ui.tableWidget->setRowCount(num_ele);  // 默认N行
 	for (int i = 0; i < num_ele; i++)
 	{
-		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements[i].m_idElement)));
+		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements_Trusses[i].m_idElement)));
 		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number((L_ele[i]))));
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(Uz_ele[i])));
-		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i])));
+		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i] * 1e3)));
 		// 设置单元格为只读
 		for (int j = 0; j < ui.tableWidget->columnCount(); j++)
 		{
@@ -170,7 +171,7 @@ void Wind::BtnOk()
 	}
 
 	num_node = m_pcreatWire->m_Nodes.size();
-	num_ele = m_pcreatWire->m_Elements.size();
+	num_ele = m_pcreatWire->m_Elements_Trusses.size();
 	bool groundSelected = false;
 
 	QList<QRadioButton*> radioButtons = { ui.rad_A, ui.rad_B, ui.rad_C, ui.rad_D };
@@ -246,16 +247,16 @@ void Wind::CountElePara()
 	// 计算每个单元的长度和风压系数
 	for (int i = 0; i < num_ele; i++)
 	{
-		const auto& ele = m_pcreatWire->m_Elements[i];
+		const auto& ele = m_pcreatWire->m_Elements_Trusses[i];
 		int ipt1 = ele.m_idNode[0] - 1; // id
 		int ipt2 = ele.m_idNode[1] - 1;
 		const auto& node1 = m_pcreatWire->m_Nodes[ipt1];
 		const auto& node2 = m_pcreatWire->m_Nodes[ipt2];
 
 		double Vx[3];
-		Vx[0] = (node2.x - node1.x) / 1000;
-		Vx[1] = (node2.y - node1.y) / 1000;
-		Vx[2] = (node2.z - node1.z) / 1000;
+		Vx[0] = (node2.x - node1.x) ;
+		Vx[1] = (node2.y - node1.y) ;
+		Vx[2] = (node2.z - node1.z) ;
 
 		double m_L = sqrt(Vx[0] * Vx[0] + Vx[1] * Vx[1] + Vx[2] * Vx[2]);
 		L_ele.push_back(m_L);
@@ -272,14 +273,14 @@ std::vector<double> Wind::CountWindForce()
 	double aerfa = 1.00;
 	double beitaC = 1.0;
 	double Usc = 1.1;
-	double d = 0.04;//m
+	double d = 2 * sqrt((m_pcreatWire->area) * 1e-6 / 3.14159);
 	double B = 1.0;
 	double theta = 90;
 	//差Uz和Lp
 	for (int i = 0; i < num_ele; i++)
 	{
-		 double Wx = aerfa * Uz_ele[i] * Usc * beitaC * d * L_ele[i] * B;
-		 Wx_values.push_back(Wx);
+		double Wx = W0 * aerfa * Uz_ele[i] * Usc * beitaC * d * L_ele[i] * B;
+		Wx_values.push_back(Wx);
 	}
 	return Wx_values;
 }

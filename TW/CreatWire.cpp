@@ -26,7 +26,7 @@ void CreatWire::CreatWirePoint()
 	{
 		double lxi = sqrt((WireSus[i].x - WireSus[i + 1].x) * (WireSus[i].x - WireSus[i + 1].x) + (WireSus[i].y - WireSus[i + 1].y) * (WireSus[i].y - WireSus[i + 1].y));//档距
 		double  hi = WireSus[i + 1].z - WireSus[i].z;//高差
-		double k = rou;
+		double k = rou / stress;
 		double Li = (2 / k) * sinh(k * lxi / 2); //线长
 		double li = WireSus[i + 1].x - WireSus[i].x; //两点x之差
 		double mi = WireSus[i + 1].y - WireSus[i].y; //两点y之差
