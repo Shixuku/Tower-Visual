@@ -64,7 +64,7 @@ void T_CrossArm::Set_table(int count)
 	for (int i = 0; i < count; i++)
 	{
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));//段号
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1716)));//段长
+		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1.716)));//段长
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(2)));//底面类型
 		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(2)));//顶面类型
 		ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(3)));//侧面类型
@@ -83,7 +83,7 @@ void T_CrossArm::Set_zhijia()
 	for (int i = 0; i < 4; i++)
 	{
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));//段号
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1716)));//段长
+		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1.716)));//段长
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(2)));//底面类型
 		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(2)));//顶面类型
 		ui.tableWidget->setItem(3, 3, new QTableWidgetItem(QString::number(4)));//顶面类型
@@ -106,7 +106,7 @@ void T_CrossArm::Set_hengdan()
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));//段号
 		if (i < 2)
 		{
-			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(2778)));//段长
+			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(2.778)));//段长
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(1)));//底面类型
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(1)));//顶面类型
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(1)));//侧面类型
@@ -114,7 +114,7 @@ void T_CrossArm::Set_hengdan()
 		}
 		else if(i<5)
 		{
-			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1389)));//段长
+			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1.389)));//段长
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(2)));//底面类型
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(2)));//顶面类型
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(2)));//侧面类型
@@ -124,7 +124,7 @@ void T_CrossArm::Set_hengdan()
 		}
 		else
 		{
-			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1389)));//段长
+			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(1.389)));//段长
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(3)));//底面类型
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(4)));//顶面类型
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(2)));//侧面类型
@@ -210,9 +210,9 @@ void T_CrossArm::Initialize()
 	//设置缺省值
 
 	//支架部分
-	ui.line_c1W0->setText("1300");
+	ui.line_c1W0->setText("1.3");
 	//横担部分
-	ui.line_c2H->setText("500"); ui.line_c2W0->setText("1292"); ui.line_c2Wn->setText("1287");
+	ui.line_c2H->setText("0.5"); ui.line_c2W0->setText("1.292"); ui.line_c2Wn->setText("1.287");
 
 	ui.combo_bodypos->setCurrentIndex(2);//设置combobox初始index
 	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount() + 1;//塔身数量

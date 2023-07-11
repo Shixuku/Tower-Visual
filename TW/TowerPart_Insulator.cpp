@@ -36,7 +36,7 @@ void TowerPart_Insulator::Get_split1()
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[2] });
+	InPutSuspension({ node[2] ,wireLogo });
 	//生成单元
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2],node[1] });
 }
@@ -53,7 +53,7 @@ void TowerPart_Insulator::Get_split1_I()
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[1] });
+	InPutSuspension({ node[1],wireLogo });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 }
 
@@ -67,7 +67,7 @@ void TowerPart_Insulator::Get_split2()
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[4] });
+	InPutSuspension({ node[4],wireLogo });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2], node[4],node[3],node[1] });
 }
 
@@ -80,7 +80,7 @@ void TowerPart_Insulator::Get_split2_I()
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[1] });
+	InPutSuspension({ node[1], wireLogo });
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 	Creat_Trusses(m_Elements_Trusses, { node[2],node[1],node[3] });
 }
@@ -110,7 +110,7 @@ void TowerPart_Insulator::Get_split4(int m_type)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[6] });
+	InPutSuspension({ node[6],wireLogo });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -161,7 +161,7 @@ void TowerPart_Insulator::Get_split6(int m_type)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[8] });
+	InPutSuspension({ node[8] ,wireLogo });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -218,7 +218,7 @@ void TowerPart_Insulator::Get_split8(int m_type)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	InPutSuspension({ node[10] });
+	InPutSuspension({ node[10], wireLogo });
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -233,6 +233,7 @@ void TowerPart_Insulator::Get_split8(int m_type)
 
 void TowerPart_Insulator::Create_Mesh()
 {
+
 	switch (m_splits)//塔腿类型
 	{
 	case 1:
@@ -254,4 +255,5 @@ void TowerPart_Insulator::Create_Mesh()
 		Get_split8(m_type);
 		break;
 	}
+	
 }

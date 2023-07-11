@@ -15,7 +15,8 @@ using namespace std;
 
 int Part_Base::Find_tower_idNode(int idNode) const
 {
-	return part_to_tower[idNode - 1];
+	int realId = idNode - 1;
+	return part_to_tower[realId];
 }
 
 void Part_Base::Show_VTKtruss(vtkRenderer* renderer)
@@ -269,6 +270,7 @@ void Part_Base::InPutRestraintNode(vector<int> ids)
 void Part_Base::InPutSuspension(vector<int> ids)
 {
 	SuspensionNode.push_back(ids[0]);
+	WireLoge.push_back(ids[1]);
 }
 
 int Part_Base::Creat_Node(double x, double y, double z)
@@ -283,7 +285,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 	int Judg = 0;
 	for (int i = 0; i < SIZE; i++)
 	{
-		if (abs(m_Nodes[i].x - x) < 1 && abs(m_Nodes[i].y - y) < 1 && abs(m_Nodes[i].z - z) < 1)
+		if (abs(m_Nodes[i].x - x) < 1e-2 && abs(m_Nodes[i].y - y) < 1e-2 && abs(m_Nodes[i].z - z) < 1e-2)
 		{
 			return m_Nodes[i].m_idNode; //ÖØ½Úµã
 			i = SIZE;
@@ -293,6 +295,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 			Judg++;
 		}
 	}
+
 
 	if (Judg == SIZE)
 	{
@@ -304,7 +307,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 
 		return m_Nodes[Judg].m_idNode;
 	}
-
+	return 0;
 }
 
 void Part_Base::SaveTo(QDataStream& fin) const//Ð´

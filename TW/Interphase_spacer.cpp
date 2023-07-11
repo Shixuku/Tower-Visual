@@ -24,6 +24,7 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm,QWidget* paren
 	ui.stackedWidget->setCurrentIndex(0);//设置默认page
 	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
 	connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
+	connect(ui.radioButton, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(2); });
 
 }
 
@@ -65,6 +66,14 @@ void Interphase_spacer::Get_Nodes()
 				TP_insulator->m_node2 = pNode;
 			}
 		}
+		else if (ret == 2)
+		{
+			int idNode = pNode->m_idNode;
+			int logo=ui.lineEdit_WireLogo->text().toDouble();
+			ui.lineEdit_2->setText(QString::number(idNode));
+			Arm->SuspensionNode.push_back(idNode);
+			Arm->WireLoge.push_back(logo);
+		}
 	}
 
 }
@@ -82,7 +91,7 @@ void Interphase_spacer::Get_Data()
 	{
 		QMessageBox::information(this, "Tips", "请选择V型绝缘子挂点！");
 	}
-	else
+	else if(TP_insulator!=nullptr)
 	{
 		TP_insulator->m_H = ui.line_H->text().toDouble();
 		TP_insulator->m_splits = ui.combo_count->currentText().toInt();
@@ -105,6 +114,7 @@ void Interphase_spacer::Get_Data()
 			}
 		}
 		TP_insulator->ArmId = Arm->m_id;
+		TP_insulator->wireLogo = ui.lineEdit_WireLogo->text().toInt();
 		TP_insulator->Create_Mesh();
 		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer);
 		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer);

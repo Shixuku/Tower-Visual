@@ -1,6 +1,12 @@
 #pragma once
 #include<iostream>
-
+#include<QDataStream>
+#include"Node.h"
+#include"Element.h"
+#include<vtkTransform.h>
+#include <vtkIdTypeArray.h>
+#include <QOpenGLWidget>//UINT_PTR
+#include <vtkPointData.h>//->AddArray(Ptr
 enum Part_Type :int
 {
 	ET_PartLeg, ET_PartBody, ET_PartSeptum, ET_PartCrossArm, ET_PartCrossArmSep, ET_Tower, ET_Section,ET_PartInsulator,ET_TowerWireGroup,
@@ -32,7 +38,9 @@ public:
 			return nullptr;
 		}
 	}
-	
+	//保存数据文件
+	virtual void SaveTo(QDataStream& fin)const;
+	virtual void Input(QDataStream& fin);
 private:
 	static InterFace* s_InterFace;
 };

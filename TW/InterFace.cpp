@@ -24,6 +24,7 @@
 #include"Wind.h"
 #include"Wire_InterFace.h"
 #include"CreatWire.h"
+#include"Calculate.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -186,6 +187,9 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
 	CreatWire->setText(0, QString("单导实例"));
 
+	QTreeWidgetItem* Calculate = new QTreeWidgetItem(ui.treeWidget);
+	Calculate->setText(0, QString("计算"));
+
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -244,7 +248,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Interphase_spacer(item);
 	}
 	//导线建模
-	else if (isChildOfTowerwiregroupWireModeling(item))
+	else if (isChildOfGroup(item,1))
 	{
 		ui_Wire_InterFace(item);
 	}
@@ -258,7 +262,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (isChildOfTower(item, 2))
 	{
-		CreateInp(item);
+		CreateTowerInp(item);
 	}
 	else if (item == ui.treeWidget->topLevelItem(2))
 	{
@@ -271,6 +275,14 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (item == ui.treeWidget->topLevelItem(8))
 	{
 		ui_SingleWire();
+	}
+	else if (item == ui.treeWidget->topLevelItem(9))
+	{
+		ui_Calculate();
+	}
+	else if (isChildOfTowerwiregroupWireModeling(item))
+	{
+		CreateGroupInp(item);
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -495,7 +507,7 @@ void InterFace::ui_SetAllSection(QTreeWidgetItem* item)
 	Part_Base* Part = OnFindPart(item->parent());
 	Show_Part(Part);
 	//显示所有单元长度
-	for (auto i : Part->m_Elements_beams)
+	for (auto& i : Part->m_Elements_beams)
 	{
 		int ipt1 = i.m_idNode[0] - 1; //id
 		int ipt2 = i.m_idNode[1] - 1;
@@ -540,14 +552,20 @@ void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
 	Wire_InterFace* w = new Wire_InterFace(towerWireGroup,this);
 	int ret = w->exec();
+	
 	if (ret == QDialog::Accepted)
 	{
 		CreatWire* t = new CreatWire;
 		w->Get_Data(*t);//取数据
+		m_Renderer_3->RemoveAllViewProps();
 		t->Create_Mesh();
-		t->Show_VTKnode(m_Renderer);
-		t->Show_VTKtruss(m_Renderer);
+		towerWireGroup->AddWireToGroup(t);
+		towerWireGroup->Show_VTKnode(m_Renderer_3);
+		towerWireGroup->Show_VTKbeam(m_Renderer_3);
+		towerWireGroup->Show_VTKtruss(m_Renderer_3);
+		m_Renderer_3->ResetCamera();
 	}
+
 }
 
 void InterFace::ui_ManageLoads()
@@ -562,6 +580,7 @@ void InterFace::ui_TowerWireGroup()
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	TowerWireGroupAssembly* towerWireGroupAssembly = new TowerWireGroupAssembly(this, towerWireGroup);
 	towerWireGroupAssembly->show();
+	TWG.Add_Entity(towerWireGroup);
 }
 void InterFace::ui_Constraint()
 {
@@ -714,6 +733,7 @@ Part_Base* InterFace::OnFindPart(const QTreeWidgetItem* Item)
 		}
 		++it;
 	}
+	return nullptr;
 }
 
 Tower* InterFace::OnFindTower(const QTreeWidgetItem* Item)
@@ -925,7 +945,8 @@ void InterFace::caculate()
 		return;
 	}
 	QString FilePath("./");//计算结果文件路径
-	int idNode = 1;//要输出的点的编号
+	vector<int> idNode;//要输出的点的编号
+	idNode.push_back(1);
 	s->set_outInfo(FilePath, idNode);
 
 	//设置参数...
@@ -992,7 +1013,7 @@ void InterFace::Add_Select(vtkSmartPointer<vtkActor> pActor)
 }
 void InterFace::UnSelect_Nodes()
 {
-	for (auto i : m_NodeSelected)
+	for (auto &i : m_NodeSelected)
 	{
 		if (i != nullptr) m_CurrentRenderer->RemoveActor(i);
 	}
@@ -1000,7 +1021,7 @@ void InterFace::UnSelect_Nodes()
 }
 void InterFace::Get_SelectedNode(std::list<Node*>& Nodes)
 {
-	for (auto i : m_NodeSelected)
+	for (auto &i : m_NodeSelected)
 	{
 		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//取得地址数组
 		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//转换为整数数组
@@ -1018,7 +1039,7 @@ void InterFace::Get_SelectedNode(std::list<Node*>& Nodes)
 
 void InterFace::Get_SelectedNode(std::set<Node*>& Nodes)
 {
-	for (auto i : m_NodeSelected)
+	for (auto &i : m_NodeSelected)
 	{
 		auto dataArray = i->GetMapper()->GetInput()->GetPointData()->GetArray("Address");//取得地址数组
 		auto ptrArray = dynamic_cast<vtkIdTypeArray*> (dataArray);//转换为整数数组
@@ -1105,6 +1126,21 @@ bool InterFace::isChildOfTower(QTreeWidgetItem* item, int childNumber)
 	for (int i = 0; i < childCount; i++)
 	{
 		QTreeWidgetItem* childItem = topLevelItem3->child(i);
+		if (item == childItem->child(childNumber))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool InterFace::isChildOfGroup(QTreeWidgetItem* item, int childNumber)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
+	for (int i = 0; i < towerWireGroupChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
 		if (item == childItem->child(childNumber))
 		{
 			return true;
@@ -1206,7 +1242,7 @@ bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
 	for (int i = 0; i < towerWireGroupChildCount; i++)
 	{
 		QTreeWidgetItem* childItem = towerWireGroup->child(i);
-		if (item == childItem->child(1))
+		if (item == childItem->child(2))
 		{
 			return true;
 		}
@@ -1258,11 +1294,18 @@ void InterFace::CreateOutPut(QTreeWidgetItem* item)
 	tower->CreateOutPut();
 }
 
-void InterFace::CreateInp(QTreeWidgetItem* item)
+void InterFace::CreateTowerInp(QTreeWidgetItem* item)
 {
 	Tower* tower = OnFindTower(item->parent());
 	CreateAbaqusInp Inp;
 	Inp.CreateInp(tower);
+}
+
+void InterFace::CreateGroupInp(QTreeWidgetItem* item)
+{
+	TowerWireGroup* group = OnFindGroup(item->parent());
+	CreateAbaqusInp Inp;
+	Inp.CreateInp(group);
 }
 
 void InterFace::Show_Part(Part_Base* part)
@@ -1326,7 +1369,7 @@ void InterFace::Show_Tower(Tower* tower)
 void InterFace::Show_Wire(CreatWire* wire)
 {
 	if (wire == nullptr) return;
-	switchRenderWindow(3);
+	switchRenderWindow(2);
 	HiddeAllWire();
 	wire->m_TrussActor->VisibilityOn();
 	wire->Node_actor->VisibilityOn();
@@ -1420,6 +1463,12 @@ void InterFace::ui_SingleWire()
 		t->Show_VTKtruss(m_Renderer_3);
 		creatWire.Add_Entity(t);
 	}
+}
+
+void InterFace::ui_Calculate()
+{
+	Calculate* calculate = new Calculate(this);
+	calculate->show();
 }
 
 void InterFace::Insert_Data()

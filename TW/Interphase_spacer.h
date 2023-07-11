@@ -2,7 +2,7 @@
 
 #include <QDialog>
 #include "ui_Interphase_spacer.h"
-#include"Node.h";
+#include"Node.h"
 #include"Part_Base.h"
 #include"TowerPart_CrossArm.h"
 class InterFace;

@@ -27,32 +27,7 @@ int Tower::FindGroupIdNode(int idNode) const
 #include <vtkConeSource.h>
 #include<vtkLineSource.h>
 #include <vtkPolyData.h>
-void Tower::VectorToMap()
-{
-	// 将 vectorNode 中的元素插入到 map 中
-	for (const auto& data : m_Nodes) 
-	{
-		NodeData.insert(std::make_pair(data.m_idNode, data));
-	}
-	// 将 vectorBeam 中的元素插入到 map 中
-	for (const auto& data : m_Elements_beams)
-	{
-		BeamData.insert(std::make_pair(data.m_idElement, data));
-	}
-	// 将 vectorTruss 中的元素插入到 map 中
-	for (const auto& data : m_Elements_Trusses)
-	{
-		TrussData.insert(std::make_pair(data.m_idElement, data));
-	}
-	// 将 vectorSection 中的元素插入到 map 中
 
-	//jrf
-	InterFace* pInterFace = Base::Get_InterFace();
-	for (auto& i : pInterFace->Ms)
-	{
-		SectionData.insert(std::make_pair(i.second->m_id, *i.second));
-	}
-}
 void Tower::Show_VTKtruss(vtkRenderer* renderer)
 	{
 		vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
@@ -802,8 +777,10 @@ void Tower::addSuspensionNode(Part_Base* part)
 	for (int i = 0; i < SusNode; i++)
 	{
 		this->SuspensionNode.push_back(part->SuspensionNode[i]);
+		this->WireLogo.push_back(part->WireLoge[i]);
 		size_t totalT = this->SuspensionNode.size() - 1;
 		SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
 	}
+	
 }
 

@@ -8,6 +8,8 @@ public:
 	vector<int>susPoint;
 	void CreatWirePoint();
 	void Create_Mesh();
+	vector<int>wireToGroup;
+	int FindGroupIdNode(int idNode) const;
 	virtual enum Part_Type My_PartType()const
 	{
 		return ET_Wire;

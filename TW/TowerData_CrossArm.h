@@ -12,22 +12,22 @@ public:
 
 	TowerData_Body* m_databodyTier = nullptr;//取塔身层数
 
-	int m_Type;//区分是横担还是支架  1--表示支架 3--表示横担
+	int m_Type=0;//区分是横担还是支架  1--表示支架 3--表示横担
 
-	double m_bodyButtomL;//塔身层底部宽度
-	double m_bodyUpL;//塔身层顶部宽度
-	double m_bodyButtomH;//塔身层底部高度
-	double m_bodyUpH;//塔身层底部高度
+	double m_bodyButtomL = 0;//塔身层底部宽度
+	double m_bodyUpL = 0;//塔身层顶部宽度
+	double m_bodyButtomH = 0;//塔身层底部高度
+	double m_bodyUpH = 0;//塔身层底部高度
 
-	double m_c1W;//支架--悬臂端宽度
+	double m_c1W = 0;//支架--悬臂端宽度
 
-	double m_c2Wb;//横担--悬臂端底部宽度
-	double m_c2Wup;//横担--悬臂端顶部宽度
-	double m_c2H;//横担--悬臂端高度
+	double m_c2Wb = 0;//横担--悬臂端底部宽度
+	double m_c2Wup = 0;//横担--悬臂端顶部宽度
+	double m_c2H = 0;//横担--悬臂端高度
 
-	int m_count;//段长
+	int m_count = 0;//段长
 
-	int m_position;//位置 0--右边 1--左边 2--两侧
+	int m_position = 0;//位置 0--右边 1--左边 2--两侧
 
 	//得到各段长宽高
 	double Get_SumL();//x方向的段长和---x

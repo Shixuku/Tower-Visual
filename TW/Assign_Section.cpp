@@ -130,29 +130,48 @@ void Assign_Section::Add_created_section()
 		if (pSection->ClassSe == 0)
 		{
 			s = "LÐÍ";
+			ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
+			ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString ia = QString::number(pSection->a);
+			ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
+			ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString ib = QString::number(pSection->b);
+			ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
+			ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString iM = QString::number(pSection->ClassM);
+			ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
+			ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString id = QString::number(pSection->m_id);
+			ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
+			ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
-		else
+		else if(pSection->ClassSe==1)
 		{
 			s = "Ô²»·";
+			ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
+			ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString ia = QString::number(pSection->a);
+			ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
+			ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString ib = QString::number(pSection->b);
+			ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
+			ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString iM = QString::number(pSection->ClassM);
+			ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
+			ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+			QString id = QString::number(pSection->m_id);
+			ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
+			ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
-		ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
-		ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-		QString ia = QString::number(pSection->a);
-		ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
-		ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-		QString ib = QString::number(pSection->b);
-		ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
-		ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-		QString iM = QString::number(pSection->ClassM);
-		ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
-		ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-		QString id = QString::number(pSection->m_id);
-		ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
-		ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+		
 	}
 }
 

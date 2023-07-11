@@ -1,12 +1,15 @@
 #include "Wire_InterFace.h"
 #include"Senior.h"
-
+#include "InterFace.h"
+# define PI acos(-1)
 Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 	towerWireGroup = TowerWireGroup;
-	headertext << "序号" << "X(m)" << "Y(m)" << "Z(m)" << "点类型";
+	m_pInterFace = dynamic_cast<InterFace*>(parent);
+	Q_ASSERT(m_pInterFace != nullptr);
+	headertext << "序号" << "X(m)" << "Y(m)" << "Z(m)" << "点类型"<<"线路";
 	ui.Section_Lists->setColumnCount(headertext.count());
 	ui.Section_Lists->setHorizontalHeaderLabels(headertext);
 	ui.Section_Lists->verticalHeader()->setVisible(false);
@@ -23,6 +26,7 @@ Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 				a = ui.N_Pts->text().toInt();
 			}
 			SetTableWideget(a); 
+			wireLogoQty= towerWireGroup->combined[a-1].second;
 		});
 	connect(ui.Senior_Btn, &QPushButton::clicked, this, &Wire_InterFace::ui_Senior);
 	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {SaveSusPoint(); this->accept(); });
@@ -61,13 +65,16 @@ void Wire_InterFace::SetTableWideget(int row)
 		}
 		if (towerWireGroup != nullptr)
 		{
-			int id = towerWireGroup->SuspensionNode[i];
-			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].x / 1e3)));
-			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].y / 1e3)));
-			ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].z / 1e3)));
+			int id = towerWireGroup->combined[i].first;
+			int WireLogo = towerWireGroup->combined[i].second;
+			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].x)));
+			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].y)));
+			ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].z)));
+			ui.Section_Lists->setItem(i, 5, new QTableWidgetItem(QString::number(WireLogo)));
 		}
 
 	}
+
 }
 
 void Wire_InterFace::Initialize()
@@ -98,6 +105,11 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.strainL = strainL;
 	wd.sag = sag;
 	wd.WireSus = WireSus;
+	wd.WireSectionId= m_pInterFace->Ms.size()+1;
+	double r = sqrt(area / PI);
+	Section* i = new Section(r, 0, wd.WireSectionId, 2, 4);
+	wd.wireQty = wireLogoQty;
+	m_pInterFace->Ms.Add_Entity(i);
 }
 
 void Wire_InterFace::SaveSusPoint()

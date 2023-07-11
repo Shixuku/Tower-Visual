@@ -41,6 +41,7 @@ class Wind;
 class TowerWireGroup;
 class Wire_InterFace;
 class CreatWire;
+class Calculate;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -97,6 +98,7 @@ public:
      void Get_SelectedNode(std::set<Node*>& Nodes);
      void Point_Inqure();
      bool isChildOfTower(QTreeWidgetItem* item, int childNumber);//取载荷
+     bool isChildOfGroup(QTreeWidgetItem* item, int childNumber);//取载荷
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
@@ -145,11 +147,13 @@ public slots:
     void Test_mousePressEvent(QMouseEvent* event);
     void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
-    void CreateInp(QTreeWidgetItem* item);
+    void CreateTowerInp(QTreeWidgetItem* item);
+    void CreateGroupInp(QTreeWidgetItem* item);
     void Constraint_Tips();//点击创建边界条件弹出界面下放确认
     void Delete_Constraint();//点击约束删除Widget里面的控件]
     void ui_Wind();
     void ui_SingleWire();
+    void ui_Calculate();
   
   
     //void ui_ConcentratedForce(QTreeWidgetItem* item);

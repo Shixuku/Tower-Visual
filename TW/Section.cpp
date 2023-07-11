@@ -12,7 +12,7 @@ Section::Section(double ia, double ib, int id, int iClassSe, int iClassM)
 	{
 		GetLIxyz();
 	}
-	else
+	else if(iClassSe == 1)
 	{
 		GetOIxyz();
 
@@ -53,6 +53,17 @@ void Section::GetOIxyz()
 	S = PI * a * a - PI * b * b;
 	double R2 = S / PI;
 	R = sqrt(R2);
+}
+
+void Section::GetCircleIxyz()
+{
+	double D1 = 2 * a;
+	double D4 = D1 * D1 * D1 * D1;
+	B_Iy = PI / 64 * D4;
+	B_Iz = PI / 64 * D4;
+	B_J = (PI * pow(a, 4)) / 4;
+	B_Iyz = 0;
+	S = PI * a * a;
 }
 
 Part_Type Section::My_PartType() const

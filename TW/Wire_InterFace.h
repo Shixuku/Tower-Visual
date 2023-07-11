@@ -1,13 +1,12 @@
 #pragma once
 
 #include <QDialog>
-#include "InterFace.h"
 #include"WireData.h"
 #include"Node.h"
 #include"ui_Wire_InterFace.h"
 #pragma execution_character_set("utf-8")
 
-
+class InterFace;
 class Senior;
 class TowerWireGroup;
 class Wire_InterFace : public QDialog
@@ -17,6 +16,7 @@ class Wire_InterFace : public QDialog
 public:
 	Wire_InterFace(TowerWireGroup* TowerWireGroup,QWidget *parent = nullptr);
 	~Wire_InterFace();
+	InterFace* m_pInterFace;
 	TowerWireGroup* towerWireGroup = nullptr;
 	QStringList headertext;
 	void SetTableWideget(int row);//生产点列表信息
@@ -31,7 +31,7 @@ public:
 	double stress;
 	double strainL;
 	double sag;
-
+	double wireLogoQty;
 	std::vector<Node>WireSus;
 	Senior* sen = nullptr;
 private:
