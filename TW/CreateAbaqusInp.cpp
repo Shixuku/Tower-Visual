@@ -5,9 +5,9 @@ CreateAbaqusInp::CreateAbaqusInp()
 
 }
 
-void CreateAbaqusInp::CreateInp(Tower* tower)
+void CreateAbaqusInp::CreateInp(Instance* instance)
 {
-	tw = tower;
+	tw = instance;
 	tw->VectorToMap();
 	Inpout.open("../model.inp");
 	Inpout << "*Heading" << "\n";

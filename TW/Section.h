@@ -26,6 +26,7 @@ public:
 	~Section();
 	void GetLIxyz();
 	void GetOIxyz();
+	void GetCircleIxyz();
 	virtual enum Part_Type My_PartType()const;
 
 };

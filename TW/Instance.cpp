@@ -1,17 +1,17 @@
 #include "Instance.h"
-int Instance::Get_id() const
-{
-	return m_id;
-}
+
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	//点
-	for (size_t i = 0; i < m_Elements_Trusses.size(); i++)
+	int nTruss = m_Elements_Trusses.size();
+	for (size_t i = 0; i < nTruss; i++)
 	{
-		line->GetPointIds()->SetId(0, m_Elements_Trusses[i].m_idNode[0] - 1);
-		line->GetPointIds()->SetId(1, m_Elements_Trusses[i].m_idNode[1] - 1);
+		int trussOneId = m_Elements_Trusses[i].m_idNode[0] - 1;
+		int trussTowId = m_Elements_Trusses[i].m_idNode[1] - 1;
+		line->GetPointIds()->SetId(0, trussOneId);
+		line->GetPointIds()->SetId(1, trussTowId);
 		lines->InsertNextCell(line);
 	}
 
@@ -31,11 +31,13 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 {
 	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
-
+	int nTruss = m_Elements_beams.size();
 	for (size_t i = 0; i < m_Elements_beams.size(); i++)
 	{
-		line->GetPointIds()->SetId(0, m_Elements_beams[i].m_idNode[0] - 1);
-		line->GetPointIds()->SetId(1, m_Elements_beams[i].m_idNode[1] - 1);
+		int trussOneId = m_Elements_beams[i].m_idNode[0] - 1;
+		int trussTowId = m_Elements_beams[i].m_idNode[1] - 1;
+		line->GetPointIds()->SetId(0, trussOneId);
+		line->GetPointIds()->SetId(1, trussTowId);
 		lines->InsertNextCell(line);
 	}
 
@@ -101,10 +103,7 @@ int Instance::Creat_Node(double x, double y, double z)
 			((abs(NodeData[susPoint[i]].y - y)) < 1e-8) && 
 			((abs(NodeData[susPoint[i]].z - z)) < 1e-8))
 		{
-			std::cout << "different print" << std::endl;
-			std::cout << " x：" << x << " y：" << y << " z：" << z << std::endl;
-			std::cout << "Sub print" << std::endl;
-			std::cout << " x：" << NodeData[susPoint[i]].x << " y：" << NodeData[susPoint[i]].y - y << " z：" << z << std::endl;
+		
 			return NodeData[susPoint[i]].m_idNode; //重节点
 		}
 		else
@@ -119,12 +118,10 @@ int Instance::Creat_Node(double x, double y, double z)
 	{
 		int id = m_Nodes.size() + 1;
 		m_Nodes.push_back(Node(id, x, y, z));
-		std::cout << "new print" << std::endl;
-		std::cout << " x：" << x << " y：" << y << " z：" << z << std::endl;
 		NodeData[id] = m_Nodes[id - 1];
 		return m_Nodes[id - 1].m_idNode;
 	}
-
+	return 0;
 }
 
 void Instance::SaveSus(vector<int> ids)
@@ -205,4 +202,25 @@ void Instance::Input(QDataStream& fin)
 	{
 		fin >> SuspensionNode[i];
 	}
+}
+
+void Instance::VectorToMap()
+{
+	// 将 vectorNode 中的元素插入到 map 中
+	for (const auto& data : m_Nodes)
+	{
+		NodeData.insert(std::make_pair(data.m_idNode, data));
+	}
+	// 将 vectorBeam 中的元素插入到 map 中
+	for (const auto& data : m_Elements_beams)
+	{
+		BeamData.insert(std::make_pair(data.m_idElement, data));
+	}
+	// 将 vectorTruss 中的元素插入到 map 中
+	for (const auto& data : m_Elements_Trusses)
+	{
+		TrussData.insert(std::make_pair(data.m_idElement, data));
+	}
+	// 将 vectorSection 中的元素插入到 map 中
+
 }

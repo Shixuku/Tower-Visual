@@ -17,9 +17,9 @@
 #include"LoadForce.h"
 #include <map>
 #include <vtkPointData.h>
-#include "Base.h"
+#include"Instance.h"
 using namespace Eigen;
-class Tower :public Base
+class Tower:public Instance
 {
 public:
 	//子类节点添加到父类里面
@@ -46,11 +46,8 @@ public:
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	int FindGroupIdNode(int idNode) const;
-	void VectorToMap();
-	map<int, Node>NodeData;
-	map<int, Element_Beam>BeamData;
-	map<int, Element_Truss>TrussData;
-	map<int, Section>SectionData;
+	
+
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
@@ -75,6 +72,7 @@ public:
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
 	vector<int>RestraintNode;
 	vector<int>SuspensionNode;
+	vector<int>WireLogo;
 	void addPart(Part_Base* part);
 
 	void Check();

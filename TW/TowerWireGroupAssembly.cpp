@@ -28,8 +28,8 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			towerWireGroup->ShowTrussElement();
 			CreatTowerWierGroupItem();
 			towerWireGroup->VectorToMap();
-			m_pInterFace->TWG.Add_Entity(towerWireGroup);
 			m_pInterFace->m_Renderer_3->ResetCamera();
+			towerWireGroup->Suspensioncombined();
 			this->reject();
 		});
 }
@@ -104,6 +104,9 @@ void TowerWireGroupAssembly::CreatTowerWierGroupItem()
 	towerWireGroup->Item = towerWierGroupItem;
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
 	Wire_modeling->setText(0, QString("导线建模"));
+
+	QTreeWidgetItem* calculate = new QTreeWidgetItem(towerWierGroupItem);
+	calculate->setText(0, QString("计算文件"));
 }
 void TowerWireGroupAssembly::onComboBoxIndexChanged(int index)
 {

@@ -5,6 +5,7 @@ class TowerPart_Insulator :public TowerData_Insulator
 {
 public:
 	int ArmId = 0;
+	int wireLogo = 0;
 	void Get_Nodes4(double a, Node* n);
 	void Get_Nodes4_I(double a, Node* n);
 	void Get_split1();

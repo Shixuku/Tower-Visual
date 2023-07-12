@@ -26,9 +26,9 @@ T_Foot::~T_Foot()
 void T_Foot::Set_tableWideget()
 {
 	QStringList headertext, para, name;//表头、名称、初始值
-	headertext << "参数名称" << "值(mm)";
+	headertext << "参数名称" << "值(m)";
 	name << "铁塔跟开 L1"  << "基面标高 H1" << "减腿A" << "减腿B" << "减腿C" << "减腿D";
-	para << "18240" << "14000" << "0" << "0" << "0" << "0";
+	para << "18.24" << "14" << "0" << "0" << "0" << "0";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setRowCount(name.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
@@ -76,7 +76,7 @@ void T_Foot::Get_Data(TowerPart_leg& leg)
 
 void T_Foot::Initialize()
 {
-	ui.line_L2->setText("15160");//设置初始值
+	ui.line_L2->setText("15.160");//设置初始值
 
 	int T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount() + 1;//塔腿数量
 	QString str("塔腿部件-");

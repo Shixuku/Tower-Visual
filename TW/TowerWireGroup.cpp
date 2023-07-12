@@ -1,5 +1,5 @@
 #include "TowerWireGroup.h"
-
+#include"CreatWire.h"
 int TowerWireGroup::Get_id() const
 {
 	return 0;
@@ -156,8 +156,71 @@ void TowerWireGroup::AddSuspensionNode(Tower* tower)
 	for (int i = 0; i < SusNode; i++)
 	{
 		this->SuspensionNode.push_back(tower->SuspensionNode[i]);
+		this->WireLogo.push_back(tower->WireLogo[i]);
 		size_t totalT = this->SuspensionNode.size() - 1;
 		SuspensionNode[totalT] = tower->FindGroupIdNode(tower->SuspensionNode[i]);
+	}
+}
+
+void TowerWireGroup::AddWireToGroup(CreatWire* wire)
+{
+	AddWireNode(wire);
+	AddWireElement(wire);
+}
+
+void TowerWireGroup::AddWireNode(CreatWire* wire)
+{
+	size_t wireNode = wire->m_Nodes.size();//tower中的节点
+	bool isSuspensionNode = 0;
+	//add
+	for (size_t i = 0; i < wireNode; ++i)
+	{
+		for (int j = 0; j < wire->susPoint.size(); ++j)
+		{
+			if (wire->m_Nodes[i].m_idNode = susPoint[j])
+			{
+				for (int z = 0; z < this->SuspensionNode.size(); z++)
+				{
+					if (((abs(this->NodeData[SuspensionNode[i]].x - wire->NodeData[susPoint[j]].x) < 1e-8)) &&
+						((abs(this->NodeData[SuspensionNode[i]].y - wire->NodeData[susPoint[j]].y)) < 1e-8) &&
+						((abs(this->NodeData[SuspensionNode[i]].z - wire->NodeData[susPoint[j]].z)) < 1e-8))
+					{
+						isSuspensionNode = true;
+						wire->wireToGroup.push_back(SuspensionNode[i]);
+					}
+				}
+			}
+		}
+		if (isSuspensionNode == false)
+		{
+			this->m_Nodes.push_back(wire->m_Nodes[i]);
+			size_t total = this->m_Nodes.size() - 1;//
+			this->m_Nodes[total].m_idNode = total + 1;
+			//part-tower 节点对应关系
+			wire->wireToGroup.push_back(total + 1);
+		}
+	}
+
+}
+
+void TowerWireGroup::AddWireElement(CreatWire* wire)
+{
+	size_t tTower = wire->m_Elements_Trusses.size();
+	for (size_t i = 0; i < tTower; ++i)//Truss
+	{
+		Element_Truss* pE = &wire->m_Elements_Trusses[i];
+		this->m_Elements.push_back(wire->m_Elements_Trusses[i]);
+		size_t total = this->m_Elements.size() - 1;
+		this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
+		this->m_Elements[total].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
+		this->m_Elements[total].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
+		this->m_Elements_Trusses.push_back(wire->m_Elements_Trusses[i]);
+		size_t totalT = this->m_Elements_Trusses.size() - 1;
+		this->m_Elements_Trusses[totalT].m_idElement = total + 1;//放入实例的杆单元
+		this->m_Elements_Trusses[totalT].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
+		this->m_Elements_Trusses[totalT].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
+		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
+		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
 	}
 }
 
@@ -325,4 +388,15 @@ void TowerWireGroup::ShowBeamElement() const
 	{
 		j.showid();
 	}
+}
+
+void TowerWireGroup::Suspensioncombined()
+{
+	for (size_t i = 0; i < SuspensionNode.size(); ++i) {
+		combined.push_back(std::make_pair(SuspensionNode[i], WireLogo[i]));
+	}
+	// 按照序号进行排序
+	std::sort(combined.begin(), combined.end(), [](const std::pair<int, int>& pair1, const std::pair<int, int>& pair2) {
+		return pair1.second < pair2.second;
+		});
 }

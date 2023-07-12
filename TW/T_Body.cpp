@@ -77,12 +77,12 @@ void T_Body::Set_No1_picture()
 
 void T_Body::Set_body1()
 {
-	ui.line_L0->setText("15160");
-	ui.line_Ln->setText("4600");
+	ui.line_L0->setText("15.16");
+	ui.line_Ln->setText("4.6");
 	ui.line_z0->setText("0");
 	ui.tableWidget->setRowCount(7);//7层
 	QStringList H, TypeFront, TypeSide,U_septum, M_septum;
-	H << "6000" << "11000"<<"9500" << "8000" << "6500" << "5000" << "2000";//层高
+	H << "6" << "11"<<"9.5" << "8" << "6.5" << "5" << "2";//层高
 	TypeFront << "1" << "9" << "9" << "6" << "9" << "9" << "10";//正面类型
 	TypeSide << "1" << "9" << "9" << "6" << "9" << "9" << "10";//侧面类型
 	U_septum << "0" << "0" << "0" << "0" << "0" << "0" << "5";//上部隔面
@@ -105,13 +105,13 @@ void T_Body::Set_body1()
 
 void T_Body::Set_body2()
 {
-	ui.line_L0->setText("4600");
-	ui.line_Ln->setText("2300");
-	ui.line_z0->setText("48000");
+	ui.line_L0->setText("4.6");
+	ui.line_Ln->setText("2.3");
+	ui.line_z0->setText("48");
 	ui.tableWidget->setRowCount(12);//12层
 	QStringList H, TypeFront, TypeSide, U_septum, M_septum;
-	H << "4000" << "2500" << "3500" << "3500" << "3000" << "2500" << "2500"
-		<< "2500" << "2500" << "2500" << "2000" << "2000";//层高
+	H << "4" << "2.5" << "3.5" << "3.5" << "3" << "2.5" << "2.5"
+		<< "2.5" << "2.5" << "2.5" << "2" << "2";//层高
 	TypeFront << "6" << "7" << "6" << "6" << "6" << "7" << "6" << "6" << "6" << "6" << "7" << "6";//正面类型
 	TypeSide << "6" << "8" << "6" << "6" << "6" << "8" << "6" << "6" << "6" << "6" << "8" << "6";//侧面类型
 	U_septum << "5" << "0" << "0" << "0" << "5" << "5" << "0" << "0" << "0" << "5" << "3" << "2";//上部隔面
@@ -140,7 +140,7 @@ void T_Body::Set_table(int tier)
 	for (int i = 0; i < tier; i++)
 	{
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));//层数
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(2000)));//层高初始化
+		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(2)));//层高初始化
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(6)));//正面类型
 		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(6)));//侧面类型
 		ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(0)));//上部隔面

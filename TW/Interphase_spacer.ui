@@ -43,6 +43,23 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QRadioButton" name="radioButton">
+           <property name="text">
+            <string>耐张</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>线路标识</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_WireLogo"/>
+         </item>
         </layout>
        </widget>
       </item>
@@ -55,7 +72,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -105,6 +122,33 @@
           </item>
           <item>
            <widget class="QLineEdit" name="line_p2"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_3">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>点编号</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_2"/>
           </item>
          </layout>
         </widget>

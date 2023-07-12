@@ -28,8 +28,8 @@
 class circle
 {
 public:
-	double startPoint[3];//第一个点的坐标
-	double endPoint[3];//第二个点的坐标
+	double startPoint[3]={ 0,0,0 };//第一个点的坐标
+	double endPoint[3]={ 0,0,0 };//第二个点的坐标
 	double innerRadius = 0;//内环半径
 	double outerRadius = 0;//外环半径
 	int step = 10;//圆上点的个数
