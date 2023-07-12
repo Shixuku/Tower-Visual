@@ -1,32 +1,23 @@
-	#include "Tower.h"
-	#include<vtkTransform.h>
-	#include <vtkIdTypeArray.h>
-	#include <QOpenGLWidget>//UINT_PTR
-	#include <vtkPointData.h>//->AddArray(Ptr)
-	#include"beamActor.h"
-	#include<vtkDoubleArray.h>
-	#include<vtkArrowSource.h>
-	#include <vtkTubeFilter.h>
-	#include <iostream>
-	#include<fstream>
-#include"InterFace.h"
-
-int Tower::FindGroupIdNode(int idNode) const
-{
-	return TowerToGroup[idNode - 1];
-}
 #include "Tower.h"
 #include<vtkTransform.h>
 #include <vtkIdTypeArray.h>
 #include <QOpenGLWidget>//UINT_PTR
+#include <vtkPointData.h>//->AddArray(Ptr)
 #include"beamActor.h"
 #include<vtkDoubleArray.h>
+#include<vtkArrowSource.h>
 #include <vtkTubeFilter.h>
 #include <iostream>
 #include<fstream>
 #include <vtkConeSource.h>
 #include<vtkLineSource.h>
 #include <vtkPolyData.h>
+#include"InterFace.h"
+
+int Tower::FindGroupIdNode(int idNode) const
+{
+	return TowerToGroup[idNode - 1];
+}
 
 void Tower::Show_VTKtruss(vtkRenderer* renderer)
 	{
@@ -239,125 +230,125 @@ void Tower::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
 	renderer->AddActor(actor1);
 }
 
-void Tower::CreateOutPut()
-{
-	fout.open("../statics_input.txt");   //关联一个文件
-	NodeTxT();
-	BeamTxT();
-	TrussTxT();
-	fout << 0 << " \n";//没有索单元暂时为0
-	ConcentrationTxT();
-	//1（重力数量）
-	//1 0 - 9.8 0(编号 重力加速度Vector3d)
-	fout << 0 << "\n";//重力暂时为空
-	//1（多项式函数数量）
-	//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
-	fout << 0 << "\n";//多项式函数暂时为空
-	RestraintTxT();
-	MaterialTxT();
-	BeamSectionTxT();
-	TrussSectionTxT();
-	fout.close();
-}
-
-void Tower::NodeTxT()
-{
-	int NodeSize = m_Nodes.size();
-	fout << NodeSize << " \n";
-	for (int i = 0; i < m_Nodes.size(); i++)
-	{
-		fout << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x * 1e-3 << "      " << m_Nodes[i].y * 1e-3 <<
-			"     " << m_Nodes[i].z * 1e-3 << " " << "\n";
-	}
-}
-
-void Tower::BeamTxT()
-{
-	int BeamSize = m_Elements_beams.size();
-	fout << BeamSize << " \n";
-	for (int i = 0; i < m_Elements_beams.size(); i++)
-	{
-		//m_Elements_beams[i].ClassSectionID  截面号
-
-		fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID//材料号
-			<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "  " << m_Elements_beams[i].direction[0] << "  " <<
-			m_Elements_beams[i].direction[1] << "  " <<
-			m_Elements_beams[i].direction[2] << "  " << "\n";
-	}
-}
-
-void Tower::TrussTxT()
-{
-	int TressSize = m_Elements_Trusses.size();
-	fout << TressSize << " \n";
-	for (int i = 0; i < m_Elements_Trusses.size(); i++)
-	{
-		fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
-			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
-	}
-}
-
-void Tower::ConcentrationTxT()
-{
-	int LoadSize = Load.size();
-	fout << LoadSize << " \n";
-	for (int i = 0; i < Load.size(); i++)
-	{
-		fout << Load[i].id_force << "      " << Load[i].id_node << "    " << Load[i].DirectionForce << "  " << Load[i].Force
-			<< "  " << Load[i].StartTime << "  " << Load[i].EndTime << "\n";
-	}
-}
-
-void Tower::MaterialTxT()
-{
-	fout << 3 << "\n";
-	for (int i = 0; i < 3; i++)
-	{
-		fout << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
-	}
-}
-
-void Tower::BeamSectionTxT()
-{
-	//int SectionSize = pSection.size();
-	//fout << SectionSize << "\n";
-	//for (int i = 0; i < SectionSize; i++)
-	//{
-	//	fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  " << pSection[i].B_J << "\n";
-	//}
-	InterFace* pInterFace = Base::Get_InterFace();
-	int SectionSize = pInterFace->Ms.size();
-	fout << SectionSize << "\n";
-	for (auto& i : pInterFace->Ms)
-	{
-		fout << i.second->m_id << "  " << i.second->S << "  " << i.second->B_Iy << "  " << i.second->B_Iz << "  " << i.second->B_J << "\n";
-	}
-}
-
-void Tower::TrussSectionTxT()
-{
-	InterFace* pInterFace = Base::Get_InterFace();
-	int SectionSize = pInterFace->Ms.size();
-	fout << SectionSize << "\n";
-	for (auto& i : pInterFace->Ms)
-	{
-		fout << i.second->m_id << "  " << i.second->S << "\n";
-	}
-}
-
-void Tower::RestraintTxT()
-{
-	int a = 24;//只考虑塔脚的4个完全约束
-	fout << a << "\n";
-	cout << "start RestraintNode" << "\n";
-	for (int i = 0; i < RestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			fout << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-		}
-	}
-}
+//void Tower::CreateOutPut()
+//{
+//	fout.open("../statics_input.txt");   //关联一个文件
+//	NodeTxT();
+//	BeamTxT();
+//	TrussTxT();
+//	fout << 0 << " \n";//没有索单元暂时为0
+//	ConcentrationTxT();
+//	//1（重力数量）
+//	//1 0 - 9.8 0(编号 重力加速度Vector3d)
+//	fout << 0 << "\n";//重力暂时为空
+//	//1（多项式函数数量）
+//	//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
+//	fout << 0 << "\n";//多项式函数暂时为空
+//	RestraintTxT();
+//	MaterialTxT();
+//	BeamSectionTxT();
+//	TrussSectionTxT();
+//	fout.close();
+//}
+//
+//void Tower::NodeTxT()
+//{
+//	int NodeSize = m_Nodes.size();
+//	fout << NodeSize << " \n";
+//	for (int i = 0; i < m_Nodes.size(); i++)
+//	{
+//		fout << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x * 1e-3 << "      " << m_Nodes[i].y * 1e-3 <<
+//			"     " << m_Nodes[i].z * 1e-3 << " " << "\n";
+//	}
+//}
+//
+//void Tower::BeamTxT()
+//{
+//	int BeamSize = m_Elements_beams.size();
+//	fout << BeamSize << " \n";
+//	for (int i = 0; i < m_Elements_beams.size(); i++)
+//	{
+//		//m_Elements_beams[i].ClassSectionID  截面号
+//
+//		fout << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID//材料号
+//			<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "  " << m_Elements_beams[i].direction[0] << "  " <<
+//			m_Elements_beams[i].direction[1] << "  " <<
+//			m_Elements_beams[i].direction[2] << "  " << "\n";
+//	}
+//}
+//
+//void Tower::TrussTxT()
+//{
+//	int TressSize = m_Elements_Trusses.size();
+//	fout << TressSize << " \n";
+//	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+//	{
+//		fout << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
+//			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
+//	}
+//}
+//
+//void Tower::ConcentrationTxT()
+//{
+//	int LoadSize = Load.size();
+//	fout << LoadSize << " \n";
+//	for (int i = 0; i < Load.size(); i++)
+//	{
+//		fout << Load[i].id_force << "      " << Load[i].id_node << "    " << Load[i].DirectionForce << "  " << Load[i].Force
+//			<< "  " << Load[i].StartTime << "  " << Load[i].EndTime << "\n";
+//	}
+//}
+//
+//void Tower::MaterialTxT()
+//{
+//	fout << 3 << "\n";
+//	for (int i = 0; i < 3; i++)
+//	{
+//		fout << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
+//	}
+//}
+//
+//void Tower::BeamSectionTxT()
+//{
+//	//int SectionSize = pSection.size();
+//	//fout << SectionSize << "\n";
+//	//for (int i = 0; i < SectionSize; i++)
+//	//{
+//	//	fout << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  " << pSection[i].B_J << "\n";
+//	//}
+//	InterFace* pInterFace = Base::Get_InterFace();
+//	int SectionSize = pInterFace->Ms.size();
+//	fout << SectionSize << "\n";
+//	for (auto& i : pInterFace->Ms)
+//	{
+//		fout << i.second->m_id << "  " << i.second->S << "  " << i.second->B_Iy << "  " << i.second->B_Iz << "  " << i.second->B_J << "\n";
+//	}
+//}
+//
+//void Tower::TrussSectionTxT()
+//{
+//	InterFace* pInterFace = Base::Get_InterFace();
+//	int SectionSize = pInterFace->Ms.size();
+//	fout << SectionSize << "\n";
+//	for (auto& i : pInterFace->Ms)
+//	{
+//		fout << i.second->m_id << "  " << i.second->S << "\n";
+//	}
+//}
+//
+//void Tower::RestraintTxT()
+//{
+//	int a = 24;//只考虑塔脚的4个完全约束
+//	fout << a << "\n";
+//	cout << "start RestraintNode" << "\n";
+//	for (int i = 0; i < RestraintNode.size(); i++)
+//	{
+//		for (int j = 0; j < 6; j++)
+//		{
+//			fout << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+//		}
+//	}
+//}
 
 void Tower::addPart(Part_Base* part)
 {
