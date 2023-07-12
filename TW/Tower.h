@@ -14,7 +14,6 @@
 #include<QDataStream>
 #include<QTreeWidgetItem>
 #include <vtkAutoInit.h> 
-#include"LoadForce.h"
 #include <map>
 #include <vtkPointData.h>
 #include"Instance.h"
@@ -36,14 +35,13 @@ public:
 	void Show_Beam(int BeamID, int SectionClass, double a, double b);
 	void AddNewSection(int id);
 	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
-	vector<Node> m_Nodes;//节点合集
-
-	vector<Element> m_Elements;//单元合集
-	vector<Element_Beam> m_Elements_beams;//梁单元合集
-	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
-	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
-	vector<LoadForce>Load;//荷载的容器
-	vector<int>pSection;//截面的容器
+	//vector<Node> m_Nodes;//节点合集
+	//vector<Element> m_Elements;//单元合集
+	//vector<Element_Beam> m_Elements_beams;//梁单元合集
+	//vector<Element_Truss> m_Elements_Trusses;//杆单元合集
+	//vtkSmartPointer<vtkActor> Node_actor;//huangzhan
+	//vector<LoadForce>Load;//荷载的容器
+	//vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	int FindGroupIdNode(int idNode) const;
 	
@@ -57,15 +55,15 @@ public:
 	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	ofstream fout;           //创建ofstream
-	void CreateOutPut();//创建txt文件
-	void NodeTxT();
-	void BeamTxT();
-	void TrussTxT();
-	void ConcentrationTxT();//集中力
-	void RestraintTxT();//约束
-	void MaterialTxT();//材料
-	void BeamSectionTxT();//梁截面信息
-	void TrussSectionTxT();//杆截面信息
+	//void CreateOutPut();//创建txt文件
+	//void NodeTxT();
+	//void BeamTxT();
+	//void TrussTxT();
+	//void ConcentrationTxT();//集中力
+	//void RestraintTxT();//约束
+	//void MaterialTxT();//材料
+	//void BeamSectionTxT();//梁截面信息
+	//void TrussSectionTxT();//杆截面信息
 	vtkSmartPointer<vtkActor> m_BeamActor;
 	vtkSmartPointer<vtkActor> m_TrussActor;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;

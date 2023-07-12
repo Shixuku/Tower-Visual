@@ -6,6 +6,7 @@
 #include <vtkIdTypeArray.h>
 #include <QOpenGLWidget>//UINT_PTR
 #include <vtkPointData.h>//->AddArray(Ptr
+#include"LoadForce.h"
 
 class Instance :public Base
 {
@@ -39,5 +40,19 @@ public:
 	virtual void SaveTo(QDataStream& fin)const;
 	virtual void Input(QDataStream& fin);
 	void VectorToMap();
+	//创建输出文件
+	vector<LoadForce>Load;//荷载的容器
+	vector<int>pSection;//截面的容器
+	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
+	ofstream fout;           //创建ofstream
+	void CreateOutPut();//创建txt文件
+	void NodeTxT();
+	void BeamTxT();
+	void TrussTxT();
+	void ConcentrationTxT();//集中力
+	void RestraintTxT();//约束
+	void MaterialTxT();//材料
+	void BeamSectionTxT();//梁截面信息
+	void TrussSectionTxT();//杆截面信息
 };
 
