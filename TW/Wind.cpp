@@ -4,7 +4,9 @@
 #include <cmath>
 #include <QMessageBox>
 #include"RandomWind.h"
+#include"Force_Wind.h"
 #include<math.h>
+#include<Eigen/Dense>
 
 Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
 {
@@ -41,6 +43,8 @@ void Wind::Initialize()
 	ui.ice_edi->setText("5");
 	ui.wind_edi->setText("10");
 	ui.direction_edi->setText("30");
+	ui.StepSize_edi->setText("0.3");
+	ui.Step_edi->setText("100");
 	layout = new QVBoxLayout(ui.widget_5);
 	// 创建 QVTKOpenGLNativeWidget
 	m_VtkWidget = new QVTKOpenGLNativeWidget(this);
@@ -121,25 +125,8 @@ void Wind::ui_Speed()
 	
 }
 
-void Wind::ReadData()
+void Wind::ReadStableData()
 {
-	//QStringList headerLabels;
-	//headerLabels << "节点编号" << "Z(m)" << "风压系数";
-	//ui.tableWidget->setColumnCount(headerLabels.count());
-	//ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
-	//ui.tableWidget->verticalHeader()->setVisible(false);
-	//ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//ui.tableWidget->setRowCount(num_node);  // 默认N行
-
-	//for (int k = 0; k < num; k++)
-	//{
-	//	const auto& node = m_pTower->m_Nodes[k];
-	//	double uz = CountUz((node.z + 14000) / 1000);
-
-	//	ui.tableWidget->setItem(k, 0, new QTableWidgetItem(QString::number(node.m_idNode)));
-	//	ui.tableWidget->setItem(k, 1, new QTableWidgetItem(QString::number((node.z / 1000) + 14)));
-	//	ui.tableWidget->setItem(k, 2, new QTableWidgetItem(QString::number(uz)));
-	//}
 	QStringList headerLabels;
 	headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(N)";
 	ui.tableWidget->setColumnCount(headerLabels.count());
@@ -160,6 +147,19 @@ void Wind::ReadData()
 			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 		}
 	}
+}
+
+void Wind::ReadRandomData()
+{
+	QStringList headerLabels;
+	headerLabels << "t(s)" << "风速(m/s)";
+	ui.tableWidget->setColumnCount(headerLabels.count());
+	ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
+	ui.tableWidget->verticalHeader()->setVisible(false);
+	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	
+
+
 }
 
 void Wind::BtnOk()
@@ -190,9 +190,28 @@ void Wind::BtnOk()
 		QMessageBox::warning(this, "提示", "请先选择地面粗糙程度！");
 		return;
 	}
-	CountElePara();
-	CountWindForce();
-	ReadData();
+	if (ui.rad_stab->isChecked())
+	{
+		CountElePara();
+		CountWindForce();
+		ReadStableData();
+	}
+	else if (ui.rad_ran->isChecked())
+	{
+		int num = ui.Step_edi->text().toInt();
+		double StepSize = ui.StepSize_edi->text().toDouble();
+		for (int j = 0; j < ran->NumOfWindzones; j++)
+		{
+			double t = 0;
+			for (int i = 0; i < num; i++)
+			{
+				t += StepSize;
+				WindSpeedInterpolation(j, t);
+
+			}
+		}
+		
+	}
 }
 
 double Wind::CountUz(double h)
@@ -284,3 +303,35 @@ std::vector<double> Wind::CountWindForce()
 	}
 	return Wx_values;
 }
+
+double Wind::WindSpeedInterpolation(int pointIndex, double time)
+{
+	double T = 0, Dt = 0;
+	Eigen::MatrixXd velocitiys;
+	Eigen::VectorXd v;
+	if (ran->fw)
+	{
+		velocitiys = ran->fw->getMeanVelocityMat();
+		v = velocitiys.col(pointIndex);//第i点的风速
+
+		Dt = 0.5;
+		//double Dt = ran->fw->getDt();
+		T = ran->T;
+	}
+	else
+	{
+		QMessageBox::warning(this, "提示", "请创建随机风！");
+	}
+	double re_v = 0;
+	
+	int start = time / Dt;//第几次开始
+
+	if ((time >= (start * Dt)) && (time <= ((start + 1) * Dt)))
+	{
+		re_v = v[start] + (v[start + 1] - v[start]) * (time - Dt * start) / Dt;
+		cout << pointIndex + 1 << "  " << "(" << v[start] << "," << v[start + 1] << "): " << re_v << "\n";
+	}
+	return re_v;
+}
+
+

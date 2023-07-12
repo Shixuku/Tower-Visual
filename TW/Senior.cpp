@@ -20,7 +20,7 @@ void Senior::Initialize()
 	ui.bizai_Btn->setText("1.6855");
 	ui.Btn_Area->setText("531.68");
 	ui.li_Btn->setText("10");
-	ui.nz_Len->setText("1000");
+	ui.nz_Len->setText("1");
 	ui.sag_edit->setText("4000");
 }
 
