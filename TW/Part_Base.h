@@ -50,8 +50,9 @@ public:
 	//map<int, Section>pSection;
 	vtkSmartPointer<vtkActor> Node_actor;//黄瞻
 	vector<int>RestraintNode;//放入约束节点
-	vector<int>SuspensionNode;//放入挂线点
+	vector<int>SuspensionNode;//放入挂线点的标识
 	vector<int>WireLoge;//标明上面的悬挂点是哪一条线路
+	vector<int>realSuspoint;//分裂导线真实用的点
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);

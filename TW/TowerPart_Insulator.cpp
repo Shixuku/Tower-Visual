@@ -37,6 +37,7 @@ void TowerPart_Insulator::Get_split1()
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[2] ,wireLogo });
+	realSuspoint.push_back(node[2]);
 	//生成单元
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2],node[1] });
 }
@@ -54,6 +55,7 @@ void TowerPart_Insulator::Get_split1_I()
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[1],wireLogo });
+	realSuspoint.push_back(node[1]);
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 }
 
@@ -61,13 +63,15 @@ void TowerPart_Insulator::Get_split2()
 {
 	Node Node1[5];
 	int node[5];
-	Get_Nodes4(450, Node1);
+	Get_Nodes4(0.45, Node1);
 	interpolation(Node1[2], Node1[3], 0.5, Node1[4]);///111
 	for (int i = 0; i < 5; i++)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[4],wireLogo });
+	realSuspoint.push_back(node[2]);
+	realSuspoint.push_back(node[3]);
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2], node[4],node[3],node[1] });
 }
 
@@ -75,12 +79,14 @@ void TowerPart_Insulator::Get_split2_I()
 {
 	Node Node1[4];
 	int node[4];
-	Get_Nodes4_I(450, Node1);
+	Get_Nodes4_I(0.45, Node1);
 	for (int i = 0; i < 4; i++)///n[1]
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[1], wireLogo });
+	realSuspoint.push_back(node[2]);
+	realSuspoint.push_back(node[3]);
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 	Creat_Trusses(m_Elements_Trusses, { node[2],node[1],node[3] });
 }
@@ -91,19 +97,19 @@ void TowerPart_Insulator::Get_split4(int m_type)
 	int node[7];
 	if (m_type == 1)
 	{
-		Get_Nodes4_I(450, Node1);
+		Get_Nodes4_I(0.45, Node1);
 		Node1[4].x = Node1[2].x;	Node1[4].y = Node1[2].y;
 		Node1[5].x = Node1[3].x;	Node1[5].y = Node1[3].y;
 	}
 	else if (m_type == 2)
 	{
-		Get_Nodes4(450, Node1);
+		Get_Nodes4(0.45, Node1);
 		Node1[4].x = Node1[2].x;	Node1[4].y = Get_y(Node1[4].x);
 		Node1[5].x = Node1[3].x;	Node1[5].y = Get_y(Node1[5].x);
 
 	}
-	Node1[4].z = Node1[2].z - 450;
-	Node1[5].z = Node1[3].z - 450;
+	Node1[4].z = Node1[2].z - 0.45;
+	Node1[5].z = Node1[3].z - 0.45;
 	interpolation(Node1[2], Node1[5], 0.5, Node1[6]);//11
 
 	for (int i = 0; i < 7; i++)
@@ -111,6 +117,10 @@ void TowerPart_Insulator::Get_split4(int m_type)
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[6],wireLogo });
+	realSuspoint.push_back(node[2]);
+	realSuspoint.push_back(node[3]);	
+	realSuspoint.push_back(node[4]);
+	realSuspoint.push_back(node[5]);
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -162,6 +172,12 @@ void TowerPart_Insulator::Get_split6(int m_type)
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[8] ,wireLogo });
+	realSuspoint.push_back(node[2]);
+	realSuspoint.push_back(node[3]);
+	realSuspoint.push_back(node[4]);
+	realSuspoint.push_back(node[5]);
+	realSuspoint.push_back(node[6]);
+	realSuspoint.push_back(node[7]);
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
@@ -219,6 +235,14 @@ void TowerPart_Insulator::Get_split8(int m_type)
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
 	InPutSuspension({ node[10], wireLogo });
+	realSuspoint.push_back(node[2]);
+	realSuspoint.push_back(node[3]);
+	realSuspoint.push_back(node[4]);
+	realSuspoint.push_back(node[5]);
+	realSuspoint.push_back(node[6]);
+	realSuspoint.push_back(node[7]);
+	realSuspoint.push_back(node[8]);
+	realSuspoint.push_back(node[9]);
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
