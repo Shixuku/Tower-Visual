@@ -6,7 +6,7 @@
 #include"Node_Base.h"
 #include"Node.h"
 #include<set>
-
+#include"CreatWire.h"
 #include <QtCharts/QChartView>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
@@ -14,14 +14,15 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-class Force_Wind;
 class InterFace;
+class Force_Wind;
 class Wind;
 
 class RandomWind : public QDialog
 {
 	Q_OBJECT
 
+		friend class Wind;
 public:
 	RandomWind(QWidget *parent = nullptr);
 	~RandomWind();
@@ -37,15 +38,15 @@ public:
 	QValueAxis* axisX = nullptr;
 	QValueAxis* axisY = nullptr;
 	Wind* wd = nullptr;
+	CreatWire* R_pcreatWire = nullptr;
 	//m_pair(1.29), alf(0.16), z0(0.03), v10(30) int N, int M, double w_up, double T
-	double alf;//地面粗糙程度
 	double z0;//地表粗糙长度
 	double v10;//十米高10分钟平均速度
 	int N;//频率等分数
 	int M;//M>=2*M
 	double w_up;//高频截止点
 	double T;//模拟时长
-
+	int NumOfWindzones;//风区数量
 	void initChart();
 	//void set_Axis();
 	void Plot(QLineSeries* lineData);
@@ -54,6 +55,7 @@ public:
 	void SimulateWind();
 	void CreatCombobox();
 	void Initialize();
+	void CreatSegment();
 
 public slots:
 	void ShowPic(int index);//显示随机风的曲线图

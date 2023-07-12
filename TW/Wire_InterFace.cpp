@@ -20,13 +20,14 @@ Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 			if (towerWireGroup != nullptr)
 			{
 				a = towerWireGroup->SuspensionNode.size();
+				wireLogoQty = towerWireGroup->combined[a - 1].second;
 			}
 			else
 			{
 				a = ui.N_Pts->text().toInt();
+				wireLogoQty = 1;
 			}
 			SetTableWideget(a); 
-			wireLogoQty= towerWireGroup->combined[a-1].second;
 		});
 	connect(ui.Senior_Btn, &QPushButton::clicked, this, &Wire_InterFace::ui_Senior);
 	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {SaveSusPoint(); this->accept(); });
@@ -49,18 +50,30 @@ void Wire_InterFace::SetTableWideget(int row)
 			QComboBox* Point_Type = new QComboBox;
 			Point_Type->addItem("耐张端点");
 			Point_Type->addItem("端点");
+			ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));
+			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(30)));
 			ui.Section_Lists->setCellWidget(i, 4, (QWidget*)Point_Type);
 		}
-		else if (i == N - 1)
+		else if (i == row - 1)
 		{
 			//最后一行
 			QComboBox* Point_Type = new QComboBox;
 			Point_Type->addItem("耐张端点");
 			Point_Type->addItem("端点");
+			ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));
+			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(30)));
 			ui.Section_Lists->setCellWidget(i, 4, (QWidget*)Point_Type);
 		}
 		else
 		{
+			ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));
+			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(0)));
+			ui.Section_Lists->setItem(i, 3, new QTableWidgetItem(QString::number(30)));
 			ui.Section_Lists->setItem(i, 4, new QTableWidgetItem("悬挂点"));
 		}
 		if (towerWireGroup != nullptr)
@@ -79,6 +92,7 @@ void Wire_InterFace::SetTableWideget(int row)
 
 void Wire_InterFace::Initialize()
 {
+
 }
 
 void Wire_InterFace::ui_Senior()

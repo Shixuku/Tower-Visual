@@ -6,6 +6,7 @@
 #include <vtkIdTypeArray.h>
 #include <QOpenGLWidget>//UINT_PTR
 #include <vtkPointData.h>//->AddArray(Ptr
+
 class Instance :public Base
 {
 public:

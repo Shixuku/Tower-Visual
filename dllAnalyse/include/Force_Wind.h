@@ -63,7 +63,7 @@ public:
 
 	QLineSeries* getQLineSeries(int idNode)const;
 	MatrixXd getVelocityMat()const { return f; }
-	MatrixXd getMeanVelocityMat()const { return v; }
+	MatrixXd getMeanVelocityMat()const { return v; }//瞬时风速
 
 private:
 	MatrixXd f;//脉动风速时程

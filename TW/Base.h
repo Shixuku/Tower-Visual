@@ -19,6 +19,7 @@ class Base
 {
 public:
 	int m_id;
+
 	int Get_id()const { return m_id; }
 
 	static void set_InterFace(InterFace* pInterFace)

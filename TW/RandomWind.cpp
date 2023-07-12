@@ -3,6 +3,7 @@
 #include"InterFace.h"
 #include"Force_Wind.h"
 #include"Wind.h"
+#include <qmessagebox.h>
 
 
 RandomWind::RandomWind(QWidget *parent)
@@ -22,7 +23,12 @@ RandomWind::RandomWind(QWidget *parent)
 	connect(ui.ok_btn, &QPushButton::clicked, [=]() {	if (ui.NodeV_com->count() > 0) {
 		return; // 如果ComboBox已经包含项，则不再生成新的项
 	}
-	SimulateWind(); CreatCombobox(); });
+	if (wd->alf == 0)
+	{
+		QMessageBox::warning(this, "提示", "请在上个界面选择地面粗糙程度！");
+		return;
+	}
+	SimulateWind(); CreatCombobox(); CreatSegment(); });
 	void (QComboBox:: * activated)(int) = &QComboBox::activated;
 	connect(ui.NodeV_com, activated, this, &RandomWind::ShowPic);
 	ui.pushButton_3->setToolTip("沿海区0.005 - 0.02；开阔场地0.03 - 0.1；建筑物不多的郊区0.2 - 0.4; 大城市中心2.0 - 3.0");
@@ -60,8 +66,8 @@ void RandomWind::InputPoints()
 
 void RandomWind::SimulateWind()
 {
-	if (ui.lineEdit_points->text() == 0) return;//没有数据
-
+	//if (ui.lineEdit_points->text() == 0) return;//没有数据
+	if (ui.lineEdit_segment->text() == 0)return;//没有给分段取
 	//取数据
 	z0 = ui.z0_edi->text().toDouble();
 	v10 = ui.V10_edi->text().toDouble();
@@ -70,16 +76,17 @@ void RandomWind::SimulateWind()
 	w_up = ui.CutOff_edi->text().toDouble();
 	T = ui.Time_edi->text().toDouble();
 
-	for (auto pNode : pointsSelected)
-	{
-		Node_Base n(pNode->m_idNode, pNode->x, pNode->y, pNode->z);
-		//Node_Base n(1, 10, 10, 10);
-		points.push_back(n);
-	}
-
+	//for (auto pNode : pointsSelected)
+	//{
+	//	Node_Base n(pNode->m_idNode, pNode->x, pNode->y, pNode->z);
+	//	//Node_Base n(1, 10, 10, 10);
+	//	points.push_back(n);
+	//}
+	CreatSegment();
 	//
 	if (fw) delete fw;  //防止内存泄露
 	//fw = new Force_Wind;
+	
 	fw = new Force_Wind(1.29, wd->alf, z0, v10, N, M, w_up, T);
 	fw->set_FilePath(QString("D:/"));
 	fw->input_node(points);
@@ -106,6 +113,40 @@ void RandomWind::Initialize()
 	ui.Time_edi->setText("600");
 	ui.M_edi->setText("6000");
 
+}
+
+void RandomWind::CreatSegment()
+{
+	R_pcreatWire = wd->m_pcreatWire;
+	R_pcreatWire->m_Nodes;
+	NumOfWindzones = ui.lineEdit_segment->text().toInt();
+	//单档
+	double Lx = R_pcreatWire->m_Nodes[1].x - R_pcreatWire->m_Nodes[0].x;
+	double Ly = R_pcreatWire->m_Nodes[1].y - R_pcreatWire->m_Nodes[0].y;
+	double x1 = Lx / (2 * NumOfWindzones);
+	double y1 = Ly / (2 * NumOfWindzones);
+	for (int i = 0; i < NumOfWindzones; i++)
+	{
+		double xi = x1 + 2 * i * x1;
+		double yi = y1 + 2 * i * y1;
+		double closestDistance = std::numeric_limits<double>::max();
+		Node closestNode;
+		for (const auto& node : R_pcreatWire->m_Nodes)
+		{
+			double distance = std::sqrt((node.x - xi) * (node.x - xi) + (node.y - yi) * (node.y - yi));
+			if (distance < closestDistance)
+			{
+				closestDistance = distance;
+				closestNode = node;
+			}
+		}
+		// 获取距离最近点的 x、y 和 z 值
+		double closestX = closestNode.x;
+		double closestY = closestNode.y;
+		double closestZ = closestNode.z;
+		Node_Base n(1, closestX, closestY, closestZ);
+		points.push_back(n);
+	}
 }
 
 void RandomWind::ShowPic(int index)
