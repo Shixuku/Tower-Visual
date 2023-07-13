@@ -113,14 +113,14 @@
          <number>1</number>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>宽度</string>
+             <string>宽度(m)</string>
             </property>
            </widget>
           </item>
@@ -137,7 +137,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>顶部宽度</string>
+             <string>顶部宽度(m)</string>
             </property>
            </widget>
           </item>
@@ -147,7 +147,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
-             <string>高度</string>
+             <string>高度(m)</string>
             </property>
            </widget>
           </item>
@@ -157,7 +157,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>底部宽度</string>
+             <string>底部宽度(m)</string>
             </property>
            </widget>
           </item>
@@ -238,7 +238,7 @@
    <item row="7" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="widget">
       <attribute name="title">

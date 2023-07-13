@@ -39,7 +39,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>底部高度</string>
+            <string>底部高度(m)</string>
            </property>
           </widget>
          </item>
@@ -55,7 +55,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>底部宽度</string>
+            <string>底部宽度(m)</string>
            </property>
           </widget>
          </item>
@@ -71,7 +71,7 @@
          <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>顶部宽度</string>
+            <string>顶部宽度(m)</string>
            </property>
           </widget>
          </item>

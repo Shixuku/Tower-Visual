@@ -24,6 +24,8 @@ void Senior::Initialize()
 	ui.sag_edit->setText("4000");
 }
 
+
+
 void Senior::CreatData()
 {
 	wireInterFace->N = ui.N_pts->text().toInt();

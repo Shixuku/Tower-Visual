@@ -47,9 +47,6 @@
     <ClCompile Include="ConcentrateForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Constrained_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Creat_Loads.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -188,6 +185,15 @@
     <ClCompile Include="Instance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="resultVisualize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerCaculate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -203,9 +209,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ClassSection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constrained_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateAbaqusInp.h">
@@ -286,6 +289,9 @@
     <ClInclude Include="Instance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -363,6 +369,12 @@
     <QtMoc Include="Senior.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="resultVisualize.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TowerCaculate.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -438,6 +450,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Senior.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="resultVisualize.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TowerCaculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -53,7 +53,7 @@ T_Body::~T_Body()
 void T_Body::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "层数" << "层高" << "正面类型" << "侧面类型" << "上部隔面"<<"中部隔面";
+	headertext << "层数" << "层高(mm)" << "正面类型" << "侧面类型" << "上部隔面"<<"中部隔面";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);

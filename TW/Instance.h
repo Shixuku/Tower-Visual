@@ -1,16 +1,18 @@
 #pragma once
 #include<map>
 #include"Part_Base.h"
-//#include"LoadForce.h"
 #include<vtkTransform.h>
 #include <vtkIdTypeArray.h>
 #include <QOpenGLWidget>//UINT_PTR
 #include <vtkPointData.h>//->AddArray(Ptr
 #include"LoadForce.h"
-
+#include<qtextstream.h>
+#include<qfile.h>
+#include"ParameterConstraint.h"
 class Instance :public Base
 {
 public:
+	QString m_name = nullptr;
 	vector<Node> m_Nodes;//节点合集
 	vector<Element> m_Elements;//单元合集
 	vector<Element_Beam> m_Elements_beams;//梁单元合集
@@ -25,6 +27,7 @@ public:
 	vtkSmartPointer<vtkActor> m_BeamActor;
 	vtkSmartPointer<vtkActor> m_TrussActor;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;
+	std::vector<vtkSmartPointer<vtkActor>>m_ConstraintActor;//约束actor
 	std::vector<vtkSmartPointer<vtkActor>>Nactor;
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	map<int, Node>NodeData;
@@ -43,9 +46,11 @@ public:
 	void VectorToMap();
 	//创建输出文件
 	vector<LoadForce>Load;//荷载的容器
+	vector<ParameterConstraint> m_Constraint;//约束的容器
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
-	ofstream fout;           //创建ofstream
+	QFile Qf;
+	QTextStream Stream;         //创建ofstream
 	void CreateOutPut();//创建txt文件
 	void NodeTxT();
 	void BeamTxT();

@@ -66,35 +66,35 @@
          <string>受力大小和方向</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>X:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="line_x"/>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Y:</string>
+            <string>Y(N)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Z(N)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>X(N)</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="line_y"/>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Z:</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="1">
           <widget class="QLineEdit" name="line_z"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="line_x"/>
          </item>
         </layout>
        </widget>
@@ -120,7 +120,7 @@
          <item>
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>始：</string>
+            <string>始(s)</string>
            </property>
           </widget>
          </item>
@@ -142,7 +142,7 @@
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>末：</string>
+            <string>末(s)</string>
            </property>
           </widget>
          </item>

@@ -285,7 +285,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 	int Judg = 0;
 	for (int i = 0; i < SIZE; i++)
 	{
-		if (abs(m_Nodes[i].x - x) < 1e-2 && abs(m_Nodes[i].y - y) < 1e-2 && abs(m_Nodes[i].z - z) < 1e-2)
+		if (abs(m_Nodes[i].x - x) < 1e-1 && abs(m_Nodes[i].y - y) < 1e-1 && abs(m_Nodes[i].z - z) < 1e-1)
 		{
 			return m_Nodes[i].m_idNode; //重节点
 			i = SIZE;
@@ -307,7 +307,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 
 		return m_Nodes[Judg].m_idNode;
 	}
-	return 0;
+	return -1;
 }
 
 void Part_Base::SaveTo(QDataStream& fin) const//写
@@ -560,12 +560,12 @@ void Part_Base::Input(QDataStream& fin)
 void Part_Base::SubstaceActor(Element_Beam& beam)
 {
 	InterFace* pInterFace = Base::Get_InterFace();
-	for (auto i : pSection)
+	for (auto i : pInterFace->Ms)
 	{
-		Section* pSection = pInterFace->Ms.Find_Entity(i);
-		if (i == beam.ClassSectionID)
+		
+		if (i.second->m_id == beam.ClassSectionID)
 		{
-			switch (pSection->ClassSe)
+			switch (i.second->ClassSe)
 			{
 			case 0:
 				SetL(beam);
@@ -586,7 +586,7 @@ void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 
 	for (auto& ElementGroup : Group)
 	{
-		if (ElementGroup <= BeamMaxGroup)
+		if (ElementGroup <= BeamMaxGroup)//区分梁还是杆
 		{
 
 			for (auto& i : m_Elements_beams)
@@ -594,6 +594,15 @@ void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 				if (i.sectionID == ElementGroup)
 				{
 					i.ClassSectionID = SectionGroup;
+					InterFace* pInterFace = Base::Get_InterFace();
+					for (auto j : pInterFace->Ms)
+					{
+						if (i.ClassSectionID == j.second->m_id)
+						{
+							i.MaterialID = j.second->ClassM;
+						}
+					}
+
 					SubstaceActor(i);
 				}
 			}
@@ -606,12 +615,11 @@ void Part_Base::AssginSectionGroup(QSet<int> Group, int SectionGroup)
 				{
 					i.ClassSectionID = SectionGroup;
 					InterFace* pInterFace = Base::Get_InterFace();
-					for (auto j : pSection)
+					for (auto j : pInterFace->Ms)
 					{
-						Section* pSection = pInterFace->Ms.Find_Entity(j);
-						if (i.ClassSectionID == pSection->m_id)
+						if (i.ClassSectionID == j.second->m_id)
 						{
-							i.MaterialID = pSection->ClassM;
+							i.MaterialID = j.second->ClassM;
 						}
 					}
 				}
@@ -645,14 +653,14 @@ void Part_Base::SetL(Element_Beam& EB)
 		double y[6];
 
 		InterFace* pInterFace = Base::Get_InterFace();
-		for (auto i : pSection)
+		for (auto i : pInterFace->Ms)
 		{
-			Section* pSection = pInterFace->Ms.Find_Entity(i);
-			if (EB.ClassSectionID == i)
+			//Section* pSection = pInterFace->Ms.Find_Entity(i);
+			if (EB.ClassSectionID == i.second->m_id)
 			{
-				x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
-				y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
-				EB.MaterialID = pSection->ClassM;
+				x[0] = 0; x[1] = i.second->a; x[2] = i.second->a; x[3] = i.second->b; x[4] = i.second->b; x[5] = 0;
+				y[0] = 0; y[1] = 0;   y[2] = i.second->b; y[3] = i.second->b; y[4] = i.second->a; y[5] = i.second->a;
+				//EB.MaterialID = i.second->ClassM;//改了这里
 			}
 		}
 		bA.SetSection(x, y);
@@ -676,14 +684,14 @@ void Part_Base::SetL(Element_Beam& EB)
 			double x[6];
 			double y[6];
 			InterFace* pInterFace = Base::Get_InterFace();
-			for (auto i : pSection)
+			for (auto i : pInterFace->Ms)
 			{
-				Section* pSection = pInterFace->Ms.Find_Entity(i);
-				if (EB.ClassSectionID == i)
+				//Section* pSection = pInterFace->Ms.Find_Entity(i);
+				if (EB.ClassSectionID == i.second->m_id)
 				{
-					x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
-					EB.MaterialID = pSection->ClassM;
+					x[0] = 0; x[1] = i.second->a; x[2] = i.second->a; x[3] = i.second->b; x[4] = i.second->b; x[5] = 0;
+					y[0] = 0; y[1] = 0;   y[2] = i.second->b; y[3] = i.second->b; y[4] = i.second->a; y[5] = i.second->a;
+					//EB.MaterialID = i.second->ClassM;
 				}
 			}
 			bA.SetSection(x, y);
@@ -694,23 +702,26 @@ void Part_Base::SetL(Element_Beam& EB)
 			bA.setNode(x2, y2, z2, x1, y1, z1);
 			double x[6];
 			double y[6];
-			for (auto& j : pSection)
+
+			InterFace* pInterFace = Base::Get_InterFace();
+			for (auto i : pInterFace->Ms)
 			{
-				InterFace* pInterFace = Base::Get_InterFace();
-				for (auto i : pSection)
+				if (EB.ClassSectionID == i.second->m_id)
 				{
-					Section* pSection = pInterFace->Ms.Find_Entity(i);
-					x[0] = 0; x[1] = pSection->a; x[2] = pSection->a; x[3] = pSection->b; x[4] = pSection->b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = pSection->b; y[3] = pSection->b; y[4] = pSection->a; y[5] = pSection->a;
-					EB.MaterialID = pSection->ClassM;
+					x[0] = 0; x[1] = i.second->a; x[2] = i.second->a; x[3] = i.second->b; x[4] = i.second->b; x[5] = 0;
+					y[0] = 0; y[1] = 0;   y[2] = i.second->b; y[3] = i.second->b; y[4] = i.second->a; y[5] = i.second->a;
+					//EB.MaterialID = i.second->ClassM;
 				}
+
 			}
+
 			bA.SetSection(x, y);
 			bA.Set_zAxis(0, 0, -1);
 		}
 	}
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 	bA.Create_Actor(0, 1, 0, actor);
+
 	Nactor.push_back(actor);
 }
 
@@ -726,13 +737,13 @@ void Part_Base::SetCir(Element_Beam& beam)
 	double x = 0;
 	double y = 0;
 	InterFace* pInterFace = Base::Get_InterFace();
-	for (auto i : pSection)
+	for (auto i : pInterFace->Ms)
 	{
-		Section* pSection = pInterFace->Ms.Find_Entity(i);
-		if (beam.ClassSectionID == i)
+		//Section* pSection = pInterFace->Ms.Find_Entity(i);
+		if (beam.ClassSectionID == i.second->m_id)
 		{
-			x = pSection->a;
-			y = pSection->b;
+			x = i.second->a;
+			y = i.second->b;
 
 		}
 	}

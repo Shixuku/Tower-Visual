@@ -67,7 +67,6 @@ void beamActor::Calculate_Property()
 
 void beamActor::setNode(double x1, double y1, double z1, double x2, double y2, double z2)
 {
-
 	m_pt1[0] = x1; m_pt1[1] = y1; m_pt1[2] = z1;
 	m_pt2[0] = x2; m_pt2[1] = y2; m_pt2[2] = z2;
 }
@@ -103,10 +102,10 @@ void beamActor::Set_zAxis(double dx, double dy, double dz)
 	vtkMath::Normalize(m_yAxis);
 	vtkMath::Cross(m_xAxis, m_yAxis, m_zAxis);
 	vtkMath::Normalize(m_zAxis);
-	cout << "L " << m_L << "\n";
-	cout << "t" << Vx[0] << "  " << m_pt2[0] << "  " << m_pt1[0] << "  " << "\n";
-	cout << "x_axis" << m_xAxis[0] << "  " << m_xAxis[1] << "  " << m_xAxis[2] << "  " << "\n";
-	cout << "z_axis" << m_zAxis[0] << "  " << m_zAxis[1] << "  " << m_zAxis[2] << "  " << "\n\n";
+	//cout << "L " << m_L << "\n";
+	//cout << "t" << Vx[0] << "  " << m_pt2[0] << "  " << m_pt1[0] << "  " << "\n";
+	//cout << "x_axis" << m_xAxis[0] << "  " << m_xAxis[1] << "  " << m_xAxis[2] << "  " << "\n";
+	//cout << "z_axis" << m_zAxis[0] << "  " << m_zAxis[1] << "  " << m_zAxis[2] << "  " << "\n\n";
 }
 
 void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkActor> actor) const
@@ -128,7 +127,7 @@ void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkAc
 	profile->SetPoints(points);
 	profile->SetPolys(poly);
 
-	cout << "cells:" << profile->GetNumberOfCells() << "  points:" << profile->GetNumberOfPoints() << endl;
+	//cout << "cells:" << profile->GetNumberOfCells() << "  points:" << profile->GetNumberOfPoints() << endl;
 	double M[16];
 	M[0] = m_zAxis[0];		M[1] = m_yAxis[0];		M[2] = -m_xAxis[0];		M[3] = m_pt1[0];
 	M[4] = m_zAxis[1];		M[5] = m_yAxis[1];		M[6] = -m_xAxis[1];		M[7] = m_pt1[1];

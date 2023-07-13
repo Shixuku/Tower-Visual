@@ -42,7 +42,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>顶部宽度：</string>
+            <string>顶部宽度(m)</string>
            </property>
           </widget>
          </item>

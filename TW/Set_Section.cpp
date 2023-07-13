@@ -75,13 +75,7 @@ void Set_Section::SendSlots()
 	b = ui.LEdit_b->text().toDouble();
 	int iM = ClassMa;
 
-	////修改的部分
-	//Section section;
-	//section.a = ui.LEdit_a->text().toDouble();
-	//section.b = ui.LEdit_b->text().toDouble();
-	//section.ClassM= ui.comboBox_2->currentIndex() + 1;
-	//section.ClassSe= ui.comboBox->currentIndex();
-	//m_pInterFace->MS.push_back(section);
+	//修改的
 	int id = m_pInterFace->Ms.size() + 1;
 	Section* section = new Section(a, b, id, ClassSection, iM);
 	m_pInterFace->Ms.Add_Entity(section);
