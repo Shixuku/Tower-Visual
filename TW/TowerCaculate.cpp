@@ -34,7 +34,8 @@ void TowerCaculate::BtnOpen()
 void TowerCaculate::BtnOK()
 {
 	step = ui.line_static_step->text().toInt();
-	IdNode = ui.line_idNode->text().toInt();
+	int idNode = ui.line_idNode->text().toInt();
+	IdNode.push_back(idNode);
 	stol= ui.line_stol->text().toDouble();
 	MaxIterations=ui.line_MaxIterations->text().toInt();
 	m_str = ui.line_path->text();

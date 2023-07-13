@@ -133,15 +133,15 @@ void Tower::DrawForceX(Node* n, int a, vtkRenderer* renderer)
 {
 	// 创建锥形
 	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
-	double x1 = n->x + 2000 * a;
+	double x1 = n->x + 2.000 * a;
 	cone->SetCenter(x1, n->y, n->z); // 设置中心点坐标
-	cone->SetHeight(500.0);     // 设置高度
-	cone->SetRadius(300.0);     // 设置半径
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
 	cone->SetDirection(1 * a, 0, 0);//设置方向--数值与大小无关
 	cone->SetResolution(10);  // 设置分辨率
 	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
 	lineSource->SetPoint1(n->x, n->y, n->z);
-	lineSource->SetPoint2(x1 + 250 * a, n->y, n->z);
+	lineSource->SetPoint2(x1 + 0.250 * a, n->y, n->z);
 	lineSource->Update();
 
 	vtkNew<vtkAppendPolyData> appendFilter;
@@ -170,15 +170,15 @@ void Tower::DrawForceY(Node* n, int a, vtkRenderer* renderer)
 {
 	// 创建锥形
 	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
-	double y1 = n->y + 2000 * a;
+	double y1 = n->y + 2.000 * a;
 	cone->SetCenter(n->x, y1, n->z); // 设置中心点坐标
-	cone->SetHeight(500.0);     // 设置高度
-	cone->SetRadius(300.0);     // 设置半径
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
 	cone->SetDirection(0, 1 * a, 0);//设置方向--数值与大小无关
 	cone->SetResolution(10);  // 设置分辨率
 	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
 	lineSource->SetPoint1(n->x, n->y, n->z);
-	lineSource->SetPoint2(n->x, y1 + 250 * a, n->z);
+	lineSource->SetPoint2(n->x, y1 + 0.250 * a, n->z);
 	lineSource->Update();
 
 	vtkNew<vtkAppendPolyData> appendFilter;
@@ -206,15 +206,15 @@ void Tower::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
 {
 	// 创建锥形
 	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
-	double z1 = n->z + 2000 * a;
+	double z1 = n->z + 2.000 * a;
 	cone->SetCenter(n->x, n->y, z1); // 设置中心点坐标
-	cone->SetHeight(500.0);     // 设置高度
-	cone->SetRadius(300.0);     // 设置半径
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
 	cone->SetDirection(0, 0, 1 * a);//设置方向--数值与大小无关
 	cone->SetResolution(10);  // 设置分辨率
 	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
 	lineSource->SetPoint1(n->x, n->y, n->z);
-	lineSource->SetPoint2(n->x, n->y, z1 + 250 * a);
+	lineSource->SetPoint2(n->x, n->y, z1 + 0.250 * a);
 	lineSource->Update();
 
 	vtkNew<vtkAppendPolyData> appendFilter;
@@ -252,15 +252,15 @@ void Tower::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* re
 	};
 
 	ConeInfo cones[] = {
-		{ 200.0, 600.0, { 0, 1, 0 }, { x, y - 300, z }, { 0.0, 0.0, 1.0 } },  // y方向
-		{ 300, 1200.0, { 0, 1, 0 }, { x, y - 600, z }, { 0.0, 0.0, 1.0 } },
-		{ 300, 500.0, { 0, 1, 0 }, { x, y - 250, z }, { 1.0, 0.5, 0.0 } },
-		{ 200.0, 600.0, { 1, 0, 0 }, { x - 300, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
-		{ 300, 1200.0, { 1, 0, 0 }, { x - 600, y, z }, { 0.0, 0.0, 1.0 } },
-		{ 300, 500.0, { 1, 0, 0 }, { x - 250, y, z }, { 1.0, 0.5, 0.0 } },
-		{ 200.0, 600.0, { 0, 0, -1 }, { x, y, z + 300 }, { 0.0, 0.0, 1.0 } },  // z方向
-		{ 300, 1200.0, { 0, 0, -1 }, { x, y, z + 600 }, { 0.0, 0.0, 1.0 } },
-		{ 300, 500.0, { 0, 0, -1 }, { x, y, z + 250 }, { 1.0, 0.5, 0.0 } }
+		{ 0.2, 0.6, { 0, 1, 0 }, { x, y - 0.3, z }, { 0.0, 0.0, 1.0 } },  // y方向
+		{ 0.3, 0.12, { 0, 1, 0 }, { x, y - 0.6, z }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.2, 0.6, { 1, 0, 0 }, { x - 0.3, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
+		{ 0.3, 0.12, { 1, 0, 0 }, { x - 0.6, y, z }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.2, 0.6, { 0, 0, -1 }, { x, y, z + 0.3 }, { 0.0, 0.0, 1.0 } },  // z方向
+		{ 0.3, 0.12, { 0, 0, -1 }, { x, y, z + 0.6 }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
 	};
 
 	int numCones = sizeof(cones) / sizeof(cones[0]);

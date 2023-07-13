@@ -51,6 +51,7 @@ public:
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	QFile Qf;
 	QTextStream Stream;         //创建ofstream
+	vtkSmartPointer<vtkCellArray> m_lines;
 	void CreateOutPut();//创建txt文件
 	void NodeTxT();
 	void BeamTxT();

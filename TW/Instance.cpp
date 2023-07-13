@@ -4,7 +4,8 @@
 #include"InterFace.h"
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
-	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
+	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
+	//vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	//点
 	int nTruss = m_Elements_Trusses.size();
@@ -14,12 +15,12 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 		int trussTowId = m_Elements_Trusses[i].m_idNode[1] - 1;
 		line->GetPointIds()->SetId(0, trussOneId);
 		line->GetPointIds()->SetId(1, trussTowId);
-		lines->InsertNextCell(line);
+		m_lines->InsertNextCell(line);
 	}
 
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
-	linesPolyData->SetLines(lines);
+	linesPolyData->SetLines(m_lines);
 
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputData(linesPolyData);
@@ -31,7 +32,8 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 
 void Instance::Show_VTKbeam(vtkRenderer* renderer)
 {
-	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
+	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
+	//vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	int nTruss = m_Elements_beams.size();
 	for (size_t i = 0; i < m_Elements_beams.size(); i++)
@@ -40,12 +42,12 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 		int trussTowId = m_Elements_beams[i].m_idNode[1] - 1;
 		line->GetPointIds()->SetId(0, trussOneId);
 		line->GetPointIds()->SetId(1, trussTowId);
-		lines->InsertNextCell(line);
+		m_lines->InsertNextCell(line);
 	}
 
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
-	linesPolyData->SetLines(lines);
+	linesPolyData->SetLines(m_lines);
 
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputData(linesPolyData);
@@ -356,20 +358,20 @@ void Instance::TrussSectionTxT()
 
 void Instance::RestraintTxT()
 {
-	//int a = 24;//只考虑塔脚的4个完全约束
-	//Stream << a << "\n";
-	//cout << "start RestraintNode" << "\n";
-	//for (int i = 0; i < RestraintNode.size(); i++)
-	//{
-	//	for (int j = 0; j < 6; j++)
-	//	{
-	//		Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-	//	}
-	//}
-	int m_ConstraintSize = m_Constraint.size();
-	Stream << m_ConstraintSize << " \n";
-	for (int i = 0; i < m_Constraint.size(); i++)
+	int a = 24;//只考虑塔脚的4个完全约束
+	Stream << a << "\n";
+	cout << "start RestraintNode" << "\n";
+	for (int i = 0; i < RestraintNode.size(); i++)
 	{
-		Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "\n";
+		for (int j = 0; j < 6; j++)
+		{
+			Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+		}
 	}
+	//int m_ConstraintSize = m_Constraint.size();
+	//Stream << m_ConstraintSize << " \n";
+	//for (int i = 0; i < m_Constraint.size(); i++)
+	//{
+	//	Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "\n";
+	//}
 }
