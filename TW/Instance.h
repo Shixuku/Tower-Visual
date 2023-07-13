@@ -32,6 +32,7 @@ public:
 	map<int, Element_Truss>TrussData;
 	map<int, Section>SectionData;
 	vector<int>susPoint;
+	vector<int>realSuspoint;
 	int Truss_elementsID = 0;
 	QTreeWidgetItem* Item = nullptr;
     int Creat_Node(double x, double y, double z);//Éú³Éµã

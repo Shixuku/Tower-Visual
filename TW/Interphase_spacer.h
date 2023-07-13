@@ -12,7 +12,7 @@ class Interphase_spacer : public QDialog
 	Q_OBJECT
 
 public:
-	Interphase_spacer(TowerData_CrossArm* CrossArm,QWidget* parent = nullptr);
+	Interphase_spacer(TowerData_CrossArm* CrossArm, QWidget* parent = nullptr);
 	~Interphase_spacer();
 
 	InterFace* m_pInterFace = nullptr;

@@ -10,16 +10,23 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm,QWidget* paren
 	Q_ASSERT(m_pInterFace != nullptr);
 	TP_insulator = new TowerPart_Insulator;
 	
-	connect(ui.btn_cancle, &QPushButton::clicked, this, &Interphase_spacer::reject);
+	connect(ui.btn_cancle, &QPushButton::clicked, this, [=]()
+		{
+			Arm->addInsulator(TP_insulator);
+			this->reject();
+		});
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Interphase_spacer::Get_Nodes);
 
 	connect(ui.btn_ok, &QPushButton::clicked, this, [=]()
 		{
+			
 			Get_Data();
 			
 			ui.lineEdit->clear();
 			ui.line_p1->clear();
 			ui.line_p2->clear();
+			
+			
 		});
 	ui.stackedWidget->setCurrentIndex(0);//ÉèÖÃÄ¬ÈÏpage
 	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });

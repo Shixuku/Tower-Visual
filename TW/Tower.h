@@ -71,6 +71,7 @@ public:
 	vector<int>RestraintNode;
 	vector<int>SuspensionNode;
 	vector<int>WireLogo;
+
 	void addPart(Part_Base* part);
 
 	void Check();

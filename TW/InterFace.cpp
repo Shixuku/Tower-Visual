@@ -416,14 +416,6 @@ void InterFace::ui_Tower()
 		for (auto& i : T_As->m_ArryHead)//塔头
 		{
 			tw->addPart(TP_CrossArm.Find_Entity(i));
-			int crossArm = TP_CrossArm.Find_Entity(i)->m_id;
-			for (auto& i : towerPartInsulator)
-			{
-				if (i.second->ArmId == crossArm)
-				{
-					tw->addPart(i.second);
-				}
-			}
 		}
 
 		tw->Check();
@@ -541,10 +533,10 @@ void InterFace::ui_Management_InsData()
 void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 {
 	TowerData_CrossArm* Arm = OnFindCrossAem(item->parent());
-	Part_Base* part = OnFindPart(item->parent());
 	Interphase_spacer* IS = new Interphase_spacer(Arm,this);
 
 	IS->show();//要互动只能用show
+
 }
 
 void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
@@ -580,7 +572,7 @@ void InterFace::ui_TowerWireGroup()
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	TowerWireGroupAssembly* towerWireGroupAssembly = new TowerWireGroupAssembly(this, towerWireGroup);
 	towerWireGroupAssembly->show();
-	TWG.Add_Entity(towerWireGroup);
+
 }
 void InterFace::ui_Constraint()
 {
