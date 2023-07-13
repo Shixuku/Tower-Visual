@@ -772,6 +772,12 @@ void Tower::addSuspensionNode(Part_Base* part)
 		size_t totalT = this->SuspensionNode.size() - 1;
 		SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
 	}
-	
+	size_t realSusNode = part->realSuspoint.size();
+	for (int i = 0; i < realSusNode; i++)
+	{
+		this->realSuspoint.push_back(part->realSuspoint[i]);
+		size_t totalT = this->realSuspoint.size() - 1;
+		realSuspoint[totalT] = part->Find_tower_idNode(part->realSuspoint[i]);
+	}
 }
 

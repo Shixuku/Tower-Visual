@@ -282,7 +282,7 @@
       <item>
        <widget class="QPushButton" name="btn_cancle">
         <property name="text">
-         <string>取消</string>
+         <string>完成</string>
         </property>
        </widget>
       </item>

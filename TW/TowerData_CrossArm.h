@@ -5,6 +5,7 @@ using namespace std;
 #include"TowerData_LayerArm.h"
 #include"Part_Base.h"
 #include"TowerData_Body.h"
+class TowerPart_Insulator;
 class TowerData_CrossArm:public Part_Base
 {
 public:
@@ -35,6 +36,11 @@ public:
 	double Get_layerLi(int type, int i);//type 1--支架水平 2--支架下 3--横担水平 4--横担上
 	double Get_layerWi(int type,int i);//type 1--支架水平 2--支架下 3--横担水平 4--横担上
 	double Get_layerHi(int type,int i);//type 1--支架水平 2--支架下 3--横担水平 4--横担上
+
+	void addInsulator(TowerPart_Insulator* insulator);
+	void addInsulatorNode(TowerPart_Insulator* insulator);
+	void addInsulatorElement(TowerPart_Insulator* insulator);
+	void addNodevector(TowerPart_Insulator* insulator);
 
 };
 

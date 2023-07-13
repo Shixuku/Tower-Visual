@@ -160,6 +160,13 @@ void TowerWireGroup::AddSuspensionNode(Tower* tower)
 		size_t totalT = this->SuspensionNode.size() - 1;
 		SuspensionNode[totalT] = tower->FindGroupIdNode(tower->SuspensionNode[i]);
 	}
+	size_t realSusNode = tower->realSuspoint.size();
+	for (int i = 0; i < realSusNode; i++)
+	{
+		this->realSuspoint.push_back(tower->realSuspoint[i]);
+		size_t totalT = this->realSuspoint.size() - 1;
+		realSuspoint[totalT] = tower->FindGroupIdNode(tower->realSuspoint[i]);
+	}
 }
 
 void TowerWireGroup::AddWireToGroup(CreatWire* wire)

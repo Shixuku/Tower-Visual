@@ -35,6 +35,7 @@ public:
 	vector<Element_Beam> m_Elements_beams;//梁单元合集
 	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
 	vector<int>SuspensionNode;//悬挂点
+	vector<int>realSuspoint;//真实悬挂点
 
 	void VectorToMap();
 	map<int, Node>NodeData;
