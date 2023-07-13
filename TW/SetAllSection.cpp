@@ -54,7 +54,7 @@ void SetAllSection::Assgin(Part_Base* Part)
 				QSet<int>group_row;
 				group_row.insert(i.sectionID);
 				Part->AssginSectionGroup(group_row, id);
-				m_pInterFace->SubstaceActor(Part);
+				m_pInterFace->ShowSubstaceActor(Part);
 			}
 		}
 	}

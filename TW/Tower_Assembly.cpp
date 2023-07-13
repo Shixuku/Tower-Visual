@@ -58,14 +58,6 @@ QString Tower_Assembly::Get_name()
     return name;
 }
 
-void Tower_Assembly::Get_Movedata(double& x, double& y, double& z, double& angle)
-{
-    x = ui.line_disX->text().toDouble();
-    y = ui.line_disY->text().toDouble();
-    z = ui.line_disZ->text().toDouble();
-    angle=ui.line_angle->text().toDouble();
-}
-
 void Tower_Assembly::Get_PartData()
 {
     m_ArryLeg = ui.combo_foot->Get_idItems();

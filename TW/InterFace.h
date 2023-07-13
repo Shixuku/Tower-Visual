@@ -21,6 +21,7 @@
 #include"Set_Section.h"
 #include<vtkInteractorStyleTrackballCamera.h>
 #include"TowerWireGroupAssembly.h"
+#include"resultVisualize.h"
 
 //fl_Dll
 #include"S_InterFace.h"
@@ -41,7 +42,7 @@ class Wind;
 class TowerWireGroup;
 class Wire_InterFace;
 class CreatWire;
-class Calculate;
+class TowerCaculate;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -62,8 +63,7 @@ public:
     void HiddeAllPart();
     void HiddeAllTower();
     void HiddeAllWire();
-    void SubstaceActor(Part_Base* Part);
-    void ShowLoadactor(Tower* tower);
+    void ShowSubstaceActor(Part_Base* Part);
     void switchRenderWindow(int index);
     void initMenu();
     void AddPartFunction(QTreeWidgetItem* item);
@@ -81,13 +81,9 @@ public:
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;
      vector<Tower_Assembly*> tower_assembles;
-     void caculate();
-    
-     //std::vector<Section>MS;
+     void Caculate();
+     void Display();
 
-     //std::vector<Section>MS;//新建的截面
-
- 
      std::vector<QStringList> Scetion_lists;
 
      //导线部分
@@ -105,14 +101,6 @@ public:
      bool isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item);//将塔线建模放在塔线组下去找到
      void Area_Inqure();//框选
      void Close_Point();
-     vector<int> con_id;
-     vector<Node>Con_Nodes;
-     Node* Find_Node(int id, vector<Node>& node,vector<Node>&Con_node);
-     void Insert_Data();
-     void handleOkButtonClicked();
-     QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
-     QMap<int, int> idMap; // 存储ID与索引的映射关系
-     int index = 0;
      //HZ
      //风
      Wind* wd = nullptr;
@@ -143,17 +131,17 @@ public slots:
     void Show_Part(Part_Base* part);
     void Show_Tower(Tower* tower);
     void Show_Wire(CreatWire* wire);
-    void GetData(QStringList&);
-    void Test_mousePressEvent(QMouseEvent* event);
     void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
+    //void CreateInp(QTreeWidgetItem* item);
+    void Constraint_Tips1(QTreeWidgetItem* item);//点击创建边界条件弹出界面下放确认
     void CreateTowerInp(QTreeWidgetItem* item);
     void CreateGroupInp(QTreeWidgetItem* item);
-    void Constraint_Tips();//点击创建边界条件弹出界面下放确认
-    void Delete_Constraint();//点击约束删除Widget里面的控件]
+    //void Constraint_Tips();//点击创建边界条件弹出界面下放确认
+    //void Delete_Constraint();//点击约束删除Widget里面的控件]
     void ui_Wind();
     void ui_SingleWire();
-    void ui_Calculate();
+    //void ui_Calculate();
   
   
     //void ui_ConcentratedForce(QTreeWidgetItem* item);
@@ -161,18 +149,12 @@ public slots:
     void ui_ManageLoads();
     void ui_TowerWireGroup();
 private:
-    QFile Qf;
-    QDataStream Stream;
+
     QHBoxLayout* layout;
     QVTKOpenGLNativeWidget* m_VtkWidget;
     // 菜单事件
     void contextMenuEvent(QContextMenuEvent* event) override;
     QMenu* m_pMenu = nullptr;
-    QHBoxLayout* layout_Tips;
-    QLabel* label;
-    QLineEdit* Node_Edit;
-    QPushButton* OK_Btn;
-    QPushButton* Ensure_Btn;
     vtkSmartPointer<vtkInteractorStyleTrackballCamera> m_MainStyle; // 保存主界面的交互器样式
     
     //treeWidget
@@ -181,5 +163,6 @@ private:
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
    
-
+    resultVisualize* display = nullptr;
+    TowerCaculate* towercaculate = nullptr;
 };

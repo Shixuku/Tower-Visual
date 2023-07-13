@@ -109,6 +109,7 @@ void ConcentrateForce::draw()
 					int idNode = i->m_idNode;//节点编号
 					int direction = 0;//方向
 					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_x, startTime, endTime));
+					//画
 					if (i_x < 0)
 					{
 						m_pTower->DrawForceX(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);

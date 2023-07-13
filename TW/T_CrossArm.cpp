@@ -49,7 +49,7 @@ T_CrossArm::~T_CrossArm()
 void T_CrossArm::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "段号" << "段长" << "底面类型" << "顶面类型" << "侧面类型" << "右隔面类型";
+	headertext << "段号" << "段长(mm)" << "底面类型" << "顶面类型" << "侧面类型" << "右隔面类型";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);

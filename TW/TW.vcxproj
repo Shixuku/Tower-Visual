@@ -60,10 +60,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <IncludePath>../dllAnalyse/include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
     <IncludePath>../dllAnalyse\include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
+    <IncludePath>../VTK\include\vtk-9.0;../eigen-3.4.0;../dllAnalyse\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\kaiyingbaby\QT\5.15.1\msvc2019_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\kaiyingbaby\QT\5.15.2\msvc2019_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
@@ -108,7 +109,6 @@
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
-    <ClCompile Include="Constrained_image.cpp" />
     <ClCompile Include="Create_Constraint.cpp" />
     <ClCompile Include="ConcentrateForce.cpp" />
     <ClCompile Include="CreatWire.cpp" />
@@ -122,8 +122,10 @@
     <ClCompile Include="Manage_Loads.cpp" />
     <ClCompile Include="Manage_PartData.cpp" />
     <ClCompile Include="Manage_InsData.cpp" />
+    <ClCompile Include="ParameterConstraint.cpp" />
     <ClCompile Include="Polynomial.cpp" />
     <ClCompile Include="RandomWind.cpp" />
+    <ClCompile Include="resultVisualize.cpp" />
     <ClCompile Include="Senior.cpp" />
     <ClCompile Include="SetAllSection.cpp" />
     <ClCompile Include="Set_Section.cpp" />
@@ -131,6 +133,7 @@
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="TowerCaculate.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
     <ClCompile Include="TowerData_CrossArm.cpp" />
     <ClCompile Include="TowerData_Insulator.cpp" />
@@ -164,10 +167,12 @@
     <QtUic Include="Manage_InsData.ui" />
     <QtUic Include="Polynomial.ui" />
     <QtUic Include="RandomWind.ui" />
+    <QtUic Include="resultVisualize.ui" />
     <QtUic Include="Senior.ui" />
     <QtUic Include="SetAllSection.ui" />
     <QtUic Include="Set_Section.ui" />
     <QtUic Include="Spacer.ui" />
+    <QtUic Include="TowerCaculate.ui" />
     <QtUic Include="TowerWireGroupAssembly.ui" />
     <QtUic Include="Tower_Assembly.ui" />
     <ClCompile Include="beamActor.cpp" />
@@ -189,6 +194,9 @@
     <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />
     <ClInclude Include="Instance.h" />
+    <QtMoc Include="resultVisualize.h" />
+    <QtMoc Include="TowerCaculate.h" />
+    <ClInclude Include="ParameterConstraint.h" />
     <ClInclude Include="WireData.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="WindList.h" />
@@ -204,7 +212,6 @@
     <ClInclude Include="ClassSection.h" />
     <ClInclude Include="CreateAbaqusInp.h" />
     <QtMoc Include="Create_Constraint.h" />
-    <ClInclude Include="Constrained_image.h" />
     <QtMoc Include="Creat_Loads.h" />
     <QtMoc Include="ConcentrateForce.h" />
     <ClInclude Include="Element.h" />

@@ -14,8 +14,13 @@
 #include<QDataStream>
 #include<QTreeWidgetItem>
 #include <vtkAutoInit.h> 
+#include"LoadForce.h"
+#include"ParameterConstraint.h"
 #include <map>
 #include <vtkPointData.h>
+#include "Base.h"
+#include<qtextstream.h>
+#include<qfile.h>
 #include"Instance.h"
 using namespace Eigen;
 class Tower:public Instance
@@ -24,7 +29,8 @@ public:
 	//子类节点添加到父类里面
 	Tower();
 
-	QString m_name;
+	QString m_name = nullptr;
+
 	void SaveTo(QDataStream& fin)const;
 	void Input(QDataStream& fin);
 
@@ -35,45 +41,20 @@ public:
 	void Show_Beam(int BeamID, int SectionClass, double a, double b);
 	void AddNewSection(int id);
 	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
-	//vector<Node> m_Nodes;//节点合集
-	//vector<Element> m_Elements;//单元合集
-	//vector<Element_Beam> m_Elements_beams;//梁单元合集
-	//vector<Element_Truss> m_Elements_Trusses;//杆单元合集
-	//vtkSmartPointer<vtkActor> Node_actor;//huangzhan
-	//vector<LoadForce>Load;//荷载的容器
-	//vector<int>pSection;//截面的容器
+
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	int FindGroupIdNode(int idNode) const;
-	
 
-	void Show_VTKtruss(vtkRenderer* renderer);
-	void Show_VTKbeam(vtkRenderer* renderer);
-	void Show_VTKnode(vtkRenderer* renderer);//显示节点
 
 	//画集中力
 	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
-	ofstream fout;           //创建ofstream
-	//void CreateOutPut();//创建txt文件
-	//void NodeTxT();
-	//void BeamTxT();
-	//void TrussTxT();
-	//void ConcentrationTxT();//集中力
-	//void RestraintTxT();//约束
-	//void MaterialTxT();//材料
-	//void BeamSectionTxT();//梁截面信息
-	//void TrussSectionTxT();//杆截面信息
-	vtkSmartPointer<vtkActor> m_BeamActor;
-	vtkSmartPointer<vtkActor> m_TrussActor;
-	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;
-	std::vector<vtkSmartPointer<vtkActor>>Nactor;
-	vector<int>RestraintNode;
-	vector<int>SuspensionNode;
-	vector<int>WireLogo;
+	//画约束
+	void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
+	void Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer);
 
 	void addPart(Part_Base* part);
-
 	void Check();
 	Node* FindNode(int id);
 
@@ -87,8 +68,9 @@ public:
 
 	//界面
 	QTreeWidgetItem* Item = nullptr;
-	vtkSmartPointer<vtkPoints> m_pts;
+	vtkSmartPointer<vtkCellArray> m_lines;
 	//InterFace* m_pInterFace = nullptr;
+
 protected:
 	void addNodeToTower(Part_Base* part);
 	
@@ -96,6 +78,9 @@ protected:
 	//void addSectionToTower(Part_Base* part);
 	void addRestraintNode(Part_Base* part);
 	void addSuspensionNode(Part_Base* part);
+
+	QFile Qf;
+	QTextStream Stream;
 };
 //xxxxxxxxx
 

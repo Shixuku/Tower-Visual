@@ -14,7 +14,7 @@ public:
 	Senior(Wire_InterFace* Wire_InterFace,QWidget *parent = nullptr);
 	~Senior();
 	void Initialize();
-	//void CreatData();
+
 	int N;
 	double unitMass;
 	double area;

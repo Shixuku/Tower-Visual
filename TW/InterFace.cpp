@@ -24,7 +24,8 @@
 #include"Wind.h"
 #include"Wire_InterFace.h"
 #include"CreatWire.h"
-#include"Calculate.h"
+#include "resultVisualize.h"
+#include"TowerCaculate.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -92,7 +93,8 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 			//m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
 			//m_renderWindow->Render();
 		});
-	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::caculate);
+	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
+	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
 	
 }
 
@@ -232,14 +234,14 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	//荷载
 	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
 	{
-		ui_ManageLoads();
+		ui_ManageLoads();//管理荷载，暂时还没做
 	}
 	else if (item == ui.treeWidget->topLevelItem(4)->child(2))
 	{
-		Constraint_Tips();
+		//Constraint_Tips();//施加约束
 	}
 	else if (item == ui.treeWidget->topLevelItem(4)->child(3))
-	{
+	{//管理约束
 		
 	}
 	//绝缘子串
@@ -253,16 +255,20 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Wire_InterFace(item);
 	}
 	else if (isChildOfTower(item,0))
-	{
+	{//施加载荷
 		ui_CreatLoads(item);
 	}
 	else if (isChildOfTower(item, 1))
-	{
+	{//输出txt文件
 		CreateOutPut(item);
 	}
 	else if (isChildOfTower(item, 2))
-	{
-		CreateTowerInp(item);
+	{//输出inp文件
+		//CreateInp(item);
+	}
+	else if (isChildOfTower(item, 3))
+	{//施加约束
+		Constraint_Tips1(item);
 	}
 	else if (item == ui.treeWidget->topLevelItem(2))
 	{
@@ -278,7 +284,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (item == ui.treeWidget->topLevelItem(9))
 	{
-		ui_Calculate();
+		//ui_Calculate();
 	}
 	else if (isChildOfTowerwiregroupWireModeling(item))
 	{
@@ -424,12 +430,7 @@ void InterFace::ui_Tower()
 		tw->Item = item;
 		item->setText(0, T_As->Get_name());
 		tw->m_id = TP.size() + 1;//编号
-		
-		double x = 0; double y = 0; double z = 0; double angle = 0;
-		T_As->Get_Movedata(x, y, z, angle);//得到平移旋转角度
-		tw->rotation(angle);//旋转
-		tw->move(x, y, z);//平移
-		
+
 		tw->Show_VTKnode(m_Renderer_2);
 		tw->Show_VTKtruss(m_Renderer_2);
 		tw->Show_VTKbeam(m_Renderer_2);
@@ -576,14 +577,15 @@ void InterFace::ui_TowerWireGroup()
 }
 void InterFace::ui_Constraint()
 {
-	Create_Constraint* con = new Create_Constraint(this);
-	con->show();
+	//Create_Constraint* con = new Create_Constraint(this);
+	//con->show();
 }
 
 void InterFace::SaveFile()
 {
 	QString str = QFileDialog::getSaveFileName(this, "保存", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
-
+	QFile Qf;
+	QDataStream Stream;
 	if (str != nullptr)
 	{
 		qDebug() << str;
@@ -597,7 +599,7 @@ void InterFace::SaveFile()
 		}
 		else
 		{
-			TP_leg.Save(Stream);
+			TP_leg.Save(Stream);//有多少 保存多少
 			TP_body.Save(Stream);
 			TP_CrossArm.Save(Stream);
 			//towerPartInsulator.Save(Stream);//绝缘子串
@@ -610,15 +612,17 @@ void InterFace::SaveFile()
 void InterFace::OpenFile()
 {
 	QString str = QFileDialog::getOpenFileName(this, "打开", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
-
+	QFile Qf1;
+	QDataStream Stream1;
 	if (str != nullptr)
 	{
 		qDebug() << str;
-		Qf.setFileName(str);
-		Qf.open(QIODevice::ReadWrite);
+		
+		Qf1.setFileName(str);
+		Qf1.open(QIODevice::ReadWrite);
 
-		Stream.setDevice(&Qf);
-		if (!Qf.isOpen())
+		Stream1.setDevice(&Qf1);
+		if (!Qf1.isOpen())
 		{
 			cout << "文件打开失败！\n";
 		}
@@ -629,12 +633,12 @@ void InterFace::OpenFile()
 			int crossArmSize = TP_CrossArm.size();
 			int towerSize = TP.size();
 			int twgsize = TWG.size();
-			TP_leg.Read(Stream, legSize);
-			TP_body.Read(Stream, bodysize);
-			TP_CrossArm.Read(Stream, crossArmSize);
-			//towerPartInsulator.Read(Stream);
-			TP.Read(Stream, towerSize);
-			//TWG.Read(Stream, twgsize);
+			TP_leg.Read(Stream1, legSize);
+			TP_body.Read(Stream1, bodysize);
+			TP_CrossArm.Read(Stream1, crossArmSize);
+			//towerPartInsulator.Read(Stream1);
+			TP.Read(Stream1, towerSize);
+			//TWG.Read(Stream1, twgsize);
 			for (int i = legSize; i < TP_leg.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
@@ -676,6 +680,7 @@ void InterFace::OpenFile()
 				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, QString("读输电塔" + str));
 				TP.Find_Entity(i + 1)->Item = item;
+				AddPartFunction(item);
 			}
 			//for (int i = twgsize; i < TWG.size(); i++)
 			//{
@@ -688,7 +693,7 @@ void InterFace::OpenFile()
 
 		}
 	}
-	Qf.close();
+	Qf1.close();
 	emit Msg_CreateModel();
 }
 
@@ -824,34 +829,23 @@ void InterFace::HiddeAllWire()
 	}
 }
 
-void InterFace::SubstaceActor(Part_Base* Part)
-{
+void InterFace::ShowSubstaceActor(Part_Base* Part)
+{//截面，生成一个截面就一个actor
 	for (auto& i : Part->Nactor)
 	{
 		m_Renderer->AddActor(i);
-		cout << "number of actor :" << i << "\n";
+		//cout << "number of actor :" << i << "\n";
 	}
-	for (auto& i : Part->m_Elements_beams)
-	{
-		cout << i.m_idElement << "  " << i.direction[0] << "  " << i.direction[1] << "  " << i.direction[2] << "\n";
-	}
-	cout << "Number of actor:" << Part->Nactor.size() << "\n";
+	//for (auto& i : Part->m_Elements_beams)
+	//{
+	//	//cout << i.m_idElement << "  " << i.direction[0] << "  " << i.direction[1] << "  " << i.direction[2] << "\n";
+	//}
+	//cout << "Number of actor:" << Part->Nactor.size() << "\n";
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
 
 }
 
-void InterFace::ShowLoadactor(Tower* tower)
-{
-	for (auto& i : tower->m_LoadActor)
-	{
-		m_Renderer_2->AddActor(i);
-		cout << "number of actor :" << i << "\n";
-	}
-	cout << "Number of actor:" << tower->m_LoadActor.size() << "\n";
-	m_renderWindow->Render();
-	m_Renderer->ResetCamera();
-}
 
 void InterFace::switchRenderWindow(int index)
 {
@@ -912,65 +906,90 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
 		AddLoadForce->setText(0, QString("施加荷载"));
 		OutPut->setText(0, QString("输出计算文件"));
 		Inp->setText(0, QString("输出ABAQUS计算文件"));
+		Constraint->setText(0, QString("添加约束"));
 	}
 
 
 }
 
-void InterFace::caculate()
+void InterFace::Caculate()
 {
-	QString str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
-
-	if (str != nullptr)
+	if (!towercaculate)
 	{
-		qDebug() << str;
-
-		if (s) delete s;//释放之前的对象
-		s = GetStructure();//生成structure类对象
-		s->Input(str);
+		towercaculate = new TowerCaculate(this);
 	}
-	else
+	int ret = towercaculate->exec();
+	if (ret == QDialog::Accepted)
 	{
-		return;
+		QString str = towercaculate->m_str;
+		if (str != nullptr)
+		{
+			qDebug() << str;
+			if (s) delete s;//释放之前的对象
+			s = GetStructure();//生成structure类对象
+			s->Input(str);
+		}
+		else
+		{
+			cout << "str = nullptr!" << "\n";
+			return;
+		}
+		QString FilePath("./");//计算结果文件路径
+		int idNode = towercaculate->IdNode;//要输出的点的编号
+		//s->set_outInfo(FilePath, idNode);//这一步需要，更新范理的第二个参数
+		//设置参数...
+		s->setDiffEqSolver(S_InterFace::STATICS);
+		s->setElementType(S_InterFace::Beam_CR);
+		s->set_Sparse(true);
+		if (s->getMethod() == S_InterFace::STATICS)
+		{
+			int Step = towercaculate->step;
+			s->setStep(Step);
+		}
+		else
+		{//动力分析
+			s->set_beta(0.25);
+			s->set_gama(0.5);
+			s->setTimeStep(0.05);
+			s->setStep(400);
+			s->set_Galloping(true);
+		}
+		s->set_stol(towercaculate->stol);
+		s->setMaxIterations(towercaculate->MaxIterations);
+		clock_t start, end;//计时
+		start = clock();
+		s->execute();//计算
+		end = clock();
+		int Totalit = s->getTotalIterations();
+		qDebug() << "总迭代次数： " << Totalit;
+		double rtime = (end - start);
+		qDebug() << "计算总耗时： " << rtime << " ms";
 	}
-	QString FilePath("./");//计算结果文件路径
-	vector<int> idNode;//要输出的点的编号
-	idNode.push_back(1);
-	s->set_outInfo(FilePath, idNode);
 
-	//设置参数...
-	s->setDiffEqSolver(S_InterFace::STATICS);
-	s->setElementType(S_InterFace::Beam_CR);
+}
 
-	if (s->getMethod() == S_InterFace::STATICS)
+void InterFace::Display()
+{
+	HiddeAllTower();
+	if (!display)
 	{
-		s->setStep(2);
+		display = new resultVisualize(this);
 	}
-	else
-	{//动力分析
-		s->set_beta(0.25);
-		s->set_gama(0.5);
-		s->setTimeStep(0.05);
-		s->setStep(400);
-		s->set_Galloping(true);
-	}
-	s->set_stol(1e-8);
-	s->setMaxIterations(50);
-
-	clock_t start, end;//计时
-	start = clock();
-	s->execute();//计算
-	end = clock();
-	int Totalit = s->getTotalIterations();
-	qDebug() << "总迭代次数： " << Totalit;
-	double rtime = (end - start);
-	qDebug() << "计算总耗时： " << rtime << " ms";
-
-	//
+	display->show();
 	vector<Node_Base*> ptr_nodes = s->GetNodes();
+	Tower* tower = nullptr;
+	for (auto& i : TP)
+	{
+		i.second->m_name != nullptr;
+		tower = i.second;
+	}
+
+	display->addData(ptr_nodes, tower);
+
 }
 
 //导线部分
@@ -1252,29 +1271,11 @@ void InterFace::Close_Point()
 	
 }
 
-void InterFace::GetData(QStringList& sInfo)
-{
-	QList<QString> list;
-	for (int i = 0; i < sInfo.size(); i++)
-	{
-		list.append(sInfo[i]);
-	}
-	Scetion_lists.push_back(list);
-}
-
-void InterFace::Test_mousePressEvent(QMouseEvent* event)
-{
-	if (event->button() == Qt::LeftButton)
-	{
-		QPoint pos = event->pos();
-		cout << "pos.x = " << pos.x()<<"pos.y = " << pos.y() << "\n";
-	}
-}
 
 void InterFace::ui_CreatLoads(QTreeWidgetItem* item)
 {
 	Tower* tower = OnFindTower(item->parent());
-	Show_Tower(tower);//!!
+	Show_Tower(tower);//显示父节点的实例
 	Creat_Loads* creat_load = new Creat_Loads(tower, this);
 	creat_load->show();
 	
@@ -1327,7 +1328,7 @@ void InterFace::Show_Part(Part_Base* part)
 	{
 		i->VisibilityOn();
 	}
-	SubstaceActor(part);
+	ShowSubstaceActor(part);
 	m_Renderer->ResetCamera();
 }
 
@@ -1355,6 +1356,11 @@ void InterFace::Show_Tower(Tower* tower)
 		m_Renderer_2->AddActor(i);
 		i->VisibilityOn();
 	}
+	for (auto& i : tower->m_ConstraintActor)
+	{//暂时切换后不显示约束
+		m_Renderer_2->AddActor(i);
+		i->VisibilityOn();
+	}
 	m_Renderer_2->ResetCamera();
 }
 
@@ -1368,58 +1374,15 @@ void InterFace::Show_Wire(CreatWire* wire)
 	m_Renderer_3->ResetCamera();
 }
 
-void InterFace::Constraint_Tips()
+void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
 {
-	
-	// 移除现有的布局管理器
-	QLayout* currentLayout = ui.widget_2->layout();
-	if (currentLayout)
-	{
-		QLayoutItem* item;
-		while ((item = currentLayout->takeAt(0)) != nullptr)
-		{
-			QWidget* widget = item->widget();
-			delete widget;
-			delete item;
-		}
-		delete currentLayout;
-	}
-	
-	// 创建新的布局管理器
-	layout_Tips = new QHBoxLayout(ui.widget_2);
+	Tower* tower = OnFindTower(item->parent());
+	Show_Tower(tower);//显示对应的实例杆塔
 
-	// 创建标签
-	label = new QLabel("选择要创建边界条件的节点", ui.widget_2);
-
-	// 创建行编辑
-	Node_Edit = new QLineEdit(ui.widget_2);
-
-	// 重新创建按钮
-	OK_Btn = new QPushButton("OK", ui.widget_2);
-	Ensure_Btn = new QPushButton("Ensure", ui.widget_2);
-	// 添加到布局管理器中
-	layout_Tips->addWidget(label);
-	layout_Tips->addWidget(Node_Edit);
-	layout_Tips->addWidget(OK_Btn);
-	layout_Tips->addWidget(Ensure_Btn);
-
-	// 设置布局管理器
-	ui.widget_2->setLayout(layout_Tips);
-	connect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
+	//显示选择的约束界面
+	Create_Constraint* con = new Create_Constraint(tower, this);
+	con->show();
 }
-
-void InterFace::Delete_Constraint()
-{
-	// 清空布局管理器中的控件
-	QLayoutItem* item;
-	while ((item = layout_Tips->takeAt(0)) != nullptr)
-	{
-		QWidget* widget = item->widget();
-		delete widget;
-		delete item;
-	}
-}
-
 void InterFace::ui_Wind()
 {
 	if (wd == nullptr)
@@ -1456,107 +1419,6 @@ void InterFace::ui_SingleWire()
 		m_Renderer_3->ResetCamera();
 		creatWire.Add_Entity(t);
 	}
-}
-
-void InterFace::ui_Calculate()
-{
-	Calculate* calculate = new Calculate(this);
-	calculate->show();
-}
-
-void InterFace::Insert_Data()
-{
-	set<Node*> Nodes;
-	Get_SelectedNode(Nodes);
-	//QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
-	//QMap<int, int> idMap; // 存储ID与索引的映射关系
-	QString existingText = Node_Edit->text();
-	QStringList existingIds = existingText.split(" ", Qt::SkipEmptyParts);
-	
-	for (auto pNode : Nodes)
-	{
-		int idNode = pNode->m_idNode;
-		QString idStr = QString("%1").arg(idNode);
-
-		if (!existingIds.contains(idStr))
-		{
-			QVector<double> coordinates = { pNode->x, pNode->y, pNode->z };
-			nodeCoordinates[index] = coordinates; // 存储坐标信息
-			idMap[idNode] = index; // 存储ID与索引的映射关系
-
-			if (!existingText.isEmpty())
-				existingText += " ";
-
-			existingText += idStr;
-			existingIds.append(idStr);
-
-			index++;
-		}
-	}
-
-	if (!existingText.isEmpty())
-	{
-		if (QApplication::keyboardModifiers() == Qt::ShiftModifier)
-		{
-			Node_Edit->setText(existingText.trimmed()); // 追加所有新的id到lineEdit
-		}
-		else
-		{
-			if (existingIds.size() > 1)
-			{
-				QString clickedId = existingIds.last(); // 获取最后一个点击的节点ID
-				existingText = clickedId; // 只保留最后一个点击的节点ID
-			}
-			Node_Edit->setText(existingText);
-		}
-	}
-
-	connect(OK_Btn, &QPushButton::clicked, this, [=]() {
-		handleOkButtonClicked();
-		disconnect(this, &InterFace::Msg_Select_Nodes, this, &InterFace::Insert_Data);
-		Close_Point(); });
-
-	connect(Ensure_Btn, &QPushButton::clicked, this, &InterFace::Delete_Constraint);
-
-}
-
-void InterFace::handleOkButtonClicked()
-{
-	QStringList allIds = Node_Edit->text().split(" ", Qt::SkipEmptyParts);
-	// 使用所有显示的ID，执行相应的操作
-	for (const QString& id : allIds)
-	{
-		int nodeId = id.toInt();
-		// 获取ID对应的坐标信息
-		if (idMap.contains(nodeId))
-		{
-			int index = idMap[nodeId];
-			const QVector<double>& coordinates = nodeCoordinates[index];
-			double x = coordinates[0];
-			double y = coordinates[1];
-			double z = coordinates[2];
-			Con_Nodes.push_back(Node(x, y, z));
-			// 输出坐标信息
-			qDebug() << "ID: " << id << " X: " << x << " Y: " << y << " Z: " << z;
-		}
-	}
-	Delete_Constraint();
-	ui_Constraint();
-	qDebug() << Con_Nodes.size() << endl;
-}
-
-Node* InterFace::Find_Node(int id, vector<Node>& node, vector<Node>& Con_node)
-{
-	for (auto& i : node)
-	{
-		if (i.m_idNode == id)
-		{
-			return &i;
-			Con_node.push_back(Node(i.x, i.y, i.z));
-		}
-	}
-	cout << "没找到！\n";
-	return nullptr;
 }
 
 InterFace::~InterFace()

@@ -21,8 +21,6 @@ public:
 	QVector<int> m_ArryLeg;//塔腿数组
 	QVector<int> m_ArryBody;//塔身段数组
 	QVector<int> m_ArryHead;//塔头数组
-
-	void Get_Movedata(double& x,double& y,double& z,double& angle);
 	
 private:
 	Ui::Tower_AssemblyClass ui;

@@ -82,11 +82,6 @@ void Manage_InsData::Modify_Data()
 			tw->Item = childItem;
 			tw->m_id = Index + 1;
 
-			double x = 0; double y = 0; double z = 0; double angle = 0;
-			T_As->Get_Movedata(x, y, z, angle);//得到平移旋转角度
-			tw->rotation(angle);//旋转
-			tw->move(x, y, z);//平移
-
 			tw->Show_VTKtruss(m_InterFace->m_Renderer_2);
 			tw->Show_VTKbeam(m_InterFace->m_Renderer_2);
 			tw->Show_VTKnode(m_InterFace->m_Renderer_2);
