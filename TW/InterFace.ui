@@ -33,12 +33,6 @@
       </column>
      </widget>
     </item>
-    <item row="1" column="3">
-     <widget class="QWidget" name="widget_2" native="true"/>
-    </item>
-    <item row="0" column="3">
-     <widget class="QWidget" name="widget" native="true"/>
-    </item>
     <item row="1" column="1">
      <widget class="QWidget" name="widget_3" native="true">
       <property name="maximumSize">
@@ -90,6 +84,9 @@
        </item>
       </layout>
      </widget>
+    </item>
+    <item row="0" column="3" rowspan="2">
+     <widget class="QWidget" name="widget" native="true"/>
     </item>
    </layout>
   </widget>

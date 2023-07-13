@@ -2,7 +2,7 @@
 
 #include <QDialog>
 #include "ui_TowerCaculate.h"
-
+#include<vector>
 class TowerCaculate : public QDialog
 {
 	Q_OBJECT
@@ -13,7 +13,7 @@ public:
 	void BtnOpen();
 	void BtnOK();
 	int step = 0;
-	int IdNode = 0;
+	std::vector<int> IdNode;
 	double stol = 0.0;
 	int MaxIterations = 0;
 	QString m_str;

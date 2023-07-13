@@ -68,8 +68,7 @@ public:
 
 	//ΩÁ√Ê
 	QTreeWidgetItem* Item = nullptr;
-	vtkSmartPointer<vtkCellArray> m_lines;
-	//InterFace* m_pInterFace = nullptr;
+	
 
 protected:
 	void addNodeToTower(Part_Base* part);
@@ -79,8 +78,8 @@ protected:
 	void addRestraintNode(Part_Base* part);
 	void addSuspensionNode(Part_Base* part);
 
-	QFile Qf;
-	QTextStream Stream;
+	//QFile Qf;
+	//QTextStream Stream;
 };
 //xxxxxxxxx
 

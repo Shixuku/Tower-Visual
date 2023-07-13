@@ -285,7 +285,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 	int Judg = 0;
 	for (int i = 0; i < SIZE; i++)
 	{
-		if (abs(m_Nodes[i].x - x) < 1e-1 && abs(m_Nodes[i].y - y) < 1e-1 && abs(m_Nodes[i].z - z) < 1e-1)
+		if (abs(m_Nodes[i].x - x) < 1 && abs(m_Nodes[i].y - y) < 1 && abs(m_Nodes[i].z - z) < 1)
 		{
 			return m_Nodes[i].m_idNode; //ÖØ½Úµã
 			i = SIZE;

@@ -939,8 +939,8 @@ void InterFace::Caculate()
 			return;
 		}
 		QString FilePath("./");//计算结果文件路径
-		int idNode = towercaculate->IdNode;//要输出的点的编号
-		//s->set_outInfo(FilePath, idNode);//这一步需要，更新范理的第二个参数
+		//int idNode = towercaculate->IdNode;//要输出的点的编号
+		s->set_outInfo(FilePath, towercaculate->IdNode);//这一步需要，更新范理的第二个参数
 		//设置参数...
 		s->setDiffEqSolver(S_InterFace::STATICS);
 		s->setElementType(S_InterFace::Beam_CR);
