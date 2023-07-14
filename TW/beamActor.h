@@ -2,6 +2,7 @@
 #include <vector>
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
+#include <vtkAppendPolyData.h>
 class beamActor
 {
 public:

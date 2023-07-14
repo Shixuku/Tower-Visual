@@ -604,6 +604,7 @@ void InterFace::SaveFile()
 			TP_CrossArm.Save(Stream);
 			//towerPartInsulator.Save(Stream);//绝缘子串
 			TP.Save(Stream);
+			Ms.Save(Stream);//保存截面数据
 			//TWG.Save(Stream);
 		}
 		Qf.close();
@@ -633,12 +634,15 @@ void InterFace::OpenFile()
 			int crossArmSize = TP_CrossArm.size();
 			int towerSize = TP.size();
 			int twgsize = TWG.size();
+			//int MsSize = Ms.size();
+
 			TP_leg.Read(Stream1, legSize);
 			TP_body.Read(Stream1, bodysize);
 			TP_CrossArm.Read(Stream1, crossArmSize);
 			//towerPartInsulator.Read(Stream1);
 			TP.Read(Stream1, towerSize);
 			//TWG.Read(Stream1, twgsize);
+			//Ms.Read(Stream1, MsSize);//打开截面数据
 			for (int i = legSize; i < TP_leg.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
@@ -691,6 +695,9 @@ void InterFace::OpenFile()
 			//	//TWG.Find_Entity(i + 1)->Item = item;
 			//}
 
+			//for (int i = MsSize; i < Ms.size(); i++)
+			//{//Ms.Find_Entity(i + 1)直接写是空指针
+			//}
 		}
 	}
 	Qf1.close();
@@ -830,17 +837,12 @@ void InterFace::HiddeAllWire()
 }
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
-{//截面，生成一个截面就一个actor
-	for (auto& i : Part->Nactor)
-	{
-		m_Renderer->AddActor(i);
-		//cout << "number of actor :" << i << "\n";
-	}
-	//for (auto& i : Part->m_Elements_beams)
+{//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
+	//for (auto& i : Part->PartNactor)
 	//{
-	//	//cout << i.m_idElement << "  " << i.direction[0] << "  " << i.direction[1] << "  " << i.direction[2] << "\n";
+	//	m_Renderer->AddActor(i);
 	//}
-	//cout << "Number of actor:" << Part->Nactor.size() << "\n";
+
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
 
@@ -1324,7 +1326,8 @@ void InterFace::Show_Part(Part_Base* part)
 	//	m_Renderer->AddActor(i);
 	//	//cout << "number of actor :" << i << "\n";
 	//}
-	for (auto& i : part->Nactor)
+	//以下暂时注释
+	for (auto& i : part->PartNactor)
 	{
 		i->VisibilityOn();
 	}

@@ -72,6 +72,9 @@ public:
 				Read_Stream<Tower>(s, size); break;
 			//case Part_Type::ET_TowerWireGroup:
 			//	Read_Stream<TowerWireGroup>(s, size); break;
+			//case Part_Type::ET_Section:
+			//	Read_Stream<Section>(s, size); break;
+
 			default:
 			{
 				QString cs("不支持的对象类型");
@@ -171,10 +174,12 @@ public:
 		auto i = this->find(idEntity);
 		if (i != this->end())
 		{//找到对象
+			//cout << "找到对象!" << "\n";
 			return i->second;
 		}
 		else
 		{//对象不存在
+			//cout << "没找到对象!" << "\n";
 			return nullptr;
 		}
 	}

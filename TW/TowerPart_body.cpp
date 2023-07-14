@@ -7,7 +7,7 @@ void TowerPart_body::Get_Node4(int iQuadrant, Node* n, int layer)//layer表示层数
 	double L0 = Get_LayerL(layer - 1);//每层下宽度
 	double Ln = Get_LayerL(layer);//每层上宽度
 
-	double x0 = L0 / 2; double Xn = Ln / 2;
+	double x0 = L0 / 2.0; double Xn = Ln / 2.0;
 	if (iQuadrant == 0)//正视这个面
 	{
 		n[0].x = x0; n[0].y = x0; n[0].z = z0;
@@ -277,8 +277,8 @@ void TowerPart_body::type10(int iQuadrant, int layer)
 
 void TowerPart_body::G_Get_Node4(int Tier, Node* n,int pos)
 {
-	double h = 0;
-	double l = 0;
+	double h = 0.0;
+	double l = 0.0;
 	if (pos == 0)//底面或者顶面
 	{
 		h = Get_LayerH(Tier);
@@ -295,7 +295,7 @@ void TowerPart_body::G_Get_Node4(int Tier, Node* n,int pos)
 		double L0 = Get_LayerL(Tier - 1);//每层下宽度
 		double Ln = Get_LayerL(Tier);//每层上宽度
 		//塔身一面四个点的坐标
-		double x0 = L0 / 2; double Xn = Ln / 2;
+		double x0 = L0 / 2.0; double Xn = Ln / 2.0;
 		Node1[0].x = x0; Node1[0].y = x0; Node1[0].z = z0;
 		Node1[1].x = Xn; Node1[1].y = Xn; Node1[1].z = zn;
 		Node1[2].x = -x0; Node1[2].y = x0; Node1[2].z = z0;
@@ -311,7 +311,7 @@ void TowerPart_body::G_Get_Node4(int Tier, Node* n,int pos)
 		h = Node1[4].z;
 		l = Node1[5].x - Node1[6].x;
 	}
-	double a = l / 2;
+	double a = l / 2.0;
 	n[0].x = a; n[0].y = a;
 	n[1].x = -a; n[1].y = a;
 	n[2].x = -a; n[2].y = -a;
@@ -330,7 +330,7 @@ void TowerPart_body::G_Type1(int tier, int pos)
 
 	double l = node1[0].x - node1[1].x;
 	double h = node1[0].z;
-	int a = l / 2;
+	double a = l / 2.0;
 	for (size_t i = 4; i < 16; i++)
 	{
 		if (i < 7)

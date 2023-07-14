@@ -19,6 +19,8 @@ Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 	img->load("./ab2.png");
 	ui.label_2->resize(img->width(), img->height());
 	ui.label_2->setPixmap(QPixmap::fromImage(*img));
+	ui.LEdit_a->setText("0.200");
+	ui.LEdit_b->setText("0.020");
 
 }
 

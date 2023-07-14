@@ -22,9 +22,10 @@ Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* pa
 
 	//点击组数，会显示高亮（在原来的基础上新建一个actor）
 	table_Group_Lists(Part);
-	connect(ui.Group_Lists, &QTableWidget::itemClicked, this, [=]()
-		{highlight_actor(Part);
-	m_pInterFace->m_renderWindow->Render(); });
+	connect(ui.Group_Lists, &QTableWidget::itemClicked, this, [=](){
+		highlight_actor(Part);
+		m_pInterFace->m_renderWindow->Render(); 
+		});
 
 	//指派截面
 	connect(ui.btn_assign, &QPushButton::clicked, this, [=]()

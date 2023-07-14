@@ -49,7 +49,7 @@ T_CrossArm::~T_CrossArm()
 void T_CrossArm::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "段号" << "段长(mm)" << "底面类型" << "顶面类型" << "侧面类型" << "右隔面类型";
+	headertext << "段号" << "段长(m)" << "底面类型" << "顶面类型" << "侧面类型" << "右隔面类型";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);
@@ -210,9 +210,9 @@ void T_CrossArm::Initialize()
 	//设置缺省值
 
 	//支架部分
-	ui.line_c1W0->setText("1.3");
+	ui.line_c1W0->setText("1.300");
 	//横担部分
-	ui.line_c2H->setText("0.5"); ui.line_c2W0->setText("1.292"); ui.line_c2Wn->setText("1.287");
+	ui.line_c2H->setText("0.500"); ui.line_c2W0->setText("1.292"); ui.line_c2Wn->setText("1.287");
 
 	ui.combo_bodypos->setCurrentIndex(2);//设置combobox初始index
 	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount() + 1;//塔身数量

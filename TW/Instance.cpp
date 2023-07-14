@@ -5,7 +5,7 @@
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
-	//vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
+
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	//µã
 	int nTruss = m_Elements_Trusses.size();
@@ -277,8 +277,8 @@ void Instance::NodeTxT()
 	Stream << NodeSize << " \n";
 	for (int i = 0; i < m_Nodes.size(); i++)
 	{
-		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x * 1e-3 << "      " << m_Nodes[i].y * 1e-3 <<
-			"     " << m_Nodes[i].z * 1e-3 << " " << "\n";
+		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x << "      " << m_Nodes[i].y <<
+			"     " << m_Nodes[i].z << " " << "\n";
 	}
 }
 

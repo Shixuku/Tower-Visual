@@ -28,7 +28,7 @@ void T_Foot::Set_tableWideget()
 	QStringList headertext, para, name;//表头、名称、初始值
 	headertext << "参数名称" << "值(m)";
 	name << "铁塔跟开 L1"  << "基面标高 H1" << "减腿A" << "减腿B" << "减腿C" << "减腿D";
-	para << "18.24" << "14" << "0" << "0" << "0" << "0";
+	para << "18.240" << "14.000" << "0" << "0" << "0" << "0";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setRowCount(name.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
