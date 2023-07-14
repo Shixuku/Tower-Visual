@@ -38,7 +38,7 @@ public:
 	void ShowElement()const;//显示所有单元
 	void ShowTrussElement()const;//显示所有杆单元
 	void ShowBeamElement()const;//显示所有梁单元
-	void Show_Beam(int BeamID, int SectionClass, double a, double b);
+	void Show_Beam(int BeamID, int SectionClass, double a, double b);//没有调用
 	void AddNewSection(int id);
 	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
 

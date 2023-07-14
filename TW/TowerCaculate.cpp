@@ -17,9 +17,9 @@ TowerCaculate::TowerCaculate(QWidget *parent)
 	QString gama = 0x03B3;
 	ui.label_beta->setText(beta);
 	ui.label_gama->setText(gama);
-	ui.line_static_step->setText("2");
-	ui.line_stol->setText("1e-8");
-	ui.line_MaxIterations->setText("50");
+	ui.line_static_step->setText("1");
+	ui.line_stol->setText("1e-5");
+	ui.line_MaxIterations->setText("10");
 }
 
 TowerCaculate::~TowerCaculate()

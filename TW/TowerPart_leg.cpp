@@ -2,10 +2,10 @@
 
 void TowerPart_leg::Get_Node4(int iQuadrant, Node* n)
 {
-	double a = m_L2 / 2;
+	double a = m_L2 / 2.0;
 	if (iQuadrant == 0)//第一象限
 	{
-		double x = Get_PracticlL(0) / 2; double z = Get_PracticlH(0);
+		double x = Get_PracticlL(0) / 2.0; double z = Get_PracticlH(0);
 		n[0].x = x;			n[0].y = x;			n[0].z = -z;   n[0].restraint = true;
 		n[1].x = a;			n[1].y = a;			n[1].z = 0;
 		n[2].x = a;			n[2].y = 0;			n[2].z = 0;
@@ -13,7 +13,7 @@ void TowerPart_leg::Get_Node4(int iQuadrant, Node* n)
 	}
 	else if (iQuadrant == 1)//第二象限
 	{
-		double x = Get_PracticlL(1) / 2; double z = Get_PracticlH(1);
+		double x = Get_PracticlL(1) / 2.0; double z = Get_PracticlH(1);
 		n[0].x = -x;		n[0].y = x;			n[0].z = -z;   n[0].restraint = true;
 		n[1].x = -a;		n[1].y = a;			n[1].z = 0;
 		n[2].x = 0;			n[2].y = a;			n[2].z = 0;
@@ -21,7 +21,7 @@ void TowerPart_leg::Get_Node4(int iQuadrant, Node* n)
 	}
 	else if (iQuadrant == 2)//第三象限
 	{
-		double x = Get_PracticlL(2) / 2; double z = Get_PracticlH(2);
+		double x = Get_PracticlL(2) / 2.0; double z = Get_PracticlH(2);
 		n[0].x = -x;		n[0].y = -x;		n[0].z = -z;   n[0].restraint = true;
 		n[1].x = -a;		n[1].y = -a;		n[1].z = 0;
 		n[2].x = -a;		n[2].y = 0;			n[2].z = 0;
@@ -29,7 +29,7 @@ void TowerPart_leg::Get_Node4(int iQuadrant, Node* n)
 	}
 	else//第四象限
 	{
-		double x = Get_PracticlL(3) / 2; double z = Get_PracticlH(3);
+		double x = Get_PracticlL(3) / 2.0; double z = Get_PracticlH(3);
 		n[0].x = x;			n[0].y = -x;		n[0].z = -z;   n[0].restraint = true;
 		n[1].x = a;			n[1].y = -a;		n[1].z = 0;
 		n[2].x = 0;			n[2].y = -a;		n[2].z = 0;
@@ -149,7 +149,7 @@ void TowerPart_leg::Type3(int iQuadrant)
 
 void TowerPart_leg::G_Get_Node4(Node* n)
 {
-	double a = m_L2 / 2;
+	double a = m_L2 / 2.0;
 	n[0].x = a; n[0].y = a;
 	n[1].x = -a; n[1].y = a;
 	n[2].x = -a; n[2].y = -a;
@@ -167,7 +167,7 @@ void TowerPart_leg::G_Type1()
 
 	double l = node1[0].x - node1[1].x;
 	double h = node1[0].z;
-	int a = l / 2;
+	double a = l / 2.0;
 	for (size_t i = 4; i < 16; i++)
 	{
 		if (i < 7)

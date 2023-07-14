@@ -25,7 +25,7 @@
 #include<vtkLineSource.h>
 #include <vtkPolyData.h>
 #include"InterFace.h"
-
+#include <vtkAssembly.h>
 
 int Tower::FindGroupIdNode(int idNode) const
 {
@@ -796,8 +796,9 @@ void Tower::Show_Beam(int BeamID, int SectionClass, double a, double b)
 				}
 			}
 			vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-			bA.Create_Actor(0, 1, 0, actor);
-			Nactor.push_back(actor);
+			//vtkSmartPointer<vtkAssembly>test_assemblyNactor = vtkSmartPointer<vtkAssembly>::New();
+			//bA.Create_Actor(0, 1, 0, actor/*, test_assemblyNactor*/);
+			//InstanceNactor.push_back(actor);
 		}
 	}
 

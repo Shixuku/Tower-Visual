@@ -26,9 +26,9 @@ public:
 	vtkSmartPointer<vtkPoints> m_pts;
 	vtkSmartPointer<vtkActor> m_BeamActor;
 	vtkSmartPointer<vtkActor> m_TrussActor;
-	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;
+	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;//集中力actor
 	std::vector<vtkSmartPointer<vtkActor>>m_ConstraintActor;//约束actor
-	std::vector<vtkSmartPointer<vtkActor>>Nactor;
+	std::vector<vtkSmartPointer<vtkActor>>InstanceNactor;//暂时没发现有什么用
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	map<int, Node>NodeData;
 	map<int, Element_Beam>BeamData;

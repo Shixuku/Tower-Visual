@@ -118,7 +118,7 @@
          <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>a(mm)</string>
+            <string>a(m)</string>
            </property>
           </widget>
          </item>
@@ -199,7 +199,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>b(mm)</string>
+            <string>b(m)</string>
            </property>
           </widget>
          </item>

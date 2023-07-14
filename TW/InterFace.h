@@ -133,18 +133,13 @@ public slots:
     void Show_Wire(CreatWire* wire);
     void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
-    //void CreateInp(QTreeWidgetItem* item);
+
     void Constraint_Tips1(QTreeWidgetItem* item);//点击创建边界条件弹出界面下放确认
     void CreateTowerInp(QTreeWidgetItem* item);
     void CreateGroupInp(QTreeWidgetItem* item);
-    //void Constraint_Tips();//点击创建边界条件弹出界面下放确认
-    //void Delete_Constraint();//点击约束删除Widget里面的控件]
+
     void ui_Wind();
     void ui_SingleWire();
-    //void ui_Calculate();
-  
-  
-    //void ui_ConcentratedForce(QTreeWidgetItem* item);
 
     void ui_ManageLoads();
     void ui_TowerWireGroup();

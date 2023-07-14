@@ -53,7 +53,7 @@ T_Body::~T_Body()
 void T_Body::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "层数" << "层高(mm)" << "正面类型" << "侧面类型" << "上部隔面"<<"中部隔面";
+	headertext << "层数" << "层高(m)" << "正面类型" << "侧面类型" << "上部隔面"<<"中部隔面";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);
@@ -77,12 +77,12 @@ void T_Body::Set_No1_picture()
 
 void T_Body::Set_body1()
 {
-	ui.line_L0->setText("15.16");
-	ui.line_Ln->setText("4.6");
+	ui.line_L0->setText("15.160");
+	ui.line_Ln->setText("4.600");
 	ui.line_z0->setText("0");
 	ui.tableWidget->setRowCount(7);//7层
 	QStringList H, TypeFront, TypeSide,U_septum, M_septum;
-	H << "6" << "11"<<"9.5" << "8" << "6.5" << "5" << "2";//层高
+	H << "6.000" << "11.000"<<"9.500" << "8.000" << "6.500" << "5.000" << "2.000";//层高
 	TypeFront << "1" << "9" << "9" << "6" << "9" << "9" << "10";//正面类型
 	TypeSide << "1" << "9" << "9" << "6" << "9" << "9" << "10";//侧面类型
 	U_septum << "0" << "0" << "0" << "0" << "0" << "0" << "5";//上部隔面
@@ -105,13 +105,13 @@ void T_Body::Set_body1()
 
 void T_Body::Set_body2()
 {
-	ui.line_L0->setText("4.6");
-	ui.line_Ln->setText("2.3");
-	ui.line_z0->setText("48");
+	ui.line_L0->setText("4.600");
+	ui.line_Ln->setText("2.300");
+	ui.line_z0->setText("48.000");
 	ui.tableWidget->setRowCount(12);//12层
 	QStringList H, TypeFront, TypeSide, U_septum, M_septum;
-	H << "4" << "2.5" << "3.5" << "3.5" << "3" << "2.5" << "2.5"
-		<< "2.5" << "2.5" << "2.5" << "2" << "2";//层高
+	H << "4.000" << "2.500" << "3.500" << "3.500" << "3.000" << "2.500" << "2.500"
+		<< "2.500" << "2.500" << "2.500" << "2.000" << "2.000";//层高
 	TypeFront << "6" << "7" << "6" << "6" << "6" << "7" << "6" << "6" << "6" << "6" << "7" << "6";//正面类型
 	TypeSide << "6" << "8" << "6" << "6" << "6" << "8" << "6" << "6" << "6" << "6" << "8" << "6";//侧面类型
 	U_septum << "5" << "0" << "0" << "0" << "5" << "5" << "0" << "0" << "0" << "5" << "3" << "2";//上部隔面

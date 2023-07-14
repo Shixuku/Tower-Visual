@@ -17,6 +17,7 @@
 #include"Base.h"
 #include"Section.h"
 #include <map>
+
 using namespace std;
 class InterFace;
 
@@ -44,7 +45,8 @@ public:
 	InterFace* m_pInterFace = nullptr;
 	vtkSmartPointer<vtkActor> m_BeamActor;//梁actor合集
 	vtkSmartPointer<vtkActor> m_TrussActor;
-	std::vector<vtkSmartPointer<vtkActor>>Nactor;
+	std::vector<vtkSmartPointer<vtkActor>>PartNactor;//截面actor合集
+
 	//std::vector<Section>pSection;
 	std::vector<int>pSection;
 	//map<int, Section>pSection;
@@ -64,8 +66,8 @@ public:
 	void AddNewSection(int id);
 	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
 
-	void SetL(Element_Beam& beam);
-	void SetCir(Element_Beam& beam);
+	void SetL(Element_Beam& beam);//画L型梁
+	void SetCir(Element_Beam& beam);//画圆形梁
 
 	virtual void Clear_Part(); //清除部件的节点和单元
 
@@ -91,7 +93,6 @@ public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;
 	vtkSmartPointer<vtkPoints> m_pts;
-
 };
 enum Section_Type :int
 {

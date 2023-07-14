@@ -5,26 +5,26 @@ void TowerPart_CrossArm::Get_SideNode3(int type, Node* n, int iQuadrant, int lay
 	double L0 = Get_layerLi(type, layer - 1);	double L1 = Get_layerLi(type, layer);	double L2 = Get_layerLi(type + 1, layer);
 	double W0 = Get_layerWi(type, layer - 1);	double W1 = Get_layerWi(type, layer);	double W2 = Get_layerWi(type + 1, layer);
 	double H0 = Get_layerHi(type, layer - 1);	double H1 = Get_layerHi(type, layer);	double H2 = Get_layerHi(type + 1, layer);
-	n[0].x = L0;	n[0].y = W0 / 2;	n[0].z = H0;
-	n[1].x = L1;	n[1].y = W1 / 2;	n[1].z = H1;
-	n[2].x = L2;	n[2].y = W2 / 2;	n[2].z = H2;
+	n[0].x = L0;	n[0].y = W0 / 2.0;	n[0].z = H0;
+	n[1].x = L1;	n[1].y = W1 / 2.0;	n[1].z = H1;
+	n[2].x = L2;	n[2].y = W2 / 2.0;	n[2].z = H2;
 	if (iQuadrant == 1)//右 后视图--改变y坐标的符号
 	{
-		 n[0].y *= -1;
-		 n[1].y *= -1;
-		 n[2].y *= -1;
+		 n[0].y *= -1.0;
+		 n[1].y *= -1.0;
+		 n[2].y *= -1.0;
 	}
 	else if (iQuadrant == 2)//左 正试图--改变x坐标的符号
 	{
-		 n[0].x *= -1;
-		 n[1].x *= -1;
-		 n[2].x *= -1;
+		 n[0].x *= -1.0;
+		 n[1].x *= -1.0;
+		 n[2].x *= -1.0;
 	}
 	else if (iQuadrant == 3)//左 后视图--改变xy坐标的符号
 	{
-		 n[0].x *= -1;	n[0].y *= -1;
-		 n[1].x *= -1;  n[1].y *= -1;
-		 n[2].x *= -1;	n[2].y *= -1;
+		 n[0].x *= -1.0;	n[0].y *= -1.0;
+		 n[1].x *= -1.0;  n[1].y *= -1.0;
+		 n[2].x *= -1.0;	n[2].y *= -1.0;
 	}
 }
 
@@ -33,13 +33,13 @@ void TowerPart_CrossArm::Get_BandUNode4(int type, Node* n, int iQuadrant, int la
 	double L0 = Get_layerLi(type, layer - 1); double L1 = Get_layerLi(type, layer);
 	double W0 = Get_layerWi(type, layer - 1); double W1 = Get_layerWi(type, layer);
 	double H0 = Get_layerHi(type, layer - 1); double H1 = Get_layerHi(type, layer);
-	n[0].x = L0; n[0].y = W0 / 2; n[0].z = H0;
-	n[1].x = L1; n[1].y = W1 / 2; n[1].z = H1;
-	n[2].x = L0; n[2].y = -W0 / 2; n[2].z = H0;
-	n[3].x = L1; n[3].y = -W1 / 2; n[3].z = H1;
+	n[0].x = L0; n[0].y = W0 / 2.0; n[0].z = H0;
+	n[1].x = L1; n[1].y = W1 / 2.0; n[1].z = H1;
+	n[2].x = L0; n[2].y = -W0 / 2.0; n[2].z = H0;
+	n[3].x = L1; n[3].y = -W1 / 2.0; n[3].z = H1;
 	if (iQuadrant == 1)//左
 	{
-		n[0].x *= -1;	 n[1].x *= -1;	 n[2].x *= -1;	n[3].x *= -1;
+		n[0].x *= -1.0;	 n[1].x *= -1.0;	 n[2].x *= -1.0;	n[3].x *= -1.0;
 	}
 }
 
@@ -146,7 +146,7 @@ void TowerPart_CrossArm::BandU_Type4(int type, int iQuadrant, int layer)
 
 void TowerPart_CrossArm::G_Get_Node4(int type, Node* n, int iQuadrant, int layer)
 {
-	double W1 = 0, W2 = 0, H1 = 0, H2 = 0;
+	double W1 = 0.0, W2 = 0.0, H1 = 0.0, H2 = 0.0;
 	if (type == 1)//支架
 	{
 		W1 = Get_layerWi(type + 1, layer);//支架下宽
@@ -163,7 +163,7 @@ void TowerPart_CrossArm::G_Get_Node4(int type, Node* n, int iQuadrant, int layer
 	}
 	double X = Get_layerLi(type, layer);//x坐标
 
-	double w1 = W1 / 2; double w2 = W2 / 2;
+	double w1 = W1 / 2.0; double w2 = W2 / 2.0;
 
 	//右边点的坐标
 	n[0].x = X; n[0].y = -w1; n[0].z = H1;
@@ -173,7 +173,7 @@ void TowerPart_CrossArm::G_Get_Node4(int type, Node* n, int iQuadrant, int layer
 	//左边点坐标-只有x值发生改变
 	if (iQuadrant == 1)//左
 	{
-		n[0].x *= -1;	 n[1].x *= -1;	 n[2].x *= -1;	n[3].x *= -1;
+		n[0].x *= -1.0;	 n[1].x *= -1.0;	 n[2].x *= -1.0;	n[3].x *= -1.0;
 	}
 }
 
