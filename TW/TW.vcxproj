@@ -148,6 +148,7 @@
     <ClCompile Include="T_Body.cpp" />
     <ClCompile Include="T_CrossArm.cpp" />
     <ClCompile Include="T_Foot.cpp" />
+    <ClCompile Include="UI_Calculate.cpp" />
     <ClCompile Include="Wind.cpp" />
     <ClCompile Include="WindList.cpp" />
     <ClCompile Include="WireData.cpp" />
@@ -186,6 +187,7 @@
     <QtUic Include="T_Body.ui" />
     <QtUic Include="T_CrossArm.ui" />
     <QtUic Include="T_Foot.ui" />
+    <QtUic Include="UI_Calculate.ui" />
     <QtUic Include="Wind.ui" />
     <QtUic Include="WindList.ui" />
     <QtUic Include="Wire_InterFace.ui" />
@@ -197,6 +199,7 @@
     <QtMoc Include="resultVisualize.h" />
     <QtMoc Include="TowerCaculate.h" />
     <ClInclude Include="ParameterConstraint.h" />
+    <QtMoc Include="UI_Calculate.h" />
     <ClInclude Include="WireData.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="WindList.h" />

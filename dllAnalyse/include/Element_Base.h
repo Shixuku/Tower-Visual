@@ -4,9 +4,12 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <vector>
+#include <Eigen/Dense>
+
+#include "dll_ansys_global.h"
 
 using namespace std;
-class Element_Base:public EntityBase
+class DLL_ANSYS_EXPORT Element_Base: public EntityBase
 {
 public:
 	vector<int> m_idNode;//½Úµã±àºÅ

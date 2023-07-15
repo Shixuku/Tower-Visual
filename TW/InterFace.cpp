@@ -26,6 +26,8 @@
 #include"CreatWire.h"
 #include "resultVisualize.h"
 #include"TowerCaculate.h"
+#include "UI_Calculate.h"
+
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -211,7 +213,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		{
 			QMessageBox::information(this, "Tips", "请先创建塔身！");
 		}
-		else { ui_CrossArm(); }	
+		else { ui_CrossArm(); }
 	}
 	//生成杆塔实例
 	else if (item == ui.treeWidget->topLevelItem(1))
@@ -242,7 +244,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (item == ui.treeWidget->topLevelItem(4)->child(3))
 	{//管理约束
-		
+
 	}
 	//绝缘子串
 	else if (isChildOfPartSetSpacer(item))
@@ -250,23 +252,23 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Interphase_spacer(item);
 	}
 	//导线建模
-	else if (isChildOfGroup(item,1))
+	else if (isChildOfGroup(item, 1))
 	{
 		ui_Wire_InterFace(item);
 	}
-	else if (isChildOfTower(item,0))
+	else if (isChildOfTower(1, item, 0))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
-	else if (isChildOfTower(item, 1))
+	else if (isChildOfTower(1, item, 1))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
-	else if (isChildOfTower(item, 2))
+	else if (isChildOfTower(1, item, 2))
 	{//输出inp文件
 		//CreateInp(item);
 	}
-	else if (isChildOfTower(item, 3))
+	else if (isChildOfTower(1, item, 3))
 	{//施加约束
 		Constraint_Tips1(item);
 	}
@@ -281,6 +283,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (item == ui.treeWidget->topLevelItem(8))
 	{
 		ui_SingleWire();
+	}
+	else if (isChildOfTower(8, item, 0))
+	{//施加约束
+		Constraint_Tips1(item);
 	}
 	else if (item == ui.treeWidget->topLevelItem(9))
 	{
@@ -302,12 +308,16 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 			Show_Part(part);
 	}
 
-	if (item->parent() == ui.treeWidget->topLevelItem(1))
+	if (item->parent() == ui.treeWidget->topLevelItem(1)|| item->parent() == ui.treeWidget->topLevelItem(8))
 	{
-		Tower* tower = OnFindTower(item);
-		Show_Tower(tower);
+		Instance* instance = OnFindInstance(item);
+		Show_Tower(instance);
 	}
-
+	else if (item->parent() == ui.treeWidget->topLevelItem(8))
+	{
+		Instance* instance = OnFindInstance(item);
+		Show_Wire(instance);
+	}
 }
 
 //生成塔腿
@@ -713,6 +723,33 @@ void InterFace::contextMenuEvent(QContextMenuEvent* event)
 	m_pMenu->exec(QCursor::pos());
 }
 
+Instance* InterFace::OnFindInstance(const QTreeWidgetItem* Item)
+{
+	QTreeWidgetItemIterator it(ui.treeWidget);
+	while (*it)
+	{
+		//QTreeWidgetItem是否满足条件---这里的条件可以自己修改
+		if ((*it) == Item)
+		{
+			for (auto& i : TP)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			for (auto& i : TWG)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			for (auto& i : creatWire)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			return nullptr;
+		}
+		++it;
+	}
+	return nullptr;
+}
+
 Part_Base* InterFace::OnFindPart(const QTreeWidgetItem* Item)
 {
 	QTreeWidgetItemIterator it(ui.treeWidget);
@@ -794,6 +831,25 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 		}
 		++it;
 	}
+	return nullptr;
+}
+
+CreatWire* InterFace::OnFindWire(const QTreeWidgetItem* Item)
+{
+	QTreeWidgetItemIterator it(ui.treeWidget);
+	while (*it)
+	{
+		if ((*it) == Item)
+		{
+			for (auto& i : creatWire)
+			{
+				if (i.second->Item == *it) return i.second;
+			}
+			return nullptr;
+		}
+		++it;
+	}
+
 	return nullptr;
 }
 
@@ -920,77 +976,35 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 void InterFace::Caculate()
 {
-	if (!towercaculate)
-	{
-		towercaculate = new TowerCaculate(this);
-	}
-	int ret = towercaculate->exec();
-	if (ret == QDialog::Accepted)
-	{
-		QString str = towercaculate->m_str;
-		if (str != nullptr)
-		{
-			qDebug() << str;
-			if (s) delete s;//释放之前的对象
-			s = GetStructure();//生成structure类对象
-			s->Input(str);
-		}
-		else
-		{
-			cout << "str = nullptr!" << "\n";
-			return;
-		}
-		QString FilePath("./");//计算结果文件路径
-		//int idNode = towercaculate->IdNode;//要输出的点的编号
-		s->set_outInfo(FilePath, towercaculate->IdNode);//这一步需要，更新范理的第二个参数
-		//设置参数...
-		s->setDiffEqSolver(S_InterFace::STATICS);
-		s->setElementType(S_InterFace::Beam_CR);
-		s->set_Sparse(true);
-		if (s->getMethod() == S_InterFace::STATICS)
-		{
-			int Step = towercaculate->step;
-			s->setStep(Step);
-		}
-		else
-		{//动力分析
-			s->set_beta(0.25);
-			s->set_gama(0.5);
-			s->setTimeStep(0.05);
-			s->setStep(400);
-			s->set_Galloping(true);
-		}
-		s->set_stol(towercaculate->stol);
-		s->setMaxIterations(towercaculate->MaxIterations);
-		clock_t start, end;//计时
-		start = clock();
-		s->execute();//计算
-		end = clock();
-		int Totalit = s->getTotalIterations();
-		qDebug() << "总迭代次数： " << Totalit;
-		double rtime = (end - start);
-		qDebug() << "计算总耗时： " << rtime << " ms";
-	}
+	Instance_Calculate* ui_c = new Instance_Calculate(this);
+	ui_c->show();
 
 }
 
 void InterFace::Display()
 {
-	HiddeAllTower();
+	/*HiddeAllTower();
 	if (!display)
 	{
 		display = new resultVisualize(this);
 	}
 	display->show();
 	vector<Node_Base*> ptr_nodes = s->GetNodes();
-	Tower* tower = nullptr;
+	Instance* ins = nullptr;
 	for (auto& i : TP)
 	{
 		i.second->m_name != nullptr;
-		tower = i.second;
+		ins = i.second;
+		break;
+	}
+	for (auto& i : creatWire)
+	{
+		i.second->m_name != nullptr;
+		ins = i.second;
+		break;
 	}
 
-	display->addData(ptr_nodes, tower);
+	display->addData(ptr_nodes, ins);*/
 
 }
 
@@ -1131,9 +1145,9 @@ void InterFace::Area_Inqure()
 	renderWindowInteractor->RemoveAllObservers();
 }
 
-bool InterFace::isChildOfTower(QTreeWidgetItem* item, int childNumber)
+bool InterFace::isChildOfTower(int idParent, QTreeWidgetItem* item, int childNumber)
 {
-	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(1);
+	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(idParent);
 	int childCount = topLevelItem3->childCount();
 
 	for (int i = 0; i < childCount; i++)
@@ -1335,31 +1349,31 @@ void InterFace::Show_Part(Part_Base* part)
 	m_Renderer->ResetCamera();
 }
 
-void InterFace::Show_Tower(Tower* tower)
+void InterFace::Show_Tower(Instance* instance)
 {
-	if (tower == nullptr) return;
+	if (instance == nullptr) return;
 	switchRenderWindow(1);
 	HiddeAllTower();
 
-	if (tower->m_BeamActor != nullptr)
+	if (instance->m_BeamActor != nullptr)
 	{
-		tower->Node_actor->VisibilityOn();
-		tower->m_BeamActor->VisibilityOn();
-		tower->m_TrussActor->VisibilityOn();
+		instance->Node_actor->VisibilityOn();
+		instance->m_BeamActor->VisibilityOn();
+		instance->m_TrussActor->VisibilityOn();
 	}
 	else
 	{
-		tower->Show_VTKnode(m_Renderer_2);
-		tower->Show_VTKtruss(m_Renderer_2);
-		tower->Show_VTKbeam(m_Renderer_2);
+		instance->Show_VTKnode(m_Renderer_2);
+		instance->Show_VTKtruss(m_Renderer_2);
+		instance->Show_VTKbeam(m_Renderer_2);
 	}
 
-	for (auto& i : tower->m_LoadActor)
+	for (auto& i : instance->m_LoadActor)
 	{
 		m_Renderer_2->AddActor(i);
 		i->VisibilityOn();
 	}
-	for (auto& i : tower->m_ConstraintActor)
+	for (auto& i : instance->m_ConstraintActor)
 	{//暂时切换后不显示约束
 		m_Renderer_2->AddActor(i);
 		i->VisibilityOn();
@@ -1367,23 +1381,24 @@ void InterFace::Show_Tower(Tower* tower)
 	m_Renderer_2->ResetCamera();
 }
 
-void InterFace::Show_Wire(CreatWire* wire)
+void InterFace::Show_Wire(Instance* instance)
 {
-	if (wire == nullptr) return;
+	if (instance == nullptr) return;
 	switchRenderWindow(2);
 	HiddeAllWire();
-	wire->m_TrussActor->VisibilityOn();
-	wire->Node_actor->VisibilityOn();
+	instance->Node_actor->VisibilityOn();
+	instance->m_TrussActor->VisibilityOn();
+	
 	m_Renderer_3->ResetCamera();
 }
 
 void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
 {
-	Tower* tower = OnFindTower(item->parent());
-	Show_Tower(tower);//显示对应的实例杆塔
+	Instance* instance = OnFindInstance(item->parent());
+	Show_Tower(instance);//显示对应的实例杆塔
 
 	//显示选择的约束界面
-	Create_Constraint* con = new Create_Constraint(tower, this);
+	Create_Constraint* con = new Create_Constraint(instance, this);
 	con->show();
 }
 void InterFace::ui_Wind()
@@ -1412,6 +1427,8 @@ void InterFace::ui_SingleWire()
 		CreatWire* t = new CreatWire;
 		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
 		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
+		Constraint->setText(0, QString("添加约束"));
 		item->setText(0, "导线");
 		w->Get_Data(*t);//取数据
 		t->m_id = creatWire.size() + 1;

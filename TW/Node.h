@@ -8,14 +8,15 @@ public:
 	double x = 0;
 	double y = 0;
 	double z = 0;
+	double F = 0;
 	bool restraint = 0;
 	int groupTowerId = 0;//部件和塔实例不用，主要放在塔线里区分属于哪座塔
 	Node() {};
-	Node(int id, double ix, double iy, double iz);
-	Node(double ix, double iy, double iz)
-	{
-		x = ix, y = iy, z = iz;
-	}
+	Node(int id, double ix, double iy, double iz, double iF);
+	//Node(double ix, double iy, double iz, double iF)
+	//{
+	//	x = ix, y = iy, z = iz, F = iF;
+	//}
 	void show()const;
 
 	void SaveTo(QDataStream& fin)const;

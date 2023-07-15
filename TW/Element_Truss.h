@@ -6,7 +6,7 @@ public:
 
 	~Element_Truss();
 	Element_Truss();
-	Element_Truss(int id, int idNode1, int idNode2, int idsection);
+	Element_Truss(int id, int idNode1, int idNode2, int idsection,double axialforce);
 	//txt
 
 };

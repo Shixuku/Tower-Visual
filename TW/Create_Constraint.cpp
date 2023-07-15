@@ -1,13 +1,13 @@
 #include "Create_Constraint.h"
 #include"InterFace.h"
 
-Create_Constraint::Create_Constraint(Tower* tower, QWidget *parent)
+Create_Constraint::Create_Constraint(Instance* instance, QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
 	Q_ASSERT(m_pInterFace != nullptr);
-	m_pTower = tower;
+	m_pInstance = instance;
 	//°´Å¥ÏìÓ¦ÊÂ¼þ
 	connect(ui.OK_Btn, &QPushButton::clicked, this, [=]()
 		{
@@ -36,17 +36,17 @@ void Create_Constraint::Draw_Con1()
 			double x = coordinates[0];
 			double y = coordinates[1];
 			double z = coordinates[2];
-			Con_Nodes.push_back(Node(x, y, z));
+			Con_Nodes.push_back(Node(1,x, y, z, 0));
 		}
 		if (ui.radioButton->isChecked())//½Â½Ó
 		{
 			for (int i = conSIze; i < Con_Nodes.size(); i++)
 			{
-				m_pTower->Draw_hinge_joint(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer_2);
+				m_pInstance->Draw_hinge_joint(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer_2);
 				for (int j = 0; j < 3; j++)
 				{
-					int id = m_pTower->m_Constraint.size() + 1;//Ô¼Êø±àºÅ
-					m_pTower->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
+					int id = m_pInstance->m_Constraint.size() + 1;//Ô¼Êø±àºÅ
+					m_pInstance->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
 				}
 				
 			}
@@ -57,11 +57,11 @@ void Create_Constraint::Draw_Con1()
 
 			for (int i = conSIze; i < Con_Nodes.size(); i++)
 			{
-				m_pTower->Draw_fixed_Constrained(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer_2);
+				m_pInstance->Draw_fixed_Constrained(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_CurrentRenderer);
 				for (int j = 0; j < 6; j++)
 				{
-					int id = m_pTower->m_Constraint.size() + 1;//Ô¼Êø±àºÅ
-					m_pTower->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
+					int id = m_pInstance->m_Constraint.size() + 1;//Ô¼Êø±àºÅ
+					m_pInstance->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
 				}
 			}
 

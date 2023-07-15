@@ -136,7 +136,7 @@ void Wire_InterFace::SaveSusPoint()
 		xi = ui.Section_Lists->item(i, 1)->text().toDouble();
 		yi = ui.Section_Lists->item(i, 2)->text().toDouble();
 		zi = ui.Section_Lists->item(i, 3)->text().toDouble();
-		WireSus.push_back(Node(xi, yi, zi));
+		WireSus.push_back(Node(1,xi, yi, zi, 0));
 	}
 }
 

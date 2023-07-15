@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>432</width>
-    <height>644</height>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,7 +63,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -87,13 +87,6 @@
      </widget>
      <widget class="QWidget" name="page_2">
       <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QCheckBox" name="checkBox">
-         <property name="text">
-          <string>计算舞动</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QWidget" name="widget_6" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -137,7 +130,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_7"/>
+           <widget class="QLineEdit" name="lineEdit_dynamic_step"/>
           </item>
          </layout>
         </widget>
@@ -153,7 +146,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="line_dynamic_step"/>
+           <widget class="QLineEdit" name="line_dynamic_stepnum"/>
           </item>
          </layout>
         </widget>
@@ -166,7 +159,21 @@
     <widget class="QWidget" name="widget_12" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_12">
       <item>
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QRadioButton" name="radioButton_windage">
+        <property name="text">
+         <string>风偏</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_galloping">
+        <property name="text">
+         <string>舞动</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBox_eq">
         <property name="text">
          <string>计算自平衡</string>
         </property>

@@ -30,7 +30,7 @@ Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
 	void (QComboBox:: * intChanged)(int) = &QComboBox::currentIndexChanged;
 	connect(ui.object_com, intChanged, this, &Wind::ShowObject);
 	connect(ui.sure_btn_2, &QPushButton::clicked, this, &Wind::ui_Speed);
-	connect(ui.count_btn, &QPushButton::clicked, this, &Wind::BtnOk);
+	connect(ui.count_btn, &QPushButton::clicked, this, [=]() {m_pcreatWire->CreateOutPut(); this->close(); });
 
 	
 }
@@ -288,6 +288,7 @@ void Wind::CountElePara()
 std::vector<double> Wind::CountWindForce()
 {
 	double v = ui.wind_edi->text().toDouble();
+	//m_pcreatWire->s
 	double W0 = v * v / 1600;
 	double aerfa = 1.00;
 	double beitaC = 1.0;
@@ -311,7 +312,7 @@ double Wind::WindSpeedInterpolation(int pointIndex, double time)
 	Eigen::VectorXd v;
 	if (ran->fw)
 	{
-		velocitiys = ran->fw->getMeanVelocityMat();
+		velocitiys = ran->fw->getVelocityMat();
 		v = velocitiys.col(pointIndex);//第i点的风速
 
 		Dt = 0.5;
