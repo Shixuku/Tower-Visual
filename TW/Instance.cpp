@@ -2,6 +2,9 @@
 #include <iostream>
 #include<fstream>
 #include"InterFace.h"
+#include <vtkConeSource.h>
+#include<vtkLineSource.h>
+#include <vtkPolyData.h>
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
@@ -121,7 +124,7 @@ int Instance::Creat_Node(double x, double y, double z)
 	if (judg == SIZE)
 	{
 		int id = m_Nodes.size() + 1;
-		m_Nodes.push_back(Node(id, x, y, z));
+		m_Nodes.push_back(Node(id, x, y, z, 0));
 		NodeData[id] = m_Nodes[id - 1];
 		return m_Nodes[id - 1].m_idNode;
 	}
@@ -140,9 +143,16 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids)
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, 0));
-		Truss_elementsID++;
-		node1 = node2;
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, 0, 0));
+			Truss_elementsID++;
+			node1 = node2;
+		}
 	}
 }
 
@@ -257,7 +267,8 @@ void Instance::CreateOutPut()
 		ConcentrationTxT();
 		//1（重力数量）
 		//1 0 - 9.8 0(编号 重力加速度Vector3d)
-		Stream << 0 << "\n";//重力暂时为空
+		Stream << 1 << "\n";//重力暂时为空
+		Stream << 1 << "  " << 0 << "  " << -9.8 << "  " <<0 << "\n";
 		//1（多项式函数数量）
 		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
 		Stream << 0 << "\n";//多项式函数暂时为空
@@ -277,8 +288,8 @@ void Instance::NodeTxT()
 	Stream << NodeSize << " \n";
 	for (int i = 0; i < m_Nodes.size(); i++)
 	{
-		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x << "      " << m_Nodes[i].y <<
-			"     " << m_Nodes[i].z << " " << "\n";
+		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].y  << "      " << m_Nodes[i].z  <<
+			"     " << m_Nodes[i].x  << " " << "\n";
 	}
 }
 
@@ -304,7 +315,7 @@ void Instance::TrussTxT()
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
 		Stream << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
-			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
+			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_Trusses[i].AxialForce << "\n";
 	}
 }
 
@@ -321,11 +332,12 @@ void Instance::ConcentrationTxT()
 
 void Instance::MaterialTxT()
 {
-	Stream << 3 << "\n";
+	Stream << 4 << "\n";
 	for (int i = 0; i < 3; i++)
 	{
 		Stream << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
 	}
+	Stream << 4 << "  " << 4.79e10 << "  " << 0.3 << "  " << 4e3 << "\n";
 }
 
 void Instance::BeamSectionTxT()
@@ -358,20 +370,116 @@ void Instance::TrussSectionTxT()
 
 void Instance::RestraintTxT()
 {
-	int a = 24;//只考虑塔脚的4个完全约束
-	Stream << a << "\n";
-	cout << "start RestraintNode" << "\n";
-	for (int i = 0; i < RestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-		}
-	}
-	//int m_ConstraintSize = m_Constraint.size();
-	//Stream << m_ConstraintSize << " \n";
-	//for (int i = 0; i < m_Constraint.size(); i++)
+	//int a = 24;//只考虑塔脚的4个完全约束
+	//Stream << a << "\n";
+	//cout << "start RestraintNode" << "\n";
+	//for (int i = 0; i < RestraintNode.size(); i++)
 	//{
-	//	Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "\n";
+	//	for (int j = 0; j < 6; j++)
+	//	{
+	//		Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+	//	}
 	//}
+	int m_ConstraintSize = m_Constraint.size();
+	Stream << m_ConstraintSize << " \n";
+	for (int i = 0; i < m_Constraint.size(); i++)
+	{
+		Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "  " << 0 << "\n";
+	}
+}
+
+//尝试 画约束
+void Instance::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)
+{
+	struct ConeInfo
+	{
+		double radius;
+		double height;
+		double direction[3];
+		double center[3];
+		double color[3];
+	};
+
+	ConeInfo cones[] = {
+		{ 0.2, 0.6, { 0, 1, 0 }, { x, y - 0.3, z }, { 0.0, 0.0, 1.0 } },  // y方向
+		{ 0.3, 0.12, { 0, 1, 0 }, { x, y - 0.6, z }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.2, 0.6, { 1, 0, 0 }, { x - 0.3, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
+		{ 0.3, 0.12, { 1, 0, 0 }, { x - 0.6, y, z }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.2, 0.6, { 0, 0, -1 }, { x, y, z + 0.3 }, { 0.0, 0.0, 1.0 } },  // z方向
+		{ 0.3, 0.12, { 0, 0, -1 }, { x, y, z + 0.6 }, { 0.0, 0.0, 1.0 } },
+		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
+	};
+
+	int numCones = sizeof(cones) / sizeof(cones[0]);
+	for (int i = 0; i < numCones; i++)
+	{
+		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
+		coneSource->SetRadius(cones[i].radius);
+		coneSource->SetHeight(cones[i].height);
+		coneSource->SetDirection(cones[i].direction);
+		coneSource->SetCenter(cones[i].center);
+		coneSource->Update();
+
+		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+		coneMapper->SetInputConnection(coneSource->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
+		coneActor->SetMapper(coneMapper);
+
+		coneActor->GetProperty()->SetColor(cones[i].color);
+		coneActor->GetProperty()->SetRepresentationToWireframe();
+
+		m_ConstraintActor.push_back(coneActor);
+		//std::cout << "m_ConstraintActor.size() = " << m_ConstraintActor.size() << "\n";
+		renderer->AddActor(coneActor);
+
+	}
+
+	//renderer->ResetCamera();
+}
+
+void Instance::Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer)
+{
+	struct ConeInfo
+	{
+		double radius;
+		double height;
+		double direction[3];
+		double center[3];
+		double color[3];
+	};
+
+	ConeInfo cones[] = {
+
+		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
+		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
+	};
+
+	int numCones = sizeof(cones) / sizeof(cones[0]);
+
+	for (int i = 0; i < numCones; i++)
+	{
+		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
+		coneSource->SetRadius(cones[i].radius);
+		coneSource->SetHeight(cones[i].height);
+		coneSource->SetDirection(cones[i].direction);
+		coneSource->SetCenter(cones[i].center);
+		coneSource->Update();
+
+		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+		coneMapper->SetInputConnection(coneSource->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
+		coneActor->SetMapper(coneMapper);
+		coneActor->GetProperty()->SetColor(cones[i].color);
+		coneActor->GetProperty()->SetRepresentationToWireframe();
+		m_ConstraintActor.push_back(coneActor);
+		renderer->AddActor(coneActor);
+
+	}
+
+	renderer->ResetCamera();
 }

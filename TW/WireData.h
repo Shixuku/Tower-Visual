@@ -15,5 +15,6 @@ public:
 	vector<Node>WireSus;
 	double WireSectionId = 0;
 	int wireQty = 0;
+	int Creat_Node(double x, double y, double z, double f);
 };
 

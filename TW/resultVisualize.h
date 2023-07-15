@@ -19,7 +19,7 @@
 #include"Node_Base.h"
 
 class InterFace;
-class Tower;
+class Instance;
 class resultVisualize : public QDialog
 {
 	Q_OBJECT
@@ -28,7 +28,7 @@ public:
 	resultVisualize(QWidget *parent = nullptr);
 	~resultVisualize();
 	InterFace* pCAE = nullptr;
-	Tower* m_tower = nullptr;
+	Instance* m_ins = nullptr;
 
 	std::vector<Node_Base*> p_nodes;//包含位移的点
 
@@ -52,7 +52,7 @@ public:
 	void quit();
 	void autoFactor(bool flag);
 
-	void addData(vector<Node_Base*>node, Tower* tower);//界面的数据
+	void addData(vector<Node_Base*>node, Instance* ins);//界面的数据
 	void addActorData();//添加界面的actor
 	void removeActor();
 

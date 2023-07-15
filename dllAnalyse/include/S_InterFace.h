@@ -30,6 +30,8 @@ public:
 
 	//读取inp文件
 	virtual void Input_inp(QString& filename) = 0;
+	//读取标准txt文件
+	virtual void Input_Standard(QString& filename) = 0;
 
 	//设置输出文件的路径和节点号
 	virtual void set_outInfo(QString filePath, std::vector<int> pid) = 0;
@@ -46,6 +48,8 @@ public:
 	virtual void set_Ice_shedding(bool flag) = 0;
 	//设置计算舞动
 	virtual void set_Galloping(bool flag) = 0;
+	//设置计算风偏
+	virtual void set_Windage(bool flag) = 0;
 
 	//设置newmark法的参数β
 	virtual void set_beta(double beta) = 0;

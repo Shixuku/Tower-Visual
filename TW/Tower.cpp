@@ -238,103 +238,103 @@ void Tower::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
 	renderer->AddActor(actor);
 
 }
-
-//尝试 画约束
-void Tower::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)
-{
-	struct ConeInfo
-	{
-		double radius;
-		double height;
-		double direction[3];
-		double center[3];
-		double color[3];
-	};
-
-	ConeInfo cones[] = {
-		{ 0.2, 0.6, { 0, 1, 0 }, { x, y - 0.3, z }, { 0.0, 0.0, 1.0 } },  // y方向
-		{ 0.3, 0.12, { 0, 1, 0 }, { x, y - 0.6, z }, { 0.0, 0.0, 1.0 } },
-		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
-		{ 0.2, 0.6, { 1, 0, 0 }, { x - 0.3, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
-		{ 0.3, 0.12, { 1, 0, 0 }, { x - 0.6, y, z }, { 0.0, 0.0, 1.0 } },
-		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
-		{ 0.2, 0.6, { 0, 0, -1 }, { x, y, z + 0.3 }, { 0.0, 0.0, 1.0 } },  // z方向
-		{ 0.3, 0.12, { 0, 0, -1 }, { x, y, z + 0.6 }, { 0.0, 0.0, 1.0 } },
-		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
-	};
-
-	int numCones = sizeof(cones) / sizeof(cones[0]);
-
-	for (int i = 0; i < numCones; i++)
-	{
-		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
-		coneSource->SetRadius(cones[i].radius);
-		coneSource->SetHeight(cones[i].height);
-		coneSource->SetDirection(cones[i].direction);
-		coneSource->SetCenter(cones[i].center);
-		coneSource->Update();
-
-		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-		coneMapper->SetInputConnection(coneSource->GetOutputPort());
-
-		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
-		coneActor->SetMapper(coneMapper);
-
-		coneActor->GetProperty()->SetColor(cones[i].color);
-		coneActor->GetProperty()->SetRepresentationToWireframe();
-
-		m_ConstraintActor.push_back(coneActor);
-		//std::cout << "m_ConstraintActor.size() = " << m_ConstraintActor.size() << "\n";
-		renderer->AddActor(coneActor);
-
-	}
-
-	//renderer->ResetCamera();
-}
-
-void Tower::Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer)
-{
-	struct ConeInfo
-	{
-		double radius;
-		double height;
-		double direction[3];
-		double center[3];
-		double color[3];
-	};
-
-	ConeInfo cones[] = {
-
-		{ 300, 500.0, { 0, 1, 0 }, { x, y - 250, z }, { 1.0, 0.5, 0.0 } },
-		{ 300, 500.0, { 1, 0, 0 }, { x - 250, y, z }, { 1.0, 0.5, 0.0 } },
-		{ 300, 500.0, { 0, 0, -1 }, { x, y, z + 250 }, { 1.0, 0.5, 0.0 } }
-	};
-
-	int numCones = sizeof(cones) / sizeof(cones[0]);
-
-	for (int i = 0; i < numCones; i++)
-	{
-		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
-		coneSource->SetRadius(cones[i].radius);
-		coneSource->SetHeight(cones[i].height);
-		coneSource->SetDirection(cones[i].direction);
-		coneSource->SetCenter(cones[i].center);
-		coneSource->Update();
-
-		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-		coneMapper->SetInputConnection(coneSource->GetOutputPort());
-
-		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
-		coneActor->SetMapper(coneMapper);
-		coneActor->GetProperty()->SetColor(cones[i].color);
-		coneActor->GetProperty()->SetRepresentationToWireframe();
-		m_ConstraintActor.push_back(coneActor);
-		renderer->AddActor(coneActor);
-
-	}
-
-	renderer->ResetCamera();
-}
+//
+////尝试 画约束
+//void Tower::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)
+//{
+//	struct ConeInfo
+//	{
+//		double radius;
+//		double height;
+//		double direction[3];
+//		double center[3];
+//		double color[3];
+//	};
+//
+//	ConeInfo cones[] = {
+//		{ 0.2, 0.6, { 0, 1, 0 }, { x, y - 0.3, z }, { 0.0, 0.0, 1.0 } },  // y方向
+//		{ 0.3, 0.12, { 0, 1, 0 }, { x, y - 0.6, z }, { 0.0, 0.0, 1.0 } },
+//		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
+//		{ 0.2, 0.6, { 1, 0, 0 }, { x - 0.3, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
+//		{ 0.3, 0.12, { 1, 0, 0 }, { x - 0.6, y, z }, { 0.0, 0.0, 1.0 } },
+//		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
+//		{ 0.2, 0.6, { 0, 0, -1 }, { x, y, z + 0.3 }, { 0.0, 0.0, 1.0 } },  // z方向
+//		{ 0.3, 0.12, { 0, 0, -1 }, { x, y, z + 0.6 }, { 0.0, 0.0, 1.0 } },
+//		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
+//	};
+//
+//	int numCones = sizeof(cones) / sizeof(cones[0]);
+//
+//	for (int i = 0; i < numCones; i++)
+//	{
+//		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
+//		coneSource->SetRadius(cones[i].radius);
+//		coneSource->SetHeight(cones[i].height);
+//		coneSource->SetDirection(cones[i].direction);
+//		coneSource->SetCenter(cones[i].center);
+//		coneSource->Update();
+//
+//		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+//		coneMapper->SetInputConnection(coneSource->GetOutputPort());
+//
+//		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
+//		coneActor->SetMapper(coneMapper);
+//
+//		coneActor->GetProperty()->SetColor(cones[i].color);
+//		coneActor->GetProperty()->SetRepresentationToWireframe();
+//
+//		m_ConstraintActor.push_back(coneActor);
+//		//std::cout << "m_ConstraintActor.size() = " << m_ConstraintActor.size() << "\n";
+//		renderer->AddActor(coneActor);
+//
+//	}
+//
+//	//renderer->ResetCamera();
+//}
+//
+//void Tower::Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer)
+//{
+//	struct ConeInfo
+//	{
+//		double radius;
+//		double height;
+//		double direction[3];
+//		double center[3];
+//		double color[3];
+//	};
+//
+//	ConeInfo cones[] = {
+//
+//		{ 300, 500.0, { 0, 1, 0 }, { x, y - 250, z }, { 1.0, 0.5, 0.0 } },
+//		{ 300, 500.0, { 1, 0, 0 }, { x - 250, y, z }, { 1.0, 0.5, 0.0 } },
+//		{ 300, 500.0, { 0, 0, -1 }, { x, y, z + 250 }, { 1.0, 0.5, 0.0 } }
+//	};
+//
+//	int numCones = sizeof(cones) / sizeof(cones[0]);
+//
+//	for (int i = 0; i < numCones; i++)
+//	{
+//		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
+//		coneSource->SetRadius(cones[i].radius);
+//		coneSource->SetHeight(cones[i].height);
+//		coneSource->SetDirection(cones[i].direction);
+//		coneSource->SetCenter(cones[i].center);
+//		coneSource->Update();
+//
+//		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+//		coneMapper->SetInputConnection(coneSource->GetOutputPort());
+//
+//		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
+//		coneActor->SetMapper(coneMapper);
+//		coneActor->GetProperty()->SetColor(cones[i].color);
+//		coneActor->GetProperty()->SetRepresentationToWireframe();
+//		m_ConstraintActor.push_back(coneActor);
+//		renderer->AddActor(coneActor);
+//
+//	}
+//
+//	renderer->ResetCamera();
+//}
 
 //void Tower::CreateOutPut()
 //{

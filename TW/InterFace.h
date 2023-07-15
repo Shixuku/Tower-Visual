@@ -93,7 +93,7 @@ public:
      void Get_SelectedNode(std::list<Node*>& Nodes); //node_list
      void Get_SelectedNode(std::set<Node*>& Nodes);
      void Point_Inqure();
-     bool isChildOfTower(QTreeWidgetItem* item, int childNumber);//取载荷
+     bool isChildOfTower(int idParent,QTreeWidgetItem* item, int childNumber);//取载荷
      bool isChildOfGroup(QTreeWidgetItem* item, int childNumber);//取载荷
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
@@ -105,8 +105,6 @@ public:
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
-     //计算
-     S_InterFace* s = nullptr;
   
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
@@ -129,8 +127,8 @@ public slots:
     void ui_SetSection(QTreeWidgetItem* item);
     void ui_SetAllSection(QTreeWidgetItem* item);
     void Show_Part(Part_Base* part);
-    void Show_Tower(Tower* tower);
-    void Show_Wire(CreatWire* wire);
+    void Show_Tower(Instance* instance);
+    void Show_Wire(Instance* instance);
     void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
 
@@ -153,11 +151,11 @@ private:
     vtkSmartPointer<vtkInteractorStyleTrackballCamera> m_MainStyle; // 保存主界面的交互器样式
     
     //treeWidget
+    Instance* OnFindInstance(const QTreeWidgetItem* Item);
     Part_Base* OnFindPart(const QTreeWidgetItem* Item);
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
+    CreatWire* OnFindWire(const QTreeWidgetItem* Item);
    
-    resultVisualize* display = nullptr;
-    TowerCaculate* towercaculate = nullptr;
 };

@@ -49,9 +49,9 @@ void resultVisualize::set_fps(int fps)
 
 void resultVisualize::showOriginalActor(bool flag)
 {
-	m_tower->Node_actor->SetVisibility(flag);
-	m_tower->m_BeamActor->SetVisibility(flag);
-	m_tower->m_TrussActor->SetVisibility(flag);
+	m_ins->Node_actor->SetVisibility(flag);
+	m_ins->m_BeamActor->SetVisibility(flag);
+	m_ins->m_TrussActor->SetVisibility(flag);
 	pCAE->m_renderWindow->Render();
 }
 
@@ -68,9 +68,9 @@ void resultVisualize::update()
 	//修改点数据中的坐标
 	for (vtkIdType i = 0; i < pointsNum; i++)
 	{
-		std::vector<double>xData = p_nodes[i]->Get_DisplaymentXData();
-		std::vector<double>yData = p_nodes[i]->Get_DisplaymentYData();
-		std::vector<double>zData = p_nodes[i]->Get_DisplaymentZData();
+		std::vector<double>yData = p_nodes[i]->Get_DisplaymentXData();
+		std::vector<double>zData = p_nodes[i]->Get_DisplaymentYData();
+		std::vector<double>xData = p_nodes[i]->Get_DisplaymentZData();
 		double* p = m_originalPoints->GetPoint(i);
 		m_points->SetPoint(i, p[0] + ampFactor * xData[m_frames], p[1] + ampFactor * yData[m_frames], p[2] + ampFactor * zData[m_frames]);
 	}
@@ -154,10 +154,10 @@ void resultVisualize::autoFactor(bool flag)
 	ui.lineEdit->setText(QString::number(ampFator));
 }
 
-void resultVisualize::addData(vector<Node_Base*>node, Tower* tower)
+void resultVisualize::addData(vector<Node_Base*>node, Instance* ins)
 {//刷新数据（主界面数据变化后）
-	m_tower = tower;
-	assert(m_tower);
+	m_ins = ins;
+	assert(m_ins);
 
 	for (auto& i : node)
 	{
@@ -177,8 +177,8 @@ void resultVisualize::addActorData()
 	m_originalPoints = vtkSmartPointer<vtkPoints>::New();//原始数据
 	m_points = vtkSmartPointer<vtkPoints>::New();//用于显示的数据
 
-	vtkSmartPointer<vtkPoints> points = m_tower->m_pts;//主界面中的数据
-	vtkSmartPointer<vtkCellArray> lines = m_tower->m_lines;//主界面中的数据
+	vtkSmartPointer<vtkPoints> points = m_ins->m_pts;//主界面中的数据
+	vtkSmartPointer<vtkCellArray> lines = m_ins->m_lines;//主界面中的数据
 
 	m_originalPoints->ShallowCopy(points);//共用同一份数据
 	m_points->DeepCopy(points);//复制一份新的数据

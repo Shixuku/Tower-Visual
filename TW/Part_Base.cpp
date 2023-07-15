@@ -244,7 +244,7 @@ void Part_Base::Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
 		Truss_elementsID++;
 		node1 = node2;
 	}
@@ -258,7 +258,7 @@ void Part_Base::Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection));
+		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
 		Truss_elementsID++;
 	}
 }
@@ -280,7 +280,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 	int SIZE = m_Nodes.size();
 	if (SIZE == 0)
 	{
-		m_Nodes.push_back(Node(1, x, y, z));
+		m_Nodes.push_back(Node(1, x, y, z,0));
 		return m_Nodes[0].m_idNode;
 	}
 	int Judg = 0;
@@ -304,7 +304,7 @@ int Part_Base::Creat_Node(double x, double y, double z)
 		//m_Nodes[Judg - 1].x = x;
 		//m_Nodes[Judg - 1].y = y;
 		//m_Nodes[Judg - 1].z = z;
-		m_Nodes.push_back(Node(Judg + 1, x, y, z));
+		m_Nodes.push_back(Node(Judg + 1, x, y, z,0));
 
 		return m_Nodes[Judg].m_idNode;
 	}

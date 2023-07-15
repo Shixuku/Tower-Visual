@@ -1,13 +1,13 @@
 #include "Node.h"
 
-Node::Node(int id, double ix, double iy, double iz)
+Node::Node(int id, double ix, double iy, double iz, double iF)
 {
-	m_idNode = id, x = ix, y = iy, z = iz;
+	m_idNode = id, x = ix, y = iy, z = iz, F = iF;
 }
 
 void Node::show() const
 {
-	std::cout << m_idNode << ", " << x << " ," << y << " ," << z << "\n";
+	std::cout << m_idNode << ", " << x << " ," << y << " ," << z << "  " << F << "\n";
 }
 
 void Node::SaveTo(QDataStream& fin) const

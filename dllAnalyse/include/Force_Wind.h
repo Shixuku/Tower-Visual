@@ -1,18 +1,22 @@
 #pragma once
 #include "Node_Base.h"
-#include <Eigen/Dense>
 #include <QtCharts/QLineSeries>
+#include <Eigen/Dense>
 #include <QDebug>
 
 QT_CHARTS_USE_NAMESPACE
 
 using namespace Eigen;
 
+class Fem_Element_Base;
+
 #define pi std::acos(-1)
 class DLL_ANSYS_EXPORT Force_Wind : public EntityBase
 {//风荷载
+
+	friend class Structure;
 public:
-	Force_Wind() :m_pair(1.29), alf(0.16), z0(0.03), v10(30){}
+	Force_Wind() :m_pair(1.29), alf(0.16), z0(0.03), v10(10){}
 
 	Force_Wind(double p_air, double alf, double z0, double v10, int N, int M, double w_up, double T)
 	{//空气密度，地面粗糙度，地表粗糙长度，10m高10分钟平均风速(m/s)，频率等分数， M >= 2 * N，高频截止点，模拟总时
@@ -62,13 +66,21 @@ public:
 	MatrixXcd Bjm(const vector<double>& Uz, const vector<double>& y, const vector<double>& z, const double dw);
 
 	QLineSeries* getQLineSeries(int idNode)const;
-	MatrixXd getVelocityMat()const { return f; }
-	MatrixXd getMeanVelocityMat()const { return v; }//瞬时风速
+	MatrixXd getVelocityMat()const { return v; }//瞬时风速
 
+	void SelectAlf(int iSelect) { select = iSelect; }//选择地貌
+
+	void Get_Cyzm(const double attack_Angle, double& Cy, double& Cz, double& Cm);//计算气动参数
+	double CountMiu_h(const double h);//计算风压系数
+	double wind_coeff = 0;//风荷载系数
 private:
 	MatrixXd f;//脉动风速时程
 	MatrixXd v;//瞬时风速时程v = 平均风速 + f
 	MatrixXd v_2;//瞬时风速的平方
+
+	void Get_WindCoeff(double W0, double afa, double beta_c, double miu_sc, double B, double theta);//计算风荷载系数(风偏计算)
+	void Get_WindCoeff();
+	int select = 1;//选择地貌
 
 	virtual enum Entity_Type My_EntityType() const
 	{

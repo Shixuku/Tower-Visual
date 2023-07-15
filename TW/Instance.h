@@ -9,9 +9,21 @@
 #include<qtextstream.h>
 #include<qfile.h>
 #include"ParameterConstraint.h"
+#include<vtkSmartPointer.h>
+#include<qdebug.h>
+#include"S_InterFace.h"
 class Instance :public Base
 {
 public:
+	Instance(){}
+	virtual ~Instance() { 
+		if (s)
+		{
+			delete s;
+			qDebug() << "删除计算实例！";
+		}
+
+	}
 	QString m_name = nullptr;
 	vector<Node> m_Nodes;//节点合集
 	vector<Element> m_Elements;//单元合集
@@ -61,5 +73,12 @@ public:
 	void MaterialTxT();//材料
 	void BeamSectionTxT();//梁截面信息
 	void TrussSectionTxT();//杆截面信息
+
+	//画约束
+	void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
+	void Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer);
+
+	//计算
+	S_InterFace* s = nullptr;
 };
 

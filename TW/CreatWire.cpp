@@ -34,7 +34,7 @@ void CreatWire::CreatWireSus()
 				offsetZ = offsets[j][1];
 			}
 			// 创建节点
-			node[index] = Creat_Node(WireSus[i].x + offsetX, WireSus[i].y, WireSus[i].z + offsetZ);
+			node[index] = Creat_Node(WireSus[i].x + offsetX, WireSus[i].y, WireSus[i].z + offsetZ, 0);
 			SaveSus({ node[index] }); // 放入悬挂点
 			index++;
 		}
@@ -48,7 +48,7 @@ void CreatWire::CreatWireSus()
 
 void CreatWire::CreatWirePoint()
 {
-	rou = unitMass * 10 / area;
+	rou = unitMass * 9.8 / area;//比载 N/mm^2*m
 	int n = N;
 	int num = WireSus.size() / wireQty - 1;
 	
@@ -69,8 +69,8 @@ void CreatWire::CreatWirePoint()
 			double dxi = li / N;
 			double dyi = mi / N;
 			double dzi = nni / N;
-
-
+			double y0i = WireSus[i].z + 1 / k * ((1 - cosh((k) * (nni / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
+			double force = 0;//每个点对应的轴力
 			if (fenlie == 1)
 			{
 				for (int m = 0; m < N + 1; m++)
@@ -80,7 +80,8 @@ void CreatWire::CreatWirePoint()
 					double y = m * dyi + WireSus[i].y;
 					double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireSus[i].z;
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z);
+					force = area * (stress + rou * (z - y0i)) ;
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force);
 				}
 			}
 			else if (fenlie == 2)
@@ -93,8 +94,9 @@ void CreatWire::CreatWirePoint()
 					double y = m * dyi + WireSus[i].y;
 					double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireSus[i].z;
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z);
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z);
+					force = area * (stress + rou * (z - y0i)) / 1000;
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force);
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force);
 				}
 			}
 			else if (fenlie == 4)
@@ -109,10 +111,11 @@ void CreatWire::CreatWirePoint()
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireSus[i].z + 0.225;
 					double z2 = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireSus[i].z - 0.225;
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z1);
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z1);
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y, z2);
-					node[(i - WireSus.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x1, y, z2);
+				//	segamai = area * (stress + rou * (z - y0i)) / 1000;
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z1, force);
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z1, 0);
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y, z2,0);
+					node[(i - WireSus.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x1, y, z2,0);
 				}
 			}
 		}
@@ -157,14 +160,11 @@ void CreatWire::CreatWirePoint()
 		}
 		delete[]node;
 	}
-	
-	
-	
-
-
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
 		m_Elements_Trusses[i].ClassSectionID = WireSectionId;
+		m_Elements_Trusses[i].MaterialID = 4;
+		m_Elements_Trusses[i].AxialForce = (m_Nodes[m_Elements_Trusses[i].m_idNode[0] - 1].F + m_Nodes[m_Elements_Trusses[i].m_idNode[1] - 1].F) / 2;
 	}
 }
 
