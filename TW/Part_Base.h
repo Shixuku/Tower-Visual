@@ -9,6 +9,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkPoints.h>
 #include <vtkLine.h>
+#include <vtkAppendPolyData.h>
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
 #include <vtkProperty.h>
@@ -68,7 +69,8 @@ public:
 
 	void SetL(Element_Beam& beam);//画L型梁
 	void SetCir(Element_Beam& beam);//画圆形梁
-
+	vtkSmartPointer<vtkAppendPolyData> appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+	
 	virtual void Clear_Part(); //清除部件的节点和单元
 
 public:

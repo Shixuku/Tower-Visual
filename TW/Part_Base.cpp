@@ -720,7 +720,12 @@ void Part_Base::SetL(Element_Beam& EB)
 
 	
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-	bA.Create_Actor(0, 1, 0, actor);
+	bA.Create_Actor(0, 1, 0, appendFilter);
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(appendFilter->GetOutput());
+
+	actor->SetMapper(mapper);
 	PartNactor.push_back(actor);
 }
 
@@ -748,7 +753,12 @@ void Part_Base::SetCir(Element_Beam& beam)
 	}
 	C.SetSection(x, y);//…Ë÷√ƒ⁄‘≤Õ‚‘≤∞Îæ∂
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-	C.CreateCircularSection(actor);
+	C.CreateCircularSection(appendFilter);
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(appendFilter->GetOutput());
+
+	actor->SetMapper(mapper);
 	PartNactor.push_back(actor);
 
 }
