@@ -4,7 +4,8 @@ void CreatWire::CreatWireSus()
 {
 	//生成节点
 	int num = WireSus.size();
-	int* node = new int[num * fenlie];
+	int susnum = num * fenlie;//总点数=所有悬挂点*分裂数-线路数*2*（分裂数-1）因为每一条线路的第一个和最后一个不分列
+	int* node = new int[susnum];
 	int index = 0; // 节点索引
 	for (int i = 0; i < num; i++)//
 	{

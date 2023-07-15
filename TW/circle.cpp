@@ -47,7 +47,7 @@ void circle::ConstuctRotationMatrix(vtkMatrix4x4* transformMatrix)
 }
 
 /* 创建环形截面，三角区域 */
-void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
+void circle::CreateCircularSection(vtkSmartPointer<vtkAppendPolyData> appendFilter)
 {
 	vtkSmartPointer<vtkLinearExtrusionFilter> extrusionFilter = vtkSmartPointer<vtkLinearExtrusionFilter>::New();
 	vtkSmartPointer<vtkAppendPolyData> appendPolyData = vtkSmartPointer<vtkAppendPolyData>::New();
@@ -130,11 +130,14 @@ void circle::CreateCircularSection(vtkSmartPointer<vtkActor> actor)
 	triangleFilter->SetInputConnection(extrusionFilter->GetOutputPort());
 	triangleFilter->Update();
 
-	// Create mapper and actor
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(triangleFilter->GetOutputPort());
 
-	actor->SetMapper(mapper);
+	appendFilter->AddInputConnection(triangleFilter->GetOutputPort());
+	appendFilter->Update();
+	//// Create mapper and actor
+	//vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	//mapper->SetInputConnection(triangleFilter->GetOutputPort());
+
+	//actor->SetMapper(mapper);
 
 }
 

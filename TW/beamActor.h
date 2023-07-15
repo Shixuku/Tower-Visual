@@ -19,5 +19,5 @@ public:
 	void SetSection(const double* xi, const double* yi);//设置截面环线上的各点
 	void Set_zAxis(double dx, double dy, double dz);//设置近似的z轴方向
 
-	void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkActor> actor) const;
+	void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkAppendPolyData> appendFilter) const;
 };

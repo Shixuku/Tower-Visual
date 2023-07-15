@@ -35,7 +35,7 @@ public:
 	int step = 10;//圆上点的个数
 
 	void ConstuctRotationMatrix(vtkMatrix4x4* transformMatrix);//转化矩阵
-	void CreateCircularSection(vtkSmartPointer<vtkActor> actor);//生成Actor
+	void CreateCircularSection(vtkSmartPointer<vtkAppendPolyData> appendFilter);//生成Actor
 	void SetNode(double x1, double y1, double z1, double x2, double y2, double z2);//设置节点
 	void SetSection(const double xi, const double yi);//设置截面环线上的各点
 	

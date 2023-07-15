@@ -108,7 +108,7 @@ void beamActor::Set_zAxis(double dx, double dy, double dz)
 	//cout << "z_axis" << m_zAxis[0] << "  " << m_zAxis[1] << "  " << m_zAxis[2] << "  " << "\n\n";
 }
 
-void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkActor> actor) const
+void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkAppendPolyData> appendFilter) const
 {
 	auto np = m_xi.size();
 	vtkNew<vtkPoints> points;
@@ -148,10 +148,12 @@ void beamActor::Create_Actor(double r, double g, double b, vtkSmartPointer<vtkAc
 	extrude->SetVector(m_xAxis[0], m_xAxis[1], m_xAxis[2]);//拉伸方向
 	extrude->SetScaleFactor(m_L);//拉伸长度
 
-	vtkNew<vtkPolyDataMapper> mapper;
+	appendFilter->AddInputConnection(extrude->GetOutputPort());
+	appendFilter->Update();
+	/*vtkNew<vtkPolyDataMapper> mapper;
 	mapper->ScalarVisibilityOff();
 	mapper->SetInputConnection(extrude->GetOutputPort());
 
 	actor->SetMapper(mapper);
-	actor->GetProperty()->SetColor(r, g, b);
+	actor->GetProperty()->SetColor(r, g, b);*/
 }
