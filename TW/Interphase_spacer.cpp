@@ -2,36 +2,58 @@
 #include"InterFace.h"
 #include"TowerPart_Insulator.h"
 #include<QMessageBox.h>
-Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm,QWidget* parent): QDialog(parent)
+Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGroup* TowerWireGroup,QWidget* parent): QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
 	Arm = CrossArm;
+	towerWireGroup = TowerWireGroup;
 	Q_ASSERT(m_pInterFace != nullptr);
 	TP_insulator = new TowerPart_Insulator;
 	
 	connect(ui.btn_cancle, &QPushButton::clicked, this, [=]()
 		{
-			Arm->addInsulator(TP_insulator);
+			delete(TP_insulator);
 			this->reject();
 		});
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Interphase_spacer::Get_Nodes);
 
 	connect(ui.btn_ok, &QPushButton::clicked, this, [=]()
 		{
-			
-			Get_Data();
-			
-			ui.lineEdit->clear();
-			ui.line_p1->clear();
-			ui.line_p2->clear();
-			
+			if (Arm != nullptr)
+			{
+				Get_Data();
+
+				ui.lineEdit->clear();
+				ui.line_p1->clear();
+				ui.line_p2->clear();
+				Arm->addInsulator(TP_insulator);
+				this->accept();
+			}
+			else if (Arm == nullptr)
+			{
+				Create_Nodes();
+				Get_Data();
+				ui.lineEdit->clear();
+				ui.line_p1->clear();
+				ui.line_p2->clear();
+				this->accept();
+			}
 			
 		});
-	ui.stackedWidget->setCurrentIndex(0);//设置默认page
-	connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
-	connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
-	connect(ui.radioButton, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(2); });
+	if (Arm != nullptr)
+	{
+	    ui.stackedWidget->setCurrentIndex(0);//设置默认page
+	    connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
+	    connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
+	    connect(ui.radioButton, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(2); });
+	}
+	else if (Arm == nullptr)
+	{
+		ui.stackedWidget->setCurrentIndex(3);//设置默认page
+		connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(3); });
+		connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(4); });
+	}
 
 }
 
@@ -82,7 +104,32 @@ void Interphase_spacer::Get_Nodes()
 			Arm->WireLoge.push_back(logo);
 		}
 	}
+}
 
+void Interphase_spacer::Create_Nodes()
+{
+	int ret = ui.stackedWidget->currentIndex();
+	if (ret == 3)
+	{
+		double x = ui.lineEditSusNodeX->text().toDouble();
+		double y = ui.lineEditSusNodeY->text().toDouble();
+		double z = ui.lineEditSusNodeZ->text().toDouble();
+		m_Nodes.push_back(new Node(0,x, y, z,0));
+		TP_insulator->m_node = m_Nodes[0];
+	}
+	else if (ret == 4)
+	{
+		double x1 = ui.lineEditSusNodeX1->text().toDouble();
+		double y1 = ui.lineEditSusNodeY1->text().toDouble();
+		double z1 = ui.lineEditSusNodeZ1->text().toDouble();
+		m_Nodes.push_back(new Node(0, x1, y1, z1, 0));
+		TP_insulator->m_node1 = m_Nodes[0];
+		double x2 = ui.lineEditSusNodeX1->text().toDouble();
+		double y2 = ui.lineEditSusNodeY1->text().toDouble();
+		double z2 = ui.lineEditSusNodeZ1->text().toDouble();
+		m_Nodes.push_back(new Node(0, x2, y2, z2, 0));
+		TP_insulator->m_node2 = m_Nodes[1];
+	}
 }
 
 void Interphase_spacer::Get_Data()
@@ -98,29 +145,31 @@ void Interphase_spacer::Get_Data()
 	{
 		QMessageBox::information(this, "Tips", "请选择V型绝缘子挂点！");
 	}
-	else if(TP_insulator!=nullptr)
+	else if (towerWireGroup == nullptr) 
 	{
 		TP_insulator->m_H = ui.line_H->text().toDouble();
 		TP_insulator->m_splits = ui.combo_count->currentText().toInt();
 		TP_insulator->m_type = index + 1;
 		if (TP_insulator->m_type == 1)
 		{
-
-			//对塔头的点进行循环
-			for (auto& i : Arm->m_Nodes)
+			if (Arm != nullptr)
 			{
-				if (abs(TP_insulator->m_node->x - i.x) < 1e-1 && abs(TP_insulator->m_node->y - i.y) < 1e-1 &&
-					abs(TP_insulator->m_node->z - i.z) < 1e-1)
+				//对塔头的点进行循环
+				for (auto& i : Arm->m_Nodes)
 				{
-					//取数据
-					TP_insulator->m_W1 = Arm->m_bodyButtomL;//取塔身宽
-					TP_insulator->m_W2 = Arm->m_c2Wb;//取横担宽
-					TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + Arm->Get_SumL();//取横担长
-				}
+					if (abs(TP_insulator->m_node->x - i.x) < 1e-1 && abs(TP_insulator->m_node->y - i.y) < 1e-1 &&
+						abs(TP_insulator->m_node->z - i.z) < 1e-1)
+					{
+						//取数据
+						TP_insulator->m_W1 = Arm->m_bodyButtomL;//取塔身宽
+						TP_insulator->m_W2 = Arm->m_c2Wb;//取横担宽
+						TP_insulator->m_L2 = TP_insulator->m_W1 / 2 + Arm->Get_SumL();//取横担长
+					}
 
+				}
 			}
+
 		}
-		TP_insulator->ArmId = Arm->m_id;
 		TP_insulator->wireLogo = ui.lineEdit_WireLogo->text().toInt();
 		TP_insulator->Create_Mesh();
 		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer);
@@ -128,6 +177,33 @@ void Interphase_spacer::Get_Data()
 		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
 		m_pInterFace->towerPartInsulator.Add_Entity(TP_insulator);
 	}
+	else if (towerWireGroup != nullptr)
+	{
+		TP_insulator->m_H = ui.line_H->text().toDouble();
+		TP_insulator->m_splits = ui.combo_count->currentText().toInt();
+		TP_insulator->m_type = index + 1-3;
+		if (TP_insulator->m_type == 1)
+		{
+			if (Arm == nullptr)
+			{
+				TP_insulator->m_W1 = 10;//取塔身宽
+				TP_insulator->m_W2 = 10;//取横担宽
+				TP_insulator->m_L2 = 10;//取横担长
+			}
+		}
+		TP_insulator->wireLogo = ui.lineEdit_WireLogo->text().toInt();
+		TP_insulator->Create_Mesh();
+		towerWireGroup->addSpacer(TP_insulator);
+		towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_2);
+		towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_2);
+		towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_2);
+		towerWireGroup->VectorToMap();
+	}
+}
+
+TowerPart_Insulator* Interphase_spacer::ReturnInsulator()
+{
+	return TP_insulator;
 }
 
 

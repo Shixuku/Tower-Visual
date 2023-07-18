@@ -190,6 +190,7 @@ void WireData::CreateStrainLine(double x, double y, double z, vector<int> ids)
 void WireData::CreateSpacerDistance()
 {
 	if (fenlie < 4)return;
+	if (SpacerNum.size() == 0)return;
 	int s = 0;
 	int L = 0;
 	int d = 0;

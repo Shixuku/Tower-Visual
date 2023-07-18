@@ -253,7 +253,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		ui_Interphase_spacer(item);
 	}
 	//导线建模
-	else if (isChildOfGroup(item, 1))
+	else if (isChildOfGroup(item, 1)||isChildOfSingleWire(item,1))
 	{
 		ui_Wire_InterFace(item);
 	}
@@ -285,10 +285,6 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_SingleWire();
 	}
-	else if (isChildOfTower(8, item, 0))
-	{//施加约束
-		Constraint_Tips1(item);
-	}
 	else if (item == ui.treeWidget->topLevelItem(9))
 	{
 		//ui_Calculate();
@@ -296,6 +292,14 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (isChildOfTowerwiregroupWireModeling(item))
 	{
 		CreateGroupInp(item);
+	}
+	else if (isChildOfSingleWire(item, 0))
+	{
+		ui_SingleWireSpacer(item);
+	}
+	else if (isChildOfSingleWire(item, 2))
+	{//施加约束
+		Constraint_Tips1(item);
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -545,7 +549,8 @@ void InterFace::ui_Management_InsData()
 void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 {
 	TowerData_CrossArm* Arm = OnFindCrossAem(item->parent());
-	Interphase_spacer* IS = new Interphase_spacer(Arm,this);
+	TowerWireGroup* t = nullptr;
+	Interphase_spacer* IS = new Interphase_spacer(Arm, t,this);
 
 	IS->show();//要互动只能用show
 
@@ -553,21 +558,28 @@ void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 
 void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 {
+	switchRenderWindow(1);
 	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
+	towerWireGroup->Suspensioncombined();
+	cout << "size" << towerWireGroup->SuspensionNode.size()<<"\n";
+	for (int i = 0; i < towerWireGroup->combined.size(); i++)
+	{
+		cout << "ID" << towerWireGroup->combined[i].first << "\n";
+	}
 	Wire_InterFace* w = new Wire_InterFace(towerWireGroup,this);
 	int ret = w->exec();
-	
+
 	if (ret == QDialog::Accepted)
 	{
 		CreatWire* t = new CreatWire;
 		w->Get_Data(*t);//取数据
-		m_Renderer_3->RemoveAllViewProps();
+		m_Renderer_2->RemoveAllViewProps();
 		t->Create_Mesh();
 		towerWireGroup->AddWireToGroup(t);
-		towerWireGroup->Show_VTKnode(m_Renderer_3);
-		towerWireGroup->Show_VTKbeam(m_Renderer_3);
-		towerWireGroup->Show_VTKtruss(m_Renderer_3);
-		m_Renderer_3->ResetCamera();
+		towerWireGroup->Show_VTKnode(m_Renderer_2);
+		towerWireGroup->Show_VTKbeam(m_Renderer_2);
+		towerWireGroup->Show_VTKtruss(m_Renderer_2);
+		m_Renderer_2->ResetCamera();
 	}
 
 }
@@ -580,11 +592,19 @@ void InterFace::ui_ManageLoads()
 
 void InterFace::ui_TowerWireGroup()
 {
-	switchRenderWindow(2);
+	switchRenderWindow(1);
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	TowerWireGroupAssembly* towerWireGroupAssembly = new TowerWireGroupAssembly(this, towerWireGroup);
 	towerWireGroupAssembly->show();
 
+}
+void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
+{
+	switchRenderWindow(1);
+	TowerData_CrossArm* arm = nullptr;
+	TowerWireGroup* t = OnFindGroup(item->parent());
+	Interphase_spacer* IS = new Interphase_spacer(arm, t, this);
+	IS->show();
 }
 void InterFace::ui_Constraint()
 {
@@ -1278,6 +1298,21 @@ bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
 	return false;
 }
 
+bool InterFace::isChildOfSingleWire(QTreeWidgetItem* item, int childNumber)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(8);
+	int singleWireChildCount = towerWireGroup->childCount();//取得有几个单线组循环
+	for (int i = 0; i < singleWireChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
+		if (item == childItem->child(childNumber))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
@@ -1353,7 +1388,7 @@ void InterFace::Show_Part(Part_Base* part)
 void InterFace::Show_Tower(Instance* instance)
 {
 	if (instance == nullptr) return;
-	switchRenderWindow(1);
+	switchRenderWindow(2);
 	HiddeAllTower();
 
 	if (instance->m_BeamActor != nullptr)
@@ -1419,28 +1454,41 @@ void InterFace::ui_Wind()
 
 void InterFace::ui_SingleWire()
 {
-	switchRenderWindow(2);
-	TowerWireGroup* towerWireGroup = nullptr;
-	Wire_InterFace* w = new Wire_InterFace(towerWireGroup, this);
-	int ret = w->exec();
-	if (ret == QDialog::Accepted)
-	{
-		CreatWire* t = new CreatWire;
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
-		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
-		Constraint->setText(0, QString("添加约束"));
-		item->setText(0, "导线");
-		w->Get_Data(*t);//取数据
-		t->m_id = creatWire.size() + 1;
-		t->Item = item;
-		t->Create_Mesh();
-		t->Show_VTKnode(m_Renderer_3);
-		t->Show_VTKtruss(m_Renderer_3);
-		t->Show_VTKbeam(m_Renderer_3);
-		m_Renderer_3->ResetCamera();
-		creatWire.Add_Entity(t);
-	}
+	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
+	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+	item->setText(0, "导线");
+	QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
+	spacer->setText(0, "添加绝缘子串");
+	QTreeWidgetItem* creareWire = new QTreeWidgetItem(item);
+	creareWire->setText(0, "建立导线");
+	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);
+	Constraint->setText(0, "添加约束");
+	TowerWireGroup* towerWireGroup = new TowerWireGroup;
+	towerWireGroup->Item= item;
+	TWG.Add_Entity(towerWireGroup);
+	//switchRenderWindow(2);
+	//TowerWireGroup* towerWireGroup = nullptr;
+	//TowerPart_CrossArm* arm = nullptr;
+	//Interphase_spacer* IS = new Interphase_spacer(arm, this);
+	//Wire_InterFace* w = new Wire_InterFace(towerWireGroup, this);
+	//int ret = w->exec();
+	//if (ret == QDialog::Accepted)
+	//{
+	//	CreatWire* t = new CreatWire;
+	//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
+	//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+	//	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
+	//	Constraint->setText(0, QString("添加约束"));
+	//	item->setText(0, "导线");
+	//	w->Get_Data(*t);//取数据
+	//	t->m_id = creatWire.size() + 1;
+	//	t->Item = item;
+	//	t->Create_Mesh();
+	//	t->Show_VTKnode(m_Renderer_3);
+	//	t->Show_VTKtruss(m_Renderer_3);
+	//	m_Renderer_3->ResetCamera();
+	//	creatWire.Add_Entity(t);
+	//}
 }
 
 InterFace::~InterFace()

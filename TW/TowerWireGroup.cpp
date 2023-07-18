@@ -213,6 +213,7 @@ void TowerWireGroup::AddWireNode(CreatWire* wire)
 void TowerWireGroup::AddWireElement(CreatWire* wire)
 {
 	size_t tTower = wire->m_Elements_Trusses.size();
+	size_t bpart = wire->m_Elements_beams.size();
 	for (size_t i = 0; i < tTower; ++i)//Truss
 	{
 		Element_Truss* pE = &wire->m_Elements_Trusses[i];
@@ -228,6 +229,27 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+	}
+	for (size_t i = 0; i < bpart; ++i)
+	{
+		Element_Beam* pE = &wire->m_Elements_beams[i];
+		this->m_Elements.push_back(wire->m_Elements_beams[i]);
+		size_t total = this->m_Elements.size() - 1;
+		this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
+		this->m_Elements[total].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
+		this->m_Elements[total].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
+
+		this->m_Elements_beams.push_back(wire->m_Elements_beams[i]);
+		size_t totalT = this->m_Elements_beams.size() - 1;
+		this->m_Elements_beams[totalT].m_idElement = total + 1;//放入实例的梁单元
+		this->m_Elements_beams[totalT].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
+		this->m_Elements_beams[totalT].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
+		this->m_Elements_beams[totalT].ClassSectionID = pE->ClassSectionID;
+		this->m_Elements_beams[totalT].MaterialID = pE->MaterialID;
+		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
+		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
+		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
+		//cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
 	}
 }
 
@@ -406,4 +428,67 @@ void TowerWireGroup::Suspensioncombined()
 	std::sort(combined.begin(), combined.end(), [](const std::pair<int, int>& pair1, const std::pair<int, int>& pair2) {
 		return pair1.second < pair2.second;
 		});
+}
+
+void TowerWireGroup::addSpacer(Part_Base* part)
+{
+	addSpacerNode(part);
+	addSpacerElement(part);
+	addSpacerSuspensionNode(part);
+}
+
+void TowerWireGroup::addSpacerNode(Part_Base* part)
+{
+	size_t partNode = part->m_Nodes.size();//part中的节点
+	for (size_t i = 0; i < partNode; ++i)
+	{
+
+		this->m_Nodes.push_back(part->m_Nodes[i]);
+		size_t total = this->m_Nodes.size() - 1;//
+		this->m_Nodes[total].m_idNode = total + 1;
+		//part-tower 节点对应关系
+		part->part_to_tower.push_back(total + 1);
+	}	
+}
+
+void TowerWireGroup::addSpacerElement(Part_Base* part)
+{
+	size_t tpart = part->m_Elements_Trusses.size();
+
+	for (size_t i = 0; i < tpart; ++i)//Truss
+	{
+		Element_Truss* pE = &part->m_Elements_Trusses[i];
+		this->m_Elements.push_back(part->m_Elements_Trusses[i]);
+		size_t total = this->m_Elements.size() - 1;
+		this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
+		this->m_Elements[total].m_idNode[0] = part->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements[total].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
+
+		this->m_Elements_Trusses.push_back(part->m_Elements_Trusses[i]);
+		size_t totalT = this->m_Elements_Trusses.size() - 1;
+		this->m_Elements_Trusses[totalT].m_idElement = total + 1;//放入实例的杆单元
+		this->m_Elements_Trusses[totalT].m_idNode[0] = part->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements_Trusses[totalT].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
+		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
+		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+	}
+}
+
+void TowerWireGroup::addSpacerSuspensionNode(Part_Base* part)
+{
+	size_t SusNode = part->SuspensionNode.size();
+	for (int i = 0; i < SusNode; i++)
+	{
+		this->SuspensionNode.push_back(part->SuspensionNode[i]);
+		this->WireLogo.push_back(part->WireLoge[i]);
+		size_t totalT = this->SuspensionNode.size() - 1;
+		SuspensionNode[totalT] = part->Find_tower_idNode(part->SuspensionNode[i]);
+	}
+	size_t realSusNode = part->realSuspoint.size();
+	for (int i = 0; i < realSusNode; i++)
+	{
+		this->realSuspoint.push_back(part->realSuspoint[i]);
+		size_t totalT = this->realSuspoint.size() - 1;
+		realSuspoint[totalT] = part->Find_tower_idNode(part->realSuspoint[i]);
+	}
 }

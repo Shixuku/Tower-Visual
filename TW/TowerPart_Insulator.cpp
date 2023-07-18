@@ -19,8 +19,8 @@ void TowerPart_Insulator::Get_Nodes4_I(double a, Node* n)
 {
 	n[0] = *m_node;				
 	n[1].x = n[0].x;			n[1].y = n[0].y;	n[1].z = n[0].z - m_H;
-	n[2].x = n[1].x - a / 2;	n[2].y = Get_y_I(n[2].x);	n[2].z = n[0].z - m_H;
-	n[3].x = n[1].x + a / 2;	n[3].y = Get_y_I(n[3].x);	n[3].z = n[0].z - m_H;
+	n[2].x = n[1].x - a / 2;	n[2].y = n[1].y;	n[2].z = n[0].z - m_H;
+	n[3].x = n[1].x + a / 2;	n[3].y = n[1].y;	n[3].z = n[0].z - m_H;
 
 }
 

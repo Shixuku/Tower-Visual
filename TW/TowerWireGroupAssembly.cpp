@@ -29,7 +29,6 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			CreatTowerWierGroupItem();
 			towerWireGroup->VectorToMap();
 			m_pInterFace->m_Renderer_3->ResetCamera();
-			towerWireGroup->Suspensioncombined();
 			m_pInterFace->TWG.Add_Entity(towerWireGroup);
 			this->reject();
 		});

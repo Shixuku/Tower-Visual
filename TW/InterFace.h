@@ -99,6 +99,7 @@ public:
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
      bool isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item);//将塔线建模放在塔线组下去找到
+     bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);
      void Area_Inqure();//框选
      void Close_Point();
      //HZ
@@ -141,6 +142,8 @@ public slots:
 
     void ui_ManageLoads();
     void ui_TowerWireGroup();
+
+    void ui_SingleWireSpacer(QTreeWidgetItem* item);
 private:
 
     QHBoxLayout* layout;
