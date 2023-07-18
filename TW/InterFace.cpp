@@ -1437,6 +1437,7 @@ void InterFace::ui_SingleWire()
 		t->Create_Mesh();
 		t->Show_VTKnode(m_Renderer_3);
 		t->Show_VTKtruss(m_Renderer_3);
+		t->Show_VTKbeam(m_Renderer_3);
 		m_Renderer_3->ResetCamera();
 		creatWire.Add_Entity(t);
 	}

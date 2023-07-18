@@ -16,7 +16,7 @@ Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 	ui.Section_Lists->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	connect(ui.Pts_OK, &QPushButton::clicked, this, [=]() 
 		{	
-			int a = 0;
+			
 			if (towerWireGroup != nullptr)
 			{
 				a = towerWireGroup->SuspensionNode.size();
@@ -49,7 +49,7 @@ void Wire_InterFace::SetTableWideget(int row)
 		{
 			QComboBox* Point_Type = new QComboBox;
 			Point_Type->addItem("耐张端点");
-			Point_Type->addItem("端点");
+			Point_Type->addItem("悬垂端点");
 			ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));
 			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(0)));
 			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(0)));
@@ -61,7 +61,7 @@ void Wire_InterFace::SetTableWideget(int row)
 			//最后一行
 			QComboBox* Point_Type = new QComboBox;
 			Point_Type->addItem("耐张端点");
-			Point_Type->addItem("端点");
+			Point_Type->addItem("悬垂端点");
 			ui.Section_Lists->setItem(i, 0, new QTableWidgetItem(QString::number(i + 1)));
 			ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(0)));
 			ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(0)));
@@ -90,10 +90,6 @@ void Wire_InterFace::SetTableWideget(int row)
 
 }
 
-void Wire_InterFace::Initialize()
-{
-
-}
 
 void Wire_InterFace::ui_Senior()
 {
@@ -106,7 +102,6 @@ void Wire_InterFace::ui_Senior()
 	{
 		sen->exec();
 	}
-	
 }
 
 void Wire_InterFace::Get_Data(WireData& wd)
@@ -116,13 +111,17 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.unitMass = unitMass;
 	wd.area = area;
 	wd.stress = stress;
-	wd.strainL = strainL;
+	wd.strainLength = strainLength;
 	wd.sag = sag;
-	wd.WireSus = WireSus;
+	wd.WireListSus = WireSusList;
 	wd.WireSectionId= m_pInterFace->Ms.size()+1;
 	double r = sqrt(area / PI);
 	Section* i = new Section(r, 0, wd.WireSectionId, 2, 4);
 	wd.wireQty = wireLogoQty;
+	wd.endpoinType1 = chooseType1;
+	wd.endpoinType2 = chooseType2;
+	wd.SpacerNum = SpacerNum;
+	wd.ChooseWay = ChooseWay;
 	m_pInterFace->Ms.Add_Entity(i);
 }
 
@@ -136,7 +135,31 @@ void Wire_InterFace::SaveSusPoint()
 		xi = ui.Section_Lists->item(i, 1)->text().toDouble();
 		yi = ui.Section_Lists->item(i, 2)->text().toDouble();
 		zi = ui.Section_Lists->item(i, 3)->text().toDouble();
-		WireSus.push_back(Node(1,xi, yi, zi, 0));
+		WireSusList.push_back(Node(1, xi, yi, zi, 0));
+	}
+	QString msgStart;//线路第一个点
+	QString msgEnd;//线路最后一个点
+	QWidget* widget_Start = ui.Section_Lists->cellWidget(0, 4);
+	QWidget* widget_End = ui.Section_Lists->cellWidget(rowNum - 1, 4);
+	QComboBox* combox1 = (QComboBox*)widget_Start;
+	QComboBox* combox2 = (QComboBox*)widget_End;
+	msgStart = combox1->currentText();
+	msgEnd = combox2->currentText();
+	if (msgStart == "悬挂端点")
+	{
+		chooseType1 = 0;
+	}
+	else if (msgStart == "耐张端点")
+	{
+		chooseType1 = 1;
+	}
+	if (msgEnd == "悬挂端点")
+	{
+		chooseType2 = 0;
+	}
+	else if (msgEnd == "耐张端点")
+	{
+		chooseType2 = 1;
 	}
 }
 
