@@ -200,6 +200,9 @@
     <ClCompile Include="UI_Calculate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Spacer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -387,6 +390,9 @@
     <QtMoc Include="UI_Calculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Spacer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -431,9 +437,6 @@
     <QtUic Include="SetAllSection.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="Spacer.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="T_Body.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -474,6 +477,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="UI_Calculate.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Spacer.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

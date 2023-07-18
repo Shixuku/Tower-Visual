@@ -4,9 +4,10 @@ class CreatWire:public WireData
 {
 public:
 	
-	void CreatWireSus();//生成悬挂点
+	void CreateRealSus();//生成真实悬挂点
 	vector<int>susPoint;
-	void CreatWirePoint();
+	void CreateWire();//生成导线点
+	void CreateStrain();//生成耐张串那部分
 	void Create_Mesh();
 	vector<int>wireToGroup;
 	int FindGroupIdNode(int idNode) const;

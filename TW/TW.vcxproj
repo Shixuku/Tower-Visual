@@ -132,6 +132,7 @@
     <ClCompile Include="MouseInteractorHighLightActor.cpp" />
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
+    <ClCompile Include="Spacer.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerCaculate.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
@@ -200,6 +201,7 @@
     <QtMoc Include="TowerCaculate.h" />
     <ClInclude Include="ParameterConstraint.h" />
     <QtMoc Include="UI_Calculate.h" />
+    <QtMoc Include="Spacer.h" />
     <ClInclude Include="WireData.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="WindList.h" />

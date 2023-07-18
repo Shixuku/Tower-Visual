@@ -133,7 +133,7 @@ int Instance::Creat_Node(double x, double y, double z)
 
 void Instance::SaveSus(vector<int> ids)
 {
-	susPoint.push_back(ids[0]);
+	realSuspoint.push_back(ids[0]);
 }
 
 void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids)
