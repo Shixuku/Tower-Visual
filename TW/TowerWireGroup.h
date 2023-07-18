@@ -66,6 +66,10 @@ public:
 	}
 	void Suspensioncombined();//悬挂点排序
 	vector<std::pair<int, int>> combined;
+	void addSpacer(Part_Base* base);
+	void addSpacerNode(Part_Base* base);
+	void addSpacerElement(Part_Base* base);
+	void addSpacerSuspensionNode(Part_Base* base);
 public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;//保存Item，用于查找
