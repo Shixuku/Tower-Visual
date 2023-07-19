@@ -16,17 +16,8 @@ Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 	ui.Section_Lists->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	connect(ui.Pts_OK, &QPushButton::clicked, this, [=]() 
 		{	
-			
-			if (towerWireGroup != nullptr)
-			{
-				a = towerWireGroup->SuspensionNode.size();
-				wireLogoQty = towerWireGroup->combined[a - 1].second;
-			}
-			else
-			{
-				a = ui.N_Pts->text().toInt();
-				wireLogoQty = 1;
-			}
+			a = towerWireGroup->SuspensionNode.size();
+			wireLogoQty = towerWireGroup->combined[a - 1].second;
 			SetTableWideget(a); 
 		});
 	connect(ui.Senior_Btn, &QPushButton::clicked, this, &Wire_InterFace::ui_Senior);

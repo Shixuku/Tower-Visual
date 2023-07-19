@@ -561,11 +561,6 @@ void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 	switchRenderWindow(1);
 	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
 	towerWireGroup->Suspensioncombined();
-	cout << "size" << towerWireGroup->SuspensionNode.size()<<"\n";
-	for (int i = 0; i < towerWireGroup->combined.size(); i++)
-	{
-		cout << "ID" << towerWireGroup->combined[i].first << "\n";
-	}
 	Wire_InterFace* w = new Wire_InterFace(towerWireGroup,this);
 	int ret = w->exec();
 
@@ -576,6 +571,16 @@ void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 		m_Renderer_2->RemoveAllViewProps();
 		t->Create_Mesh();
 		towerWireGroup->AddWireToGroup(t);
+		cout << "SuspensionElementClass" << "\n";
+		for (int i = 0; i < towerWireGroup->SuspensionElementClass.size(); i++)
+		{
+			cout << towerWireGroup->SuspensionElementClass[i] << "\n";
+		}
+		cout << "SuspensionElement" << "\n";
+		for (int i = 0; i < towerWireGroup->SuspensionElement.size(); i++)
+		{
+			cout << towerWireGroup->SuspensionElement[i] << "\n";
+		}
 		towerWireGroup->Show_VTKnode(m_Renderer_2);
 		towerWireGroup->Show_VTKbeam(m_Renderer_2);
 		towerWireGroup->Show_VTKtruss(m_Renderer_2);
