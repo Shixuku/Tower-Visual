@@ -49,11 +49,11 @@ void WireData::CreatRealNode()
 	{
 		FindRealSus(0);
 	}
-	else if (endpoinType1 == 0 && endpoinType2 == 1)//端点一耐张 端点二悬垂
+	else if (endpoinType1 == 0 && endpoinType2 == 1)//端点二耐张 端点一悬垂
 	{
 		FindRealSus(1);
 	}
-	else if (endpoinType1 == 1 && endpoinType2 == 1)//端点一耐张 端点二悬垂
+	else if (endpoinType1 == 1 && endpoinType2 == 1)//端点均为耐张
 	{
 		FindRealSus(2);
 	}

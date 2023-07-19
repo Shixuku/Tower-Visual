@@ -383,7 +383,10 @@ void TowerWireGroup::addSpacerNode(Part_Base* part)
 void TowerWireGroup::addSpacerElement(Part_Base* part)
 {
 	size_t tpart = part->m_Elements_Trusses.size();
-
+	size_t SusElementClass = part->SuspensionElementClass.size();
+	size_t SusElement = part->SuspensionElement.size();
+	size_t bpart = part->m_Elements_beams.size();
+	int size = 0;//添加悬挂绝缘子串的单元时，添加完后后面的单元不用再做循环判断
 	for (size_t i = 0; i < tpart; ++i)//Truss
 	{
 		Element_Truss* pE = &part->m_Elements_Trusses[i];
@@ -400,6 +403,42 @@ void TowerWireGroup::addSpacerElement(Part_Base* part)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+		if (size != SusElementClass)
+		{
+			for (int i = 0; i < SusElement; i++)
+			{
+				if (part->m_Elements_Trusses[i].m_idElement == part->SuspensionElement[i])
+				{
+					SuspensionElement.push_back(total + 1);
+					size++;
+				}
+			}
+		}
+	}
+	for (size_t i = 0; i < bpart; ++i)
+	{
+		Element_Beam* pE = &part->m_Elements_beams[i];
+		this->m_Elements.push_back(part->m_Elements_beams[i]);
+		size_t total = this->m_Elements.size() - 1;
+		this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
+		this->m_Elements[total].m_idNode[0] = part->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements[total].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
+
+		this->m_Elements_beams.push_back(part->m_Elements_beams[i]);
+		size_t totalT = this->m_Elements_beams.size() - 1;
+		this->m_Elements_beams[totalT].m_idElement = total + 1;//放入实例的梁单元
+		this->m_Elements_beams[totalT].m_idNode[0] = part->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements_beams[totalT].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
+		this->m_Elements_beams[totalT].ClassSectionID = pE->ClassSectionID;
+		this->m_Elements_beams[totalT].MaterialID = pE->MaterialID;
+		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
+		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
+		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
+		//cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
+	}
+	for (int i = 0; i < part->SuspensionElementClass.size(); i++)
+	{
+		SuspensionElementClass.push_back(part->SuspensionElementClass[i]);
 	}
 }
 

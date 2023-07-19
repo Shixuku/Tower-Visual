@@ -56,6 +56,8 @@ public:
 	vector<int>SuspensionNode;//放入挂线点的标识
 	vector<int>WireLoge;//标明上面的悬挂点是哪一条线路
 	vector<int>realSuspoint;//分裂导线真实用的点
+	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力
+	vector<int>SuspensionElementClass;//放单元类型，是I悬挂还是V悬挂
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);

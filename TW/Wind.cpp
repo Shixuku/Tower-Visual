@@ -74,7 +74,7 @@ void Wind::CreateCombobox()
 	for (int i = 0; i < ExampleNum; i++)
 	{
 		ui.object_com->addItem("µ¼ÏßÊµÀý" + QString::number(i + 1));
-		
+	
 	}
 }
 

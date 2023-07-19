@@ -61,6 +61,8 @@ public:
 	vector<ParameterConstraint> m_Constraint;//约束的容器
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
+	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力
+	vector<int>SuspensionElementClass;//放单元类型，是I悬挂还是V悬挂
 	QFile Qf;
 	QTextStream Stream;         //创建ofstream
 	vtkSmartPointer<vtkCellArray> m_lines;
@@ -73,7 +75,8 @@ public:
 	void MaterialTxT();//材料
 	void BeamSectionTxT();//梁截面信息
 	void TrussSectionTxT();//杆截面信息
-
+	void Suspensioncombined();//悬挂点排序
+	vector<std::pair<int, int>> combined;
 	//画约束
 	void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
 	void Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer);

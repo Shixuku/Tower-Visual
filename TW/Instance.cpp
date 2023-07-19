@@ -368,6 +368,17 @@ void Instance::TrussSectionTxT()
 	}
 }
 
+void Instance::Suspensioncombined()
+{
+	for (size_t i = 0; i < SuspensionNode.size(); ++i) {
+		combined.push_back(std::make_pair(SuspensionNode[i], WireLogo[i]));
+	}
+	// 按照序号进行排序
+	std::sort(combined.begin(), combined.end(), [](const std::pair<int, int>& pair1, const std::pair<int, int>& pair2) {
+		return pair1.second < pair2.second;
+		});
+}
+
 void Instance::RestraintTxT()
 {
 	//int a = 24;//只考虑塔脚的4个完全约束
