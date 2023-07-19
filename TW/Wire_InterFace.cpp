@@ -122,6 +122,9 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.endpoinType2 = chooseType2;
 	wd.SpacerNum = SpacerNum;
 	wd.ChooseWay = ChooseWay;
+	int num = WireSusList.size() - 1;
+	wd.allSus.push_back(Node(1, WireSusList[0].x, WireSusList[0].y, WireSusList[0].z, 0));
+	wd.allSus.push_back(Node(1, WireSusList[num].x, WireSusList[num].y, WireSusList[num].z, 0));
 	m_pInterFace->Ms.Add_Entity(i);
 }
 

@@ -15,6 +15,7 @@ public:
 	double angle;
 	vector<Node>WireListSus;//列表悬挂点容器
 	vector<Node>WireRealSus;//真实悬挂点容器
+	vector<Node>allSus;//真实悬挂点加上列表中首位两个点
 	vector<Node> TempListNodes;//节点合集
 	vector<Node> TempRealNodes;//节点合集
 	double WireSectionId = 0;//截面编号

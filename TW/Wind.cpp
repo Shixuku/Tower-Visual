@@ -71,7 +71,6 @@ void Wind::Initialize()
 void Wind::CreateCombobox()
 {
 	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(8)->childCount();//塔腿数量
-	
 	for (int i = 0; i < ExampleNum; i++)
 	{
 		ui.object_com->addItem("导线实例" + QString::number(i + 1));
@@ -87,10 +86,14 @@ void Wind::ShowObject()
 	{
 		id_Part = Index + 1;
 		m_Renderer->RemoveAllViewProps();  // 清空当前显示的所有actor
-		m_pcreatWire = m_pInterFace->creatWire.Find_Entity(id_Part);
-		m_pInterFace->Show_Wire(m_pcreatWire);
-		m_pcreatWire->Show_VTKbeam(m_Renderer);
-		m_pcreatWire->Show_VTKtruss(m_Renderer);
+		m_pcreatWire = m_pInterFace->TWG.Find_Entity(id_Part);
+		if (m_pcreatWire != nullptr)
+		{
+			m_pcreatWire->Show_VTKnode(m_Renderer);
+			m_pcreatWire->Show_VTKbeam(m_Renderer);
+			m_pcreatWire->Show_VTKtruss(m_Renderer);
+		}
+		
 	}
 	m_Renderer->ResetCamera();
 	ui.widget_5->update();
@@ -293,7 +296,7 @@ std::vector<double> Wind::CountWindForce()
 	double aerfa = 1.00;
 	double beitaC = 1.0;
 	double Usc = 1.1;
-	double d = 2 * sqrt((m_pcreatWire->area) * 1e-6 / 3.14159);
+	double d = 555;
 	double B = 1.0;
 	double theta = 90;
 	//差Uz和Lp

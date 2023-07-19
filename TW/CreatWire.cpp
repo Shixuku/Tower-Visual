@@ -50,8 +50,9 @@ void CreatWire::CreateRealSus()
 
 			index++;
 		}
-
+		
 	}
+	allSus.insert(allSus.end(), WireRealSus.begin(), WireRealSus.end());
 	// 在使用完后别忘了释放内存
 	delete[]node;
 
@@ -234,10 +235,10 @@ void CreatWire::Create_Mesh()
 {
 	CreateRealSus();
 	CreateWire();
-	for (int i = 0; i < m_Nodes.size(); i++)
+	/*for (int i = 0; i < m_Nodes.size(); i++)
 	{
 		cout  << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y << "  " << m_Nodes[i].z << "  " << "\n";
-	}
+	}*/
 	CreateStrain();
 	CreateSpacerDistance();
 	CreateTempWireNode(WireRealSus, TempRealNodes);

@@ -855,25 +855,6 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 	return nullptr;
 }
 
-CreatWire* InterFace::OnFindWire(const QTreeWidgetItem* Item)
-{
-	QTreeWidgetItemIterator it(ui.treeWidget);
-	while (*it)
-	{
-		if ((*it) == Item)
-		{
-			for (auto& i : creatWire)
-			{
-				if (i.second->Item == *it) return i.second;
-			}
-			return nullptr;
-		}
-		++it;
-	}
-
-	return nullptr;
-}
-
 void InterFace::HiddeAllPart()
 {
 	vtkPropCollection* props = m_Renderer->GetViewProps(); //iterate through and set each visibility to 0
@@ -1388,10 +1369,10 @@ void InterFace::Show_Part(Part_Base* part)
 void InterFace::Show_Tower(Instance* instance)
 {
 	if (instance == nullptr) return;
-	switchRenderWindow(2);
+	switchRenderWindow(1);
 	HiddeAllTower();
 
-	if (instance->m_BeamActor != nullptr)
+	if (instance->Node_actor != nullptr)
 	{
 		instance->Node_actor->VisibilityOn();
 		instance->m_BeamActor->VisibilityOn();
@@ -1431,7 +1412,10 @@ void InterFace::Show_Wire(Instance* instance)
 void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
 {
 	Instance* instance = OnFindInstance(item->parent());
-	Show_Tower(instance);//显示对应的实例杆塔
+	instance->Show_VTKnode(m_Renderer_2);
+	instance->Show_VTKbeam(m_Renderer_2);
+	instance->Show_VTKtruss(m_Renderer_2);
+	//Show_Tower(instance);//显示对应的实例杆塔
 
 	//显示选择的约束界面
 	Create_Constraint* con = new Create_Constraint(instance, this);
@@ -1465,6 +1449,7 @@ void InterFace::ui_SingleWire()
 	Constraint->setText(0, "添加约束");
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
+	towerWireGroup->m_id = TWG.size() + 1;
 	TWG.Add_Entity(towerWireGroup);
 	//switchRenderWindow(2);
 	//TowerWireGroup* towerWireGroup = nullptr;

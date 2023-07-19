@@ -53,6 +53,7 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGrou
 		ui.stackedWidget->setCurrentIndex(3);//ÉèÖÃÄ¬ÈÏpage
 		connect(ui.rdb_I, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(3); });
 		connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(4); });
+		connect(ui.radioButton, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(5); });
 	}
 
 }
@@ -129,6 +130,17 @@ void Interphase_spacer::Create_Nodes()
 		double z2 = ui.lineEditSusNodeZ1->text().toDouble();
 		m_Nodes.push_back(new Node(0, x2, y2, z2, 0));
 		TP_insulator->m_node2 = m_Nodes[1];
+	}
+	else if (ret == 5)
+	{
+		double x1 = ui.lineEdit_3->text().toDouble();
+		double y1 = ui.lineEdit_4->text().toDouble();
+		double z1 = ui.lineEdit_5->text().toDouble();
+		int SuspensionNodeId = towerWireGroup->Creat_Node(x1, y1, z1);
+		int wireLogo= ui.lineEdit_WireLogo->text().toDouble();
+		towerWireGroup->susPoint.push_back(SuspensionNodeId);
+		towerWireGroup->SuspensionNode.push_back(SuspensionNodeId);
+		towerWireGroup->WireLogo.push_back(wireLogo);
 	}
 }
 

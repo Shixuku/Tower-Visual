@@ -1,5 +1,5 @@
 #include "UI_Calculate.h"
-#include"CreatWire.h"
+#include"TowerWireGroup.h"
 
 Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	: QDialog(parent)
@@ -23,15 +23,15 @@ void Instance_Calculate::Set_headertext()
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 
 	int T_tower = m_InterFace->TP.size();//塔实例数量
-	int T_wire = m_InterFace->creatWire.size();//线实例数量
+	int T_wire = m_InterFace->TWG.size();//线实例数量
 
 	ui.tableWidget->setRowCount(T_tower+T_wire);//设置行数
 
 	QVector<Tower*> ve_tower;//!
 	m_InterFace->TP.Get_Array(ve_tower, true);//!
 
-	QVector<CreatWire*> ve_wire;//!
-	m_InterFace->creatWire.Get_Array(ve_wire, true);//!
+	QVector<TowerWireGroup*> ve_wire;//!
+	m_InterFace->TWG.Get_Array(ve_wire, true);//!
 
 	for (int i = 0; i < T_tower; i++)
 	{
@@ -50,7 +50,7 @@ void Instance_Calculate::Set_headertext()
 
 	for (int i = 0; i < T_wire; i++)
 	{
-		CreatWire* wire = ve_wire[i];//!
+		TowerWireGroup* wire = ve_wire[i];//!
 		list_Instance.push_back(wire);
 
 		//设置名称

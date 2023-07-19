@@ -7,7 +7,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <QVTKOpenGLNativeWidget.h>
 #include"Tower.h"
-#include"CreatWire.h"
+#include"TowerWireGroup.h"
 #pragma execution_character_set("utf-8")
 class InterFace;
 class WindList;
@@ -43,7 +43,7 @@ public:
 	std::vector<double>Wx_values;//风载荷容器
 	//std::vector<double>Interpolation_V;//计算的插值的风速
 	InterFace* m_pInterFace = nullptr;
-	CreatWire* m_pcreatWire = nullptr;  // Tower 类型的成员变量，用于保存 Show_Tower 方法的结果
+	TowerWireGroup* m_pcreatWire = nullptr;  // Tower 类型的成员变量，用于保存 Show_Tower 方法的结果
 	WindList* w_l = nullptr;
 	RandomWind* ran = nullptr;
 

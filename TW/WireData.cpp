@@ -3,17 +3,17 @@
 int WireData::Creat_Node(double x, double y, double z, double f)
 {
 
-	int SIZE = susPoint.size();
+	int SIZE = realSuspoint.size();
 	std::cout << "size:" << SIZE << std::endl;
 	int judg = 0;
 	for (int i = 0; i < SIZE; ++i)
 	{
-		if (((abs(NodeData[susPoint[i]].x - x) < 1e-8)) &&
-			((abs(NodeData[susPoint[i]].y - y)) < 1e-8) &&
-			((abs(NodeData[susPoint[i]].z - z)) < 1e-8))
+		if (((abs(NodeData[realSuspoint[i]].x - x) < 1e-8)) &&
+			((abs(NodeData[realSuspoint[i]].y - y)) < 1e-8) &&
+			((abs(NodeData[realSuspoint[i]].z - z)) < 1e-8))
 		{
-			m_Nodes[susPoint[i] - 1].F = f;
-			return NodeData[susPoint[i]].m_idNode; //重节点
+			m_Nodes[realSuspoint[i] - 1].F = f;
+			return NodeData[realSuspoint[i]].m_idNode; //重节点
 		}
 		else
 		{
