@@ -38,6 +38,7 @@ public:
 	QValueAxis* axisX = nullptr;
 	QValueAxis* axisY = nullptr;
 	Wind* wd = nullptr;
+	//CreatWire* R_pcreatWire = nullptr;
 	CreatWire* R_pcreatWire = nullptr;
 	//m_pair(1.29), alf(0.16), z0(0.03), v10(30) int N, int M, double w_up, double T
 	double z0;//地表粗糙长度

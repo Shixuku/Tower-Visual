@@ -70,8 +70,8 @@ public:
 			//	Read_Stream<TowerPart_Insulator>(s); break;
 			case Part_Type::ET_Tower:
 				Read_Stream<Tower>(s, size); break;
-			//case Part_Type::ET_TowerWireGroup:
-			//	Read_Stream<TowerWireGroup>(s, size); break;
+			case Part_Type::ET_TowerWireGroup:
+				Read_Stream<TowerWireGroup>(s, size); break;
 			//case Part_Type::ET_Section:
 			//	Read_Stream<Section>(s, size); break;
 

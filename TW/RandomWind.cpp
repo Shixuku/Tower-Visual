@@ -117,7 +117,7 @@ void RandomWind::Initialize()
 
 void RandomWind::CreatSegment()
 {
-	R_pcreatWire = wd->m_pcreatWire;
+	//R_pcreatWire = wd->m_pcreatWire;
 	R_pcreatWire->m_Nodes;
 	NumOfWindzones = ui.lineEdit_segment->text().toInt();
 	//µ¥µµ

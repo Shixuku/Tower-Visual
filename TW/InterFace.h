@@ -76,6 +76,7 @@ public:
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;
      Manage_Entity<TowerWireGroup> TWG;
+    // Manage_Entity<TowerWireGroup> creatWire;
      Manage_Entity<CreatWire> creatWire;
      vector<T_Foot*> t_foots;
      vector<T_Body*> t_bodys;
@@ -159,6 +160,6 @@ private:
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
-    CreatWire* OnFindWire(const QTreeWidgetItem* Item);
+   
    
 };

@@ -176,29 +176,37 @@ void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> 
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		if (m_Nodes[node1-1].x > 0 && m_Nodes[node1-1].y > 0 && m_Nodes[node1-1].z != m_Nodes[node2-1].z)
+		if (node1 == node2)
 		{
-			iDirection[0] = 0;iDirection[1] = -1;iDirection[2] = 0;
-		}
-		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = 0;iDirection[1] = 1;iDirection[2] = 0;
-		}
-		else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = -1;iDirection[1] = 0;iDirection[2] = 0;
-		}
-		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = 1;iDirection[1] = 0;iDirection[2] = 0;
+			node1 = node2;
 		}
 		else
 		{
-			iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
+			if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 0; iDirection[1] = -1; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 0; iDirection[1] = 1; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = -1; iDirection[1] = 0; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 1; iDirection[1] = 0; iDirection[2] = 0;
+			}
+			else
+			{
+				iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
+			}
+			m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
+			Beam_elementsID++;
+			node1 = node2;
 		}
-		m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
-		Beam_elementsID++;
-		node1 = node2;
+		
 	}
 }
 
@@ -211,28 +219,36 @@ void Part_Base::Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+		if (node1 == node2)
 		{
-			iDirection[0] = 0;iDirection[1] = -1;iDirection[2] = 0;
-		}
-		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = 0;iDirection[1] = 1;iDirection[2] = 0;
-		}
-		else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = -1;iDirection[1] = 0;iDirection[2] = 0;	
-		}
-		else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-		{
-			iDirection[0] = 1;iDirection[1] = 0;iDirection[2] = 0;
+			node1 = node2;
 		}
 		else
 		{
-			iDirection[0] = 0;iDirection[1] = 0;iDirection[2] = -1;
+			if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 0; iDirection[1] = -1; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 0; iDirection[1] = 1; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = -1; iDirection[1] = 0; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 1; iDirection[1] = 0; iDirection[2] = 0;
+			}
+			else
+			{
+				iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
+			}
+			m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
+			Beam_elementsID++;
 		}
-		m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
-		Beam_elementsID++;
+		
 	}
 }
 
@@ -244,9 +260,17 @@ void Part_Base::Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<
 	for (int i = 1; i < size; i++)
 	{
 		int node2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
-		Truss_elementsID++;
-		node1 = node2;
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
+			Truss_elementsID++;
+			node1 = node2;
+		}
+	
 	}
 }
 
@@ -258,8 +282,16 @@ void Part_Base::Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector
 	{
 		int node1 = ids[i];
 		int node2 = ids[i + 1];
-		m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
-		Truss_elementsID++;
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, id_TrussSection, 0));
+			Truss_elementsID++;
+		}
+	
 	}
 }
 

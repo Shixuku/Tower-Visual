@@ -2,7 +2,7 @@
 #include"CreatWire.h"
 int TowerWireGroup::Get_id() const
 {
-	return 0;
+	return m_id;
 }
 void TowerWireGroup::SaveTo(QDataStream& fin) const
 {
@@ -178,24 +178,38 @@ void TowerWireGroup::AddWireToGroup(CreatWire* wire)
 void TowerWireGroup::AddWireNode(CreatWire* wire)
 {
 	size_t wireNode = wire->m_Nodes.size();//tower中的节点
-	bool isSuspensionNode = 0;
+
+	
 	//add
-	for (size_t i = 0; i < wireNode; ++i)
+	for (size_t i = 0; i < wireNode; ++i)//所有线节点的循环
 	{
-		for (int j = 0; j < wire->susPoint.size(); ++j)
+		bool isSuspensionNode = false;
+		//for (int j = 0; j < wire->allSus.size(); ++j)
+		//{
+		//	if ((wire->m_Nodes[i].x == wire->allSus[j].x)&&
+		//		(wire->m_Nodes[i].y == wire->allSus[j].y)&&
+		//		(wire->m_Nodes[i].z == wire->allSus[j].z))
+		//	{
+		//		for (int z = 0; z < this->SuspensionNode.size(); z++)
+		//		{
+		//			if (((abs(this->NodeData[SuspensionNode[z]].x - wire->m_Nodes[i].x) < 1e-8)) &&
+		//				((abs(this->NodeData[SuspensionNode[z]].y - wire->m_Nodes[i].y)) < 1e-8) &&
+		//				((abs(this->NodeData[SuspensionNode[z]].z - wire->m_Nodes[i].z)) < 1e-8))
+		//			{
+		//				isSuspensionNode = true;
+		//				wire->wireToGroup.push_back(SuspensionNode.at(z));
+		//			}
+		//		}
+		//	}
+		//}
+		for (int j = 0; j < this->SuspensionNode.size(); j++)
 		{
-			if (wire->m_Nodes[i].m_idNode = susPoint[j])
+			if ((wire->m_Nodes[i].x == NodeData[SuspensionNode[j]].x) &&
+				(wire->m_Nodes[i].y == NodeData[SuspensionNode[j]].y) &&
+				(wire->m_Nodes[i].z == NodeData[SuspensionNode[j]].z))
 			{
-				for (int z = 0; z < this->SuspensionNode.size(); z++)
-				{
-					if (((abs(this->NodeData[SuspensionNode[i]].x - wire->NodeData[susPoint[j]].x) < 1e-8)) &&
-						((abs(this->NodeData[SuspensionNode[i]].y - wire->NodeData[susPoint[j]].y)) < 1e-8) &&
-						((abs(this->NodeData[SuspensionNode[i]].z - wire->NodeData[susPoint[j]].z)) < 1e-8))
-					{
-						isSuspensionNode = true;
-						wire->wireToGroup.push_back(SuspensionNode[i]);
-					}
-				}
+				isSuspensionNode = true;
+				wire->wireToGroup.push_back(SuspensionNode.at(j));
 			}
 		}
 		if (isSuspensionNode == false)
@@ -212,6 +226,7 @@ void TowerWireGroup::AddWireNode(CreatWire* wire)
 
 void TowerWireGroup::AddWireElement(CreatWire* wire)
 {
+	cout << "wire->wireToGroup.size" << wire->wireToGroup.size() << "\n";
 	size_t tTower = wire->m_Elements_Trusses.size();
 	size_t bpart = wire->m_Elements_beams.size();
 	for (size_t i = 0; i < tTower; ++i)//Truss
@@ -293,92 +308,6 @@ void TowerWireGroup::rotation(double angle, int towerId)
 	}
 }
 
-void TowerWireGroup::Show_VTKtruss(vtkRenderer* renderer)
-{
-	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
-	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
-	//点
-	for (size_t i = 0; i < m_Elements_Trusses.size(); i++)
-	{
-		line->GetPointIds()->SetId(0, m_Elements_Trusses[i].m_idNode[0] - 1);
-		line->GetPointIds()->SetId(1, m_Elements_Trusses[i].m_idNode[1] - 1);
-		lines->InsertNextCell(line);
-	}
-
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	linesPolyData->SetPoints(m_pts);
-	linesPolyData->SetLines(lines);
-
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(linesPolyData);
-	m_TrussActor = vtkSmartPointer<vtkActor>::New();
-	m_TrussActor->SetMapper(mapper);
-	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
-	renderer->AddActor(m_TrussActor);
-}
-
-void TowerWireGroup::Show_VTKbeam(vtkRenderer* renderer)
-{
-	vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
-	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
-
-	for (size_t i = 0; i < m_Elements_beams.size(); i++)
-	{
-		line->GetPointIds()->SetId(0, m_Elements_beams[i].m_idNode[0] - 1);
-		line->GetPointIds()->SetId(1, m_Elements_beams[i].m_idNode[1] - 1);
-		lines->InsertNextCell(line);
-	}
-
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	linesPolyData->SetPoints(m_pts);
-	linesPolyData->SetLines(lines);
-
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(linesPolyData);
-	m_BeamActor = vtkSmartPointer<vtkActor>::New();
-	m_BeamActor->SetMapper(mapper);
-	m_BeamActor->GetProperty()->SetColor(0, 1, 0);
-	renderer->AddActor(m_BeamActor);
-}
-
-void TowerWireGroup::Show_VTKnode(vtkRenderer* renderer)
-{
-	vtkNew<vtkIdTypeArray> Ptr;
-	Ptr->SetName("Address");
-	m_pts = vtkSmartPointer<vtkPoints>::New();
-	int nNode = m_Nodes.size();
-	m_pts->SetNumberOfPoints(nNode);
-	for (int i = 0; i < m_Nodes.size(); i++)
-	{
-		vector<double> p;
-		p.resize(4);
-		p[0] = m_Nodes[i].m_idNode;//m_Nodes[0]指 编号为1的点
-		p[1] = m_Nodes[i].x;
-		p[2] = m_Nodes[i].y;
-		p[3] = m_Nodes[i].z;
-		m_pts->SetPoint(i, p[1], p[2], p[3]);
-		Node* pNode = &m_Nodes[i];//zhan
-		Ptr->InsertNextValue((UINT_PTR)pNode);//将地址转换为整数		
-	}
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	linesPolyData->SetPoints(m_pts);
-	linesPolyData->GetPointData()->AddArray(Ptr);
-
-	//点
-	Node_actor = vtkSmartPointer<vtkActor>::New();
-	vtkNew<vtkVertexGlyphFilter> VertexFilter;
-	VertexFilter->SetInputData(linesPolyData);
-	VertexFilter->Update();
-
-	vtkSmartPointer<vtkPolyDataMapper> Node_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	Node_mapper->SetInputConnection(VertexFilter->GetOutputPort());
-
-	Node_actor = vtkSmartPointer<vtkActor>::New();
-	Node_actor->SetMapper(Node_mapper);
-	Node_actor->GetProperty()->SetColor(255, 255, 0);
-	Node_actor->GetProperty()->SetPointSize(5);
-	renderer->AddActor(Node_actor);
-}
 void TowerWireGroup::ShowNode()const
 {
 	for (auto& j : m_Nodes)

@@ -251,7 +251,7 @@ void Instance::CreateOutPut()
 	{
 		qDebug() << filename;
 		Qf.setFileName(filename);
-		Qf.open(QIODevice::ReadWrite);
+		Qf.open(QIODevice::WriteOnly);
 
 		Stream.setDevice(&Qf);
 		if (!Qf.isOpen())
