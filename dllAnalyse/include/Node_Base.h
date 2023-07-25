@@ -42,6 +42,7 @@ public:
 	virtual vector<double> Get_DisplaymentXData() { return vector<double>(0); }
 	virtual vector<double> Get_DisplaymentYData() { return vector<double>(0); }
 	virtual vector<double> Get_DisplaymentZData() { return vector<double>(0); }
+	virtual vector<double> Get_SigmaData() { return vector<double>(0); }
 
 	virtual enum Entity_Type My_EntityType() const
 	{

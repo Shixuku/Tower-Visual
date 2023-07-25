@@ -12,7 +12,7 @@ void CreatWire::CreateRealSus()
 	{
 		for (int j = 0; j < fenlie; j++)
 		{
-			double offsetX = 0; double offsetZ = 0;
+			double offsetX = 0; double offsetY = 0; double offsetZ = 0;
 			if (fenlie == 1)
 			{
 				offsetX = 0.0;
@@ -25,9 +25,11 @@ void CreatWire::CreateRealSus()
 			}
 			else if (fenlie == 4)
 			{
-				double offsets[4][2] = { {0.225, 0.225}, {0.225, -0.225}, {-0.225, -0.225}, {-0.225, 0.225} };
+				double offsets[4][3] = { {0.225*cos(angle),-0.225*sin(angle), 0.225}, {0.225 * cos(angle),-0.225 * sin(angle), -0.225}, 
+					{-0.225 * cos(angle),0.225 * sin(angle), -0.225}, {-0.225 * cos(angle),0.225 * sin(angle), 0.225} };
 				offsetX = offsets[j][0];
-				offsetZ = offsets[j][1];
+				offsetY = offsets[j][1];
+				offsetZ = offsets[j][2];
 			}
 			else if (fenlie == 6)
 			{
@@ -38,7 +40,7 @@ void CreatWire::CreateRealSus()
 			// 创建节点
 			if (index < susnum)
 			{
-				node[index] = Creat_Node(WireRealSus[i].x + offsetX, WireRealSus[i].y, WireRealSus[i].z + offsetZ, 0);
+				node[index] = Creat_Node(WireRealSus[i].x + offsetX, WireRealSus[i].y + offsetY, WireRealSus[i].z + offsetZ, 0);
 				SaveSus({ node[index] }); // 放入悬挂点
 			}
 			else
@@ -72,6 +74,9 @@ void CreatWire::CreateWire()
 		{
 			cout << i << "\n";
 			double lxi = sqrt((WireRealSus[i].x - WireRealSus[i + 1].x) * (WireRealSus[i].x - WireRealSus[i + 1].x) + (WireRealSus[i].y - WireRealSus[i + 1].y) * (WireRealSus[i].y - WireRealSus[i + 1].y));//档距
+			double wireL= sqrt((WireRealSus[i].x - WireRealSus[i + 1].x) * (WireRealSus[i].x - WireRealSus[i + 1].x) + 
+				(WireRealSus[i].y - WireRealSus[i + 1].y) * (WireRealSus[i].y - WireRealSus[i + 1].y)+ 
+				(WireRealSus[i].z - WireRealSus[i + 1].z) * (WireRealSus[i].z - WireRealSus[i + 1].z));//档距
 			double  hi = WireRealSus[i + 1].z - WireRealSus[i].z;//高差
 			double k = rou / stress;
 			double Li = (2 / k) * sinh(k * lxi / 2); //线长
@@ -83,6 +88,8 @@ void CreatWire::CreateWire()
 			double dzi = nni / N;
 			double y0i = WireRealSus[i].z + 1 / k * ((1 - cosh((k) * (nni / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 			double force = 0;//每个点对应的轴力
+			double wireGravity = wireL * unitMass * 9.8 * fenlie;
+			WireGravity.push_back(wireGravity);
 			if (fenlie == 1)
 			{
 				for (int m = 0; m < N + 1; m++)
@@ -107,6 +114,7 @@ void CreatWire::CreateWire()
 					double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireRealSus[i].z;
 					force = area * (stress + rou * (z - y0i)) / 1000;
+					force = area * (stress + rou * (z - y0i));
 					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force);
 					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force);
 				}
@@ -123,11 +131,12 @@ void CreatWire::CreateWire()
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireRealSus[i].z + 0.225;
 					double z2 = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 						sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + WireRealSus[i].z - 0.225;
+					force = area * (stress + rou * (z1 - y0i));
 				//	segamai = area * (stress + rou * (z - y0i)) / 1000;
 					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z1, force);
-					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z1, 0);
-					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y, z2,0);
-					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x1, y, z2,0);
+					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z1, force);
+					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y, z2, force);
+					node[(i - WireRealSus.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x1, y, z2, force);
 				}
 			}
 		}
@@ -207,7 +216,7 @@ void CreatWire::CreateStrain()
 		double z = WireListSus[num].z;
 		CreateStrainLine(x, y, z, ids);
 	}
-	CreatSpacer(ids);
+	CreatSpacer(m_Elements_beams,ids);
 	if (endpoinType1 == 1 && endpoinType2 == 1)//端点一耐张 端点二耐张
 	{
 		vector<int> start_ids;
@@ -225,8 +234,8 @@ void CreatWire::CreateStrain()
 		double y2 = WireListSus[num].y;
 		double z2 = WireListSus[num].z;
 		CreateStrainLine(x2, y2, z2, end_ids);
-		CreatSpacer(start_ids);
-		CreatSpacer(end_ids);
+		CreatSpacer(m_Elements_beams,start_ids);
+		CreatSpacer(m_Elements_beams,end_ids);
 	}
 
 }
@@ -247,9 +256,12 @@ void CreatWire::Create_Mesh()
 	
 		vector<int> ids;
 		ids=FindSpacerL(SpacerD[i], SpacerL[i]);
-		CreatSpacer(ids);
+		CreatSpacer(m_Elements_beams,ids);
 	}
+
 }
+
+
 
 int CreatWire::FindGroupIdNode(int idNode) const
 {

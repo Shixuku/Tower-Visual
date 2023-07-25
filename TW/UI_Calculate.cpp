@@ -118,7 +118,7 @@ void Instance_Calculate::on_btk_ok_clicked()
 			ins->s->set_gama(0.5);
 			ins->s->setTimeStep(towercaculate->dynamic_step);
 			ins->s->setStep(towercaculate->dynamic_stepnum);
-			ins->s->set_CalculateEq(true);
+			//ins->s->set_CalculateEq(true);
 			ins->s->set_Galloping(towercaculate->galloping);
 			ins->s->set_Windage(towercaculate->windage);
 		}

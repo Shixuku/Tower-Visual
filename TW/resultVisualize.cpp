@@ -64,15 +64,17 @@ void resultVisualize::update()
 	}
 	double ampFactor = ui.lineEdit->text().toDouble();//放大因子
 
-	vtkIdType pointsNum = m_points->GetNumberOfPoints();
+	//vtkIdType pointsNum = m_points->GetNumberOfPoints();
+	vtkIdType pointsNum = p_nodes.size();
 	//修改点数据中的坐标
-	for (vtkIdType i = 0; i < pointsNum; i++)
+	for (auto& i : p_nodes)
 	{
-		std::vector<double>yData = p_nodes[i]->Get_DisplaymentXData();
-		std::vector<double>zData = p_nodes[i]->Get_DisplaymentYData();
-		std::vector<double>xData = p_nodes[i]->Get_DisplaymentZData();
-		double* p = m_originalPoints->GetPoint(i);
-		m_points->SetPoint(i, p[0] + ampFactor * xData[m_frames], p[1] + ampFactor * yData[m_frames], p[2] + ampFactor * zData[m_frames]);
+		std::vector<double>yData = i->Get_DisplaymentXData();
+		std::vector<double>zData = i->Get_DisplaymentYData();
+		std::vector<double>xData = i->Get_DisplaymentZData();
+		double* p = m_originalPoints->GetPoint(i->m_id - 1);
+		m_points->SetPoint(i->m_id - 1, p[0] + ampFactor * xData[m_frames], p[1] + ampFactor * yData[m_frames], p[2] + ampFactor * zData[m_frames]);
+
 	}
 	m_frames++;//帧++
 	ui.label_frame->setText(QString::number(m_frames));//帧

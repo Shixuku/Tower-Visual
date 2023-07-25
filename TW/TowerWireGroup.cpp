@@ -73,6 +73,16 @@ void TowerWireGroup::VectorToMap()
 	{
 		NodeData.insert(std::make_pair(data.m_idNode, data));
 	}
+	// 将 vectorBeam 中的元素插入到 map 中
+	for (const auto& data : m_Elements_beams)
+	{
+		BeamData.insert(std::make_pair(data.m_idElement, data));
+	}
+	// 将 vectorTruss 中的元素插入到 map 中
+	for (const auto& data : m_Elements_Trusses)
+	{
+		TrussData.insert(std::make_pair(data.m_idElement, data));
+	}
 }
 
 void TowerWireGroup::AddTowerToGroup(Tower* tower, int towerId, double dx, double dy, double dz, double dAngle)
@@ -178,38 +188,20 @@ void TowerWireGroup::AddWireToGroup(CreatWire* wire)
 void TowerWireGroup::AddWireNode(CreatWire* wire)
 {
 	size_t wireNode = wire->m_Nodes.size();//tower中的节点
-
-	
 	//add
 	for (size_t i = 0; i < wireNode; ++i)//所有线节点的循环
 	{
 		bool isSuspensionNode = false;
-		//for (int j = 0; j < wire->allSus.size(); ++j)
-		//{
-		//	if ((wire->m_Nodes[i].x == wire->allSus[j].x)&&
-		//		(wire->m_Nodes[i].y == wire->allSus[j].y)&&
-		//		(wire->m_Nodes[i].z == wire->allSus[j].z))
-		//	{
-		//		for (int z = 0; z < this->SuspensionNode.size(); z++)
-		//		{
-		//			if (((abs(this->NodeData[SuspensionNode[z]].x - wire->m_Nodes[i].x) < 1e-8)) &&
-		//				((abs(this->NodeData[SuspensionNode[z]].y - wire->m_Nodes[i].y)) < 1e-8) &&
-		//				((abs(this->NodeData[SuspensionNode[z]].z - wire->m_Nodes[i].z)) < 1e-8))
-		//			{
-		//				isSuspensionNode = true;
-		//				wire->wireToGroup.push_back(SuspensionNode.at(z));
-		//			}
-		//		}
-		//	}
-		//}
-		for (int j = 0; j < this->SuspensionNode.size(); j++)
+		
+		for (int j = 0; j < this->realSuspoint.size(); j++)
 		{
-			if ((wire->m_Nodes[i].x == NodeData[SuspensionNode[j]].x) &&
-				(wire->m_Nodes[i].y == NodeData[SuspensionNode[j]].y) &&
-				(wire->m_Nodes[i].z == NodeData[SuspensionNode[j]].z))
+			if ((abs(wire->m_Nodes[i].x - NodeData[realSuspoint[j]].x)<1e-1) &&
+				(abs(wire->m_Nodes[i].y - NodeData[realSuspoint[j]].y) < 1e-1) &&
+				(abs(wire->m_Nodes[i].z - NodeData[realSuspoint[j]].z) < 1e-1))
 			{
+				cout << "NodeData" <<"  " << NodeData[realSuspoint[j]].x << "  " << NodeData[realSuspoint[j]].y << "  " << NodeData[realSuspoint[j]].z << "\n";
 				isSuspensionNode = true;
-				wire->wireToGroup.push_back(SuspensionNode.at(j));
+				wire->wireToGroup.push_back(realSuspoint.at(j));
 			}
 		}
 		if (isSuspensionNode == false)
@@ -268,6 +260,15 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 	}
 }
 
+void TowerWireGroup::AddAxialForceToInsulator(CreatWire* wire)
+{
+	//暂时只考虑悬垂型（加入塔线组合需修改）
+	for (int i = 0; i < this->SuspensionElementClass.size(); i++)
+	{
+		 TrussData[this->SuspensionElement[i]].AxialForce = (wire->WireGravity[i] + wire->WireGravity[i + 1]) / 2;
+		 this->m_Elements_Trusses[i].AxialForce = TrussData[this->SuspensionElement[i]].AxialForce;
+	}
+}
 
 void TowerWireGroup::rotation(double angle, int towerId)
 {
@@ -371,7 +372,6 @@ void TowerWireGroup::addSpacerNode(Part_Base* part)
 	size_t partNode = part->m_Nodes.size();//part中的节点
 	for (size_t i = 0; i < partNode; ++i)
 	{
-
 		this->m_Nodes.push_back(part->m_Nodes[i]);
 		size_t total = this->m_Nodes.size() - 1;//
 		this->m_Nodes[total].m_idNode = total + 1;

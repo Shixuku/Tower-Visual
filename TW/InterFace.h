@@ -56,7 +56,7 @@ public:
 
     vtkRenderer* m_Renderer;//放部件的vtk窗口
     vtkRenderer* m_Renderer_2;//单塔实例的vtk窗口
-    vtkRenderer* m_Renderer_3;//塔线组的vtk窗口
+   
     vtkGenericOpenGLRenderWindow* m_renderWindow;
     QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
    
@@ -77,7 +77,7 @@ public:
      Manage_Entity<Section> Ms;
      Manage_Entity<TowerWireGroup> TWG;
     // Manage_Entity<TowerWireGroup> creatWire;
-     Manage_Entity<CreatWire> creatWire;
+    // Manage_Entity<CreatWire> creatWire;
      vector<T_Foot*> t_foots;
      vector<T_Body*> t_bodys;
      vector<T_CrossArm*> t_crossarms;

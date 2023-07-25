@@ -46,8 +46,8 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	m_Renderer_2 = vtkRenderer::New();
 	m_renderWindow->AddRenderer(m_Renderer_2);//添加放单塔的vtk
 
-	m_Renderer_3 = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer_3);//添加放塔线组的vtk
+	m_Renderer_2 = vtkRenderer::New();
+	m_renderWindow->AddRenderer(m_Renderer_2);//添加放塔线组的vtk
 	this->setContextMenuPolicy(Qt::DefaultContextMenu);
 	m_CurrentRenderer = nullptr;
 	initMenu();
@@ -112,9 +112,9 @@ void InterFace::SetupCentralWidget()
 	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_2->SetGradientBackground(1);
 
-	m_Renderer_3->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
-	m_Renderer_3->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer_3->SetGradientBackground(1);                  // 开启渐变色背景设置
+	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
+	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
 
 	////添加坐标系
 	//vtkAxesActor* axesActor = vtkAxesActor::New();
@@ -571,6 +571,8 @@ void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 		m_Renderer_2->RemoveAllViewProps();
 		t->Create_Mesh();
 		towerWireGroup->AddWireToGroup(t);
+		towerWireGroup->VectorToMap();
+		towerWireGroup->AddAxialForceToInsulator(t);
 		cout << "SuspensionElementClass" << "\n";
 		for (int i = 0; i < towerWireGroup->SuspensionElementClass.size(); i++)
 		{
@@ -765,10 +767,10 @@ Instance* InterFace::OnFindInstance(const QTreeWidgetItem* Item)
 			{
 				if (i.second->Item == *it) return i.second;
 			}
-			for (auto& i : creatWire)
+		/*	for (auto& i : creatWire)
 			{
 				if (i.second->Item == *it) return i.second;
-			}
+			}*/
 			return nullptr;
 		}
 		++it;
@@ -888,13 +890,13 @@ void InterFace::HiddeAllTower()
 
 void InterFace::HiddeAllWire()
 {
-	vtkPropCollection* props = m_Renderer_3->GetViewProps(); //iterate through and set each visibility to 0
+	vtkPropCollection* props = m_Renderer_2->GetViewProps(); //iterate through and set each visibility to 0
 	props->InitTraversal();
 	for (int i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		props->GetNextProp()->VisibilityOff();
 
-		m_Renderer_3->ResetCamera();
+		m_Renderer_2->ResetCamera();
 		m_renderWindow->Render();
 	}
 }
@@ -911,13 +913,12 @@ void InterFace::ShowSubstaceActor(Part_Base* Part)
 
 }
 
-
 void InterFace::switchRenderWindow(int index)
 {
 	Close_Point();
 	m_renderWindow->RemoveRenderer(m_Renderer);
 	m_renderWindow->RemoveRenderer(m_Renderer_2);
-	m_renderWindow->RemoveRenderer(m_Renderer_3);
+	m_renderWindow->RemoveRenderer(m_Renderer_2);
 
 	if (index == 0)
 	{
@@ -933,9 +934,9 @@ void InterFace::switchRenderWindow(int index)
 	}
 	else if (index == 2)
 	{
-		m_renderWindow->AddRenderer(m_Renderer_3);
+		m_renderWindow->AddRenderer(m_Renderer_2);
 		// Set up camera and other settings for Renderer 3
-		m_Renderer_3->ResetCamera();
+		m_Renderer_2->ResetCamera();
 	}
 
 	m_renderWindow->Render();
@@ -1411,7 +1412,7 @@ void InterFace::Show_Wire(Instance* instance)
 	instance->Node_actor->VisibilityOn();
 	instance->m_TrussActor->VisibilityOn();
 	
-	m_Renderer_3->ResetCamera();
+	m_Renderer_2->ResetCamera();
 }
 
 void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
