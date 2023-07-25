@@ -1,6 +1,0 @@
-#ifndef D__dllAnalyse_lib_debug
-#define D__dllAnalyse_lib_debug
-
-#pragma comment(lib,"E:\\dllAnalyse\\lib_debug\\DLL_ansys.lib")
-
-#endif

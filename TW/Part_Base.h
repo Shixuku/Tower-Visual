@@ -80,6 +80,7 @@ public:
 
 	static void Node4_Creat1(const Node& n1, const Node& n2, const Node& n3, const Node& n4, Node& n);//计算四个点生成的两直线交叉点
 
+	void CreatWireBeams(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成导线
 	void Creat_Beams(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成梁单元
 	void Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成梁单元
 

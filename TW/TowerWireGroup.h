@@ -44,11 +44,9 @@ public:
 	void AddWireToGroup(CreatWire* wire);
 	void AddWireNode(CreatWire* wire);
 	void AddWireElement(CreatWire* wire);
+	void AddAxialForceToInsulator(CreatWire* wire);//给绝缘子施加轴力
 	void rotation(double angle, int towerId);
-	vtkSmartPointer<vtkPoints> m_pts;
-	vtkSmartPointer<vtkActor> m_BeamActor;
-	vtkSmartPointer<vtkActor> m_TrussActor;
-	vtkSmartPointer<vtkActor> Node_actor;
+
 	void ShowNode()const;//显示所有节点坐标
 	void ShowElement()const;//显示所有单元
 	void ShowTrussElement()const;//显示所有杆单元

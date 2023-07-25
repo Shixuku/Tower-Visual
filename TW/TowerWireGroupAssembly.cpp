@@ -20,15 +20,15 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 		});
 	connect(ui.BtnOk, &QPushButton::clicked, this, [=]()
 		{
-			towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_3);
-			towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_3);
-			towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_3);
+			towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_2);
+			towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_2);
+			towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_2);
 			towerWireGroup->ShowNode();
 			towerWireGroup->ShowBeamElement();
 			towerWireGroup->ShowTrussElement();
 			CreatTowerWierGroupItem();
 			towerWireGroup->VectorToMap();
-			m_pInterFace->m_Renderer_3->ResetCamera();
+			m_pInterFace->m_Renderer_2->ResetCamera();
 			m_pInterFace->TWG.Add_Entity(towerWireGroup);
 			this->reject();
 		});

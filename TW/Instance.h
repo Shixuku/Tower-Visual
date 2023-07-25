@@ -31,6 +31,7 @@ public:
 	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
 	vector<int>RestraintNode;//添加约束节点
 	vector<int>SuspensionNode;//添加悬挂点
+	vector<double>WireGravity;//每档导线的重力
 	vector<int>WireLogo;
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);

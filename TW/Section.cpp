@@ -8,16 +8,16 @@ Section::Section(double ia, double ib, int id, int iClassSe, int iClassM)
 	b = ib;
 	ClassM = iClassM;
 	m_id = id;
-	if (iClassSe == 0)
+	if (iClassSe == 0)//L
 	{
 		GetLIxyz();
 	}
-	else if(iClassSe == 1)
+	else if(iClassSe == 1)//Ô²»·
 	{
 		GetOIxyz();
 
 	}
-	else if (iClassSe == 2)
+	else if (iClassSe == 2)//Ô²
 	{
 		GetCircleIxyz();
 	}

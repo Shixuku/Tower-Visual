@@ -18,7 +18,9 @@ public:
 	vector<Node>allSus;//真实悬挂点加上列表中首位两个点
 	vector<Node> TempListNodes;//节点合集
 	vector<Node> TempRealNodes;//节点合集
-	double WireSectionId = 0;//截面编号
+	
+	int WireSectionId = 0;//截面编号
+	int InsulatorSectionId = 0;//截面编号
 	int wireQty = 0;//总线路数
 	int endpoinType1 = 0;//线路端点一的类型（0为挂绝缘子上，1为耐张-挂塔上）
 	int endpoinType2 = 0;//线路端点二的类型（0为挂绝缘子上，1为耐张-挂塔上）
@@ -26,7 +28,7 @@ public:
 	void CreatRealNode();//创建真实悬挂点
 	void CreateTempWireNode(vector<Node>&sus,vector<Node>&Nodes);//由列表悬挂点创建为分裂的基础节点
 	void FindRealSus(int choose); //choose=0;1-耐张，choose=1;2-耐张，choose=2;1，2-均耐张
-	void CreatSpacer(vector<int> ids);//几个点成环 生成间隔棒
+	void CreatSpacer(vector<Element_Beam>& m_Elements_Beams, vector<int> ids);//几个点成环 生成间隔棒
 	void CreateStrainLine(double x,double y,double z,vector<int> ids);//将耐张串的环连在一个点上
 	void CreateSpacerDistance();//
 	vector<int> FindSpacerL(int d,int L);

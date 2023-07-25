@@ -167,6 +167,30 @@ void Part_Base::Node4_Creat1(const Node& n1, const Node& n2, const Node& n3, con
 	}
 }
 
+void Part_Base::CreatWireBeams(vector<Element_Beam>& m_Elements_Beams, vector<int> ids)
+{
+	size_t size = ids.size();
+	int node1 = ids[0];
+	id_BeamSection++;
+	double iDirection[3];
+	for (int i = 1; i < size; i++)
+	{
+		int node2 = ids[i];
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			iDirection[0] = 3.141595; iDirection[1] = 1.75691; iDirection[2] = 0.84178;
+			m_Elements_beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));
+			Beam_elementsID++;
+			node1 = node2;
+		}
+
+	}
+}
+
 void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> ids)
 {
 	size_t size = ids.size();
@@ -197,6 +221,10 @@ void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> 
 			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
 			{
 				iDirection[0] = 1; iDirection[1] = 0; iDirection[2] = 0;
+			}
+			else if (m_Nodes[node1 - 1].z == m_Nodes[node2 - 1].z)
+			{
+				iDirection[0] = 3.141595; iDirection[1] = 1.75691; iDirection[2] = 0.84178;
 			}
 			else
 			{
@@ -239,10 +267,11 @@ void Part_Base::Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>
 			}
 			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
 			{
-				iDirection[0] = 1; iDirection[1] = 0; iDirection[2] = 0;
+				iDirection[0] = 3.141595; iDirection[1] = 1.75691; iDirection[2] = 0.84178;
 			}
 			else
 			{
+
 				iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
 			}
 			m_Elements_Beams.push_back(Element_Beam(Beam_elementsID + 1, node1, node2, id_BeamSection, iDirection));

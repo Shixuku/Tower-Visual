@@ -108,6 +108,10 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.WireSectionId= m_pInterFace->Ms.size()+1;
 	double r = sqrt(area / PI);
 	Section* i = new Section(r, 0, wd.WireSectionId, 2, 4);
+	wd.InsulatorSectionId = m_pInterFace->Ms.size() + 2;
+	Section* j = new Section(7 * r, 0, wd.InsulatorSectionId, 2, 5);
+	wd.InsulatorSectionId = m_pInterFace->Ms.size() + 3;
+	Section* k = new Section(4 * r, 0, wd.InsulatorSectionId, 2, 6);
 	wd.wireQty = wireLogoQty;
 	wd.endpoinType1 = chooseType1;
 	wd.endpoinType2 = chooseType2;
@@ -117,6 +121,8 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.allSus.push_back(Node(1, WireSusList[0].x, WireSusList[0].y, WireSusList[0].z, 0));
 	wd.allSus.push_back(Node(1, WireSusList[num].x, WireSusList[num].y, WireSusList[num].z, 0));
 	m_pInterFace->Ms.Add_Entity(i);
+	m_pInterFace->Ms.Add_Entity(j);
+	m_pInterFace->Ms.Add_Entity(k);
 }
 
 void Wire_InterFace::SaveSusPoint()

@@ -55,7 +55,8 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGrou
 		connect(ui.rdb_V, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(4); });
 		connect(ui.radioButton, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(5); });
 	}
-
+	ui.lineEdit_WireLogo->setText("1");
+	ui.lineEdit_5->setText("30");
 }
 
 Interphase_spacer::~Interphase_spacer()
@@ -110,15 +111,15 @@ void Interphase_spacer::Get_Nodes()
 void Interphase_spacer::Create_Nodes()
 {
 	int ret = ui.stackedWidget->currentIndex();
-	if (ret == 3)
+	if (ret == 3)//悬垂（还需修改）
 	{
 		double x = ui.lineEditSusNodeX->text().toDouble();
 		double y = ui.lineEditSusNodeY->text().toDouble();
 		double z = ui.lineEditSusNodeZ->text().toDouble();
-		m_Nodes.push_back(new Node(0,x, y, z,0));
+		m_Nodes.push_back(new Node(0, x, y, z, 0));
 		TP_insulator->m_node = m_Nodes[0];
 	}
-	else if (ret == 4)
+	else if (ret == 4)//V型（需修改）
 	{
 		double x1 = ui.lineEditSusNodeX1->text().toDouble();
 		double y1 = ui.lineEditSusNodeY1->text().toDouble();
@@ -131,7 +132,7 @@ void Interphase_spacer::Create_Nodes()
 		m_Nodes.push_back(new Node(0, x2, y2, z2, 0));
 		TP_insulator->m_node2 = m_Nodes[1];
 	}
-	else if (ret == 5)
+	else if (ret == 5)//耐张
 	{
 		double x1 = ui.lineEdit_3->text().toDouble();
 		double y1 = ui.lineEdit_4->text().toDouble();
@@ -140,6 +141,7 @@ void Interphase_spacer::Create_Nodes()
 		int wireLogo= ui.lineEdit_WireLogo->text().toDouble();
 		towerWireGroup->susPoint.push_back(SuspensionNodeId);
 		towerWireGroup->SuspensionNode.push_back(SuspensionNodeId);
+		towerWireGroup->realSuspoint.push_back(SuspensionNodeId);
 		towerWireGroup->WireLogo.push_back(wireLogo);
 	}
 }

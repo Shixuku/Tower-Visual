@@ -156,33 +156,40 @@ void WireData::FindRealSus(int choose)
 	WireRealSus.insert(WireRealSus.end(), tempWireRealSus.begin(), tempWireRealSus.end());
 }
 
-void WireData::CreatSpacer(vector<int> ids)
+void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Beams, vector<int> ids)
 {
 	if (ids.size() < 4)return;
 	ids.push_back(ids[0]);
+
 	int id1 = ids[0];
-	int idelement = m_Elements_beams.size();
+	int idelement = m_Elements_Beams.size();
 	size_t size = ids.size();
 	for (int i = 1; i < size; i++)
 	{
 		int id2 = ids[i];
-		double iDirection[3] = { 0.0, 0.0, 0.0 };
-		m_Elements_beams.push_back(Element_Beam(idelement, id1, id2, 0, iDirection));//总的单元
+		double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
+		m_Elements_Beams.push_back(Element_Beam(idelement + 1, id1, id2, 0, iDirection));//总的单元
 		id1 = id2;
 		idelement++;
 	}
+	for (int i = 0; i < m_Elements_Beams.size(); i++)
+	{
+		m_Elements_Beams[i].ClassSectionID = 3;
+		m_Elements_Beams[i].MaterialID = 6;
+
+	}
+
 }
 
 void WireData::CreateStrainLine(double x, double y, double z, vector<int> ids)
 {
 	int id = Creat_Node(x, y, z, 0);
-	int idelement = m_Elements_beams.size();
+	int idelement = m_Elements_Trusses.size();
 	size_t size = ids.size();
 	for (int i = 0; i < size; i++)
 	{
 		int id2 = ids[i];
-		double iDirection[3] = { 0.0, 0.0, 0.0 };
-		m_Elements_beams.push_back(Element_Beam(idelement, id, id2, 0, iDirection));//总的单元
+		m_Elements_Trusses.push_back(Element_Truss(idelement + 1, id, id2, 2, 5));//材料和轴力后续需要改
 		idelement++;
 	}
 }

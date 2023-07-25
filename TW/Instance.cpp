@@ -332,12 +332,14 @@ void Instance::ConcentrationTxT()
 
 void Instance::MaterialTxT()
 {
-	Stream << 4 << "\n";
+	Stream << 6 << "\n";
 	for (int i = 0; i < 3; i++)
 	{
 		Stream << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
 	}
-	Stream << 4 << "  " << 4.79e10 << "  " << 0.3 << "  " << 4e3 << "\n";
+	Stream << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080<< "\n";
+	Stream << 5 << "  " << 2.0e11 << "  " << 0.3 << "  " << 9.8e3 << "\n";
+	Stream << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "\n";
 }
 
 void Instance::BeamSectionTxT()

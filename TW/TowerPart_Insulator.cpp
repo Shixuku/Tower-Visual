@@ -42,6 +42,12 @@ void TowerPart_Insulator::Get_split1()
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[2],node[1] });
 	SuspensionElement.push_back(1);
 	SuspensionElement.push_back(2);
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		m_Elements_Trusses[i].ClassSectionID = 2;
+		m_Elements_Trusses[i].MaterialID = 5;
+
+	}
 	SuspensionElementClass.push_back(2);
 }
 
@@ -62,6 +68,11 @@ void TowerPart_Insulator::Get_split1_I()
 	Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
 	SuspensionElement.push_back(1);
 	SuspensionElementClass.push_back(1);
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		m_Elements_Trusses[i].ClassSectionID = 2;
+		m_Elements_Trusses[i].MaterialID = 5;
+	}
 }
 
 void TowerPart_Insulator::Get_split2()
@@ -81,6 +92,12 @@ void TowerPart_Insulator::Get_split2()
 	SuspensionElement.push_back(1);
 	SuspensionElement.push_back(4);
 	SuspensionElementClass.push_back(2);
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		m_Elements_Trusses[i].ClassSectionID = 2;
+		m_Elements_Trusses[i].MaterialID = 5;
+
+	}
 }
 
 void TowerPart_Insulator::Get_split2_I()
@@ -99,6 +116,11 @@ void TowerPart_Insulator::Get_split2_I()
 	Creat_Trusses(m_Elements_Trusses, { node[2],node[1],node[3] });
 	SuspensionElement.push_back(1);
 	SuspensionElementClass.push_back(1);
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		m_Elements_Trusses[i].ClassSectionID = 2;
+		m_Elements_Trusses[i].MaterialID = 5;
+	}
 }
 
 void TowerPart_Insulator::Get_split4(int m_type)
@@ -134,10 +156,20 @@ void TowerPart_Insulator::Get_split4(int m_type)
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
-		Creat_Beams(m_Elements_beams, { node[2],node[1],node[3] });
-		Creat_Beams(m_Elements_beams, { node[3],node[5],node[4],node[2] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[1],node[3] });
+		CreatWireBeams(m_Elements_beams, { node[3],node[5],node[4],node[2] });
 		SuspensionElement.push_back(1);
 		SuspensionElementClass.push_back(1);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 
 	}
 	else if (m_type == 2)
@@ -145,10 +177,20 @@ void TowerPart_Insulator::Get_split4(int m_type)
 		//生成单元
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[2] });
 		Creat_Trusses(m_Elements_Trusses, { node[3],node[1] });
-		Creat_Beams(m_Elements_beams, { node[3],node[5],node[4],node[2],node[3] });
+		CreatWireBeams(m_Elements_beams, { node[3],node[5],node[4],node[2],node[3] });
 		SuspensionElement.push_back(1);
 		SuspensionElement.push_back(2);
 		SuspensionElementClass.push_back(2);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 	}
 	
 }
@@ -200,19 +242,39 @@ void TowerPart_Insulator::Get_split6(int m_type)
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
-		Creat_Beams(m_Elements_beams, { node[2],node[1],node[3] });
-		Creat_Beams(m_Elements_beams, { node[2],node[4],node[6],node[7],node[5],node[3]});
+		CreatWireBeams(m_Elements_beams, { node[2],node[1],node[3] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[4],node[6],node[7],node[5],node[3]});
 		SuspensionElement.push_back(1);
 		SuspensionElementClass.push_back(1);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 	}
 	else if (m_type == 2)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[2] });
 		Creat_Trusses(m_Elements_Trusses, { node[3],node[1] });
-		Creat_Beams(m_Elements_beams, { node[2],node[4],node[6],node[7],node[5],node[3],node[2] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[4],node[6],node[7],node[5],node[3],node[2] });
 		SuspensionElement.push_back(1);
 		SuspensionElement.push_back(2);
 		SuspensionElementClass.push_back(2);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 	}
 
 }
@@ -272,19 +334,41 @@ void TowerPart_Insulator::Get_split8(int m_type)
 	if (m_type == 1)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[1] });
-		Creat_Beams(m_Elements_beams, { node[2],node[1],node[3] });
-		Creat_Beams(m_Elements_beams, { node[2],node[4],node[6],node[8],node[9],node[7],node[5],node[3] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[1],node[3] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[4],node[6],node[8],node[9],node[7],node[5],node[3] });
 		SuspensionElement.push_back(1);
 		SuspensionElementClass.push_back(1);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 	}
 	else if (m_type == 2)
 	{
 		Creat_Trusses(m_Elements_Trusses, { node[0],node[2] });
-		Creat_Beams(m_Elements_beams, { node[3],node[1] });
-		Creat_Beams(m_Elements_beams, { node[2],node[4],node[6],node[8],node[9],node[7],node[5],node[3] ,node[2] });
+		CreatWireBeams(m_Elements_beams, { node[3],node[1] });
+		CreatWireBeams(m_Elements_beams, { node[2],node[4],node[6],node[8],node[9],node[7],node[5],node[3] ,node[2] });
 		SuspensionElement.push_back(1);
 		SuspensionElement.push_back(2);
 		SuspensionElementClass.push_back(2);
+		for (int i = 0; i < m_Elements_Trusses.size(); i++)
+		{
+			m_Elements_Trusses[i].ClassSectionID = 2;
+			m_Elements_Trusses[i].MaterialID = 5;
+
+		}
+		for (int i = 0; i < m_Elements_beams.size(); i++)
+		{
+			m_Elements_beams[i].ClassSectionID = 3;
+			m_Elements_beams[i].MaterialID = 6;
+		}
 	}
 	
 }
