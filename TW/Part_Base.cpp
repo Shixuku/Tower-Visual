@@ -222,10 +222,6 @@ void Part_Base::Creat_Beams(vector<Element_Beam>& m_Elements_beams, vector<int> 
 			{
 				iDirection[0] = 1; iDirection[1] = 0; iDirection[2] = 0;
 			}
-			else if (m_Nodes[node1 - 1].z == m_Nodes[node2 - 1].z)
-			{
-				iDirection[0] = 3.141595; iDirection[1] = 1.75691; iDirection[2] = 0.84178;
-			}
 			else
 			{
 				iDirection[0] = 0; iDirection[1] = 0; iDirection[2] = -1;
@@ -264,10 +260,6 @@ void Part_Base::Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>
 			else if (m_Nodes[node1 - 1].x > 0 && m_Nodes[node1 - 1].y < 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
 			{
 				iDirection[0] = -1; iDirection[1] = 0; iDirection[2] = 0;
-			}
-			else if (m_Nodes[node1 - 1].x < 0 && m_Nodes[node1 - 1].y > 0 && m_Nodes[node1 - 1].z != m_Nodes[node2 - 1].z)
-			{
-				iDirection[0] = 3.141595; iDirection[1] = 1.75691; iDirection[2] = 0.84178;
 			}
 			else
 			{

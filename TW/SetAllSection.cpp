@@ -49,7 +49,8 @@ void SetAllSection::Assgin(Part_Base* Part)
 				int ClassM= ui.tableWidget->item(j,4)->text().toInt();
 				//Part->pSection.push_back(Section(a, b, id, ClassSe, ClassM));
 				Part->pSection.push_back(id);
-				Section* section = new Section(a, b, id, ClassSe, ClassM);
+				QString name = ui.line_name->text();
+				Section* section = new Section(name, a, b, id, ClassSe, ClassM);
 				m_pInterFace->Ms.Add_Entity(section);
 				QSet<int>group_row;
 				group_row.insert(i.sectionID);

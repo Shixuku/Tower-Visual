@@ -17,7 +17,6 @@ public:
 	InterFace* m_pInterFace = nullptr;
 	Tower* m_tower = new Tower;
 	QString m_str;//取名称
-	QString m_itemText;//取载荷类型
 private:
 	Ui::Creat_LoadsClass ui;
 

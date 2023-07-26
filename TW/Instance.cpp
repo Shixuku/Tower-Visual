@@ -5,10 +5,12 @@
 #include <vtkConeSource.h>
 #include<vtkLineSource.h>
 #include <vtkPolyData.h>
+#include <vtkIdFilter.h>
+#include<vtkDataSetSurfaceFilter.h>
+
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
-
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	//点
 	int nTruss = m_Elements_Trusses.size();
@@ -21,12 +23,31 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 		m_lines->InsertNextCell(line);
 	}
 
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
+
+	linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
 	linesPolyData->SetLines(m_lines);
 
+	//做框选
+	vtkNew<vtkIdFilter> idFilter;//保存数据
+	idFilter->SetInputData(linesPolyData);
+	idFilter->SetCellIdsArrayName("OriginalIds");//保存单元
+	idFilter->SetPointIdsArrayName("OriginalIds");//保存点
+	idFilter->Update();
+	//简化成表面
+	vtkNew<vtkDataSetSurfaceFilter> surfaceFilter;
+	surfaceFilter->SetInputConnection(idFilter->GetOutputPort());
+	surfaceFilter->Update();
+
+	vtkPolyData* input = surfaceFilter->GetOutput();
+	//std::cout << "points" << input->GetNumberOfPoints() << "cells:" << input->GetNumberOfCells() << std::endl;
+
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(linesPolyData);
+	//mapper->SetInputData(linesPolyData);
+	//kuangxuang
+	mapper->SetInputData(input);
+	mapper->ScalarVisibilityOff();
+
 	m_TrussActor = vtkSmartPointer<vtkActor>::New();
 	m_TrussActor->SetMapper(mapper);
 	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
@@ -36,7 +57,6 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 void Instance::Show_VTKbeam(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
-	//vtkSmartPointer<vtkCellArray>lines = vtkSmartPointer<vtkCellArray>::New();
 	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
 	int nTruss = m_Elements_beams.size();
 	for (size_t i = 0; i < m_Elements_beams.size(); i++)
@@ -48,7 +68,7 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 		m_lines->InsertNextCell(line);
 	}
 
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
+	linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
 	linesPolyData->SetLines(m_lines);
 
@@ -158,7 +178,7 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids)
 
 void Instance::SaveTo(QDataStream& fin) const
 {
-	fin << m_id;
+	fin << m_id;//实例的id,可能会有bug
 	int nNode = m_Nodes.size();
 	fin << nNode;
 	for (int i = 0; i < nNode; ++i)
@@ -183,6 +203,13 @@ void Instance::SaveTo(QDataStream& fin) const
 	{
 		fin << SuspensionNode[i];
 	}
+	////集中力
+	//int nLoadForce = Load.size();
+	//fin << nLoadForce;
+	//for (int i = 0; i < nLoadForce; i++)
+	//{
+	//	Load[i].SaveTo(fin);
+	//}
 }
 
 void Instance::Input(QDataStream& fin)
@@ -216,6 +243,14 @@ void Instance::Input(QDataStream& fin)
 	{
 		fin >> SuspensionNode[i];
 	}
+	////集中力
+	//int nLoadForce; 
+	//fin << nLoadForce;
+	//Load.resize(nLoadForce);
+	//for (int i = 0; i < nLoadForce; i++)
+	//{
+	//	Load[i].Input(fin);
+	//}
 }
 
 void Instance::VectorToMap()
@@ -260,22 +295,27 @@ void Instance::CreateOutPut()
 			return;
 		}
 		this->m_name = filename;
-		NodeTxT();
-		BeamTxT();
-		TrussTxT();
-		Stream << 0 << " \n";//没有索单元暂时为0
-		ConcentrationTxT();
-		//1（重力数量）
-		//1 0 - 9.8 0(编号 重力加速度Vector3d)
-		Stream << 1 << "\n";//重力暂时为空
-		Stream << 1 << "  " << 0 << "  " << -9.8 << "  " <<0 << "\n";
+		NodeTxT();//节点
+		TrussTxT();//桁架单元
+		BeamTxT();//梁单元
+		//Stream << 0 << " \n";//没有索单元暂时为0
+
+		//荷载
+		ConcentrationTxT();//集中力
+		GravityTxT();//重力
 		//1（多项式函数数量）
 		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
-		Stream << 0 << "\n";//多项式函数暂时为空
+		//Stream << 0 << "\n";//多项式函数暂时为空
+
+		//边界条件
 		RestraintTxT();
-		MaterialTxT();
-		BeamSectionTxT();
-		TrussSectionTxT();
+		//add冰单元类别
+
+		MaterialTxT();//材料
+		TrussSectionTxT();//桁架截面数据
+		BeamSectionTxT();//梁截面数据
+		Section_Assign();//单元指派
+		Axial_force();//初始轴力
 		// 关闭文件
 		Qf.close();
 	}
@@ -285,77 +325,77 @@ void Instance::CreateOutPut()
 void Instance::NodeTxT()
 {
 	int NodeSize = m_Nodes.size();
-	Stream << NodeSize << " \n";
+	Stream <<"*Node," << NodeSize << " \n";
 	for (int i = 0; i < m_Nodes.size(); i++)
 	{
-		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].y  << "      " << m_Nodes[i].z  <<
-			"     " << m_Nodes[i].x  << " " << "\n";
+		Stream << "  " << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y <<
+			"  " << m_Nodes[i].z << "  " << "\n";
 	}
 }
 
 void Instance::BeamTxT()
 {
 	int BeamSize = m_Elements_beams.size();
-	Stream << BeamSize << " \n";
+	Stream << "*Element_Beam3D," << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		//m_Elements_beams[i].ClassSectionID  截面号
-
-		Stream << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID//材料号
-			<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "  " << m_Elements_beams[i].direction[0] << "  " <<
-			m_Elements_beams[i].direction[1] << "  " <<
-			m_Elements_beams[i].direction[2] << "  " << "\n";
+		Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
 	}
 }
 
 void Instance::TrussTxT()
 {
 	int TressSize = m_Elements_Trusses.size();
-	Stream << TressSize << " \n";
+	Stream <<"*Element_Truss3D," << TressSize << " \n";
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
-		Stream << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
-			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_Trusses[i].AxialForce << "\n";
+		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
 	}
 }
 
 void Instance::ConcentrationTxT()
 {
 	int LoadSize = Load.size();
-	Stream << LoadSize << " \n";
+	Stream <<"*ConcentrationForce, " << LoadSize << " \n";
 	for (int i = 0; i < Load.size(); i++)
 	{
-		Stream << Load[i].id_force << "      " << Load[i].id_node << "    " << Load[i].DirectionForce << "  " << Load[i].Force
-			<< "  " << Load[i].StartTime << "  " << Load[i].EndTime << "\n";
+		Stream << "  " << Load[i].id_force << "  " << Load[i].id_node << "  " << Load[i].DirectionForce << "  " << Load[i].Force
+			<< "  " /*<< Load[i].StartTime << "  " << Load[i].EndTime*/ << "\n";
+	}
+}
+
+void Instance::GravityTxT()
+{
+	int GravitySize = m_Gravitys.size();
+	Stream << "*Gravity," << GravitySize << "\n";//重力
+	for (int i = 0; i < GravitySize; i++)
+	{	//1 0 - 9.8(编号 方向012-xyz 大小)
+		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
 	}
 }
 
 void Instance::MaterialTxT()
 {
-	Stream << 6 << "\n";
+	Stream <<"*Material," << 6 << "\n";
 	for (int i = 0; i < 3; i++)
 	{
-		Stream << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
+		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
+		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 <<"  " << 0 << "\n";
 	}
-	Stream << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080<< "\n";
-	Stream << 5 << "  " << 2.0e11 << "  " << 0.3 << "  " << 9.8e3 << "\n";
-	Stream << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "\n";
+	Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080<< "\n";
+	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "\n";
+	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "\n";
 }
 
 void Instance::BeamSectionTxT()
 {
-	//int SectionSize = pSection.size();
-	//Stream << SectionSize << "\n";
-	//for (int i = 0; i < SectionSize; i++)
-	//{
-	//	Stream << pSection[i].m_id << "  " << pSection[i].S << "  " << pSection[i].B_Iy << "  " << pSection[i].B_Iz << "  " << pSection[i].B_J << "\n";
-	//}
 	InterFace* pInterFace = Base::Get_InterFace();
 	int SectionSize = pInterFace->Ms.size();
-	Stream << SectionSize << "\n";
+	Stream << "*Section_Beam3D," << SectionSize << "\n";
 	for (auto& i : pInterFace->Ms)
 	{
-		Stream << i.second->m_id << "  " << i.second->S << "  " << i.second->B_Iy << "  " << i.second->B_Iz << "  " << i.second->B_J << "\n";
+		//编号，材料号 类型 A, Iy,  Iz,Iyz, J  ----Iyz暂时为0
+		Stream << "  " << i.second->m_id << "  " << i.second->ClassM << "  " << "Data " << i.second->S << "  " << i.second->B_Iy << "  " << i.second->B_Iz << "  " <<0.0<< "  " << i.second->B_J << "\n";
 	}
 }
 
@@ -363,11 +403,34 @@ void Instance::TrussSectionTxT()
 {
 	InterFace* pInterFace = Base::Get_InterFace();
 	int SectionSize = pInterFace->Ms.size();
-	Stream << SectionSize << "\n";
+	Stream <<"*Section_Truss," << SectionSize << "\n";
 	for (auto& i : pInterFace->Ms)
-	{
-		Stream << i.second->m_id << "  " << i.second->S << "\n";
+	{//**截面的编号，材料号，面积
+		Stream << "   " << i.second->m_id << "  " << i.second->ClassM << "  " << i.second->S << "\n";
 	}
+}
+
+void Instance::Section_Assign()
+{
+	int TotalElementSize = m_Elements_Trusses.size() + m_Elements_beams.size();
+	Stream << "*Section_Assign," << TotalElementSize << " \n";
+	//先杆
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].ClassSectionID << "  " << "\n";
+	}
+	//再梁
+	for (int i = 0; i < m_Elements_beams.size(); i++)
+	{
+
+		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
+			<<m_Elements_beams[i].direction[2] << "  " << "\n";
+	}
+}
+
+void Instance::Axial_force()
+{//没有设置，暂时为0
+	Stream << "*Axial_force," << 0 << " \n";
 }
 
 void Instance::Suspensioncombined()
@@ -383,21 +446,24 @@ void Instance::Suspensioncombined()
 
 void Instance::RestraintTxT()
 {
-	//int a = 24;//只考虑塔脚的4个完全约束
-	//Stream << a << "\n";
-	//cout << "start RestraintNode" << "\n";
-	//for (int i = 0; i < RestraintNode.size(); i++)
-	//{
-	//	for (int j = 0; j < 6; j++)
-	//	{
-	//		Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-	//	}
-	//}
-	int m_ConstraintSize = m_Constraint.size();
-	Stream << m_ConstraintSize << " \n";
-	for (int i = 0; i < m_Constraint.size(); i++)
+	int RestraintNodesize = 24;//塔脚的4个完全约束
+	int m_ConstraintSize = m_Constraint.size();//增加的约束
+	int totalRestraint = RestraintNodesize + m_ConstraintSize;
+
+	Stream <<"*Constraints," << totalRestraint << "\n";
+	int m_id=1;
+	for (int i = 0; i < RestraintNode.size(); i++)
 	{
-		Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "  " << 0 << "\n";
+		for (int j = 0; j < 6; j++)
+		{
+			Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+			m_id++;
+		}	
+	}
+	//默认约束
+	for (int i = 0; i < m_ConstraintSize; i++)
+	{
+		Stream << "  " << m_Constraint[i].m_idConstraint << "  " << m_Constraint[i].m_idNode << "  " << m_Constraint[i].m_Direction << "  " << 0 << "\n";
 	}
 }
 
@@ -491,8 +557,6 @@ void Instance::Draw_hinge_joint(double x, double y, double z, vtkRenderer* rende
 		coneActor->GetProperty()->SetRepresentationToWireframe();
 		m_ConstraintActor.push_back(coneActor);
 		renderer->AddActor(coneActor);
-
 	}
-
 	renderer->ResetCamera();
 }

@@ -50,7 +50,7 @@
         </item>
         <item>
          <property name="text">
-          <string>风荷载</string>
+          <string>覆冰</string>
          </property>
         </item>
         <item>
@@ -60,7 +60,7 @@
         </item>
         <item>
          <property name="text">
-          <string>冰荷载</string>
+          <string>风荷载</string>
          </property>
         </item>
        </widget>

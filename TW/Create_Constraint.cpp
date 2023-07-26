@@ -60,7 +60,7 @@ void Create_Constraint::Draw_Con1()
 				m_pInstance->Draw_fixed_Constrained(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_CurrentRenderer);
 				for (int j = 0; j < 6; j++)
 				{
-					int id = m_pInstance->m_Constraint.size() + 1;//Ô¼Êø±àºÅ
+					int id = m_pInstance->m_Constraint.size() + 25;//Ô¼Êø±àºÅ
 					m_pInstance->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
 				}
 			}

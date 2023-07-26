@@ -33,36 +33,7 @@ Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* pa
 	linesactor = vtkSmartPointer<vtkActor>::New();
 
 	//显示创建截面对话框
-	connect(ui.btn_add, &QPushButton::clicked, this, [=](){
-	int ret = ma_ab2->exec();
-	if (ret == QDialog::Accepted)
-	{
-
-		int id = m_pInterFace->Ms.size();//从1开始排序
-		int irow = ui.Section_Lists->rowCount();
-		ui.Section_Lists->setRowCount(irow + 1);
-		Section* pSection = m_pInterFace->Ms.Find_Entity(id);  //取出截面指针
-		QString s;
-		if (pSection->ClassSe == 0)
-		{
-			s = "L型";
-		}
-		else
-		{
-			s = "圆环";
-		}
-		ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
-		ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(QString::number(pSection->a)));
-		ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(QString::number(pSection->b)));
-		ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(QString::number(pSection->ClassM)));
-		ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(QString::number(pSection->m_id)));
-		for (int i = 1; i < 6; i++)
-		{
-			ui.Section_Lists->item(irow, i)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		}
-
-
-	}});
+	connect(ui.btn_add, &QPushButton::clicked, this, &Assign_Section::BtnAddSection);
 
 	//删除已添加的截面
 	connect(ui.btn_delete, &QPushButton::clicked, this, &Assign_Section::table_Section_Lists_delete);
@@ -71,7 +42,6 @@ Assign_Section::Assign_Section(InterFace* InterFace, Part_Base*Part, QWidget* pa
 	connect(ui.btn_finish, &QPushButton::clicked, this, [=]()
 		{
 			m_pInterFace->m_Renderer->RemoveActor(linesactor);
-			
 			this->reject();
 		});
 
@@ -106,53 +76,19 @@ void Assign_Section::Add_created_section()
 		if (pSection->ClassSe == 0)
 		{
 			s = "L型";
-			ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
-			ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-			QString ia = QString::number(pSection->a);
-			ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
-			ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-			QString ib = QString::number(pSection->b);
-			ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
-			ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-			QString iM = QString::number(pSection->ClassM);
-			ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
-			ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-			QString id = QString::number(pSection->m_id);
-			ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
-			ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
 		else if(pSection->ClassSe==1)
 		{
 			s = "圆环";
 		}
-		//QString QName = QString::fromStdString(pSection->Name);
-		//ui.Section_Lists->setItem(irow, 0, new QTableWidgetItem(QName));
-		//ui.Section_Lists->item(irow, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		//ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
-		//ui.Section_Lists->item(irow, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		//QString ia = QString::number(pSection->a);
-		//ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(ia));
-		//ui.Section_Lists->item(irow, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		//QString ib = QString::number(pSection->b);
-		//ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(ib));
-		//ui.Section_Lists->item(irow, 3)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		//QString iM = QString::number(pSection->ClassM);
-		//ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(iM));
-		//ui.Section_Lists->item(irow, 4)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-		//QString id = QString::number(pSection->m_id);
-		//ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(id));
-		//ui.Section_Lists->item(irow, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
+		ui.Section_Lists->setItem(irow, 0, new QTableWidgetItem(pSection->m_Name));
 		ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
 		ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(QString::number(pSection->a)));
 		ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(QString::number(pSection->b)));
 		ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(QString::number(pSection->ClassM)));
 		ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(QString::number(pSection->m_id)));
-		for (int i = 1; i < 6; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			ui.Section_Lists->item(irow, i)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
@@ -324,6 +260,37 @@ void Assign_Section::assigh_section(Part_Base* Part)
 
 }
 
+void Assign_Section::BtnAddSection()
+{
+	int ret = ma_ab2->exec();
+	if (ret == QDialog::Accepted)
+	{
+
+		int id = m_pInterFace->Ms.size();//从1开始排序
+		int irow = ui.Section_Lists->rowCount();
+		ui.Section_Lists->setRowCount(irow + 1);
+		Section* pSection = m_pInterFace->Ms.Find_Entity(id);  //取出截面指针
+		QString s;
+		if (pSection->ClassSe == 0)
+		{
+			s = "L型";
+		}
+		else
+		{
+			s = "圆环";
+		}
+		ui.Section_Lists->setItem(irow, 0, new QTableWidgetItem(pSection->m_Name));
+		ui.Section_Lists->setItem(irow, 1, new QTableWidgetItem(s));
+		ui.Section_Lists->setItem(irow, 2, new QTableWidgetItem(QString::number(pSection->a)));
+		ui.Section_Lists->setItem(irow, 3, new QTableWidgetItem(QString::number(pSection->b)));
+		ui.Section_Lists->setItem(irow, 4, new QTableWidgetItem(QString::number(pSection->ClassM)));
+		ui.Section_Lists->setItem(irow, 5, new QTableWidgetItem(QString::number(pSection->m_id)));
+		for (int i = 0; i < 6; i++)
+		{
+			ui.Section_Lists->item(irow, i)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+		}
+	}
+}
 //点“x”关闭事件
 void Assign_Section::closeEvent(QCloseEvent* e)
 {

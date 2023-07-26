@@ -1,80 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GravityClass</class>
- <widget class="QDialog" name="GravityClass">
+ <class>Element_IceClass</class>
+ <widget class="QDialog" name="Element_IceClass">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>333</width>
-    <height>268</height>
+    <width>307</width>
+    <height>322</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>重力</string>
+   <string>覆冰</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,2,1">
-   <item>
-    <widget class="QWidget" name="widget_3" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_name">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>类型：重力</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>重力加速度</string>
+      <string>分析步</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QWidget" name="widget" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout">
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>方向</string>
+            <string>覆冰</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="line_direction"/>
+          <widget class="QLineEdit" name="line_addice"/>
          </item>
         </layout>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_4" native="true">
+       <widget class="QWidget" name="widget_3" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>大小</string>
+            <string>脱冰</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="line_g"/>
+          <widget class="QLineEdit" name="line_eraseice"/>
          </item>
         </layout>
        </widget>
@@ -83,8 +56,24 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget_2" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <widget class="QWidget" name="widget_4" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>覆冰厚度(m)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="line_d"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_5" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">

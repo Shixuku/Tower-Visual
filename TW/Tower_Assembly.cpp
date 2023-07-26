@@ -1,4 +1,6 @@
 #include "Tower_Assembly.h"
+#include<QMessageBox.h>
+#include<iostream>
 #pragma execution_character_set("utf-8")
 
 Tower_Assembly::Tower_Assembly(InterFace* InterFace, QWidget* parent)
@@ -8,11 +10,7 @@ Tower_Assembly::Tower_Assembly(InterFace* InterFace, QWidget* parent)
     m_InterFace = InterFace;
 
     Create_combobox();
-    connect(ui.ok_btn, &QPushButton::clicked, this, [=]()
-        {
-            this->accept();
-            Get_PartData();
-        });
+    connect(ui.ok_btn, &QPushButton::clicked, this, &Tower_Assembly::Get_PartData);
     connect(ui.cancel_btn, &QPushButton::clicked, this, &Tower_Assembly::reject);
 
     //初始化
@@ -28,25 +26,25 @@ Tower_Assembly::~Tower_Assembly()
 
 void Tower_Assembly::Create_combobox()
 {
-   int T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount();//塔腿数量
-   int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔身数量
-   int T_heads = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->childCount();//塔头数量
+    int T_legs = m_InterFace->TP_leg.size();//塔腿数量
+    int T_bodys = m_InterFace->TP_body.size();//塔身数量
+    int T_heads = m_InterFace->TP_CrossArm.size();//塔头数量
 
     for (int i = 0; i < T_legs; i++)
     {
-        QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(i)->text(0);
+        QString name = m_InterFace->TP_leg.Find_Entity(i + 1)->m_Name;
         ui.combo_foot->addItem(name);
     }
 
     for (int i = 0; i < T_bodys; i++)
     {
-        QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(i)->text(0);
+        QString name = m_InterFace->TP_body.Find_Entity(i + 1)->m_name;
         ui.combo_body->addItem(name);
     }
 
     for (int i = 0; i < T_heads; i++)
     {
-        QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(i)->text(0);
+        QString name = m_InterFace->TP_CrossArm.Find_Entity(i + 1)->m_name;
         ui.combo_head->addItem(name);
     }
 
@@ -63,5 +61,32 @@ void Tower_Assembly::Get_PartData()
     m_ArryLeg = ui.combo_foot->Get_idItems();
     m_ArryHead = ui.combo_head->Get_idItems();
     m_ArryBody = ui.combo_body->Get_idItems();
+    if (m_ArryLeg.size() == 0 && m_ArryHead.size() == 0 && m_ArryBody.size() == 0)
+    {//避免生成一个部件都没有的空实例
+        QMessageBox::information(this, "Tips", "请至少选择一个部件！"); 
+        //for (auto& i : m_ArryLeg)//塔腿
+        //{
+        //    int size = m_InterFace->TP_leg.Find_Entity(i)->m_Elements_beams.size();
+        //    for (int j = 0; j < size; j++)
+        //    {
+        //        if (m_InterFace->TP_leg.Find_Entity(i)->m_Elements_beams[j].ClassSectionID == 0)
+        //        {
+        //            QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_leg.Find_Entity(i)->m_Name + "赋截面！"); break;
+        //        }
+        //    }
+        //}
+
+    }
+    else if (m_ArryLeg.size() >= 2)
+    {//避免生成两个塔腿重合的实例
+        QMessageBox::information(this, "Tips", "塔腿部件一次只能选择一个！");
+    }
+    else
+    {
+        this->accept();
+    }
+
+
+
 }
 

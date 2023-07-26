@@ -32,103 +32,6 @@ int Tower::FindGroupIdNode(int idNode) const
 	return TowerToGroup[idNode - 1];
 }
 
-//void Tower::Show_VTKtruss(vtkRenderer* renderer)
-//{
-//	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
-//		
-//	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
-//	//点
-//	for (size_t i = 0; i < m_Elements_Trusses.size(); i++)
-//	{
-//		line->GetPointIds()->SetId(0, m_Elements_Trusses[i].m_idNode[0] - 1);
-//		line->GetPointIds()->SetId(1, m_Elements_Trusses[i].m_idNode[1] - 1);
-//		m_lines->InsertNextCell(line);
-//	}
-//	//vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
-//	//for (int i = 0; i < m_Nodes.size(); i++)
-//	//{
-//	//	vector<double> p;
-//	//	p.resize(4);
-//	//	p[0] = m_Nodes[i].m_idNode;//m_Nodes[0]指 编号为1的点
-//	//	p[1] = m_Nodes[i].x;
-//	//	p[2] = m_Nodes[i].y;
-//	//	p[3] = m_Nodes[i].z;
-//	//	pts->InsertNextPoint(p[1], p[2], p[3]);
-//	//}
-//
-//	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-//	linesPolyData->SetPoints(m_pts);
-//	linesPolyData->SetLines(m_lines);
-//
-//	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//	mapper->SetInputData(linesPolyData);
-//	m_TrussActor = vtkSmartPointer<vtkActor>::New();
-//	m_TrussActor->SetMapper(mapper);
-//	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
-//	renderer->AddActor(m_TrussActor);
-//}
-//void Tower::Show_VTKbeam(vtkRenderer* renderer)
-//{
-//	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
-//	vtkSmartPointer<vtkLine>line = vtkSmartPointer<vtkLine>::New();
-//
-//	for (size_t i = 0; i < m_Elements_beams.size(); i++)
-//	{
-//		line->GetPointIds()->SetId(0, m_Elements_beams[i].m_idNode[0] - 1);
-//		line->GetPointIds()->SetId(1, m_Elements_beams[i].m_idNode[1] - 1);
-//		m_lines->InsertNextCell(line);
-//	}
-//
-//	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-//	linesPolyData->SetPoints(m_pts);
-//	linesPolyData->SetLines(m_lines);
-//
-//	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//	mapper->SetInputData(linesPolyData);
-//	m_BeamActor = vtkSmartPointer<vtkActor>::New();
-//	m_BeamActor->SetMapper(mapper);
-//	m_BeamActor->GetProperty()->SetColor(0, 1, 0);
-//	renderer->AddActor(m_BeamActor);
-//}
-//void Tower::Show_VTKnode(vtkRenderer* renderer)
-//{
-//	vtkNew<vtkIdTypeArray> Ptr;
-//	Ptr->SetName("Address");
-//	m_pts = vtkSmartPointer<vtkPoints>::New();
-//	int nNode = m_Nodes.size();
-//	m_pts->SetNumberOfPoints(nNode);
-//	for (int i = 0; i < m_Nodes.size(); i++)
-//	{
-//		vector<double> p;
-//		p.resize(4);
-//		p[0] = m_Nodes[i].m_idNode;//m_Nodes[0]指 编号为1的点
-//		p[1] = m_Nodes[i].x;
-//		p[2] = m_Nodes[i].y;
-//		p[3] = m_Nodes[i].z;
-//		m_pts->SetPoint(i, p[1], p[2], p[3]);
-//		Node* pNode = &m_Nodes[i];//zhan
-//		Ptr->InsertNextValue((UINT_PTR)pNode);//将地址转换为整数		
-//	}
-//	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-//	linesPolyData->SetPoints(m_pts);
-//	linesPolyData->GetPointData()->AddArray(Ptr);
-//
-//	//点
-//	Node_actor = vtkSmartPointer<vtkActor>::New();
-//	vtkNew<vtkVertexGlyphFilter> VertexFilter;
-//	VertexFilter->SetInputData(linesPolyData);
-//	VertexFilter->Update();
-//
-//	vtkSmartPointer<vtkPolyDataMapper> Node_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//	Node_mapper->SetInputConnection(VertexFilter->GetOutputPort());
-//
-//	Node_actor = vtkSmartPointer<vtkActor>::New();
-//	Node_actor->SetMapper(Node_mapper);
-//	Node_actor->GetProperty()->SetColor(255, 255, 0);
-//	Node_actor->GetProperty()->SetPointSize(5);
-//	renderer->AddActor(Node_actor);
-//}
-
 void Tower::DrawForceX(Node* n, int a, vtkRenderer* renderer)
 {
 	// 创建锥形
@@ -238,235 +141,7 @@ void Tower::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
 	renderer->AddActor(actor);
 
 }
-//
-////尝试 画约束
-//void Tower::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)
-//{
-//	struct ConeInfo
-//	{
-//		double radius;
-//		double height;
-//		double direction[3];
-//		double center[3];
-//		double color[3];
-//	};
-//
-//	ConeInfo cones[] = {
-//		{ 0.2, 0.6, { 0, 1, 0 }, { x, y - 0.3, z }, { 0.0, 0.0, 1.0 } },  // y方向
-//		{ 0.3, 0.12, { 0, 1, 0 }, { x, y - 0.6, z }, { 0.0, 0.0, 1.0 } },
-//		{ 0.3, 0.5, { 0, 1, 0 }, { x, y - 0.25, z }, { 1.0, 0.5, 0.0 } },
-//		{ 0.2, 0.6, { 1, 0, 0 }, { x - 0.3, y, z }, { 0.0, 0.0, 1.0 } },  // x方向
-//		{ 0.3, 0.12, { 1, 0, 0 }, { x - 0.6, y, z }, { 0.0, 0.0, 1.0 } },
-//		{ 0.3, 0.5, { 1, 0, 0 }, { x - 0.25, y, z }, { 1.0, 0.5, 0.0 } },
-//		{ 0.2, 0.6, { 0, 0, -1 }, { x, y, z + 0.3 }, { 0.0, 0.0, 1.0 } },  // z方向
-//		{ 0.3, 0.12, { 0, 0, -1 }, { x, y, z + 0.6 }, { 0.0, 0.0, 1.0 } },
-//		{ 0.3, 0.5, { 0, 0, -1 }, { x, y, z + 0.25 }, { 1.0, 0.5, 0.0 } }
-//	};
-//
-//	int numCones = sizeof(cones) / sizeof(cones[0]);
-//
-//	for (int i = 0; i < numCones; i++)
-//	{
-//		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
-//		coneSource->SetRadius(cones[i].radius);
-//		coneSource->SetHeight(cones[i].height);
-//		coneSource->SetDirection(cones[i].direction);
-//		coneSource->SetCenter(cones[i].center);
-//		coneSource->Update();
-//
-//		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//		coneMapper->SetInputConnection(coneSource->GetOutputPort());
-//
-//		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
-//		coneActor->SetMapper(coneMapper);
-//
-//		coneActor->GetProperty()->SetColor(cones[i].color);
-//		coneActor->GetProperty()->SetRepresentationToWireframe();
-//
-//		m_ConstraintActor.push_back(coneActor);
-//		//std::cout << "m_ConstraintActor.size() = " << m_ConstraintActor.size() << "\n";
-//		renderer->AddActor(coneActor);
-//
-//	}
-//
-//	//renderer->ResetCamera();
-//}
-//
-//void Tower::Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer)
-//{
-//	struct ConeInfo
-//	{
-//		double radius;
-//		double height;
-//		double direction[3];
-//		double center[3];
-//		double color[3];
-//	};
-//
-//	ConeInfo cones[] = {
-//
-//		{ 300, 500.0, { 0, 1, 0 }, { x, y - 250, z }, { 1.0, 0.5, 0.0 } },
-//		{ 300, 500.0, { 1, 0, 0 }, { x - 250, y, z }, { 1.0, 0.5, 0.0 } },
-//		{ 300, 500.0, { 0, 0, -1 }, { x, y, z + 250 }, { 1.0, 0.5, 0.0 } }
-//	};
-//
-//	int numCones = sizeof(cones) / sizeof(cones[0]);
-//
-//	for (int i = 0; i < numCones; i++)
-//	{
-//		vtkSmartPointer<vtkConeSource> coneSource = vtkSmartPointer<vtkConeSource>::New();
-//		coneSource->SetRadius(cones[i].radius);
-//		coneSource->SetHeight(cones[i].height);
-//		coneSource->SetDirection(cones[i].direction);
-//		coneSource->SetCenter(cones[i].center);
-//		coneSource->Update();
-//
-//		vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//		coneMapper->SetInputConnection(coneSource->GetOutputPort());
-//
-//		vtkSmartPointer<vtkActor> coneActor = vtkSmartPointer<vtkActor>::New();
-//		coneActor->SetMapper(coneMapper);
-//		coneActor->GetProperty()->SetColor(cones[i].color);
-//		coneActor->GetProperty()->SetRepresentationToWireframe();
-//		m_ConstraintActor.push_back(coneActor);
-//		renderer->AddActor(coneActor);
-//
-//	}
-//
-//	renderer->ResetCamera();
-//}
 
-//void Tower::CreateOutPut()
-//{
-//	InterFace* pInterFace = Get_InterFace();
-//	QString filename = QFileDialog::getSaveFileName(pInterFace, "保存", "/", "datafile(*.txt);;All file(*.*)");
-//	if (filename == nullptr)
-//	{
-//		return;
-//	}
-//	else
-//	{
-//		qDebug() << filename;
-//		Qf.setFileName(filename);
-//		Qf.open(QIODevice::ReadWrite);
-//
-//		Stream.setDevice(&Qf);
-//		if (!Qf.isOpen())
-//		{
-//			cout << "文件打开失败！\n";
-//			return;
-//		}
-//		this->m_name = filename;
-//		NodeTxT();
-//		BeamTxT();
-//		TrussTxT();
-//		Stream << 0 << " \n";//没有索单元暂时为0
-//		ConcentrationTxT();
-//		//1（重力数量）
-//		//1 0 - 9.8 0(编号 重力加速度Vector3d)
-//		Stream << 0 << "\n";//重力暂时为空
-//		//1（多项式函数数量）
-//		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
-//		Stream << 0 << "\n";//多项式函数暂时为空
-//		RestraintTxT();
-//		MaterialTxT();
-//		BeamSectionTxT();
-//		TrussSectionTxT();
-//		// 关闭文件
-//		Qf.close();
-//	}
-//}
-//void Tower::NodeTxT()
-//{
-//	int NodeSize = m_Nodes.size();
-//	Stream << NodeSize << " \n";
-//	for (int i = 0; i < m_Nodes.size(); i++)
-//	{
-//		Stream << "   " << m_Nodes[i].m_idNode << "      " << m_Nodes[i].x * 1e-3 << "      " << m_Nodes[i].y * 1e-3 <<
-//			"     " << m_Nodes[i].z * 1e-3 << " " << "\n";
-//	}
-//}
-//void Tower::BeamTxT()
-//{
-//	int BeamSize = m_Elements_beams.size();
-//	Stream << BeamSize << " \n";
-//	for (int i = 0; i < m_Elements_beams.size(); i++)
-//	{
-//
-//		Stream << m_Elements_beams[i].m_idElement << "      " << m_Elements_beams[i].m_idNode[0] << "    " << m_Elements_beams[i].m_idNode[1] << "  " << m_Elements_beams[i].MaterialID//材料号
-//			<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "  " << m_Elements_beams[i].direction[0] << "  " <<
-//			m_Elements_beams[i].direction[1] << "  " <<
-//			m_Elements_beams[i].direction[2] << "  " << "\n";
-//	}
-//}
-//void Tower::TrussTxT()
-//{
-//	int TressSize = m_Elements_Trusses.size();
-//	Stream << TressSize << " \n";
-//	for (int i = 0; i < m_Elements_Trusses.size(); i++)
-//	{
-//		Stream << m_Elements_Trusses[i].m_idElement << "      " << m_Elements_Trusses[i].m_idNode[0] << "    " << m_Elements_Trusses[i].m_idNode[1] << "  " << m_Elements_Trusses[i].MaterialID
-//			<< "  " << m_Elements_Trusses[i].ClassSectionID << "  " << m_Elements_beams[i].AxialForce << "\n";
-//	}
-//}
-//void Tower::ConcentrationTxT()
-//{
-//	int LoadSize = Load.size();
-//	Stream << LoadSize << " \n";
-//	for (int i = 0; i < Load.size(); i++)
-//	{
-//		Stream << Load[i].id_force << "      " << Load[i].id_node << "    " << Load[i].DirectionForce << "  " << Load[i].Force
-//			<< "  " << Load[i].StartTime << "  " << Load[i].EndTime << "\n";
-//	}
-//}
-//void Tower::MaterialTxT()
-//{
-//	Stream << 3 << "\n";
-//	for (int i = 0; i < 3; i++)
-//	{
-//		Stream << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 << "\n";
-//	}
-//}
-//void Tower::BeamSectionTxT()
-//{
-//	InterFace* pInterFace = Base::Get_InterFace();
-//	int SectionSize = pInterFace->Ms.size();
-//	Stream << SectionSize << "\n";
-//	for (auto& i : pInterFace->Ms)
-//	{
-//		Stream << i.second->m_id << "  " << i.second->S*1e-6 << "  " << i.second->B_Iy*1e-12 << "  " << i.second->B_Iz * 1e-12 << "  " << i.second->B_J * 1e-12 << "\n";
-//	}
-//}
-//void Tower::TrussSectionTxT()
-//{
-//	InterFace* pInterFace = Base::Get_InterFace();
-//	int SectionSize = pInterFace->Ms.size();
-//	Stream << SectionSize << "\n";
-//	for (auto& i : pInterFace->Ms)
-//	{
-//		Stream << i.second->m_id << "  " << i.second->S * 1e-6 << "\n";
-//	}
-//}
-//void Tower::RestraintTxT()
-//{
-//	//int a = 24;//只考虑塔脚的4个完全约束
-//	//Stream << a << "\n";
-//	//
-//	//for (int i = 0; i < RestraintNode.size(); i++)
-//	//{
-//	//	for (int j = 0; j < 6; j++)
-//	//	{
-//	//		Stream << (j + 1) * (i + 1) << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-//	//	}
-//	//}
-//	int m_ConstraintSize = m_Constraint.size();
-//	Stream << m_ConstraintSize << " \n";
-//	for (int i = 0; i < m_Constraint.size(); i++)
-//	{
-//		Stream << m_Constraint[i].m_idConstraint << "      " << m_Constraint[i].m_idNode << "    " << m_Constraint[i].m_Direction << "\n";
-//	}
-//
-//}
 
 void Tower::addPart(Part_Base* part)
 {
@@ -644,6 +319,13 @@ void Tower::SaveTo(QDataStream& fin) const
 	{
 		fin << SuspensionNode[i];
 	}
+	////集中力
+	//int nLoadForce = Load.size();
+	//fin << nLoadForce;
+	//for (int i = 0; i < nLoadForce; i++)
+	//{
+	//	Load[i].SaveTo(fin);
+	//}
 }
 
 void Tower::Input(QDataStream& fin)
@@ -677,6 +359,14 @@ void Tower::Input(QDataStream& fin)
 	{
 		fin >> SuspensionNode[i];
 	}
+	////集中力
+	//int nLoadForce;
+	//fin << nLoadForce;
+	//Load.resize(nLoadForce);
+	//for (int i = 0; i < nLoadForce; i++)
+	//{
+	//	Load[i].Input(fin);
+	//}
 }
 
 void Tower::ShowNode()const
