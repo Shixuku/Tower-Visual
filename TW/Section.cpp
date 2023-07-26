@@ -1,8 +1,26 @@
 #include "Section.h"
 #include <cmath>
+Section::Section(QString name, double ia, double ib, int id, int iClassSe, int iClassM)
+{
+	m_Name = name;
+	ClassSe = iClassSe;
+	a = ia;
+	b = ib;
+	ClassM = iClassM;
+	m_id = id;
+	if (iClassSe == 0)
+	{
+		GetLIxyz();
+	}
+	else if(iClassSe == 1)
+	{
+		GetOIxyz();
+
+	}
+}
+
 Section::Section(double ia, double ib, int id, int iClassSe, int iClassM)
 {
-	//Name = iName;
 	ClassSe = iClassSe;
 	a = ia;
 	b = ib;
@@ -70,10 +88,17 @@ void Section::GetCircleIxyz()
 	S = PI * a * a * 1e-6;
 }
 
-Part_Type Section::My_PartType() const
+void Section::SaveTo(QDataStream& fin) const
 {
-	return ET_Section;
+	fin << a << b << m_id << ClassSe << ClassM << S << B_Iy << B_Iz << B_J;//Ωÿ√Ê±‡∫≈
 }
+
+void Section::Input(QDataStream& fin)
+{
+	fin >> a >> b >> m_id >> ClassSe >> ClassM >> S >> B_Iy >> B_Iz >> B_J;//Ωÿ√Ê±‡∫≈
+}
+
+
 
 Section::Section()
 {

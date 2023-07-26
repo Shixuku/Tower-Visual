@@ -9,11 +9,12 @@ Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = InterFace;
-	connect(ui.btn_ok, &QPushButton::clicked, this, &Set_Section::SendSlots);
+	connect(ui.btn_ok, &QPushButton::clicked, this, &Set_Section::GetData);
 
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Set_Section::reject);
 
-	connect(ui.comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_foot()));
+	void (QComboBox:: * IndexChanged)(int) = &QComboBox::currentIndexChanged;
+	connect(ui.comboBox, IndexChanged, this, &Set_Section::Change_Picture_foot);
 
 	QImage* img = new QImage;
 	img->load("./ab2.png");
@@ -21,18 +22,12 @@ Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 	ui.label_2->setPixmap(QPixmap::fromImage(*img));
 	ui.LEdit_a->setText("0.200");
 	ui.LEdit_b->setText("0.020");
-
+	ui.line_name->setText("Section-" + QString::number(m_pInterFace->Ms.size() + 1));
 }
 
 
 Set_Section::~Set_Section()
 {
-
-}
-
-void Set_Section::Get_Data()
-{
-
 }
 
 void Set_Section::Change_Picture_foot()
@@ -53,39 +48,23 @@ void Set_Section::Change_Picture_foot()
 }
 
 
-void Set_Section::SendSlots()
+void Set_Section::GetData()
 {
-	QStringList strs;
-	ClassSection = ui.comboBox->currentIndex();
-	ClassMa = ui.comboBox_2->currentIndex() + 1;
-	QString Ma = QString::number(ClassMa);
-	QString s;
-	if (ClassSection == 0)
-	{
-		s = "L型";
-	}
-	else
-	{
-		s = "圆环";
-	}
-	strs << ui.LEdit_name->text() << s << ui.LEdit_a->text() << ui.LEdit_b->text()<< Ma;
-	emit SendData(strs);///!!数据是取出来了
-	QDialog::accept();
-	name = ui.LEdit_name->text().toStdString();
-	
-	a = ui.LEdit_a->text().toDouble();
-	b = ui.LEdit_b->text().toDouble();
-	int iM = ClassMa;
-
-	//修改的
+	QString name = ui.line_name->text();
+	double a = ui.LEdit_a->text().toDouble();
+	double b = ui.LEdit_b->text().toDouble();
 	int id = m_pInterFace->Ms.size() + 1;
-	Section* section = new Section(a, b, id, ClassSection, iM);
-	m_pInterFace->Ms.Add_Entity(section);
+	int ClassSection = ui.comboBox->currentIndex();
+	int iM = ui.comboBox_2->currentIndex() + 1;
 
+	Section* section = new Section(name, a, b, id, ClassSection, iM);
+	m_pInterFace->Ms.Add_Entity(section);
+	
+	this->accept();
 	//第一次调用完之后，删除数据
 	ui.LEdit_a->clear();
 	ui.LEdit_b->clear();
-	ui.LEdit_name->clear();
+	ui.line_name->clear();
 
 }
 

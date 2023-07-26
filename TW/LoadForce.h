@@ -1,5 +1,6 @@
 #pragma once
-class LoadForce
+#include"Base.h"
+class LoadForce:public Base
 {
 public:
 	int id_force;//集中力编号
@@ -8,14 +9,13 @@ public:
 	double Force;//大小
 	double StartTime;//开始时间
 	double EndTime;//结束时间
-	LoadForce(int id, int i_node,double i_direction, double i_force, double i_stime,double i_etime)
+	LoadForce();
+	LoadForce(int id, int i_node, double i_direction, double i_force, double i_stime, double i_etime);
+	virtual enum Part_Type My_PartType()const
 	{
-		id_force = id;
-		id_node = i_node;
-		DirectionForce = i_direction;
-		Force = i_force;
-		StartTime = i_stime;
-		EndTime = i_etime;
+		return ET_LoadForce;
 	}
+	virtual void SaveTo(QDataStream& fin)const;
+	virtual void Input(QDataStream& fin);
 };
 

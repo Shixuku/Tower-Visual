@@ -7,7 +7,7 @@ using namespace std;
 class Section: public Base
 {
 public:
-	string Name;
+	QString m_Name;
 	Section();
 
 	//梁的截面属性
@@ -22,12 +22,18 @@ public:
 	double a = 0;
 	double b = 0;
 	int ClassM = 0;//代表使用哪种材料的编号
+	Section(QString name,double ia, double ib, int id, int iClassSe, int iClassM);//重载一个 加了名称的
 	Section(double ia, double ib, int id, int iClassSe, int iClassM);
 	~Section();
 	void GetLIxyz();
 	void GetOIxyz();
 	void GetCircleIxyz();
-	virtual enum Part_Type My_PartType()const;
+	virtual enum Part_Type My_PartType()const
+	{
+		return ET_Section;
+	}
+	virtual void SaveTo(QDataStream& fin)const;//保存
+	virtual void Input(QDataStream& fin);//输出
 
 };
 

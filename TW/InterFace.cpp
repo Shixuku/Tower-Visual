@@ -7,8 +7,10 @@
 #include"Manage_Loads.h"
 #include <vtkPointData.h>//->GetArray("Address")
 #include <vtkIdTypeArray.h>
-#include"MouseInteractorHighLightActor.h"
-#include"AreaSelected_InteractorStyle.h"
+
+#include"MouseInteractorHighLightActor.h"//点选点
+#include"AreaSelected_InteractorStyle.h"//框选点
+#include"InteractorStyle.h"//框选单元
 #include"Interphase_spacer.h"
 #include"T_Foot.h"
 #include"T_Body.h"
@@ -29,6 +31,8 @@
 #include<vtkAppendPolyData.h>
 #include "UI_Calculate.h"
 
+#include"ParameterIceElement.h"
+#include"Element_Ice.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -75,27 +79,6 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
-	connect(ui.actioninit, &QAction::triggered, this, [=]()
-		{
-			/*m_Renderer->GetActiveCamera()->SetPosition(0, 0, 100000);
-			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
-			m_Renderer->GetActiveCamera()->SetViewUp(0, 1, 0);
-			m_renderWindow->Render();*/
-		});
-	connect(ui.actionYoZ, &QAction::triggered, this, [=]()
-		{
-			/*m_Renderer->GetActiveCamera()->SetPosition(100000, 0, 0);
-			m_Renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
-			m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-			m_renderWindow->Render();*/
-		});
-	connect(ui.actionXoZ, &QAction::triggered, this, [=]()
-		{
-			//m_Renderer->GetActiveCamera()->SetPosition(1, 0, 0);
-			//m_Renderer->GetActiveCamera()->SetFocalPoint(0, 100000, 0);
-			//m_Renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-			//m_renderWindow->Render();
-		});
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
 	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
 	
@@ -116,16 +99,6 @@ void InterFace::SetupCentralWidget()
 	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
 
-	////添加坐标系
-	//vtkAxesActor* axesActor = vtkAxesActor::New();
-	////以Widget方式,在左下角的视口中显示坐标系，可进行鼠标交互
-	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
-	//widget->SetOrientationMarker(axesActor);
-	//widget->SetInteractor(m_VtkWidget->interactor());
-	//widget->SetViewport(0, 0, 0.2, 0.2);
-	//widget->SetEnabled(true);
-	//widget->InteractiveOn();
-
 }
 void InterFace::TreeWidgetShow()
 {
@@ -133,7 +106,7 @@ void InterFace::TreeWidgetShow()
 	ui.treeWidget->header()->setVisible(false);//设置表头不可见
 
 	QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_part->setText(0, QString("生成杆塔部件"));
+	creat_tower_part->setText(0, QString("杆塔部件"));
 
 	QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
 	part_leg->setText(0, QString("塔腿部件"));
@@ -145,161 +118,115 @@ void InterFace::TreeWidgetShow()
 	part_head->setText(0, QString("塔头部件"));
 
 	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_instance->setText(0, QString("生成杆塔实例"));
-
-	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_towerwire_instance->setText(0, QString("生成塔线组实例"));
-
-	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
-	attribute->setText(0, QString("属性"));
-
-	QTreeWidgetItem* att_material = new QTreeWidgetItem(attribute);
-	att_material->setText(0, QString("材料属性"));
-
-	QTreeWidgetItem* att_section = new QTreeWidgetItem(attribute);
-	att_section->setText(0, QString("截面属性"));
-
-	QTreeWidgetItem* assign_section = new QTreeWidgetItem(attribute);
-	assign_section->setText(0, QString("赋予截面"));
-
-	QTreeWidgetItem* pNewItem9 = new QTreeWidgetItem(attribute);
-	pNewItem9->setText(0, QString("根据长度赋予截面"));
-
-	QTreeWidgetItem* Loads = new QTreeWidgetItem(ui.treeWidget);
-	Loads->setText(0, QString("荷载"));
-
-	QTreeWidgetItem* creat_loads = new QTreeWidgetItem(Loads);
-	creat_loads->setText(0, QString("创建载荷"));
-
-	QTreeWidgetItem* edit_loads = new QTreeWidgetItem(Loads);
-	edit_loads->setText(0, QString("管理载荷"));
-
-	QTreeWidgetItem* creat_constraints = new QTreeWidgetItem(Loads);
-	creat_constraints->setText(0, QString("创建边界条件"));
-
-	QTreeWidgetItem* edit_constraints = new QTreeWidgetItem(Loads);
-	edit_constraints->setText(0, QString("编辑边界条件"));
-
-	QTreeWidgetItem* insulator_string = new QTreeWidgetItem(ui.treeWidget);
-	insulator_string->setText(0, QString("绝缘子串"));
-
-	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(ui.treeWidget);
-	Wire_modeling->setText(0, QString("导线建模"));
-
-	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
-	WIndLoad->setText(0, QString("创建风载荷"));
+	creat_tower_instance->setText(0, QString("杆塔实例"));
 
 	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
 	CreatWire->setText(0, QString("单导实例"));
 
-	QTreeWidgetItem* Calculate = new QTreeWidgetItem(ui.treeWidget);
-	Calculate->setText(0, QString("计算"));
+	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_towerwire_instance->setText(0, QString("塔线组实例"));
+
+	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
+	attribute->setText(0, QString("截面材料"));
+
+	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
+	WIndLoad->setText(0, QString("创建风载荷"));
+
+	//QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
+	//CreatWire->setText(0, QString("单导实例"));
+
+	//QTreeWidgetItem* Calculate = new QTreeWidgetItem(ui.treeWidget);
+	//Calculate->setText(0, QString("计算"));
 
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 {
-	//生成杆塔部件
+	//杆塔部件
 	if (item == ui.treeWidget->topLevelItem(0)->child(0))
-	{
+	{//塔腿部件
 		ui_Foot();
 	}
 	else if (item == ui.treeWidget->topLevelItem(0)->child(1))
-	{
+	{//塔身部件
 		ui_Body();
 	}
 	else if (item == ui.treeWidget->topLevelItem(0)->child(2))
-	{
+	{//塔头部件
 		if (ui.treeWidget->topLevelItem(0)->child(1)->childCount() == 0)
 		{
 			QMessageBox::information(this, "Tips", "请先创建塔身！");
 		}
 		else { ui_CrossArm(); }
 	}
-	//生成杆塔实例
+	else if (isChildOfPartSetSpacer(item))
+	{//塔头下面绝缘子串
+		ui_Interphase_spacer(item);
+	}
+	else if (isChildOfPartSetSection(item))
+	{//赋予截面
+		ui_SetSection(item);
+	}
+	else if (isChildOfPartSetAllSection(item))
+	{//根据长度赋予截面
+		ui_SetAllSection(item);
+	}
+	//杆塔实例
 	else if (item == ui.treeWidget->topLevelItem(1))
 	{
 		ui_Tower();
 	}
-	//属性
-	else if (item == ui.treeWidget->topLevelItem(3)->child(1))
-	{
-		ui_Section();
-	}
-	else if (isChildOfPartSetSection(item))
-	{
-		ui_SetSection(item);
-	}
-	else if (isChildOfPartSetAllSection(item))
-	{
-		ui_SetAllSection(item);
-	}
-	//荷载
-	else if (item == ui.treeWidget->topLevelItem(4)->child(1))
-	{
-		ui_ManageLoads();//管理荷载，暂时还没做
-	}
-	else if (item == ui.treeWidget->topLevelItem(4)->child(2))
-	{
-		//Constraint_Tips();//施加约束
-	}
-	else if (item == ui.treeWidget->topLevelItem(4)->child(3))
-	{//管理约束
-
-	}
-	//绝缘子串
-	else if (isChildOfPartSetSpacer(item))
-	{
-		ui_Interphase_spacer(item);
-	}
-	//导线建模
-	else if (isChildOfGroup(item, 1)||isChildOfSingleWire(item,1))
-	{
-		ui_Wire_InterFace(item);
-	}
-	else if (isChildOfTower(1, item, 0))
+	else if (isChildOfTower(1,item, 0))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
-	else if (isChildOfTower(1, item, 1))
+	else if (isChildOfTower(1,item, 1))
+	{//施加约束
+		ui_Constraint(item);
+	}
+	else if (isChildOfTower(1,item, 2))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
-	else if (isChildOfTower(1, item, 2))
+	else if (isChildOfTower(1,item, 3))
 	{//输出inp文件
 		//CreateInp(item);
 	}
-	else if (isChildOfTower(1, item, 3))
-	{//施加约束
-		Constraint_Tips1(item);
-	}
+	//单导实例
 	else if (item == ui.treeWidget->topLevelItem(2))
-	{
-		ui_TowerWireGroup();
-	}
-	else if (item == ui.treeWidget->topLevelItem(7))
-	{
-		ui_Wind();
-	}
-	else if (item == ui.treeWidget->topLevelItem(8))
 	{
 		ui_SingleWire();
 	}
-	else if (item == ui.treeWidget->topLevelItem(9))
+	//塔线实例
+	else if (item == ui.treeWidget->topLevelItem(3))
 	{
-		//ui_Calculate();
+		ui_TowerWireGroup();
+	}
+	else if (isChildOfGroup(item, 1) || isChildOfSingleWire(item, 1))
+	{//导线建模
+		ui_Wire_InterFace(item);
 	}
 	else if (isChildOfTowerwiregroupWireModeling(item))
-	{
+	{//输出inp文件
 		CreateGroupInp(item);
 	}
-	else if (isChildOfSingleWire(item, 0))
+	//截面材料
+	else if (item == ui.treeWidget->topLevelItem(4))
 	{
+		ui_Section();
+	}
+	//风载荷
+	else if (item == ui.treeWidget->topLevelItem(5))
+	{
+		ui_Wind();
+	}
+	else if (isChildOfSingleWire(item, 0))
+	{//创建绝缘子串
 		ui_SingleWireSpacer(item);
 	}
 	else if (isChildOfSingleWire(item, 2))
 	{//施加约束
-		Constraint_Tips1(item);
+		ui_Constraint(item);
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -475,13 +402,6 @@ void InterFace::ui_Section()
 	int ret = M_ab->exec();
 	if (ret == QDialog::Accepted)
 	{
-		//int ClassSection = 0;//取得该截面类型的参数
-		//ClassSection = M_ab->ClassSection;
-		//string NameSection = M_ab->name;
-		//double ia = M_ab->a;
-		//double ib = M_ab->b;
-		//int iM = M_ab->ClassMa;
-
 		//所有截面编号加入Part
 		vector<int> idSections;
 		for (auto& i : Ms)
@@ -591,12 +511,6 @@ void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 
 }
 
-void InterFace::ui_ManageLoads()
-{
-	Manage_Loads* manage_loads = new Manage_Loads;
-	manage_loads->show();
-}
-
 void InterFace::ui_TowerWireGroup()
 {
 	switchRenderWindow(1);
@@ -613,10 +527,11 @@ void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 	Interphase_spacer* IS = new Interphase_spacer(arm, t, this);
 	IS->show();
 }
-void InterFace::ui_Constraint()
+
+void InterFace::ui_Element_Ice()
 {
-	//Create_Constraint* con = new Create_Constraint(this);
-	//con->show();
+	Element_Ice* element_Ice = new Element_Ice(this);
+	element_Ice->show();
 }
 
 void InterFace::SaveFile()
@@ -643,6 +558,7 @@ void InterFace::SaveFile()
 			//towerPartInsulator.Save(Stream);//绝缘子串
 			TP.Save(Stream);
 			Ms.Save(Stream);//保存截面数据
+			ME_LoadForce.Save(Stream);//保存集中力数据
 			//TWG.Save(Stream);
 		}
 		Qf.close();
@@ -671,8 +587,9 @@ void InterFace::OpenFile()
 			int bodysize = TP_body.size();
 			int crossArmSize = TP_CrossArm.size();
 			int towerSize = TP.size();
-			int twgsize = TWG.size();
-			//int MsSize = Ms.size();
+			//int twgsize = TWG.size();
+			int MsSize = Ms.size();
+			//int Me_LoadForce = ME_LoadForce.size();
 
 			TP_leg.Read(Stream1, legSize);
 			TP_body.Read(Stream1, bodysize);
@@ -680,7 +597,9 @@ void InterFace::OpenFile()
 			//towerPartInsulator.Read(Stream1);
 			TP.Read(Stream1, towerSize);
 			//TWG.Read(Stream1, twgsize);
-			//Ms.Read(Stream1, MsSize);//打开截面数据
+			Ms.Read(Stream1, MsSize);//打开截面数据
+			//ME_LoadForce.Read(Stream1, Me_LoadForce);//打开集中力数据
+
 			for (int i = legSize; i < TP_leg.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
@@ -945,15 +864,18 @@ void InterFace::switchRenderWindow(int index)
 void InterFace::initMenu()
 {
 	m_pMenu = new QMenu(this);
-	QAction* pAc1 = new QAction("点选");
-	QAction* pAc2 = new QAction("框选");
+	QAction* pAc1 = new QAction("点选P");
+	QAction* pAc2 = new QAction("框选P");
 	QAction* pAc3 = new QAction("取消");
+	QAction* pAc4 = new QAction("框选E");
 	m_pMenu->addAction(pAc1);
 	m_pMenu->addAction(pAc2);
 	m_pMenu->addAction(pAc3);
+	m_pMenu->addAction(pAc4);
 	connect(pAc1, &QAction::triggered, [=] {Point_Inqure(); });
 	connect(pAc2, &QAction::triggered, [=] {Area_Inqure(); });
 	connect(pAc3, &QAction::triggered, [=] {Close_Point(); });
+	connect(pAc4, &QAction::triggered, [=] {AreaElement_Inqure(); });
 }
 
 void InterFace::AddPartFunction(QTreeWidgetItem* item)
@@ -970,13 +892,15 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 	if (item->parent()== ui.treeWidget->topLevelItem(1))
 	{
 		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
+		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
-		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
+		
 		AddLoadForce->setText(0, QString("施加荷载"));
+		Constraint->setText(0, QString("添加约束"));
 		OutPut->setText(0, QString("输出计算文件"));
 		Inp->setText(0, QString("输出ABAQUS计算文件"));
-		Constraint->setText(0, QString("添加约束"));
+
 	}
 
 
@@ -1133,6 +1057,7 @@ void InterFace::Area_Inqure()
 	Framestyle->SetDefaultRenderer(m_Renderer_2);
 	renderWindowInteractor->SetInteractorStyle(Framestyle);
 	vtkAxesActor* Axes = vtkAxesActor::New();
+
 	vtkOrientationMarkerWidget* widgetAxes = vtkOrientationMarkerWidget::New();
 	widgetAxes->SetOrientationMarker(Axes);
 	widgetAxes->SetInteractor(renderWindowInteractor);
@@ -1153,7 +1078,56 @@ void InterFace::Area_Inqure()
 	renderWindowInteractor->RemoveAllObservers();
 }
 
-bool InterFace::isChildOfTower(int idParent, QTreeWidgetItem* item, int childNumber)
+void InterFace::AreaElement_Inqure()
+{
+	//UnSelect_Nodes();//改成取消单元
+	// 创建交互器
+	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
+	renderWindowInteractor->SetRenderWindow(m_renderWindow);
+
+	// 设置自定义交互类型--用例子改成单元
+	
+
+
+	for (int i = 1; i < TP.size() + 1; i++)
+	{
+		appendFilter->AddInputData(TP.Find_Entity(i)->linesPolyData);
+		appendFilter->Update();
+	}
+
+	vtkNew<vtkIdFilter> idFilter;//保存数据
+	idFilter->SetInputConnection(appendFilter->GetOutputPort());
+
+	idFilter->SetCellIdsArrayName("OriginalIds");//保存单元
+	idFilter->SetPointIdsArrayName("OriginalIds");//保存点
+
+	//简化成表面
+	vtkNew<vtkDataSetSurfaceFilter> surfaceFilter;
+	surfaceFilter->SetInputConnection(idFilter->GetOutputPort());
+	surfaceFilter->Update();
+
+	vtkPolyData* input = surfaceFilter->GetOutput();
+	//std::cout << "points" << input->GetNumberOfPoints() << "cells:" << input->GetNumberOfCells() << std::endl;
+
+	//std::cout << polyData->GetNumberOfCells() << std::endl;
+	style->SetPoints(input);//暂时只能找到，第一个实例的单元
+	style->m_pInterFace = this;
+
+	// 使用当前选中的 m_Renderer
+	style->SetDefaultRenderer(m_CurrentRenderer);
+
+	vtkNew<vtkAreaPicker> areaPicker;
+	renderWindowInteractor->SetPicker(areaPicker);
+	renderWindowInteractor->SetInteractorStyle(style);
+
+	m_renderWindow->SetInteractor(renderWindowInteractor);
+
+	// 初始化交互器并启动
+	renderWindowInteractor->Initialize();
+	renderWindowInteractor->Start();
+}
+
+bool InterFace::isChildOfTower(int idParent,QTreeWidgetItem* item, int childNumber)
 {
 	QTreeWidgetItem* topLevelItem3 = ui.treeWidget->topLevelItem(idParent);
 	int childCount = topLevelItem3->childCount();
@@ -1171,7 +1145,7 @@ bool InterFace::isChildOfTower(int idParent, QTreeWidgetItem* item, int childNum
 
 bool InterFace::isChildOfGroup(QTreeWidgetItem* item, int childNumber)
 {
-	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(3);
 	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
 	for (int i = 0; i < towerWireGroupChildCount; i++)
 	{
@@ -1272,7 +1246,7 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 
 bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
 {
-	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(3);
 	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
 	for (int i = 0; i < towerWireGroupChildCount; i++)
 	{
@@ -1287,7 +1261,7 @@ bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
 
 bool InterFace::isChildOfSingleWire(QTreeWidgetItem* item, int childNumber)
 {
-	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(8);
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
 	int singleWireChildCount = towerWireGroup->childCount();//取得有几个单线组循环
 	for (int i = 0; i < singleWireChildCount; i++)
 	{
@@ -1415,7 +1389,7 @@ void InterFace::Show_Wire(Instance* instance)
 	m_Renderer_2->ResetCamera();
 }
 
-void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
+void InterFace::ui_Constraint(QTreeWidgetItem* item)
 {
 	Instance* instance = OnFindInstance(item->parent());
 	instance->Show_VTKnode(m_Renderer_2);
@@ -1429,22 +1403,13 @@ void InterFace::Constraint_Tips1(QTreeWidgetItem* item)
 }
 void InterFace::ui_Wind()
 {
-	if (wd == nullptr)
-	{
-		wd = new Wind(this);
-		wd->CreateCombobox();
-		wd->show();
-	}
-	else
-	{
-		wd->CreateCombobox();
-		wd->show();
-	}
+	wd = new Wind(this);//改了黄瞻的combobox
+	wd->show();
 }
 
 void InterFace::ui_SingleWire()
 {
-	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
+	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
 	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 	item->setText(0, "导线");
 	QTreeWidgetItem* spacer = new QTreeWidgetItem(item);

@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Create_Constraint</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,2,1,0">
    <item>
     <widget class="QLabel" name="label">
      <property name="maximumSize">
@@ -61,6 +61,13 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>说明：4个塔脚点已经完全固定</string>
+     </property>
     </widget>
    </item>
    <item>

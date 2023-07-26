@@ -98,9 +98,9 @@ void ConcentrateForce::draw()
 			if (num == i->m_idNode)
 			{
 				Node* n = i;
-				//取数据
-				double startTime = ui.line_startTime->text().toDouble();//开始时间 
-				double endTime = ui.line_endTime->text().toDouble();//结束时间
+				//取数据-----分析步需要改
+				double startTime = 0;//开始时间 
+				double endTime = 1;//结束时间
 				//取x方向
 				double i_x = ui.line_x->text().toDouble();//大小
 				if (i_x != 0)
@@ -109,6 +109,10 @@ void ConcentrateForce::draw()
 					int idNode = i->m_idNode;//节点编号
 					int direction = 0;//方向
 					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_x, startTime, endTime));
+					//以下两行是为了主界面保存数据使用
+					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
+
 					//画
 					if (i_x < 0)
 					{
@@ -128,6 +132,9 @@ void ConcentrateForce::draw()
 					int idNode = i->m_idNode;
 					int direction = 1;
 					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_y, startTime, endTime));
+					//以下两行是为了主界面保存数据使用
+					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_y < 0)
 					{
 						m_pTower->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
@@ -146,6 +153,9 @@ void ConcentrateForce::draw()
 					int idNode = i->m_idNode;
 					int direction = 2;
 					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_z, startTime, endTime));
+					//以下两行是为了主界面保存数据使用
+					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_z < 0)
 					{
 						m_pTower->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);

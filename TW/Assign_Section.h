@@ -23,7 +23,7 @@ public:
 	void table_Section_Lists_delete();
 	void highlight_actor(Part_Base* Part);
 	void assigh_section(Part_Base* Part);
-
+	void BtnAddSection();
 	
 	void Add_created_section();
 

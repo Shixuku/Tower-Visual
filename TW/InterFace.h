@@ -22,7 +22,7 @@
 #include<vtkInteractorStyleTrackballCamera.h>
 #include"TowerWireGroupAssembly.h"
 #include"resultVisualize.h"
-
+#include <vtkAppendPolyData.h>
 //fl_Dll
 #include"S_InterFace.h"
 #include"Node_Base.h"
@@ -43,6 +43,9 @@ class TowerWireGroup;
 class Wire_InterFace;
 class CreatWire;
 class TowerCaculate;
+class ParameterIceElement;
+class Element_Ice;
+class InteractorStyle;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -74,7 +77,9 @@ public:
      Manage_Entity<TowerPart_CrossArm> TP_CrossArm;
      Manage_Entity<TowerPart_Insulator> towerPartInsulator;
      Manage_Entity<Tower> TP;
-     Manage_Entity<Section> Ms;
+     Manage_Entity<Section> Ms;//截面合集
+     Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
+     vector<ParameterIceElement*> ME_ElementIce;//冰单元合集
      Manage_Entity<TowerWireGroup> TWG;
     // Manage_Entity<TowerWireGroup> creatWire;
     // Manage_Entity<CreatWire> creatWire;
@@ -100,17 +105,25 @@ public:
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
      bool isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item);//将塔线建模放在塔线组下去找到
+     void Area_Inqure();//框选point
+     void AreaElement_Inqure();//框选Element
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);
-     void Area_Inqure();//框选
+
      void Close_Point();
      //HZ
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
-  
+     //计算
+     S_InterFace* s = nullptr;
+     //try  要改
+     vtkNew<InteractorStyle> style;
+     vtkNew<vtkAppendPolyData> appendFilter;
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
     void Msg_CreateModel();
+    void SignalsPickElements();
+
 public slots:
     void onTreeitemClicked(QTreeWidgetItem* item);
     void onTreeitemDoubleClicked(QTreeWidgetItem* item);
@@ -122,7 +135,7 @@ public slots:
     void ui_Management_InsData();
     void ui_Interphase_spacer(QTreeWidgetItem* item);
     void ui_Wire_InterFace(QTreeWidgetItem* item);
-    void ui_Constraint();
+    void ui_Element_Ice();
     void SaveFile();
     void OpenFile();
     void ui_Section();
@@ -134,14 +147,14 @@ public slots:
     void ui_CreatLoads(QTreeWidgetItem* item);
     void CreateOutPut(QTreeWidgetItem* item);
 
-    void Constraint_Tips1(QTreeWidgetItem* item);//点击创建边界条件弹出界面下放确认
+    void ui_Constraint(QTreeWidgetItem* item);//点击创建边界条件弹出界面下放确认
     void CreateTowerInp(QTreeWidgetItem* item);
     void CreateGroupInp(QTreeWidgetItem* item);
 
     void ui_Wind();
     void ui_SingleWire();
 
-    void ui_ManageLoads();
+   // void ui_ManageLoads();
     void ui_TowerWireGroup();
 
     void ui_SingleWireSpacer(QTreeWidgetItem* item);

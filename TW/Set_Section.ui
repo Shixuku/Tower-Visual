@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="LEdit_name">
+       <widget class="QLineEdit" name="line_name">
         <property name="maximumSize">
          <size>
           <width>100</width>

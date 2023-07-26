@@ -48,9 +48,6 @@ public:
 	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
-	////画约束
-	//void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
-	//void Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer);
 
 	void addPart(Part_Base* part);
 	void Check();

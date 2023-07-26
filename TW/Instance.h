@@ -12,6 +12,7 @@
 #include<vtkSmartPointer.h>
 #include<qdebug.h>
 #include"S_InterFace.h"
+#include"ParameterGravity.h"
 class Instance :public Base
 {
 public:
@@ -39,6 +40,7 @@ public:
 	vtkSmartPointer<vtkPoints> m_pts;
 	vtkSmartPointer<vtkActor> m_BeamActor;
 	vtkSmartPointer<vtkActor> m_TrussActor;
+	vtkSmartPointer<vtkPolyData> linesPolyData;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;//集中力actor
 	std::vector<vtkSmartPointer<vtkActor>>m_ConstraintActor;//约束actor
 	std::vector<vtkSmartPointer<vtkActor>>InstanceNactor;//暂时没发现有什么用
@@ -58,7 +60,8 @@ public:
 	virtual void Input(QDataStream& fin);
 	void VectorToMap();
 	//创建输出文件
-	vector<LoadForce>Load;//荷载的容器
+	vector<LoadForce>Load;//集中力的容器
+	vector<ParameterGravity>m_Gravitys;//集中力的容器
 	vector<ParameterConstraint> m_Constraint;//约束的容器
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
@@ -72,6 +75,7 @@ public:
 	void BeamTxT();
 	void TrussTxT();
 	void ConcentrationTxT();//集中力
+	void GravityTxT();//重力
 	void RestraintTxT();//约束
 	void MaterialTxT();//材料
 	void BeamSectionTxT();//梁截面信息
@@ -84,5 +88,7 @@ public:
 
 	//计算
 	S_InterFace* s = nullptr;
+	void Section_Assign();//为各单元的截面指派情况
+	void Axial_force();//初始轴力
 };
 

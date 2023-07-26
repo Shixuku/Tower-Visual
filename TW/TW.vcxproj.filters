@@ -203,6 +203,21 @@
     <ClCompile Include="Spacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Calculate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Element_Ice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractorStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterGravity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterIceElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -301,6 +316,15 @@
     <ClInclude Include="ParameterConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InteractorStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterGravity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterIceElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -393,6 +417,12 @@
     <QtMoc Include="Spacer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Calculate.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Element_Ice.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -471,6 +501,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="TowerCaculate.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Calculate.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Element_Ice.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Calculate.ui">

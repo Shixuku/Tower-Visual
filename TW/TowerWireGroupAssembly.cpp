@@ -47,6 +47,9 @@ void TowerWireGroupAssembly::CreateComBox()
 		ui.comboBox->addItem("杆塔实例" + QString::number(i + 1));
 	}
 	ui.comboBox->setCurrentIndex(0);
+
+	selectedItemName = ui.comboBox->itemText(0);
+
 	emit ui.comboBox->currentIndexChanged(0);//将第一个item设为默认
 }
 

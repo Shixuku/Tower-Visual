@@ -31,6 +31,7 @@ Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
 	connect(ui.object_com, intChanged, this, &Wind::ShowObject);
 	connect(ui.sure_btn_2, &QPushButton::clicked, this, &Wind::ui_Speed);
 	connect(ui.count_btn, &QPushButton::clicked, this, [=]() {m_pcreatWire->CreateOutPut(); this->close(); });
+	CreateCombobox();
 
 	
 }
@@ -70,7 +71,8 @@ void Wind::Initialize()
 
 void Wind::CreateCombobox()
 {
-	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(8)->childCount();//塔腿数量
+	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();
+	
 	for (int i = 0; i < ExampleNum; i++)
 	{
 		ui.object_com->addItem("导线实例" + QString::number(i + 1));
