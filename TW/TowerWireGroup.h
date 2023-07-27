@@ -39,6 +39,7 @@ public:
 	void AddTowerToGroup(Tower* tower,int towerId, double dx, double dy, double dz,double dAngle);
 	void AddTowerNode(Tower* tower, int towerId, double dx, double dy, double dz);
 	void AddTowerElement(Tower* tower, int towerId);
+	void addRestraintNode(Tower* tower);
 	void AddSuspensionNode(Tower* tower);
 	//ÃÌº”œﬂ
 	void AddWireToGroup(CreatWire* wire);

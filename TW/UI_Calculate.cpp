@@ -138,7 +138,6 @@ void Instance_Calculate::on_btk_ok_clicked()
 
 void Instance_Calculate::visual()
 {
-	m_InterFace->HiddeAllTower();
 	if (!display)
 	{
 		display = new resultVisualize(m_InterFace);

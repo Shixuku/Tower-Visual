@@ -27,7 +27,22 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGrou
 				ui.lineEdit->clear();
 				ui.line_p1->clear();
 				ui.line_p2->clear();
-				Arm->addInsulator(TP_insulator);
+				int ret = ui.stackedWidget->currentIndex();
+				if (ret != 2)
+				{
+					Arm->addInsulator(TP_insulator);
+					
+				}
+				else
+				{
+					Arm->SuspensionNode.push_back(ArmidNode);
+					Armlogo = ui.lineEdit_WireLogo->text().toInt();
+					Arm->WireLoge.push_back(Armlogo);
+				}
+				m_pInterFace->m_Renderer->RemoveAllViewProps();
+				Arm->Show_VTKnode(m_pInterFace->m_Renderer);
+				Arm->Show_VTKtruss(m_pInterFace->m_Renderer);
+				Arm->Show_VTKbeam(m_pInterFace->m_Renderer);
 				this->accept();
 			}
 			else if (Arm == nullptr)
@@ -99,11 +114,8 @@ void Interphase_spacer::Get_Nodes()
 		}
 		else if (ret == 2)
 		{
-			int idNode = pNode->m_idNode;
-			int logo=ui.lineEdit_WireLogo->text().toDouble();
-			ui.lineEdit_2->setText(QString::number(idNode));
-			Arm->SuspensionNode.push_back(idNode);
-			Arm->WireLoge.push_back(logo);
+			ArmidNode = pNode->m_idNode;
+			ui.lineEdit_2->setText(QString::number(ArmidNode));
 		}
 	}
 }
@@ -186,9 +198,6 @@ void Interphase_spacer::Get_Data()
 		}
 		TP_insulator->wireLogo = ui.lineEdit_WireLogo->text().toInt();
 		TP_insulator->Create_Mesh();
-		TP_insulator->Show_VTKnode(m_pInterFace->m_Renderer);
-		TP_insulator->Show_VTKtruss(m_pInterFace->m_Renderer);
-		TP_insulator->Show_VTKbeam(m_pInterFace->m_Renderer);
 		m_pInterFace->towerPartInsulator.Add_Entity(TP_insulator);
 	}
 	else if (towerWireGroup != nullptr)
@@ -208,10 +217,12 @@ void Interphase_spacer::Get_Data()
 		TP_insulator->wireLogo = ui.lineEdit_WireLogo->text().toInt();
 		TP_insulator->Create_Mesh();
 		towerWireGroup->addSpacer(TP_insulator);
-		towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer_2);
-		towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer_2);
-		towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer_2);
-		towerWireGroup->VectorToMap();
+		towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer);
+		towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer);
+		towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer);
+		m_pInterFace->m_Renderer->ResetCamera();
+		m_pInterFace->m_renderWindow->Render();
+		
 	}
 }
 

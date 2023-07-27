@@ -82,13 +82,12 @@ void Manage_InsData::Modify_Data()
 			tw->Item = childItem;
 			tw->m_id = Index + 1;
 
-			tw->Show_VTKtruss(m_InterFace->m_Renderer_2);
-			tw->Show_VTKbeam(m_InterFace->m_Renderer_2);
-			tw->Show_VTKnode(m_InterFace->m_Renderer_2);
+			tw->Show_VTKtruss(m_InterFace->m_Renderer);
+			tw->Show_VTKbeam(m_InterFace->m_Renderer);
+			tw->Show_VTKnode(m_InterFace->m_Renderer);
 
 			m_InterFace->TP.Add_Entity(tw);
 
-			m_InterFace->HiddeAllTower();
 			for (auto& i : m_InterFace->TP)
 			{
 				if (i.second != nullptr)
@@ -110,7 +109,7 @@ void Manage_InsData::Modify_Data()
 			{
 				ui.tableWidget->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			}
-			m_InterFace->m_Renderer_2->ResetCamera();
+			m_InterFace->m_Renderer->ResetCamera();
 		}
 	}
 }

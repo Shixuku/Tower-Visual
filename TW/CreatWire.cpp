@@ -1,11 +1,11 @@
 #include "CreatWire.h"
 
-void CreatWire::CreateRealSus()
+void CreatWire::CreateRealSus() 
 {
 	CreatRealNode();
 	//生成节点
 	int num = WireRealSus.size();
-	int susnum = num * fenlie;//总点数=所有悬挂点*分裂数-线路数*2*（分裂数-1）因为每一条线路的第一个和最后一个不分列
+	int susnum = num * fenlie;//
 	int* node = new int[susnum];
 	int index = 0; // 节点索引
 	for (int i = 0; i < num; i++)//
@@ -70,9 +70,8 @@ void CreatWire::CreateWire()
 	{
 		int* node = new int[num * (n + 1) * fenlie];
 
-		for (int i = 0 + WireRealSus.size() / wireQty * j; i < WireRealSus.size() / wireQty + WireRealSus.size() / wireQty * j - 1; i++)
+		for (int i = 0 + WireRealSus.size() / wireQty * j; i < WireRealSus.size() / wireQty * ( j + 1 ) - 1; i++)
 		{
-			cout << i << "\n";
 			double lxi = sqrt((WireRealSus[i].x - WireRealSus[i + 1].x) * (WireRealSus[i].x - WireRealSus[i + 1].x) + (WireRealSus[i].y - WireRealSus[i + 1].y) * (WireRealSus[i].y - WireRealSus[i + 1].y));//档距
 			double wireL= sqrt((WireRealSus[i].x - WireRealSus[i + 1].x) * (WireRealSus[i].x - WireRealSus[i + 1].x) + 
 				(WireRealSus[i].y - WireRealSus[i + 1].y) * (WireRealSus[i].y - WireRealSus[i + 1].y)+ 
@@ -192,73 +191,70 @@ void CreatWire::CreateWire()
 void CreatWire::CreateStrain()
 {
 	//找耐张段那个间隔棒
-	vector<int> ids;
+	
 	int num = WireListSus.size() - 1;
-	if (endpoinType1 == 1 && endpoinType2 == 0)//端点一耐张 端点二悬垂
+	int SusSize = WireListSus.size();//所有列表悬挂点的个数
+	int realSusSize = WireRealSus.size();
+	for (int j = 0; j < endpoinType1.size(); j++)
 	{
-		for (int i = 0; i < fenlie; i++)
+		if (endpoinType1[j] == 1 && endpoinType2[j] == 0)//端点一耐张 端点二悬垂
 		{
-			ids.push_back(i+1);
+			vector<int> ids;
+			for (int i = 0; i < fenlie; i++)
+			{
+				ids.push_back(fenlie*j* SusSize / wireQty + i+1);
+			}
+			double x = WireListSus[0 + SusSize / wireQty * j].x;
+			double y = WireListSus[0 + SusSize / wireQty * j].y;
+			double z = WireListSus[0 + SusSize / wireQty * j].z;
+			CreateStrainLine(x, y, z, ids);
+			CreatSpacer(m_Elements_beams,ids);
 		}
-		double x = WireListSus[0].x;
-		double y = WireListSus[0].y;
-		double z = WireListSus[0].z;
-		CreateStrainLine(x, y, z, ids);
-	}
-	else if (endpoinType1 == 0 && endpoinType2 == 1)//端点一悬垂 端点二耐张
-	{
-		for (int i = 0; i < fenlie; i++)
+		else if (endpoinType1[j] == 0 && endpoinType2[j] == 1)//端点一悬垂 端点二耐张
 		{
-			ids.push_back(fenlie * num + (i + 1));
+			vector<int> ids;
+			for (int i = 0; i < fenlie; i++)
+			{
+				ids.push_back(fenlie * (j+1) * SusSize / wireQty-(fenlie-(i+1)));
+			}
+			double x = WireListSus[SusSize / wireQty * (j + 1) - 1].x;
+			double y = WireListSus[SusSize / wireQty * (j + 1) - 1].y;
+			double z = WireListSus[SusSize / wireQty * (j + 1) - 1].z;
+			CreateStrainLine(x, y, z, ids);
+			CreatSpacer(m_Elements_beams, ids);
 		}
-		double x = WireListSus[num].x;
-		double y = WireListSus[num].y;
-		double z = WireListSus[num].z;
-		CreateStrainLine(x, y, z, ids);
-	}
-	CreatSpacer(m_Elements_beams,ids);
-	if (endpoinType1 == 1 && endpoinType2 == 1)//端点一耐张 端点二耐张
-	{
-		vector<int> start_ids;
-		vector<int> end_ids;
-		for (int i = 0; i < fenlie; i++)
+		else if (endpoinType1[j] == 1 && endpoinType2[j] == 1)//端点一耐张 端点二耐张
 		{
-			start_ids.push_back(i + 1);
-			end_ids.push_back(fenlie * num + (i + 1));
+			vector<int> start_ids;
+			vector<int> end_ids;
+			for (int i = 0; i < fenlie; i++)
+			{
+				start_ids.push_back(fenlie * j * SusSize / wireQty + i + 1);
+				end_ids.push_back(fenlie * (j + 1) * SusSize / wireQty - (fenlie - (i + 1)));
+			}
+			double x1 = WireListSus[0 + SusSize / wireQty * j].x;
+			double y1 = WireListSus[0 + SusSize / wireQty * j].y;
+			double z1 = WireListSus[0 + SusSize / wireQty * j].z;
+			CreateStrainLine(x1, y1, z1, start_ids);
+			double x2 = WireListSus[SusSize / wireQty * (j + 1) - 1].x;
+			double y2 = WireListSus[SusSize / wireQty * (j + 1) - 1].y;
+			double z2 = WireListSus[SusSize / wireQty * (j + 1) - 1].z;
+			CreateStrainLine(x2, y2, z2, end_ids);
+			CreatSpacer(m_Elements_beams,start_ids);
+			CreatSpacer(m_Elements_beams,end_ids);
 		}
-		double x1 = WireListSus[0].x;
-		double y1 = WireListSus[0].y;
-		double z1 = WireListSus[0].z;
-		CreateStrainLine(x1, y1, z1, start_ids);
-		double x2 = WireListSus[num].x;
-		double y2 = WireListSus[num].y;
-		double z2 = WireListSus[num].z;
-		CreateStrainLine(x2, y2, z2, end_ids);
-		CreatSpacer(m_Elements_beams,start_ids);
-		CreatSpacer(m_Elements_beams,end_ids);
 	}
-
 }
 
 void CreatWire::Create_Mesh()
 {
 	CreateRealSus();
 	CreateWire();
-	/*for (int i = 0; i < m_Nodes.size(); i++)
-	{
-		cout  << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y << "  " << m_Nodes[i].z << "  " << "\n";
-	}*/
 	CreateStrain();
-	CreateSpacerDistance();
-	CreateTempWireNode(WireRealSus, TempRealNodes);
-	for (int i = 0; i < SpacerD.size(); i++)
+	for (int i = 0; i < wireQty; i++)
 	{
-	
-		vector<int> ids;
-		ids=FindSpacerL(SpacerD[i], SpacerL[i]);
-		CreatSpacer(m_Elements_beams,ids);
+		CreateTempRealWireNode(i + 1, WireRealSus);
 	}
-
 }
 
 

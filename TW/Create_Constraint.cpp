@@ -42,7 +42,7 @@ void Create_Constraint::Draw_Con1()
 		{
 			for (int i = conSIze; i < Con_Nodes.size(); i++)
 			{
-				m_pInstance->Draw_hinge_joint(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer_2);
+				m_pInstance->Draw_hinge_joint(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer);
 				for (int j = 0; j < 3; j++)
 				{
 					int id = m_pInstance->m_Constraint.size() + 1;//Ô¼Êø±àºÅ

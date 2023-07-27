@@ -46,11 +46,6 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	m_Renderer = vtkRenderer::New();
 	m_renderWindow->AddRenderer(m_Renderer);//添加放部件的vtk
 
-	m_Renderer_2 = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer_2);//添加放单塔的vtk
-
-	m_Renderer_2 = vtkRenderer::New();
-	m_renderWindow->AddRenderer(m_Renderer_2);//添加放塔线组的vtk
 	this->setContextMenuPolicy(Qt::DefaultContextMenu);
 	m_CurrentRenderer = nullptr;
 	initMenu();
@@ -60,7 +55,6 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	TreeWidgetShow();
 	
 	//默认打开的是part的vtk窗口
-	switchRenderWindow(0);
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
 	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_Foot);
@@ -90,13 +84,13 @@ void InterFace::SetupCentralWidget()
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer->SetGradientBackground(1);    
 
-	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
-	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer_2->SetGradientBackground(1);
+	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
+	m_Renderer->SetGradientBackground(1);
 
-	m_Renderer_2->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
-	m_Renderer_2->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer_2->SetGradientBackground(1);                  // 开启渐变色背景设置
+	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
+	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
 
 }
 void InterFace::TreeWidgetShow()
@@ -185,7 +179,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//施加约束
 		ui_Constraint(item);
 	}
-	else if (isChildOfTower(1,item, 2))
+	else if (isChildOfTower(1,item, 2)|| isChildOfTowerwiregroup(item, 2))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -215,9 +209,9 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//导线建模
 		ui_Wire_InterFace(item);
 	}
-	else if (isChildOfTowerwiregroupWireModeling(item))
+	else if (isChildOfTowerwiregroup(item,2))
 	{//输出inp文件
-		CreateGroupInp(item);
+		//CreateGroupInp(item);
 	}
 	//分析步
 	else if (item == ui.treeWidget->topLevelItem(4))
@@ -262,7 +256,6 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 //生成塔腿
 void InterFace::ui_Foot()
 {
-	switchRenderWindow(0);
 	T_Foot* T_foot = new T_Foot(this);//ui
 	int ret = T_foot->exec();
 	if (ret == QDialog::Accepted)
@@ -274,7 +267,7 @@ void InterFace::ui_Foot()
 		T_foot->Get_Data(*t);//取数据
 		item->setText(0, t->m_Name);//子节点名称为自己命名的名称
 		t->Item = item;
-		HiddeAllPart();
+		m_Renderer->RemoveAllViewProps();
 
 		t->Create_Mesh();
 		t->m_id = parent->childCount();//编号
@@ -291,7 +284,6 @@ void InterFace::ui_Foot()
 }
 void InterFace::ui_Body()
 {
-	switchRenderWindow(0);
 	T_Body* T_body = new T_Body(this);//ui
 	int ret = T_body->exec();
 	if (ret == QDialog::Accepted)
@@ -302,7 +294,7 @@ void InterFace::ui_Body()
 		TowerPart_body* t = new TowerPart_body;
 		T_body->Get_Data(t);
 		item->setText(0, t->m_name);
-		HiddeAllPart();
+		m_Renderer->RemoveAllViewProps();
 		t->Item = item;
 
 		t->Create_Mesh();
@@ -320,7 +312,6 @@ void InterFace::ui_Body()
 }
 void InterFace::ui_CrossArm()
 {
-	switchRenderWindow(0);
 	T_CrossArm* T_ca = new T_CrossArm(this);//ui
 	int ret = T_ca->exec();
 	if (ret == QDialog::Accepted)
@@ -332,7 +323,7 @@ void InterFace::ui_CrossArm()
 		spacer->setText(0, QString("添加绝缘子串"));
 		TowerPart_CrossArm* t = new TowerPart_CrossArm;
 		T_ca->Get_Data(*t);
-		HiddeAllPart();
+		m_Renderer->RemoveAllViewProps();
 		t->Item = item;
 		item->setText(0, t->m_name);
 		
@@ -351,7 +342,6 @@ void InterFace::ui_CrossArm()
 }
 void InterFace::ui_Tower()
 {
-	switchRenderWindow(1);
 	Tower_Assembly* T_As = new Tower_Assembly(this);//ui
 	int ret = T_As->exec();
 	if (ret == QDialog::Accepted)
@@ -374,18 +364,18 @@ void InterFace::ui_Tower()
 		}
 
 		tw->Check();
-		HiddeAllTower();
+		m_Renderer->RemoveAllViewProps();
 
 		tw->Item = item;
 		item->setText(0, T_As->Get_name());
 		tw->m_id = TP.size() + 1;//编号
 
-		tw->Show_VTKnode(m_Renderer_2);
-		tw->Show_VTKtruss(m_Renderer_2);
-		tw->Show_VTKbeam(m_Renderer_2);
+		tw->Show_VTKnode(m_Renderer);
+		tw->Show_VTKtruss(m_Renderer);
+		tw->Show_VTKbeam(m_Renderer);
 
 		TP.Add_Entity(tw);
-
+		
 		tw->m_BeamActor->VisibilityOn();
 		tw->m_TrussActor->VisibilityOn();
 		tw->Node_actor->VisibilityOn();
@@ -398,7 +388,7 @@ void InterFace::ui_Tower()
 		}
 		tw->AddNewSection(idSections);
 
-		m_Renderer_2->ResetCamera();
+		m_Renderer->ResetCamera();
 		tower_assembles.push_back(T_As);
 	}
 
@@ -485,42 +475,30 @@ void InterFace::ui_Interphase_spacer(QTreeWidgetItem* item)
 
 void InterFace::ui_Wire_InterFace(QTreeWidgetItem* item)
 {
-	switchRenderWindow(1);
 	TowerWireGroup* towerWireGroup = OnFindGroup(item->parent());
 	towerWireGroup->Suspensioncombined();
+	towerWireGroup->VectorToMap();
 	Wire_InterFace* w = new Wire_InterFace(towerWireGroup,this);
 	int ret = w->exec();
-
+	
 	if (ret == QDialog::Accepted)
 	{
 		CreatWire* t = new CreatWire;
 		w->Get_Data(*t);//取数据
-		m_Renderer_2->RemoveAllViewProps();
+		m_Renderer->RemoveAllViewProps();
 		t->Create_Mesh();
 		towerWireGroup->AddWireToGroup(t);
-		towerWireGroup->VectorToMap();
-		towerWireGroup->AddAxialForceToInsulator(t);
-		cout << "SuspensionElementClass" << "\n";
-		for (int i = 0; i < towerWireGroup->SuspensionElementClass.size(); i++)
-		{
-			cout << towerWireGroup->SuspensionElementClass[i] << "\n";
-		}
-		cout << "SuspensionElement" << "\n";
-		for (int i = 0; i < towerWireGroup->SuspensionElement.size(); i++)
-		{
-			cout << towerWireGroup->SuspensionElement[i] << "\n";
-		}
-		towerWireGroup->Show_VTKnode(m_Renderer_2);
-		towerWireGroup->Show_VTKbeam(m_Renderer_2);
-		towerWireGroup->Show_VTKtruss(m_Renderer_2);
-		m_Renderer_2->ResetCamera();
+		towerWireGroup->Show_VTKnode(m_Renderer);
+		towerWireGroup->Show_VTKbeam(m_Renderer);
+		towerWireGroup->Show_VTKtruss(m_Renderer);
+		m_Renderer->ResetCamera();
 	}
 
 }
 
 void InterFace::ui_TowerWireGroup()
 {
-	switchRenderWindow(1);
+	m_Renderer->RemoveAllViewProps();
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	TowerWireGroupAssembly* towerWireGroupAssembly = new TowerWireGroupAssembly(this, towerWireGroup);
 	towerWireGroupAssembly->show();
@@ -528,11 +506,12 @@ void InterFace::ui_TowerWireGroup()
 }
 void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 {
-	switchRenderWindow(1);
 	TowerData_CrossArm* arm = nullptr;
 	TowerWireGroup* t = OnFindGroup(item->parent());
+	m_Renderer->RemoveAllViewProps();
 	Interphase_spacer* IS = new Interphase_spacer(arm, t, this);
 	IS->show();
+
 }
 
 void InterFace::ui_Element_Ice()
@@ -788,45 +767,6 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 	return nullptr;
 }
 
-void InterFace::HiddeAllPart()
-{
-	vtkPropCollection* props = m_Renderer->GetViewProps(); //iterate through and set each visibility to 0
-	props->InitTraversal();
-	for (int i = 0; i < props->GetNumberOfItems(); i++)
-	{
-		props->GetNextProp()->VisibilityOff();
-
-		m_Renderer->ResetCamera();
-		m_renderWindow->Render();
-	}
-}
-
-void InterFace::HiddeAllTower()
-{
-	vtkPropCollection* props = m_Renderer_2->GetViewProps(); //iterate through and set each visibility to 0
-	props->InitTraversal();
-	for (int i = 0; i < props->GetNumberOfItems(); i++)
-	{
-		props->GetNextProp()->VisibilityOff();
-
-		m_Renderer_2->ResetCamera();
-		m_renderWindow->Render();
-	}
-}
-
-void InterFace::HiddeAllWire()
-{
-	vtkPropCollection* props = m_Renderer_2->GetViewProps(); //iterate through and set each visibility to 0
-	props->InitTraversal();
-	for (int i = 0; i < props->GetNumberOfItems(); i++)
-	{
-		props->GetNextProp()->VisibilityOff();
-
-		m_Renderer_2->ResetCamera();
-		m_renderWindow->Render();
-	}
-}
-
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
 	//for (auto& i : Part->PartNactor)
@@ -837,35 +777,6 @@ void InterFace::ShowSubstaceActor(Part_Base* Part)
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
 
-}
-
-void InterFace::switchRenderWindow(int index)
-{
-	Close_Point();
-	m_renderWindow->RemoveRenderer(m_Renderer);
-	m_renderWindow->RemoveRenderer(m_Renderer_2);
-	m_renderWindow->RemoveRenderer(m_Renderer_2);
-
-	if (index == 0)
-	{
-		m_renderWindow->AddRenderer(m_Renderer);
-		// Set up camera and other settings for Renderer 1
-		m_Renderer->ResetCamera();
-	}
-	else if (index == 1)
-	{
-		m_renderWindow->AddRenderer(m_Renderer_2);
-		// Set up camera and other settings for Renderer 2
-		m_Renderer_2->ResetCamera();
-	}
-	else if (index == 2)
-	{
-		m_renderWindow->AddRenderer(m_Renderer_2);
-		// Set up camera and other settings for Renderer 3
-		m_Renderer_2->ResetCamera();
-	}
-
-	m_renderWindow->Render();
 }
 
 void InterFace::initMenu()
@@ -1061,7 +972,7 @@ void InterFace::Area_Inqure()
 	// Set the custom type to use for interaction.
 	vtkNew<AreaSelected_InteractorStyle> Framestyle;
 	Framestyle->m_pInterFace = this;
-	Framestyle->SetDefaultRenderer(m_Renderer_2);
+	Framestyle->SetDefaultRenderer(m_Renderer);
 	renderWindowInteractor->SetInteractorStyle(Framestyle);
 	vtkAxesActor* Axes = vtkAxesActor::New();
 
@@ -1251,14 +1162,14 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 	return false;
 }
 
-bool InterFace::isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item)
+bool InterFace::isChildOfTowerwiregroup(QTreeWidgetItem* item, int childNumber)
 {
 	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(3);
 	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
 	for (int i = 0; i < towerWireGroupChildCount; i++)
 	{
 		QTreeWidgetItem* childItem = towerWireGroup->child(i);
-		if (item == childItem->child(2))
+		if (item == childItem->child(childNumber))
 		{
 			return true;
 		}
@@ -1303,8 +1214,8 @@ void InterFace::ui_CreatLoads(QTreeWidgetItem* item)
 
 void InterFace::CreateOutPut(QTreeWidgetItem* item)
 {
-	Tower* tower = OnFindTower(item->parent());
-	tower->CreateOutPut();
+	Instance* instance = OnFindInstance(item->parent());
+	instance->CreateOutPut();
 }
 
 void InterFace::CreateTowerInp(QTreeWidgetItem* item)
@@ -1324,27 +1235,11 @@ void InterFace::CreateGroupInp(QTreeWidgetItem* item)
 void InterFace::Show_Part(Part_Base* part)
 {
 	if (part == nullptr) return;
-	switchRenderWindow(0);
-	HiddeAllPart();
-	if (part->m_BeamActor != nullptr)
-	{
-		part->Node_actor->VisibilityOn();
-		part->m_BeamActor->VisibilityOn();
-		part->m_TrussActor->VisibilityOn();
-	}
-	else
-	{ 
-		part->Show_VTKnode(m_Renderer);
-		part->Show_VTKtruss(m_Renderer);
-		part->Show_VTKbeam(m_Renderer);
-	}
-	////part->m_BeamActor->VisibilityOn();
-	//for (auto& i : part->m_BeamActors)
-	//{
-	//	m_Renderer->AddActor(i);
-	//	//cout << "number of actor :" << i << "\n";
-	//}
-	//以下暂时注释
+	m_Renderer->RemoveAllViewProps();
+	part->Show_VTKnode(m_Renderer);
+	part->Show_VTKtruss(m_Renderer);
+	part->Show_VTKbeam(m_Renderer);
+	
 	for (auto& i : part->PartNactor)
 	{
 		i->VisibilityOn();
@@ -1356,52 +1251,41 @@ void InterFace::Show_Part(Part_Base* part)
 void InterFace::Show_Tower(Instance* instance)
 {
 	if (instance == nullptr) return;
-	switchRenderWindow(1);
-	HiddeAllTower();
+	m_Renderer->RemoveAllViewProps();
 
-	if (instance->Node_actor != nullptr)
-	{
-		instance->Node_actor->VisibilityOn();
-		instance->m_BeamActor->VisibilityOn();
-		instance->m_TrussActor->VisibilityOn();
-	}
-	else
-	{
-		instance->Show_VTKnode(m_Renderer_2);
-		instance->Show_VTKtruss(m_Renderer_2);
-		instance->Show_VTKbeam(m_Renderer_2);
-	}
-
+	instance->Show_VTKnode(m_Renderer);
+	instance->Show_VTKtruss(m_Renderer);
+	instance->Show_VTKbeam(m_Renderer);
+	
 	for (auto& i : instance->m_LoadActor)
 	{
-		m_Renderer_2->AddActor(i);
+		m_Renderer->AddActor(i);
 		i->VisibilityOn();
 	}
 	for (auto& i : instance->m_ConstraintActor)
 	{//暂时切换后不显示约束
-		m_Renderer_2->AddActor(i);
+		m_Renderer->AddActor(i);
 		i->VisibilityOn();
 	}
-	m_Renderer_2->ResetCamera();
+	m_Renderer->ResetCamera();
 }
 
 void InterFace::Show_Wire(Instance* instance)
 {
 	if (instance == nullptr) return;
-	switchRenderWindow(2);
-	HiddeAllWire();
+	m_Renderer->RemoveAllViewProps();
 	instance->Node_actor->VisibilityOn();
 	instance->m_TrussActor->VisibilityOn();
 	
-	m_Renderer_2->ResetCamera();
+	m_Renderer->ResetCamera();
 }
 
 void InterFace::ui_Constraint(QTreeWidgetItem* item)
 {
 	Instance* instance = OnFindInstance(item->parent());
-	instance->Show_VTKnode(m_Renderer_2);
-	instance->Show_VTKbeam(m_Renderer_2);
-	instance->Show_VTKtruss(m_Renderer_2);
+	instance->Show_VTKnode(m_Renderer);
+	instance->Show_VTKbeam(m_Renderer);
+	instance->Show_VTKtruss(m_Renderer);
 	//Show_Tower(instance);//显示对应的实例杆塔
 
 	//显示选择的约束界面
@@ -1429,29 +1313,6 @@ void InterFace::ui_SingleWire()
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
 	TWG.Add_Entity(towerWireGroup);
-	//switchRenderWindow(2);
-	//TowerWireGroup* towerWireGroup = nullptr;
-	//TowerPart_CrossArm* arm = nullptr;
-	//Interphase_spacer* IS = new Interphase_spacer(arm, this);
-	//Wire_InterFace* w = new Wire_InterFace(towerWireGroup, this);
-	//int ret = w->exec();
-	//if (ret == QDialog::Accepted)
-	//{
-	//	CreatWire* t = new CreatWire;
-	//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(8);
-	//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-	//	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
-	//	Constraint->setText(0, QString("添加约束"));
-	//	item->setText(0, "导线");
-	//	w->Get_Data(*t);//取数据
-	//	t->m_id = creatWire.size() + 1;
-	//	t->Item = item;
-	//	t->Create_Mesh();
-	//	t->Show_VTKnode(m_Renderer_3);
-	//	t->Show_VTKtruss(m_Renderer_3);
-	//	m_Renderer_3->ResetCamera();
-	//	creatWire.Add_Entity(t);
-	//}
 }
 
 InterFace::~InterFace()

@@ -166,7 +166,6 @@ void TowerData_CrossArm::addInsulator(TowerPart_Insulator* insulator)
 void TowerData_CrossArm::addInsulatorNode(TowerPart_Insulator* insulator)
 {
 	size_t partNode = insulator->m_Nodes.size();//part中的节点
-	cout << typeid(*insulator).name() << ": " << partNode << "\n";
 
 	//add
 	for (size_t i = 0; i < partNode; ++i)
@@ -213,7 +212,10 @@ void TowerData_CrossArm::addInsulatorNode(TowerPart_Insulator* insulator)
 void TowerData_CrossArm::addInsulatorElement(TowerPart_Insulator* insulator)
 {
 	size_t tpart = insulator->m_Elements_Trusses.size();
-
+	size_t bpart = insulator->m_Elements_beams.size();
+	size_t SusElementClass = insulator->SuspensionElementClass.size();
+	size_t SusElement = insulator->SuspensionElement.size();
+	int size = 0;//添加悬挂绝缘子串的单元时，添加完后后面的单元不用再做循环判断
 	for (size_t i = 0; i < tpart; ++i)//Truss
 	{
 		Element_Truss* pE = &insulator->m_Elements_Trusses[i];
@@ -230,6 +232,41 @@ void TowerData_CrossArm::addInsulatorElement(TowerPart_Insulator* insulator)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = insulator->Find_tower_idNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+		if (size != SusElementClass)
+		{
+			for (int j = 0; j < SusElement; j++)
+			{
+				if (insulator->m_Elements_Trusses[i].m_idElement == insulator->SuspensionElement[j])
+				{
+					SuspensionElement.push_back(total + 1);
+					size++;
+				}
+			}
+		}
+	}
+	for (size_t i = 0; i < bpart; ++i)
+	{
+		Element_Beam* pE = &insulator->m_Elements_beams[i];
+		this->m_Elements.push_back(insulator->m_Elements_beams[i]);
+		size_t total = this->m_Elements.size() - 1;
+		this->m_Elements[total].m_idElement = total + 1;//放入实例的总单元
+		this->m_Elements[total].m_idNode[0] = insulator->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements[total].m_idNode[1] = insulator->Find_tower_idNode(pE->m_idNode[1]);
+
+		this->m_Elements_beams.push_back(insulator->m_Elements_beams[i]);
+		size_t totalT = this->m_Elements_beams.size() - 1;
+		this->m_Elements_beams[totalT].m_idElement = total + 1;//放入实例的梁单元
+		this->m_Elements_beams[totalT].m_idNode[0] = insulator->Find_tower_idNode(pE->m_idNode[0]);
+		this->m_Elements_beams[totalT].m_idNode[1] = insulator->Find_tower_idNode(pE->m_idNode[1]);
+		this->m_Elements_beams[totalT].ClassSectionID = pE->ClassSectionID;
+		this->m_Elements_beams[totalT].MaterialID = pE->MaterialID;
+		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
+		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
+		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
+	}
+	for (int i = 0; i < insulator->SuspensionElementClass.size(); i++)
+	{
+		SuspensionElementClass.push_back(insulator->SuspensionElementClass[i]);
 	}
 }
 

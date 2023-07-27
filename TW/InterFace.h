@@ -59,16 +59,11 @@ public:
     void TreeWidgetShow();//左窗口
 
     vtkRenderer* m_Renderer;//放部件的vtk窗口
-    vtkRenderer* m_Renderer_2;//单塔实例的vtk窗口
    
     vtkGenericOpenGLRenderWindow* m_renderWindow;
     QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
    
-    void HiddeAllPart();
-    void HiddeAllTower();
-    void HiddeAllWire();
     void ShowSubstaceActor(Part_Base* Part);
-    void switchRenderWindow(int index);
     void initMenu();
     void AddPartFunction(QTreeWidgetItem* item);
      Ui::InterFaceClass ui;
@@ -106,7 +101,7 @@ public:
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
-     bool isChildOfTowerwiregroupWireModeling(QTreeWidgetItem* item);//将塔线建模放在塔线组下去找到
+     bool isChildOfTowerwiregroup(QTreeWidgetItem* item, int childNumber);//将塔线建模放在塔线组下去找到
      void Area_Inqure();//框选point
      void AreaElement_Inqure();//框选Element
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);

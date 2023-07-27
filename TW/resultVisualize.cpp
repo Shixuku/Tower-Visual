@@ -167,7 +167,7 @@ void resultVisualize::addData(vector<Node_Base*>node, Instance* ins)
 	}
 	addActorData();//添加主界面数据(copy)
 
-	pCAE->m_Renderer_2->ResetCamera();
+	pCAE->m_Renderer->ResetCamera();
 }
 
 void resultVisualize::addActorData()
@@ -213,15 +213,15 @@ void resultVisualize::addActorData()
 	m_vtklines->SetMapper(linesmapper);
 	m_vtklines->GetProperty()->SetColor(1, 0, 0);
 
-	pCAE->m_Renderer_2->AddActor(m_vtkNodes);
-	pCAE->m_Renderer_2->AddActor(m_vtklines);
+	pCAE->m_Renderer->AddActor(m_vtkNodes);
+	pCAE->m_Renderer->AddActor(m_vtklines);
 	pCAE->m_renderWindow->Render();
 }
 
 void resultVisualize::removeActor()
 {
-	pCAE->m_Renderer_2->RemoveActor(m_vtkNodes);
-	pCAE->m_Renderer_2->RemoveActor(m_vtklines);
+	pCAE->m_Renderer->RemoveActor(m_vtkNodes);
+	pCAE->m_Renderer->RemoveActor(m_vtklines);
 
 	m_vtkNodes = nullptr;
 	m_vtklines = nullptr;
