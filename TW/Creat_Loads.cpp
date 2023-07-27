@@ -6,7 +6,7 @@
 #include"Polynomial.h"
 #include"InterFace.h"
 #include"IceLoad.h"
-
+#include<QMessageBox.h>
 #pragma execution_character_set("utf-8")
 Creat_Loads::Creat_Loads(Tower* tower,QWidget *parent): QDialog(parent)
 {
@@ -27,31 +27,39 @@ Creat_Loads::~Creat_Loads()
 
 void Creat_Loads::btn_continue_clicked()
 {
-	int index = ui.listWidget->currentRow();//取选的载荷
-	m_str = ui.line_name->text();
-	
-	if (index == 0)
-	{//集中力
-		ConcentrateForce* concentrateForce = new ConcentrateForce(this);
-		concentrateForce->show();
-	}
-	else if (index == 1)
-	{//重力
-		Gravity* gravity = new Gravity(this);
-		gravity->show();
-	}
-	else if (index == 2)
-	{//覆冰
-		IceLoad* iceLoad = new IceLoad(this);
-		iceLoad->show();
-	}
-	else if (index == 3)
-	{//多项式函数
-		Polynomial* polynomial = new Polynomial;
-		polynomial->show();
-	}
-	else if (index == 4)
+	if (m_pInterFace->ME_AnalysisSteps.size() == 0)
 	{
+		QMessageBox::information(this, "Tips", "请先创建分析步！"); return;
 	}
-	this->accept();
+	else
+	{
+		int index = ui.listWidget->currentRow();//取选的载荷
+		m_str = ui.line_name->text();
+
+		if (index == 0)
+		{//集中力
+			ConcentrateForce* concentrateForce = new ConcentrateForce(this);
+			concentrateForce->show();
+		}
+		else if (index == 1)
+		{//重力
+			Gravity* gravity = new Gravity(this);
+			gravity->show();
+		}
+		else if (index == 2)
+		{//覆冰
+			IceLoad* iceLoad = new IceLoad(this);
+			iceLoad->show();
+		}
+		else if (index == 3)
+		{//多项式函数
+			Polynomial* polynomial = new Polynomial;
+			polynomial->show();
+		}
+		else if (index == 4)
+		{
+		}
+		this->accept();
+
+	}
 }

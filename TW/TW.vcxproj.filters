@@ -218,6 +218,12 @@
     <ClCompile Include="ParameterIceElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui_AnalysisStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterAnalysisStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -325,6 +331,9 @@
     <ClInclude Include="ParameterIceElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterAnalysisStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -423,6 +432,9 @@
     <QtMoc Include="Element_Ice.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ui_AnalysisStep.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -516,6 +528,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Spacer.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ui_AnalysisStep.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
