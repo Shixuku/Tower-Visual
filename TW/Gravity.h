@@ -14,7 +14,9 @@ public:
 	~Gravity();
 	Creat_Loads* m_pCreat_loads = nullptr;
 	Tower* m_pTower = nullptr;
+	void initialization();
 	void Get_ui_Data();
+
 private:
 	Ui::GravityClass ui;
 };

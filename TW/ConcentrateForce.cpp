@@ -38,6 +38,13 @@ void ConcentrateForce::initialization()
 {
 	ui.label_name->setText("名称：" + m_pCreat_loads->m_str);//显示父窗口的名称
 	this->setWindowFlags(Qt::WindowStaysOnTopHint);//设置窗口在最上层
+
+	//分析步的combobox
+	int size = m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.size();
+	for (int i = 1; i < size + 1; i++)
+	{
+		ui.comboBox->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
+	}
 }
 
 void ConcentrateForce::Get_Nodes()
@@ -98,9 +105,8 @@ void ConcentrateForce::draw()
 			if (num == i->m_idNode)
 			{
 				Node* n = i;
-				//取数据-----分析步需要改
-				double startTime = 0;//开始时间 
-				double endTime = 1;//结束时间
+				//分析步
+				int AnalysisStep = ui.comboBox->currentIndex() + 1;
 				//取x方向
 				double i_x = ui.line_x->text().toDouble();//大小
 				if (i_x != 0)
@@ -108,10 +114,10 @@ void ConcentrateForce::draw()
 					int id = m_pTower->Load.size() + 1;//集中力编号
 					int idNode = i->m_idNode;//节点编号
 					int direction = 0;//方向
-					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_x, startTime, endTime));
-					//以下两行是为了主界面保存数据使用
-					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
-					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
+					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_x));
+					////以下两行是为了主界面保存数据使用
+					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 
 					//画
 					if (i_x < 0)
@@ -131,10 +137,10 @@ void ConcentrateForce::draw()
 					int id = m_pTower->Load.size() + 1;
 					int idNode = i->m_idNode;
 					int direction = 1;
-					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_y, startTime, endTime));
-					//以下两行是为了主界面保存数据使用
-					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
-					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
+					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_y));
+					////以下两行是为了主界面保存数据使用
+					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_y < 0)
 					{
 						m_pTower->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
@@ -152,10 +158,10 @@ void ConcentrateForce::draw()
 					int id = m_pTower->Load.size() + 1;
 					int idNode = i->m_idNode;
 					int direction = 2;
-					m_pTower->Load.push_back(LoadForce(id, idNode, direction, i_z, startTime, endTime));
-					//以下两行是为了主界面保存数据使用
-					LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
-					m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
+					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_z));
+					////以下两行是为了主界面保存数据使用
+					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
+					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_z < 0)
 					{
 						m_pTower->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
@@ -170,16 +176,7 @@ void ConcentrateForce::draw()
 
 		}
 	}
-
-	//输出
-	for (int i = 0; i < m_pTower->Load.size(); i++)
-	{
-		cout << m_pTower->Load[i].id_force << " " << m_pTower->Load[i].id_node << "  " << m_pTower->Load[i].DirectionForce
-			<< "  " << m_pTower->Load[i].Force << "  " << m_pTower->Load[i].StartTime << "  " << m_pTower->Load[i].EndTime
-			<< "\n";
-	}
 	this->accept();
 	m_ffNodes.clear();
-
 	m_pCreat_loads->m_pInterFace->Close_Point();
 }

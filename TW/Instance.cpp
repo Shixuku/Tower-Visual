@@ -299,7 +299,8 @@ void Instance::CreateOutPut()
 		TrussTxT();//桁架单元
 		BeamTxT();//梁单元
 		//Stream << 0 << " \n";//没有索单元暂时为0
-
+		//分析步
+		AnalysisStepTxT();
 		//荷载
 		ConcentrationTxT();//集中力
 		GravityTxT();//重力
@@ -353,24 +354,41 @@ void Instance::TrussTxT()
 	}
 }
 
+void Instance::AnalysisStepTxT()
+{
+	InterFace* pInterFace = Base::Get_InterFace();
+	int AnalysisStepSize = pInterFace->ME_AnalysisSteps.size();
+	Stream << "*Analysis_Step," << AnalysisStepSize << "\n";
+	for (auto& i : pInterFace->ME_AnalysisSteps)
+	{
+		QString m_Type;//分析步类型 静力还是动力
+		double m_TimeSlot;//时间段
+		double m_TimeIncrement;//时间增量
+		double m_MinAllowableValue;//最小容许值
+		int m_MaxEpoch;//最大迭代次数
+		//编号，材料号 类型 A, Iy,  Iz,Iyz, J  ----Iyz暂时为0
+		Stream << "  " << i.second->m_id << "  " << i.second->m_Type << "  "  << i.second->m_TimeSlot <<"  "
+			<< i.second->m_TimeIncrement << "  " << i.second->m_MinAllowableValue << "  " << i.second->m_MaxEpoch << "\n";
+	}
+}
+
 void Instance::ConcentrationTxT()
 {
 	int LoadSize = Load.size();
-	Stream <<"*ConcentrationForce, " << LoadSize << " \n";
+	Stream <<"*Force_Node, " << LoadSize << " \n";
 	for (int i = 0; i < Load.size(); i++)
 	{
-		Stream << "  " << Load[i].id_force << "  " << Load[i].id_node << "  " << Load[i].DirectionForce << "  " << Load[i].Force
-			<< "  " /*<< Load[i].StartTime << "  " << Load[i].EndTime*/ << "\n";
+		Stream << "  " << Load[i].m_id << "  " <<Load[i].m_AnalysisStep<<"  " << Load[i].id_node << "  " << Load[i].DirectionForce << "  " << Load[i].Force<< "\n";
 	}
 }
 
 void Instance::GravityTxT()
 {
 	int GravitySize = m_Gravitys.size();
-	Stream << "*Gravity," << GravitySize << "\n";//重力
+	Stream << "*Force_Gravity," << GravitySize << "\n";//重力
 	for (int i = 0; i < GravitySize; i++)
 	{	//1 0 - 9.8(编号 方向012-xyz 大小)
-		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
+		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
 	}
 }
 
@@ -446,7 +464,7 @@ void Instance::Suspensioncombined()
 
 void Instance::RestraintTxT()
 {
-	int RestraintNodesize = 24;//塔脚的4个完全约束
+	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
 	int totalRestraint = RestraintNodesize + m_ConstraintSize;
 

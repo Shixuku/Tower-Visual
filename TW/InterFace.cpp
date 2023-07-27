@@ -7,7 +7,6 @@
 #include"Manage_Loads.h"
 #include <vtkPointData.h>//->GetArray("Address")
 #include <vtkIdTypeArray.h>
-
 #include"MouseInteractorHighLightActor.h"//点选点
 #include"AreaSelected_InteractorStyle.h"//框选点
 #include"InteractorStyle.h"//框选单元
@@ -30,9 +29,9 @@
 #include"TowerCaculate.h"
 #include<vtkAppendPolyData.h>
 #include "UI_Calculate.h"
-
 #include"ParameterIceElement.h"
 #include"Element_Ice.h"
+#include"ui_AnalysisStep.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -126,14 +125,16 @@ void InterFace::TreeWidgetShow()
 	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
 	creat_towerwire_instance->setText(0, QString("塔线组实例"));
 
+	QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
+	AnalysisStep->setText(0, QString("分析步"));
+
 	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
 	attribute->setText(0, QString("截面材料"));
 
 	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
 	WIndLoad->setText(0, QString("创建风载荷"));
 
-	//QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
-	//CreatWire->setText(0, QString("单导实例"));
+
 
 	//QTreeWidgetItem* Calculate = new QTreeWidgetItem(ui.treeWidget);
 	//Calculate->setText(0, QString("计算"));
@@ -197,6 +198,14 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_SingleWire();
 	}
+	else if (isChildOfSingleWire(item, 0))
+	{//创建绝缘子串
+		ui_SingleWireSpacer(item);
+	}
+	else if (isChildOfSingleWire(item, 2))
+	{//施加约束
+		ui_Constraint(item);
+	}
 	//塔线实例
 	else if (item == ui.treeWidget->topLevelItem(3))
 	{
@@ -210,23 +219,21 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//输出inp文件
 		CreateGroupInp(item);
 	}
-	//截面材料
+	//分析步
 	else if (item == ui.treeWidget->topLevelItem(4))
+	{
+		ui_AnalysisStep* AnalysisStep = new ui_AnalysisStep(this);
+		AnalysisStep->show();
+	}
+	//截面材料
+	else if (item == ui.treeWidget->topLevelItem(5))
 	{
 		ui_Section();
 	}
 	//风载荷
-	else if (item == ui.treeWidget->topLevelItem(5))
+	else if (item == ui.treeWidget->topLevelItem(6))
 	{
 		ui_Wind();
-	}
-	else if (isChildOfSingleWire(item, 0))
-	{//创建绝缘子串
-		ui_SingleWireSpacer(item);
-	}
-	else if (isChildOfSingleWire(item, 2))
-	{//施加约束
-		ui_Constraint(item);
 	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
@@ -240,12 +247,12 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 			Show_Part(part);
 	}
 
-	if (item->parent() == ui.treeWidget->topLevelItem(1)|| item->parent() == ui.treeWidget->topLevelItem(8))
+	if (item->parent() == ui.treeWidget->topLevelItem(1)|| item->parent() == ui.treeWidget->topLevelItem(2))
 	{
 		Instance* instance = OnFindInstance(item);
 		Show_Tower(instance);
 	}
-	else if (item->parent() == ui.treeWidget->topLevelItem(8))
+	else if (item->parent() == ui.treeWidget->topLevelItem(2))
 	{
 		Instance* instance = OnFindInstance(item);
 		Show_Wire(instance);
@@ -558,7 +565,7 @@ void InterFace::SaveFile()
 			//towerPartInsulator.Save(Stream);//绝缘子串
 			TP.Save(Stream);
 			Ms.Save(Stream);//保存截面数据
-			ME_LoadForce.Save(Stream);//保存集中力数据
+			//ME_LoadForce.Save(Stream);//保存集中力数据
 			//TWG.Save(Stream);
 		}
 		Qf.close();
@@ -822,10 +829,10 @@ void InterFace::HiddeAllWire()
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
-	for (auto& i : Part->PartNactor)
-	{
-		m_Renderer->AddActor(i);
-	}
+	//for (auto& i : Part->PartNactor)
+	//{
+	//	m_Renderer->AddActor(i);
+	//}
 
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();

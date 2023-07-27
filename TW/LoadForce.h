@@ -3,14 +3,12 @@
 class LoadForce:public Base
 {
 public:
-	int id_force;//集中力编号
+
+	int m_AnalysisStep;//分析步号
 	int id_node;//节点编号
 	int DirectionForce;//方向
 	double Force;//大小
-	double StartTime;//开始时间
-	double EndTime;//结束时间
-	LoadForce();
-	LoadForce(int id, int i_node, double i_direction, double i_force, double i_stime, double i_etime);
+	LoadForce(int id, int AnalysisStep, int i_node, double i_direction, double i_force);
 	virtual enum Part_Type My_PartType()const
 	{
 		return ET_LoadForce;

@@ -46,6 +46,7 @@ class TowerCaculate;
 class ParameterIceElement;
 class Element_Ice;
 class InteractorStyle;
+class ui_AnalysisStep;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -78,7 +79,8 @@ public:
      Manage_Entity<TowerPart_Insulator> towerPartInsulator;
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;//截面合集
-     Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
+     Manage_Entity<ParameterAnalysisStep> ME_AnalysisSteps;//分析步合集
+     //Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
      vector<ParameterIceElement*> ME_ElementIce;//冰单元合集
      Manage_Entity<TowerWireGroup> TWG;
     // Manage_Entity<TowerWireGroup> creatWire;
