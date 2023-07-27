@@ -122,7 +122,6 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 int Instance::Creat_Node(double x, double y, double z)
 {
 	int SIZE = susPoint.size();
-	std::cout << "size:" << SIZE << std::endl;
 	int judg = 0;
 	for (int i = 0; i < SIZE; ++i)
 	{
@@ -447,8 +446,23 @@ void Instance::Section_Assign()
 }
 
 void Instance::Axial_force()
-{//没有设置，暂时为0
-	Stream << "*Axial_force," << 0 << " \n";
+{
+	int Axial_forcesize = 0;
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		if (m_Elements_Trusses[i].AxialForce != 0)
+		{
+			Axial_forcesize++;
+		}
+	}
+	Stream << "*Axial_force," << Axial_forcesize << " \n";
+	for (int i = 0; i < m_Elements_Trusses.size(); i++)
+	{
+		if (m_Elements_Trusses[i].AxialForce != 0)
+		{
+			Stream<< "  " << m_Elements_Trusses[i].m_idElement<< "  " << m_Elements_Trusses[i].AxialForce << "  " << "\n";
+		}
+	}
 }
 
 void Instance::Suspensioncombined()
@@ -529,7 +543,6 @@ void Instance::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer*
 		coneActor->GetProperty()->SetRepresentationToWireframe();
 
 		m_ConstraintActor.push_back(coneActor);
-		//std::cout << "m_ConstraintActor.size() = " << m_ConstraintActor.size() << "\n";
 		renderer->AddActor(coneActor);
 
 	}

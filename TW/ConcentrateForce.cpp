@@ -122,11 +122,11 @@ void ConcentrateForce::draw()
 					//»­
 					if (i_x < 0)
 					{
-						m_pTower->DrawForceX(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceX(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_x > 0)
 					{
-						m_pTower->DrawForceX(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceX(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 
@@ -143,11 +143,11 @@ void ConcentrateForce::draw()
 					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_y < 0)
 					{
-						m_pTower->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_y > 0)
 					{
-						m_pTower->DrawForceY(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceY(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 
@@ -164,11 +164,11 @@ void ConcentrateForce::draw()
 					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_z < 0)
 					{
-						m_pTower->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_z > 0)
 					{
-						m_pTower->DrawForceZ(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer_2);
+						m_pTower->DrawForceZ(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 			}

@@ -243,8 +243,6 @@ void Tower::rotation(double angle)//直接旋转
 void Tower::addNodeToTower(Part_Base* part)
 {
 	size_t partNode = part->m_Nodes.size();//part中的节点
-	//cout << typeid(*part).name() << ": " << partNode << "\n";
-
 	//add
 	for (size_t i = 0; i < partNode; ++i)
 	{
@@ -319,13 +317,6 @@ void Tower::SaveTo(QDataStream& fin) const
 	{
 		fin << SuspensionNode[i];
 	}
-	////集中力
-	//int nLoadForce = Load.size();
-	//fin << nLoadForce;
-	//for (int i = 0; i < nLoadForce; i++)
-	//{
-	//	Load[i].SaveTo(fin);
-	//}
 }
 
 void Tower::Input(QDataStream& fin)
@@ -359,14 +350,6 @@ void Tower::Input(QDataStream& fin)
 	{
 		fin >> SuspensionNode[i];
 	}
-	////集中力
-	//int nLoadForce;
-	//fin << nLoadForce;
-	//Load.resize(nLoadForce);
-	//for (int i = 0; i < nLoadForce; i++)
-	//{
-	//	Load[i].Input(fin);
-	//}
 }
 
 void Tower::ShowNode()const
@@ -413,7 +396,6 @@ void Tower::Show_Beam(int BeamID, int SectionClass, double a, double b)
 {
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		//cout << m_Elements_beams[i].m_idNode[0] << "   " << m_Elements_beams[i].m_idNode[1] << "\n";
 		if (m_Elements_beams[i].m_idElement == BeamID)
 		{
 			beamActor bA;
@@ -504,7 +486,9 @@ void Tower::addElementToTower(Part_Base* part)
 
 	size_t tpart = part->m_Elements_Trusses.size();
 	size_t bpart = part->m_Elements_beams.size();
-
+	size_t SusElementClass = part->SuspensionElementClass.size();
+	size_t SusElement = part->SuspensionElement.size();
+	int size = 0;//添加悬挂绝缘子串的单元时，添加完后后面的单元不用再做循环判断
 	for (size_t i = 0; i < tpart; ++i)//Truss
 	{
 		Element_Truss* pE = &part->m_Elements_Trusses[i];
@@ -521,6 +505,17 @@ void Tower::addElementToTower(Part_Base* part)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = part->Find_tower_idNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+		if (size != SusElementClass)
+		{
+			for (int j = 0; j < SusElement; j++)
+			{
+				if (part->m_Elements_Trusses[i].m_idElement == part->SuspensionElement[j])
+				{
+					SuspensionElement.push_back(total + 1);
+					size++;
+				}
+			}
+		}
 	}
 	for (size_t i = 0; i < bpart; ++i)
 	{
@@ -541,25 +536,13 @@ void Tower::addElementToTower(Part_Base* part)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
-		//cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
+	}
+	for (int i = 0; i < part->SuspensionElementClass.size(); i++)
+	{
+		SuspensionElementClass.push_back(part->SuspensionElementClass[i]);
 	}
 }
 
-//void Tower::addSectionToTower(Part_Base* part)
-//{
-//	int SectionSize = part->pSection.size();
-//	for (int i = 0; i < SectionSize; i++)
-//	{
-//		double ia = part->pSection[i].a;
-//		double ib = part->pSection[i].b;
-//		int id = part->pSection[i].m_id;
-//		int iClassSe = part->pSection[i].ClassSe;
-//		int iClassM = part->pSection[i].ClassM;
-//
-//		pSection.push_back(Section(ia, ib, id, iClassSe, iClassM));
-//		
-//	}
-//}
 
 void Tower::addRestraintNode(Part_Base* part)
 {

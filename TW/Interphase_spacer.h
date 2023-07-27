@@ -26,7 +26,8 @@ public:
 	TowerData_CrossArm* Arm = nullptr;
 	vector<Node*>m_Nodes;
 	TowerPart_Insulator* ReturnInsulator();
-
+	int ArmidNode = 0;
+	int Armlogo = 0;
 private:
 	Ui::Interphase_spacerClass ui;
 };

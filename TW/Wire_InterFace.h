@@ -31,8 +31,8 @@ public:
 	double strainLength;//耐张串长度
 	double sag;//弧垂
 	double wireLogoQty;
-	int chooseType1 = 0;//端点一类型
-	int chooseType2 = 0;//端点二类型
+	vector<int> chooseType1 ;//端点一类型
+	vector<int> chooseType2 ;//端点二类型
 	std::vector<int>SpacerNum;//存储间隔棒个数
 	std::vector<Node>WireSusList;//表格中给的悬挂点
 	int  ChooseWay = 0;//间隔棒安装方式 0-等间距 1-不等间距

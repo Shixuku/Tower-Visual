@@ -91,13 +91,13 @@ void TowerWireGroup::AddTowerToGroup(Tower* tower, int towerId, double dx, doubl
 	AddTowerElement(tower, towerId);
 	rotation(dAngle, towerId);
 	AddSuspensionNode(tower);
+	addRestraintNode(tower);
 	tower->TowerToGroup.clear();
 }
 
 void TowerWireGroup::AddTowerNode(Tower* tower, int towerId, double dx, double dy, double dz)
 {
 	size_t towerNode = tower->m_Nodes.size();//tower中的节点
-	cout << typeid(*tower).name() << ": " << towerNode << "\n";
 
 	//add
 	for (size_t i = 0; i < towerNode; ++i)
@@ -118,7 +118,9 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 {
 	size_t tTower = tower->m_Elements_Trusses.size();
 	size_t bTower = tower->m_Elements_beams.size();
-
+	size_t SusElementClass = tower->SuspensionElementClass.size();
+	size_t SusElement = tower->SuspensionElement.size();
+	int size = 0;//添加悬挂绝缘子串的单元时，添加完后后面的单元不用再做循环判断
 	for (size_t i = 0; i < tTower; ++i)//Truss
 	{
 		Element_Truss* pE = &tower->m_Elements_Trusses[i];
@@ -136,6 +138,17 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
 		this->m_Elements_Trusses[totalT].groupTowerId = towerId;
+		if (size != SusElementClass)
+		{
+			for (int j = 0; j < SusElement; j++)
+			{
+				if (tower->m_Elements_Trusses[i].m_idElement == tower->SuspensionElement[j])
+				{
+					SuspensionElement.push_back(total + 1);
+					size++;
+				}
+			}
+		}
 	}
 	for (size_t i = 0; i < bTower; ++i)
 	{
@@ -157,6 +170,20 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
 		this->m_Elements_beams[totalT].groupTowerId = towerId;
+	}
+	for (int i = 0; i < tower->SuspensionElementClass.size(); i++)
+	{
+		SuspensionElementClass.push_back(tower->SuspensionElementClass[i]);
+	}
+}
+
+void TowerWireGroup::addRestraintNode(Tower* tower)
+{
+	size_t ResNode = tower->RestraintNode.size();
+	for (int i = 0; i < ResNode; i++)
+	{
+		this->RestraintNode.push_back(tower->RestraintNode[i]);
+		RestraintNode[i] = tower->FindGroupIdNode(tower->RestraintNode[i]);
 	}
 }
 
@@ -183,6 +210,8 @@ void TowerWireGroup::AddWireToGroup(CreatWire* wire)
 {
 	AddWireNode(wire);
 	AddWireElement(wire);
+	AddAxialForceToInsulator(wire);
+
 }
 
 void TowerWireGroup::AddWireNode(CreatWire* wire)
@@ -218,7 +247,6 @@ void TowerWireGroup::AddWireNode(CreatWire* wire)
 
 void TowerWireGroup::AddWireElement(CreatWire* wire)
 {
-	cout << "wire->wireToGroup.size" << wire->wireToGroup.size() << "\n";
 	size_t tTower = wire->m_Elements_Trusses.size();
 	size_t bpart = wire->m_Elements_beams.size();
 	for (size_t i = 0; i < tTower; ++i)//Truss
@@ -256,7 +284,7 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
-		//cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
+		
 	}
 }
 
@@ -265,8 +293,17 @@ void TowerWireGroup::AddAxialForceToInsulator(CreatWire* wire)
 	//暂时只考虑悬垂型（加入塔线组合需修改）
 	for (int i = 0; i < this->SuspensionElementClass.size(); i++)
 	{
-		 TrussData[this->SuspensionElement[i]].AxialForce = (wire->WireGravity[i] + wire->WireGravity[i + 1]) / 2;
-		 this->m_Elements_Trusses[i].AxialForce = TrussData[this->SuspensionElement[i]].AxialForce;
+		 TrussData[this->SuspensionElement[i]].AxialForce = 
+			 (wire->WireGravity[i] + wire->WireGravity[i + 1]) / 2;
+		 for (int j = 0; j < m_Elements_Trusses.size(); j++)
+		 {
+			 if (m_Elements_Trusses[j].m_idElement == this->SuspensionElement[i])
+			 {
+				 this->m_Elements_Trusses[j].AxialForce = TrussData[this->SuspensionElement[i]].AxialForce;
+			 }
+			 
+		 }
+		 
 	}
 }
 
@@ -434,7 +471,6 @@ void TowerWireGroup::addSpacerElement(Part_Base* part)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
-		//cout << pE->direction[0] << "  " << pE->direction[1] << "  " << pE->direction[2] << "\n";
 	}
 	for (int i = 0; i < part->SuspensionElementClass.size(); i++)
 	{

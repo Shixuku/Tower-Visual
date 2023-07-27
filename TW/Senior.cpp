@@ -34,12 +34,12 @@ void Senior::ui_Spacer()
 		if (sp == nullptr)
 		{
 			sp = new Spacer(this);
-			sp->Set_Lists(wireInterFace->a);
+			sp->Set_Lists(wireInterFace->a / wireInterFace->wireLogoQty);
 			sp->exec();
 		}
 		else
 		{
-			sp->Set_Lists(wireInterFace->a);
+			sp->Set_Lists(wireInterFace->a / wireInterFace->wireLogoQty);
 			sp->exec();
 		}
 	}
