@@ -229,8 +229,12 @@ void WireData::CreateStrainLine(vector<Element_Truss> &Temp_Truss, double x, dou
 	for (int i = 0; i < size; i++)
 	{
 		int id2 = ids[i];
-		Temp_Truss.push_back(Element_Truss(idelement + 1, id, id2, WireSectionId, 1000));//材料和轴力后续需要改
-		idelement++;
+		if (id != id2)
+		{
+			Temp_Truss.push_back(Element_Truss(idelement + 1, id, id2, WireSectionId, 1000));//材料和轴力后续需要改
+			idelement++;
+		}
+		
 	}
 }
 
