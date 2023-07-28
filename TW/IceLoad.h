@@ -2,7 +2,6 @@
 
 #include <QDialog>
 #include "ui_IceLoad.h"
-
 class Creat_Loads;
 class Tower;
 class IceLoad : public QDialog
@@ -15,6 +14,10 @@ public:
 	Creat_Loads* m_pCreat_loads = nullptr;
 
 	Tower* m_pTower = nullptr;
+	//QComboBox* AnalysisStep1 = nullptr;
+	//QComboBox* AnalysisStep2 = nullptr;
+	int step1;
+	int step2;
 	void Initialization();
 	void GetData();
 private:

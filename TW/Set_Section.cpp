@@ -23,6 +23,7 @@ Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 	ui.LEdit_a->setText("0.200");
 	ui.LEdit_b->setText("0.020");
 	ui.line_name->setText("Section-" + QString::number(m_pInterFace->Ms.size() + 1));
+	ui.label_type->setText("a(m)£º");
 }
 
 
@@ -38,13 +39,16 @@ void Set_Section::Change_Picture_foot()
 	{
 	case 0:
 		img->load("./ab2.png");
+		ui.label_type->setText("a(m)£º");
 		break;
 	case 1:
 		img->load("./ab3.png");
+		ui.label_type->setText("2r(m)£º");
 		break;
 	}
 	ui.label_2->resize(img->width(), img->height());
 	ui.label_2->setPixmap(QPixmap::fromImage(*img));
+	
 }
 
 

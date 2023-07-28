@@ -116,9 +116,22 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_5">
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_type">
            <property name="text">
-            <string>a(m)</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -197,9 +210,22 @@
           </spacer>
          </item>
          <item>
+          <spacer name="horizontalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>b(m)</string>
+            <string>壁厚t(m)：</string>
            </property>
           </widget>
          </item>

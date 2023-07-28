@@ -14,6 +14,7 @@
 #include"S_InterFace.h"
 #include"ParameterGravity.h"
 #include"ParameterAnalysisStep.h"
+#include"ParameterIceElement.h"
 class Instance :public Base
 {
 public:
@@ -62,9 +63,9 @@ public:
 	void VectorToMap();
 	//创建输出文件
 	vector<LoadForce>Load;//集中力的容器
-	vector<ParameterGravity>m_Gravitys;//集中力的容器
+	vector<ParameterGravity>m_Gravitys;//重力的容器
 	vector<ParameterConstraint> m_Constraint;//约束的容器
-	//vector<ParameterAnalysisStep> m_AnalysisSteps;//分析步的容器
+	vector<ParameterIceElement> m_IceElement;//分析步的容器
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力
@@ -79,6 +80,7 @@ public:
 	void AnalysisStepTxT();//分析步
 	void ConcentrationTxT();//集中力
 	void GravityTxT();//重力
+	void IceLoadTxT();
 	void RestraintTxT();//约束
 	void MaterialTxT();//材料
 	void BeamSectionTxT();//梁截面信息
