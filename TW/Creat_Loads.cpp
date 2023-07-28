@@ -8,13 +8,13 @@
 #include"IceLoad.h"
 #include<QMessageBox.h>
 #pragma execution_character_set("utf-8")
-Creat_Loads::Creat_Loads(Tower* tower,QWidget *parent): QDialog(parent)
+Creat_Loads::Creat_Loads(Instance* instance,QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
 
 	m_pInterFace = dynamic_cast<InterFace*>(parent);
 	Q_ASSERT(m_pInterFace != nullptr);
-	m_tower = tower;
+	m_instance = instance;
 
 	ui.line_name->setText("Load - ");
 	//按钮响应事件

@@ -10,7 +10,7 @@ ConcentrateForce::ConcentrateForce(Creat_Loads* creat_loads, QWidget *parent)
 {
 	ui.setupUi(this);
 	m_pCreat_loads = creat_loads;
-	m_pTower = m_pCreat_loads->m_tower;//调用父类的tower
+	m_pInstance = m_pCreat_loads->m_instance;//调用父类的tower
 
 	initialization();
 	//按钮响应事件
@@ -111,10 +111,10 @@ void ConcentrateForce::draw()
 				double i_x = ui.line_x->text().toDouble();//大小
 				if (i_x != 0)
 				{
-					int id = m_pTower->Load.size() + 1;//集中力编号
+					int id = m_pInstance->Load.size() + 1;//集中力编号
 					int idNode = i->m_idNode;//节点编号
 					int direction = 0;//方向
-					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_x));
+					m_pInstance->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_x));
 					////以下两行是为了主界面保存数据使用
 					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
 					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
@@ -122,11 +122,11 @@ void ConcentrateForce::draw()
 					//画
 					if (i_x < 0)
 					{
-						m_pTower->DrawForceX(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceX(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_x > 0)
 					{
-						m_pTower->DrawForceX(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceX(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 
@@ -134,20 +134,20 @@ void ConcentrateForce::draw()
 				double i_y = ui.line_y->text().toDouble();
 				if (i_y != 0)
 				{
-					int id = m_pTower->Load.size() + 1;
+					int id = m_pInstance->Load.size() + 1;
 					int idNode = i->m_idNode;
 					int direction = 1;
-					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_y));
+					m_pInstance->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_y));
 					////以下两行是为了主界面保存数据使用
 					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
 					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_y < 0)
 					{
-						m_pTower->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceY(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_y > 0)
 					{
-						m_pTower->DrawForceY(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceY(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 
@@ -155,20 +155,20 @@ void ConcentrateForce::draw()
 				double i_z = ui.line_z->text().toDouble();
 				if (i_z != 0)
 				{
-					int id = m_pTower->Load.size() + 1;
+					int id = m_pInstance->Load.size() + 1;
 					int idNode = i->m_idNode;
 					int direction = 2;
-					m_pTower->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_z));
+					m_pInstance->Load.push_back(LoadForce(id, AnalysisStep, idNode, direction, i_z));
 					////以下两行是为了主界面保存数据使用
 					//LoadForce* loadForce = new LoadForce(id, idNode, direction, i_x, startTime, endTime);
 					//m_pCreat_loads->m_pInterFace->ME_LoadForce.Add_Entity(loadForce);
 					if (i_z < 0)
 					{
-						m_pTower->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceZ(n, -1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 					if (i_z > 0)
 					{
-						m_pTower->DrawForceZ(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
+						m_pInstance->DrawForceZ(n, 1, m_pCreat_loads->m_pInterFace->m_Renderer);
 					}
 				}
 			}

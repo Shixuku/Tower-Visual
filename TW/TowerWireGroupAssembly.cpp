@@ -107,6 +107,9 @@ void TowerWireGroupAssembly::CreatTowerWierGroupItem()
 
 	QTreeWidgetItem* calculate = new QTreeWidgetItem(towerWierGroupItem);
 	calculate->setText(0, QString("计算文件"));
+
+	QTreeWidgetItem* Loads = new QTreeWidgetItem(towerWierGroupItem);
+	Loads->setText(0, QString("施加荷载"));
 }
 void TowerWireGroupAssembly::onComboBoxIndexChanged(int index)
 {

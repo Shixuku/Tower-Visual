@@ -44,10 +44,7 @@ public:
 	int FindGroupIdNode(int idNode) const;
 
 
-	//画集中力
-	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
-	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
-	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+
 
 	void addPart(Part_Base* part);
 	void Check();

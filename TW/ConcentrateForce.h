@@ -7,7 +7,7 @@
 #include"Node.h"
 
 class Creat_Loads;
-class Tower;
+class Instance;
 class ConcentrateForce : public QDialog
 {
 	Q_OBJECT
@@ -16,7 +16,7 @@ public:
 	ConcentrateForce(Creat_Loads* creat_loads, QWidget *parent = nullptr);
 	~ConcentrateForce();
 	Creat_Loads* m_pCreat_loads = nullptr;
-	Tower* m_pTower = nullptr;
+	Instance* m_pInstance = nullptr;
 	
 	std::vector<Node*>m_ffNodes;//µã¼¯ºÏ
 	void initialization();

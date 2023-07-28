@@ -95,5 +95,10 @@ public:
 	S_InterFace* s = nullptr;
 	void Section_Assign();//为各单元的截面指派情况
 	void Axial_force();//初始轴力
+
+	//画集中力
+	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 };
 

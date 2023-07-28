@@ -171,7 +171,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Tower();
 	}
-	else if (isChildOfTower(1,item, 0))
+	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 3)||isChildOfGroup(item, 3))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
@@ -179,7 +179,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//施加约束
 		ui_Constraint(item);
 	}
-	else if (isChildOfTower(1,item, 2)|| isChildOfTowerwiregroup(item, 2))
+	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -209,7 +209,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//导线建模
 		ui_Wire_InterFace(item);
 	}
-	else if (isChildOfTowerwiregroup(item,2))
+	else if (isChildOfGroup(item,2))
 	{//输出inp文件
 		//CreateGroupInp(item);
 	}
@@ -1162,20 +1162,6 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 	return false;
 }
 
-bool InterFace::isChildOfTowerwiregroup(QTreeWidgetItem* item, int childNumber)
-{
-	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(3);
-	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
-	for (int i = 0; i < towerWireGroupChildCount; i++)
-	{
-		QTreeWidgetItem* childItem = towerWireGroup->child(i);
-		if (item == childItem->child(childNumber))
-		{
-			return true;
-		}
-	}
-	return false;
-}
 
 bool InterFace::isChildOfSingleWire(QTreeWidgetItem* item, int childNumber)
 {
@@ -1205,11 +1191,10 @@ void InterFace::Close_Point()
 
 void InterFace::ui_CreatLoads(QTreeWidgetItem* item)
 {
-	Tower* tower = OnFindTower(item->parent());
-	Show_Tower(tower);//显示父节点的实例
-	Creat_Loads* creat_load = new Creat_Loads(tower, this);
+	Instance* instance = OnFindInstance(item->parent());
+	Show_Tower(instance);//显示父节点的实例
+	Creat_Loads* creat_load = new Creat_Loads(instance, this);
 	creat_load->show();
-	
 }
 
 void InterFace::CreateOutPut(QTreeWidgetItem* item)
@@ -1309,6 +1294,8 @@ void InterFace::ui_SingleWire()
 	creareWire->setText(0, "建立导线");
 	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);
 	Constraint->setText(0, "添加约束");
+	QTreeWidgetItem* Loads = new QTreeWidgetItem(item);
+	Loads->setText(0, "施加荷载");
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
