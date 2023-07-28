@@ -303,6 +303,7 @@ void Instance::CreateOutPut()
 		//荷载
 		ConcentrationTxT();//集中力
 		GravityTxT();//重力
+		IceLoadTxT();//冰单元
 		//1（多项式函数数量）
 		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
 		//Stream << 0 << "\n";//多项式函数暂时为空
@@ -388,6 +389,17 @@ void Instance::GravityTxT()
 	for (int i = 0; i < GravitySize; i++)
 	{	//1 0 - 9.8(编号 方向012-xyz 大小)
 		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
+	}
+}
+
+void Instance::IceLoadTxT()
+{
+	Stream << "*IceLoad," << m_IceElement.size() << "\n";
+	for (int i = 0; i < m_IceElement.size(); i++)
+	{
+		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
+		Stream << "   " << m_IceElement[i].m_id << "  " << m_IceElement[i].m_idElement << "  " << m_IceElement[i].m_StartAnalysisStep
+			<< "  " << m_IceElement[i].m_EndAnalysisStep << "  " << m_IceElement[i].m_Thickness << "\n";
 	}
 }
 

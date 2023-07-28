@@ -64,9 +64,9 @@ void Section::GetLIxyz()
 
 void Section::GetOIxyz()
 {
-	double D1 = 2 * a;
+	double D1 = a;
 	double D4 = D1 * D1 * D1 * D1;
-	double d = 2 * b;
+	double d = a - (2 * b);
 	double d4 = d * d * d * d;
 	B_Iy = PI / 64 * (D4 - d4);
 	B_Iz = PI / 64 * (D4 - d4);
