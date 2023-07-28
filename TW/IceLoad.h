@@ -3,7 +3,7 @@
 #include <QDialog>
 #include "ui_IceLoad.h"
 class Creat_Loads;
-class Tower;
+class Instance;
 class IceLoad : public QDialog
 {
 	Q_OBJECT
@@ -12,8 +12,7 @@ public:
 	IceLoad(Creat_Loads* creat_loads, QWidget *parent = nullptr);
 	~IceLoad();
 	Creat_Loads* m_pCreat_loads = nullptr;
-
-	Tower* m_pTower = nullptr;
+	Instance* m_pInstance = nullptr;
 	//QComboBox* AnalysisStep1 = nullptr;
 	//QComboBox* AnalysisStep2 = nullptr;
 	int step1;

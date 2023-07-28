@@ -11,7 +11,7 @@ IceLoad::IceLoad(Creat_Loads * creat_loads, QWidget* parent) : QDialog(parent)
 	ui.setupUi(this);
 
 	m_pCreat_loads = creat_loads;
-	m_pTower = m_pCreat_loads->m_tower;//调用父类的tower
+	m_pInstance = m_pCreat_loads->m_instance;//调用父类的tower
 	Initialization();//combox初始化
 	this->setWindowFlags(Qt::WindowStaysOnTopHint);//设置窗口在最上层
 	connect(ui.btn_ok, &QPushButton::clicked, this, &IceLoad::GetData);
@@ -54,7 +54,7 @@ void IceLoad::Initialization()
 
 void IceLoad::GetData()
 {
-	int size = m_pTower->m_Elements.size();//124
+	int size = m_pInstance->m_Elements.size();//124
 	for (int i = 1; i < size+1; i++)
 	{
 		int m_id = i + size;//冰单元编号
@@ -66,7 +66,7 @@ void IceLoad::GetData()
 		int addIce = combox1->currentIndex() + 1;//覆冰分析步
 		int reduceIce = combox2->currentIndex() + 1;//脱冰分析步
 		double m_thickness = ui.tableWidget->item(0, 2)->text().toDouble();//覆冰厚度
-		m_pTower->m_IceElement.push_back(ParameterIceElement(m_id, Element, addIce, reduceIce, m_thickness));
+		m_pInstance->m_IceElement.push_back(ParameterIceElement(m_id, Element, addIce, reduceIce, m_thickness));
 	}
 	this->accept();
 }

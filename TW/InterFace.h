@@ -101,7 +101,6 @@ public:
      bool isChildOfPartSetSection(QTreeWidgetItem* item);//选择赋予截面的item
      bool isChildOfPartSetAllSection(QTreeWidgetItem* item);//选择赋予全部截面的item
      bool isChildOfPartSetSpacer(QTreeWidgetItem* item);//将绝缘子放在横担下
-     bool isChildOfTowerwiregroup(QTreeWidgetItem* item, int childNumber);//将塔线建模放在塔线组下去找到
      void Area_Inqure();//框选point
      void AreaElement_Inqure();//框选Element
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);

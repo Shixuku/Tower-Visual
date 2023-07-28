@@ -7,7 +7,7 @@ Gravity::Gravity(Creat_Loads* creat_loads, QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
 	m_pCreat_loads = creat_loads;
-	m_pTower = m_pCreat_loads->m_tower;//调用父类的tower
+	m_pInstance = m_pCreat_loads->m_instance;//调用父类的tower
 	initialization();
 	connect(ui.btn_ok, &QPushButton::clicked, this, &Gravity::Get_ui_Data);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Gravity::reject);
@@ -32,11 +32,11 @@ void Gravity::initialization()
 
 void Gravity::Get_ui_Data()
 {
-	int id = m_pTower->m_Gravitys.size() + 1;
+	int id = m_pInstance->m_Gravitys.size() + 1;
 	//分析步
 	int AnalysisStep = ui.comboBox->currentIndex() + 1;
 	int direction = ui.line_direction->text().toInt();
 	double g = ui.line_g->text().toDouble();
-	m_pTower->m_Gravitys.push_back(ParameterGravity(id, AnalysisStep, direction, g));
+	m_pInstance->m_Gravitys.push_back(ParameterGravity(id, AnalysisStep, direction, g));
 	this->accept();
 }

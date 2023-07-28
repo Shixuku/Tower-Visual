@@ -603,3 +603,112 @@ void Instance::Draw_hinge_joint(double x, double y, double z, vtkRenderer* rende
 	}
 	renderer->ResetCamera();
 }
+void Instance::DrawForceX(Node* n, int a, vtkRenderer* renderer)
+{
+	// 创建锥形
+	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
+	double x1 = n->x + 2.000 * a;
+	cone->SetCenter(x1, n->y, n->z); // 设置中心点坐标
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
+	cone->SetDirection(1 * a, 0, 0);//设置方向--数值与大小无关
+	cone->SetResolution(10);  // 设置分辨率
+	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
+	lineSource->SetPoint1(n->x, n->y, n->z);
+	lineSource->SetPoint2(x1 + 0.250 * a, n->y, n->z);
+	lineSource->Update();
+
+	vtkNew<vtkAppendPolyData> appendFilter;
+	appendFilter->AddInputConnection(cone->GetOutputPort());
+	appendFilter->AddInputConnection(lineSource->GetOutputPort());
+	appendFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputConnection(appendFilter->GetOutputPort());
+
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
+
+	// 将渲染属性设置为线框模式
+	vtkSmartPointer<vtkProperty> p_property = vtkSmartPointer<vtkProperty>::New();
+	p_property->SetRepresentationToWireframe();
+	actor->SetProperty(p_property);
+	actor->GetProperty()->SetColor(1, 0, 0);
+	m_LoadActor.push_back(actor);
+
+	//在主界面显示
+	renderer->AddActor(actor);
+}
+
+void Instance::DrawForceY(Node* n, int a, vtkRenderer* renderer)
+{
+	// 创建锥形
+	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
+	double y1 = n->y + 2.000 * a;
+	cone->SetCenter(n->x, y1, n->z); // 设置中心点坐标
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
+	cone->SetDirection(0, 1 * a, 0);//设置方向--数值与大小无关
+	cone->SetResolution(10);  // 设置分辨率
+	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
+	lineSource->SetPoint1(n->x, n->y, n->z);
+	lineSource->SetPoint2(n->x, y1 + 0.250 * a, n->z);
+	lineSource->Update();
+
+	vtkNew<vtkAppendPolyData> appendFilter;
+	appendFilter->AddInputConnection(cone->GetOutputPort());
+	appendFilter->AddInputConnection(lineSource->GetOutputPort());
+	appendFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputConnection(appendFilter->GetOutputPort());
+
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
+
+	// 将渲染属性设置为线框模式
+	vtkSmartPointer<vtkProperty> p_property = vtkSmartPointer<vtkProperty>::New();
+	p_property->SetRepresentationToWireframe();
+	actor->SetProperty(p_property);
+	actor->GetProperty()->SetColor(1, 0, 0);
+	m_LoadActor.push_back(actor);
+	renderer->AddActor(actor);
+
+}
+
+void Instance::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
+{
+	// 创建锥形
+	vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
+	double z1 = n->z + 2.000 * a;
+	cone->SetCenter(n->x, n->y, z1); // 设置中心点坐标
+	cone->SetHeight(0.5000);     // 设置高度
+	cone->SetRadius(0.3000);     // 设置半径
+	cone->SetDirection(0, 0, 1 * a);//设置方向--数值与大小无关
+	cone->SetResolution(10);  // 设置分辨率
+	vtkSmartPointer<vtkLineSource> lineSource = vtkSmartPointer<vtkLineSource>::New();
+	lineSource->SetPoint1(n->x, n->y, n->z);
+	lineSource->SetPoint2(n->x, n->y, z1 + 0.250 * a);
+	lineSource->Update();
+
+	vtkNew<vtkAppendPolyData> appendFilter;
+	appendFilter->AddInputConnection(cone->GetOutputPort());
+	appendFilter->AddInputConnection(lineSource->GetOutputPort());
+	appendFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputConnection(appendFilter->GetOutputPort());
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
+
+	// 将渲染属性设置为线框模式
+	vtkSmartPointer<vtkProperty> p_property = vtkSmartPointer<vtkProperty>::New();
+	p_property->SetRepresentationToWireframe();
+	actor->SetProperty(p_property);
+	actor->GetProperty()->SetColor(1, 0, 0);
+
+	m_LoadActor.push_back(actor);
+
+	renderer->AddActor(actor);
+
+}
