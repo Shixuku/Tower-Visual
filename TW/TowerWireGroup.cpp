@@ -228,7 +228,6 @@ void TowerWireGroup::AddWireNode(CreatWire* wire)
 				(abs(wire->m_Nodes[i].y - NodeData[realSuspoint[j]].y) < 1e-1) &&
 				(abs(wire->m_Nodes[i].z - NodeData[realSuspoint[j]].z) < 1e-1))
 			{
-				cout << "NodeData" <<"  " << NodeData[realSuspoint[j]].x << "  " << NodeData[realSuspoint[j]].y << "  " << NodeData[realSuspoint[j]].z << "\n";
 				isSuspensionNode = true;
 				wire->wireToGroup.push_back(realSuspoint.at(j));
 			}

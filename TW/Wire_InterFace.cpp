@@ -109,7 +109,7 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.InsulatorSectionId = m_pInterFace->Ms.size() + 2;
 	Section* j = new Section(7 * r, 0, wd.InsulatorSectionId, 2, 5);
 	wd.SpacerSectionId = m_pInterFace->Ms.size() + 3;
-	Section* k = new Section(4 * r, 0, wd.InsulatorSectionId, 2, 6);
+	Section* k = new Section(4 * r, 0, wd.SpacerSectionId, 2, 6);
 	wd.wireQty = wireLogoQty;
 	wd.endpoinType1.assign(chooseType1.begin(), chooseType1.end());
 	wd.endpoinType2.assign(chooseType2.begin(), chooseType2.end());
@@ -119,7 +119,7 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.allSus.push_back(Node(1, WireSusList[0].x, WireSusList[0].y, WireSusList[0].z, 0));
 	wd.allSus.push_back(Node(1, WireSusList[num].x, WireSusList[num].y, WireSusList[num].z, 0));
 	m_pInterFace->Ms.Add_Entity(i);
-	//m_pInterFace->Ms.Add_Entity(j);
+	m_pInterFace->Ms.Add_Entity(j);
 	m_pInterFace->Ms.Add_Entity(k);
 }
 

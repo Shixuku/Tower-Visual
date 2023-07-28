@@ -769,10 +769,10 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
-	//for (auto& i : Part->PartNactor)
-	//{
-	//	m_Renderer->AddActor(i);
-	//}
+	for (auto& i : Part->PartNactor)
+	{
+		m_Renderer->AddActor(i);
+	}
 
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();

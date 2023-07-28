@@ -36,6 +36,7 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGrou
 				else
 				{
 					Arm->SuspensionNode.push_back(ArmidNode);
+					Arm->realSuspoint.push_back(ArmidNode);
 					Armlogo = ui.lineEdit_WireLogo->text().toInt();
 					Arm->WireLoge.push_back(Armlogo);
 				}
