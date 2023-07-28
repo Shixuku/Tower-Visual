@@ -221,17 +221,15 @@ void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Beams, vector<int> i
 
 }
 
-void WireData::CreateStrainLine(double x, double y, double z, vector<int> ids)
+void WireData::CreateStrainLine(vector<Element_Truss> &Temp_Truss, double x, double y, double z, vector<int> ids)
 {
 	int id = Creat_Node(x, y, z, 0);
-	int idelement = m_Elements_Trusses.size();
+	int idelement = Temp_Truss.size();
 	size_t size = ids.size();
 	for (int i = 0; i < size; i++)
 	{
 		int id2 = ids[i];
-		m_Elements_Trusses.push_back(Element_Truss(idelement + 1, id, id2, 2, 5));//材料和轴力后续需要改
-		int id = m_Elements_Trusses.size() - 1;
-		m_Elements_Trusses[id].AxialForce = 1;//初始轴力
+		Temp_Truss.push_back(Element_Truss(idelement + 1, id, id2, WireSectionId, 1000));//材料和轴力后续需要改
 		idelement++;
 	}
 }

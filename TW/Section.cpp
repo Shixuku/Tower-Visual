@@ -85,7 +85,7 @@ void Section::GetCircleIxyz()
 	B_Iz = PI / 64 * D4;
 	B_J = (PI * pow(a, 4)) / 4;
 	B_Iyz = 0;
-	S = PI * a * a * 1e-6;
+	S = PI * a * a ;
 }
 
 void Section::SaveTo(QDataStream& fin) const

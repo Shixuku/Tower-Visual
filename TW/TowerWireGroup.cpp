@@ -300,6 +300,7 @@ void TowerWireGroup::AddAxialForceToInsulator(CreatWire* wire)
 			 if (m_Elements_Trusses[j].m_idElement == this->SuspensionElement[i])
 			 {
 				 this->m_Elements_Trusses[j].AxialForce = TrussData[this->SuspensionElement[i]].AxialForce;
+				 this->m_Elements_Trusses[j].ClassSectionID = wire->InsulatorSectionId;
 			 }
 			 
 		 }
