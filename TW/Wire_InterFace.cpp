@@ -1,6 +1,7 @@
 #include "Wire_InterFace.h"
 #include"Senior.h"
 #include "InterFace.h"
+#include <qmessagebox.h>
 # define PI acos(-1)
 Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 	: QDialog(parent)
@@ -21,7 +22,13 @@ Wire_InterFace::Wire_InterFace(TowerWireGroup* TowerWireGroup, QWidget *parent)
 			SetTableWideget(a); 
 		});
 	connect(ui.Senior_Btn, &QPushButton::clicked, this, &Wire_InterFace::ui_Senior);
-	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {SaveSusPoint(); this->accept(); });
+	connect(ui.Btn_ensure, &QPushButton::clicked, this, [=]() {
+		if (sen == nullptr)
+		{
+			QMessageBox::warning(this, "提示", "请点击高级选项设置相关参数！");
+			return;
+		}
+		SaveSusPoint(); this->accept(); });
 	connect(ui.Btn_cancel, &QPushButton::clicked, this, &Wire_InterFace::reject);
 
 }
@@ -97,11 +104,11 @@ void Wire_InterFace::Get_Data(WireData& wd)
 	wd.sag = sag;
 	wd.WireListSus = WireSusList;
 	wd.WireSectionId= m_pInterFace->Ms.size()+1;
-	double r = sqrt(area / PI);
+	double r = sqrt(area / PI) * 0.001;
 	Section* i = new Section(r, 0, wd.WireSectionId, 2, 4);
 	wd.InsulatorSectionId = m_pInterFace->Ms.size() + 2;
 	Section* j = new Section(7 * r, 0, wd.InsulatorSectionId, 2, 5);
-	wd.InsulatorSectionId = m_pInterFace->Ms.size() + 3;
+	wd.SpacerSectionId = m_pInterFace->Ms.size() + 3;
 	Section* k = new Section(4 * r, 0, wd.InsulatorSectionId, 2, 6);
 	wd.wireQty = wireLogoQty;
 	wd.endpoinType1.assign(chooseType1.begin(), chooseType1.end());
