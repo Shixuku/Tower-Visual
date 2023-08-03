@@ -49,16 +49,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="N_Pts">
-           <property name="maximumSize">
-            <size>
-             <width>50</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="Pts_OK">
            <property name="text">
             <string>生成</string>

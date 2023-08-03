@@ -1,5 +1,6 @@
 #pragma once
 #include "Node_Base.h"
+#include "ForceBase.h"
 #include <QtCharts/QLineSeries>
 #include <Eigen/Dense>
 #include <QDebug>
@@ -10,8 +11,7 @@ using namespace Eigen;
 
 class Fem_Element_Base;
 
-#define pi std::acos(-1)
-class DLL_ANSYS_EXPORT Force_Wind : public EntityBase
+class DLL_ANSYS_EXPORT Force_Wind : public ForceBase
 {//风荷载
 
 	friend class Structure;
@@ -33,7 +33,7 @@ public:
 	void Input(QDataStream& fin);
 	void Input(QTextStream& fin);
 	void Disp();
-	double Get_Windvelocity();
+	double Get_Windvelocity() const;
 
 	double m_pair;//空气密度
 	double alf;/*地面粗糙度，a类地貌（近海海面，沙漠）取0.12；b类地貌（田野，乡村）取0.16；
@@ -47,7 +47,7 @@ public:
 	int M = 6000; // M >= 2 * N
 
 	std::vector<Node_Base> Points_set; //模拟点集合
-	QString m_FilePath;
+	QString m_FilePath = "../";
 	//设置文件路径
 	void set_FilePath(const QString& FilePath) { m_FilePath = FilePath; }
 	//输入模拟点以文件形式
@@ -73,13 +73,21 @@ public:
 	void Get_Cyzm(const double attack_Angle, double& Cy, double& Cz, double& Cm);//计算气动参数
 	double CountMiu_h(const double h);//计算风压系数
 	double wind_coeff = 0;//风荷载系数
+	void Get_WindCoeff(double W0, double afa, double beta_c, double miu_sc, double B, double theta);//计算风荷载系数(风偏计算)
+	void Get_WindCoeff(const double t);
+
+	double m_angle = 90;
+	double Get_Windvelocity(const int windIndex, const double t);
+
+	virtual void Assemble_Force(VectorXd& Force, const double t) override;
+
+	bool isRandom = false;
 private:
 	MatrixXd f;//脉动风速时程
 	MatrixXd v;//瞬时风速时程v = 平均风速 + f
 	MatrixXd v_2;//瞬时风速的平方
 
-	void Get_WindCoeff(double W0, double afa, double beta_c, double miu_sc, double B, double theta);//计算风荷载系数(风偏计算)
-	void Get_WindCoeff();
+
 	int select = 1;//选择地貌
 
 	virtual enum Entity_Type My_EntityType() const

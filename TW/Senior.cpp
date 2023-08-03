@@ -19,11 +19,11 @@ Senior::~Senior()
 void Senior::Initialize()
 {
 	ui.N_pts->setText("100");
-	ui.bizai_Btn->setText("1.6855");
-	ui.Btn_Area->setText("531.68");
+	ui.bizai_Btn->setText("2.06");
+	ui.Btn_Area->setText("666.55");
 	ui.li_Btn->setText("10");
 	ui.nz_Len->setText("1");
-	ui.sag_edit->setText("4000");
+	ui.sag_edit->setText("4");
 }
 
 void Senior::ui_Spacer()

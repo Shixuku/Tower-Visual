@@ -74,7 +74,13 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
 	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
-	
+	// 创建坐标轴部件
+	Axes = vtkAxesActor::New();
+	widgetAxes = vtkOrientationMarkerWidget::New();
+	widgetAxes->SetOrientationMarker(Axes);
+	widgetAxes->SetInteractor(m_renderWindow->GetInteractor());
+	widgetAxes->SetEnabled(1);
+	widgetAxes->SetInteractive(1);
 }
 
 void InterFace::SetupCentralWidget()
@@ -179,7 +185,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//施加约束
 		ui_Constraint(item);
 	}
-	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2))
+	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,4))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -826,9 +832,15 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 void InterFace::Caculate()
 {
-	Instance_Calculate* ui_c = new Instance_Calculate(this);
-	ui_c->show();
-
+	if (ui_calculate)
+	{
+		ui_calculate->show();
+	}
+	else
+	{
+		ui_calculate = new Instance_Calculate(this);
+		ui_calculate->show();
+	}
 }
 
 void InterFace::Display()
@@ -959,6 +971,7 @@ void InterFace::Point_Inqure()
 	// 初始化交互器并启动
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
+
 }
 
 void InterFace::Area_Inqure()
@@ -1279,8 +1292,8 @@ void InterFace::ui_Constraint(QTreeWidgetItem* item)
 }
 void InterFace::ui_Wind()
 {
-	wd = new Wind(this);//改了黄瞻的combobox
-	wd->show();
+	//wd = new Wind(this);//改了黄瞻的combobox
+	//wd->show();
 }
 
 void InterFace::ui_SingleWire()
@@ -1296,6 +1309,8 @@ void InterFace::ui_SingleWire()
 	Constraint->setText(0, "添加约束");
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(item);
 	Loads->setText(0, "施加荷载");
+	QTreeWidgetItem* inp = new QTreeWidgetItem(item);
+	inp->setText(0, "计算文件");
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;

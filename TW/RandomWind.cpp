@@ -3,18 +3,15 @@
 #include"InterFace.h"
 #include"Force_Wind.h"
 #include"Wind.h"
+
 #include <qmessagebox.h>
 
 
-RandomWind::RandomWind(QWidget *parent)
+RandomWind::RandomWind(Wind* m_wind, QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
-
-	m_pInterFace = dynamic_cast<InterFace*>(parent);
-	Q_ASSERT(m_pInterFace != nullptr);
-	wd = dynamic_cast<Wind*>(m_pInterFace->wd);
-	Q_ASSERT(wd != nullptr);
+	wd = m_wind;
 
 	initChart();
 	Initialize();
@@ -28,7 +25,7 @@ RandomWind::RandomWind(QWidget *parent)
 		QMessageBox::warning(this, "提示", "请在上个界面选择地面粗糙程度！");
 		return;
 	}
-	SimulateWind(); CreatCombobox(); CreatSegment(); });
+	ComputeEleCoordinate(); CreatEleGather(); SimulateWind(); CreatCombobox(); CreatSegment();  });
 	void (QComboBox:: * activated)(int) = &QComboBox::activated;
 	connect(ui.NodeV_com, activated, this, &RandomWind::ShowPic);
 	ui.pushButton_3->setToolTip("沿海区0.005 - 0.02；开阔场地0.03 - 0.1；建筑物不多的郊区0.2 - 0.4; 大城市中心2.0 - 3.0");
@@ -117,8 +114,8 @@ void RandomWind::Initialize()
 
 void RandomWind::CreatSegment()
 {
-	//R_pcreatWire = wd->m_pcreatWire;
-	R_pcreatWire->m_Nodes;
+	R_pcreatWire = wd->m_pcreatWire;
+	//R_pcreatWire->m_Nodes;
 	NumOfWindzones = ui.lineEdit_segment->text().toInt();
 	//单档
 	double Lx = R_pcreatWire->m_Nodes[1].x - R_pcreatWire->m_Nodes[0].x;
@@ -214,3 +211,97 @@ void RandomWind::Plot(QLineSeries * lineData)
 	m_chartView->show();
 }
 
+void RandomWind::CreatEleGather()
+{
+	R_pcreatWire = wd->m_pcreatWire;
+	// 计算 x 和 y 的最小值和最大值
+	double xmin = std::numeric_limits<double>::max();
+	double xmax = std::numeric_limits<double>::lowest();
+	double ymin = std::numeric_limits<double>::max();
+	double ymax = std::numeric_limits<double>::lowest();
+
+	for (const auto& node : R_pcreatWire->m_Nodes) {
+		if (node.x < xmin) xmin = node.x;
+		if (node.x > xmax) xmax = node.x;
+		if (node.y < ymin) ymin = node.y;
+		if (node.y > ymax) ymax = node.y;
+	}
+
+	// 判断 xmax-xmin 和 ymax-ymin 哪个差值更大
+	bool sortByX = (xmax - xmin) > (ymax - ymin);
+
+	// 对 m_Nodes 中的点按照 x 或 y 进行升序排列
+	std::sort(R_pcreatWire->m_Nodes.begin(), R_pcreatWire->m_Nodes.end(), [sortByX](const Node& a, const Node& b) {
+		return sortByX ? (a.x < b.x) : (a.y < b.y);
+		});
+	int NumSegments = ui.lineEdit_segment->text().toInt();
+	if (sortByX)//按照x升序
+	{
+		for (int i = 0; i < NumSegments; i++)
+		{
+
+		}
+	}
+	else if (!sortByX)//按照y升序
+	{
+		// 计算每个区间的 y 值范围
+		double yRange = (ymax - ymin) / NumSegments;
+		// 获取每个区间的边界 y 值
+		for (int i = 0; i < NumSegments; i++)
+		{
+			double segmentMinY = ymin + i * yRange;
+			double segmentMaxY = ymin + (i + 1) * yRange;
+			for (int j = 0; j < m_EleLocation.size(); j++)
+			{
+				const Ele_Location& ele = m_EleLocation[j]; // 获取 m_EleLocation 中的当前元素
+				if (ele.m_y >= segmentMinY && ele.m_y <= segmentMaxY)
+				{
+					m_EleWind[i + 1] = ele.m_id;
+					cout << "风区" << "  " << i + 1 << " 单元号" << "  " << ele.m_id << "\n";
+				}
+			}
+		}
+	}
+	
+}
+
+void RandomWind::ComputeEleCoordinate()
+{
+	R_pcreatWire = wd->m_pcreatWire;
+	int numTruss = R_pcreatWire->m_Elements_Trusses.size();
+	int numBeam = R_pcreatWire->m_Elements_beams.size();
+	int totalNum = numTruss + numBeam;
+	m_EleLocation.resize(totalNum);
+	for (int i = 0; i < numTruss; i++)
+	{
+		const auto& ele = R_pcreatWire->m_Elements_Trusses[i];
+		int ipt1 = ele.m_idNode[0] - 1; // id
+		int ipt2 = ele.m_idNode[1] - 1;
+		const auto& node1 = R_pcreatWire->m_Nodes[ipt1];
+		const auto& node2 = R_pcreatWire->m_Nodes[ipt2];
+		int id = ele.m_idElement;
+		double x = (node2.x + node1.x) / 2;
+		double y = (node2.y + node1.y) / 2;
+		double z = (node2.z + node1.z) / 2;
+		m_EleLocation[i].m_id = id;
+		m_EleLocation[i].m_x = x;
+		m_EleLocation[i].m_y = y;
+		m_EleLocation[i].m_z = z;
+	}
+	for (int i = numTruss; i < totalNum; i++)
+	{
+		const auto& ele = R_pcreatWire->m_Elements_beams[i];
+		int ipt1 = ele.m_idNode[0] - 1; // id
+		int ipt2 = ele.m_idNode[1] - 1;
+		const auto& node1 = R_pcreatWire->m_Nodes[ipt1];
+		const auto& node2 = R_pcreatWire->m_Nodes[ipt2];
+		int id = ele.m_idElement;
+		double x = (node2.x + node1.x) / 2;
+		double y = (node2.y + node1.y) / 2;
+		double z = (node2.z + node1.z) / 2;
+		m_EleLocation[i].m_id = id;
+		m_EleLocation[i].m_x = x;
+		m_EleLocation[i].m_y = y;
+		m_EleLocation[i].m_z = z;
+	}
+}

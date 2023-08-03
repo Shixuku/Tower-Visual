@@ -224,6 +224,12 @@
     <ClCompile Include="ParameterAnalysisStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParameterStableWind.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ele_Location.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -332,6 +338,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParameterAnalysisStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterStableWind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ele_Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include"Polynomial.h"
 #include"InterFace.h"
 #include"IceLoad.h"
+#include"Wind.h"
 #include<QMessageBox.h>
 #pragma execution_character_set("utf-8")
 Creat_Loads::Creat_Loads(Instance* instance,QWidget *parent): QDialog(parent)
@@ -58,8 +59,10 @@ void Creat_Loads::btn_continue_clicked()
 		}
 		else if (index == 4)
 		{
+			//·çÔØºÉ
+			Wind* wd = new Wind(this);
+			wd->show();
 		}
 		this->accept();
-
 	}
 }

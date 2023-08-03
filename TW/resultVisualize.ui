@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>422</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QCheckBox" name="checkBox_showOriginal">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>230</y>
+     <x>250</x>
+     <y>270</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -29,8 +29,8 @@
   <widget class="QFrame" name="frame_4">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>180</y>
+     <x>250</x>
+     <y>220</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -61,8 +61,8 @@
   <widget class="QFrame" name="frame_3">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>180</y>
+     <x>40</x>
+     <y>220</y>
      <width>211</width>
      <height>51</height>
     </rect>
@@ -93,8 +93,8 @@
   <widget class="QCheckBox" name="checkBox_loop">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>230</y>
+     <x>90</x>
+     <y>270</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -106,8 +106,8 @@
   <widget class="QFrame" name="frame">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>260</y>
+     <x>80</x>
+     <y>300</y>
      <width>191</width>
      <height>52</height>
     </rect>
@@ -145,8 +145,8 @@
   <widget class="QFrame" name="frame_2">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>90</y>
+     <x>80</x>
+     <y>130</y>
      <width>241</width>
      <height>48</height>
     </rect>
@@ -176,6 +176,26 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QComboBox" name="comboBox_nephogram">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>50</y>
+     <width>87</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_step">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>50</y>
+     <width>87</width>
+     <height>22</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
