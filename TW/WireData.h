@@ -30,7 +30,7 @@ public:
 	void CreateTempRealWireNode(int wireLogo,  vector<Node>& sus);//由真实悬挂点创建未分裂的基础节点用于后续确定间隔棒的安装位置
 	void FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes); //choose=0;1-耐张，choose=1;2-耐张，choose=2;1，2-均耐张
 	void CreatSpacer(vector<Element_Beam>& m_Elements_Beams, vector<int> ids);//几个点成环 生成间隔棒
-	void CreateStrainLine(vector<Element_Truss>& Temp_Truss, double x,double y,double z,vector<int> ids);//将耐张串的环连在一个点上
+	void CreateStrainLine(vector<Element_Beam>& Temp_Beam, double x,double y,double z,vector<int> ids);//将耐张串的环连在一个点上
 	void CreateSpacerDistance(vector<Node>m_TempNodes, int wireLogo);//确定每个间隔棒离前面端点的距离
 	vector<int> FindSpacerL(vector<Node>m_TempNodes, int d, int L, int wireLogo);
 	//间隔棒部分参数

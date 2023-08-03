@@ -7,13 +7,16 @@
 #include"Force_Wind.h"
 #include<math.h>
 #include<Eigen/Dense>
+#include"Creat_Loads.h"
+#include"Instance.h"
+#include"qstring.h"
 
-Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
+Wind::Wind(Creat_Loads* creat_loads, QWidget *parent): QDialog(parent)
 {
 	ui.setupUi(this);
-	//m_pInterFace = dynamic_cast<InterFace*>(parent);
-	//Q_ASSERT(m_pInterFace != nullptr);
-	m_pInterFace = pInterFace;
+	m_pCreat_loads = creat_loads;
+	m_pInstance = m_pCreat_loads->m_instance;//调用父类的tower
+	m_pcreatWire = m_pCreat_loads->m_pInterFace->TWG.Find_Entity(1);
 	Initialize();
 	//CreateCombobox();
 	connect(ui.rad_t, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0); });
@@ -28,10 +31,10 @@ Wind::Wind(InterFace* pInterFace, QWidget *parent): QDialog(parent)
 
 	ShowObject();
 	void (QComboBox:: * intChanged)(int) = &QComboBox::currentIndexChanged;
-	connect(ui.object_com, intChanged, this, &Wind::ShowObject);
+	//connect(ui.object_com, intChanged, this, &Wind::ShowObject);
 	connect(ui.sure_btn_2, &QPushButton::clicked, this, &Wind::ui_Speed);
-	connect(ui.count_btn, &QPushButton::clicked, this, [=]() {m_pcreatWire->CreateOutPut(); this->close(); });
-	CreateCombobox();
+	//connect(ui.count_btn, &QPushButton::clicked, this, [=]() {m_pcreatWire->CreateOutPut(); this->close(); });
+	connect(ui.sure_btn, &QPushButton::clicked, this, &Wind::Get_ui_Data);
 
 	
 }
@@ -43,62 +46,47 @@ void Wind::Initialize()
 {
 	ui.ice_edi->setText("5");
 	ui.wind_edi->setText("10");
-	ui.direction_edi->setText("30");
+	ui.direction_edi->setText("90");
 	ui.StepSize_edi->setText("0.3");
 	ui.Step_edi->setText("100");
-	layout = new QVBoxLayout(ui.widget_5);
-	// 创建 QVTKOpenGLNativeWidget
-	m_VtkWidget = new QVTKOpenGLNativeWidget(this);
-	layout->addWidget(m_VtkWidget);
-	// 创建 VTK 渲染窗口
-	renderWindow = m_VtkWidget->renderWindow();
-	m_Renderer = vtkSmartPointer<vtkRenderer>::New();
-	renderWindow->AddRenderer(m_Renderer);
-
-	//添加坐标系
-	vtkAxesActor* axesActor = vtkAxesActor::New();
-	//以Widget方式,在左下角的视口中显示坐标系，可进行鼠标交互
-	vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
-	widget->SetOrientationMarker(axesActor);
-	widget->SetInteractor(m_VtkWidget->interactor());
-	widget->SetViewport(0, 0, 0.2, 0.2);
-	widget->SetEnabled(true);
-	widget->InteractiveOn();
-
-	// 更改背景颜色
-	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
+	//分析步的combobox
+	int size = m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.size();
+	for (int i = 1; i < size + 1; i++)
+	{
+		ui.comboBox->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
+	}
 }
 
 void Wind::CreateCombobox()
 {
-	ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();
+	/*ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();
 	
 	for (int i = 0; i < ExampleNum; i++)
 	{
 		ui.object_com->addItem("导线实例" + QString::number(i + 1));
 	
-	}
+	}*/
 }
 
 void Wind::ShowObject()
 {
-	int Index = ui.object_com->currentIndex();
-	if (Index == -1)return;
-	if (Index < ExampleNum)
-	{
-		id_Part = Index + 1;
-		m_Renderer->RemoveAllViewProps();  // 清空当前显示的所有actor
-		m_pcreatWire = m_pInterFace->TWG.Find_Entity(id_Part);
-		if (m_pcreatWire != nullptr)
-		{
-			m_pcreatWire->Show_VTKnode(m_Renderer);
-			m_pcreatWire->Show_VTKbeam(m_Renderer);
-			m_pcreatWire->Show_VTKtruss(m_Renderer);
-		}
-		
-	}
-	m_Renderer->ResetCamera();
-	ui.widget_5->update();
+	//int Index = ui.object_com->currentIndex();
+	//if (Index == -1)return;
+	//if (Index < ExampleNum)
+	//{
+	//	id_Part = Index + 1;
+	//	m_Renderer->RemoveAllViewProps();  // 清空当前显示的所有actor
+	
+	//	if (m_pcreatWire != nullptr)
+	//	{
+	//		m_pcreatWire->Show_VTKnode(m_Renderer);
+	//		m_pcreatWire->Show_VTKbeam(m_Renderer);
+	//		m_pcreatWire->Show_VTKtruss(m_Renderer);
+	//	}
+	//	
+	//}
+	//m_Renderer->ResetCamera();
+	//ui.widget_5->update();
 }
 
 void Wind::ui_Speed()
@@ -119,7 +107,7 @@ void Wind::ui_Speed()
 	{
 		if (ran == nullptr)
 		{
-			ran = new RandomWind(m_pInterFace);
+			ran = new RandomWind(this);
 			ran->show();
 		}
 		else
@@ -132,39 +120,38 @@ void Wind::ui_Speed()
 
 void Wind::ReadStableData()
 {
-	QStringList headerLabels;
-	headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(N)";
-	ui.tableWidget->setColumnCount(headerLabels.count());
-	ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
-	ui.tableWidget->verticalHeader()->setVisible(false);
-	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	ui.tableWidget->setRowCount(num_ele);  // 默认N行
-	for (int i = 0; i < num_ele; i++)
-	{
-		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements_Trusses[i].m_idElement)));
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number((L_ele[i]))));
-		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(Uz_ele[i])));
-		ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i] * 1e3)));
-		// 设置单元格为只读
-		for (int j = 0; j < ui.tableWidget->columnCount(); j++)
-		{
-			QTableWidgetItem* item = ui.tableWidget->item(i, j);
-			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-		}
-	}
+	//QStringList headerLabels;
+	//headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(N)";
+	//ui.tableWidget->setColumnCount(headerLabels.count());
+	//ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
+	//ui.tableWidget->verticalHeader()->setVisible(false);
+	//ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	//ui.tableWidget->setRowCount(num_ele);  // 默认N行
+	//for (int i = 0; i < num_ele; i++)
+	//{
+	//	ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements_Trusses[i].m_idElement)));
+	//	ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number((L_ele[i]))));
+	//	ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(Uz_ele[i])));
+	//	ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i] * 1e3)));
+	//	// 设置单元格为只读
+	//	for (int j = 0; j < ui.tableWidget->columnCount(); j++)
+	//	{
+	//		QTableWidgetItem* item = ui.tableWidget->item(i, j);
+	//		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	//	}
+	//}
 }
 
 void Wind::ReadRandomData()
 {
-	QStringList headerLabels;
+	/*QStringList headerLabels;
 	headerLabels << "t(s)" << "风速(m/s)";
 	ui.tableWidget->setColumnCount(headerLabels.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
 	ui.tableWidget->verticalHeader()->setVisible(false);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	
-
-
+*/
 }
 
 void Wind::BtnOk()
@@ -217,6 +204,17 @@ void Wind::BtnOk()
 		}
 		
 	}
+}
+
+void Wind::Get_ui_Data()
+{
+	int id = m_pInstance->m_StableWind.size() + 1;
+	//分析步
+	int AnalysisStep = ui.comboBox->currentIndex() + 1;
+	QString Ele = "a";
+	double v = ui.wind_edi->text().toDouble();
+	m_pInstance->m_StableWind.push_back(ParameterStableWind(id, AnalysisStep, Ele, 90.0, v));
+	this->accept();
 }
 
 double Wind::CountUz(double h)

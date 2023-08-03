@@ -1,8 +1,14 @@
 #pragma once
-
 #include <QDialog>
 #include "ui_TowerCaculate.h"
 #include<vector>
+#include"TowerWireGroup.h"
+#include"Node_Base.h"
+#include"Element_Base.h"
+#include"Manage_Entity.h"
+
+class InterFace;
+
 class TowerCaculate : public QDialog
 {
 	Q_OBJECT
@@ -10,8 +16,6 @@ class TowerCaculate : public QDialog
 public:
 	TowerCaculate(QWidget *parent = nullptr);
 	~TowerCaculate();
-	void BtnOpen();
-	void BtnOK();
 	int static_stepnum = 0;//静力加载步数
 	double dynamic_step = 0;//动力步长
 	int dynamic_stepnum = 0;//动力加载步数
@@ -25,6 +29,11 @@ public:
 	bool windage = false;//风偏
 	bool eq = false;//自平衡
 
+
+
+signals:
+	void msg_CreateModel();
+
 private slots:
 	void set_dynamic(bool flag) { dynamic = flag; }
 	void set_galloping(bool flag) { galloping = flag; }
@@ -33,4 +42,7 @@ private slots:
 
 private:
 	Ui::TowerCaculateClass ui;
+
+	InterFace* m_InterFace = nullptr;
+
 };

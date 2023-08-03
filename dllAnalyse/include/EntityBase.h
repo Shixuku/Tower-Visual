@@ -4,9 +4,9 @@
 
 enum Entity_Type :int
 {
-	ET_Node, ET_Dependent, ET_LineElement, ET_Beam3D, ET_Beam2D, ET_Truss3D, ET_Truss2D,
-	ET_Cable3D, ET_Cable3N, ET_Material, ET_Force_Node, ET_Force_Node_harmonic, ET_Force_Node_Function, ET_Force_Wind,
-	ET_Constraint, ET_Section_Beam2D, ET_Section_Beam3D, ET_Section_Truss, ET_Section_Cable, ET_ReaderWriter
+	ET_Node, ET_Dependent, ET_LineElement, ET_Beam3D, ET_Beam2D, ET_Truss3D, ET_Truss2D,ET_Cable3D, ET_Cable3N, 
+	ET_Material, ET_Force_Node, ET_Force_Gravity, ET_Force_Node_harmonic, ET_Force_Node_Function, ET_Force_Wind,ET_Constraint,
+	ET_Section_Beam2D, ET_Section_Beam3D, ET_Section_Truss, ET_Section_Cable, ET_ReaderWriter, ET_Section_Assign, ET_AnalysisStep
 };
 
 class Structure;
@@ -21,6 +21,7 @@ private:
 public:
 	int m_id;//±àºÅ
 
+	static const double pi;
 
 	int Get_id()
 	{

@@ -192,7 +192,7 @@ void CreatWire::CreateStrain()
 {
 	//找耐张段那个间隔棒
 	vector<int> ids;
-	vector<Element_Truss>TempTruss;
+	vector<Element_Beam>TempTruss;
 	
 	int num = WireListSus.size() - 1;
 	int SusSize = WireListSus.size();//所有列表悬挂点的个数
@@ -249,9 +249,10 @@ void CreatWire::CreateStrain()
 	for (int i = 0; i < TempTruss.size(); i++)
 	{
 		TempTruss[i].ClassSectionID = WireSectionId;
+		TempTruss[i].AxialForce = 6000;
 		TempTruss[i].MaterialID = 4;
 	}
-	m_Elements_Trusses.insert(m_Elements_Trusses.end(), TempTruss.begin(), TempTruss.end());
+	m_Elements_beams.insert(m_Elements_beams.end(), TempTruss.begin(), TempTruss.end());
 }
 
 void CreatWire::Create_Mesh()

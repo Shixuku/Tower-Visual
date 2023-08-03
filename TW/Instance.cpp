@@ -307,7 +307,7 @@ void Instance::CreateOutPut()
 		//1（多项式函数数量）
 		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
 		//Stream << 0 << "\n";//多项式函数暂时为空
-
+		StableWindTxt();//风载荷
 		//边界条件
 		RestraintTxT();
 		//add冰单元类别
@@ -392,6 +392,16 @@ void Instance::GravityTxT()
 	}
 }
 
+void Instance::StableWindTxt()
+{
+	int StableWindSize = m_StableWind.size();
+	Stream << "*Force_Wind," << StableWindSize << "\n";//风载荷
+	for (int i = 0; i < StableWindSize; i++)
+	{	//1 0 - 9.8(编号 方向012-xyz 大小)
+		Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  " << m_StableWind[i].m_a << "  " << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_v << "\n";
+	}
+}
+
 void Instance::IceLoadTxT()
 {
 	Stream << "*IceLoad," << m_IceElement.size() << "\n";
@@ -411,9 +421,9 @@ void Instance::MaterialTxT()
 		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
 		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 <<"  " << 0 << "\n";
 	}
-	Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080<< "\n";
-	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "\n";
-	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "\n";
+	Stream << "   " << 4 << "  " << 6.3e10 << "  " << 0.3 << "  " << 3080 << "  " << 0 << "\n";
+	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "\n";
+	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "\n";
 }
 
 void Instance::BeamSectionTxT()
@@ -452,8 +462,8 @@ void Instance::Section_Assign()
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
 
-		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
-			<<m_Elements_beams[i].direction[2] << "  " << "\n";
+		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[2] << "  " 
+			<<m_Elements_beams[i].direction[1] << "  " << "\n";
 	}
 }
 
@@ -494,7 +504,7 @@ void Instance::RestraintTxT()
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
 	int totalRestraint = RestraintNodesize + m_ConstraintSize;
 
-	Stream <<"*Constraints," << totalRestraint << "\n";
+	Stream <<"*Constraint," << totalRestraint << "\n";
 	int m_id=1;
 	for (int i = 0; i < RestraintNode.size(); i++)
 	{

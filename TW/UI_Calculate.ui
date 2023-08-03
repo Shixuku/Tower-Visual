@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>777</width>
+    <width>795</width>
     <height>400</height>
    </rect>
   </property>
@@ -19,6 +19,13 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QTableWidget" name="tableWidget"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="ptn_import">
+        <property name="text">
+         <string>导入模型</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="widget_3" native="true">

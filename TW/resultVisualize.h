@@ -15,8 +15,12 @@
 #include<vtkIdTypeArray.h>
 #include<vtkVertexGlyphFilter.h>
 #include <vtkSmartPointer.h>
+#include <vtkDoubleArray.h>
+#include <vtkScalarBarActor.h>
+#include <map>
 #include <vtkActor.h>
 #include"Node_Base.h"
+#include"Outputter.h"
 
 class InterFace;
 class Instance;
@@ -30,7 +34,7 @@ public:
 	InterFace* pCAE = nullptr;
 	Instance* m_ins = nullptr;
 
-	std::vector<Node_Base*> p_nodes;//包含位移的点
+	std::vector<Node_Base*> m_nodes;//包含位移的点
 
 	QTimer* updateTimer;
 	double m_dt = 1000;//ms
@@ -39,6 +43,9 @@ public:
 	vtkSmartPointer<vtkActor> m_vtklines;
 	vtkSmartPointer<vtkPoints> m_originalPoints;//原始数据
 	vtkSmartPointer<vtkPoints> m_points;
+
+	vtkSmartPointer<vtkDoubleArray> scalars;//设置云图颜色
+	vtkSmartPointer<vtkScalarBarActor> scalarBar;//云图块actor
 
 	int m_speed = 0;//播放速度(帧/s)
 	int m_frames = 0;//帧
@@ -56,6 +63,8 @@ public:
 	void addActorData();//添加界面的actor
 	void removeActor();
 
+	void setNephogramType(int iTpye);
+	void setCurrentStep(int idStep);
 signals:
 	void animationFinished();//动画结束
 
@@ -64,4 +73,24 @@ public slots:
 
 private:
 	Ui::resultVisualizeClass ui;
+
+	std::map<int, vector<Outputter>> stepData; //int分析步号，vector<Outputter>每一帧数据
+
+	vector<Outputter>* outputData = nullptr;//当前选择分析步的数据指针
+
+	void getBoundary();
+	double boundary = 0; //模型边界大小
+
+
+	int currentType; //当前云图类型
+
+	enum class nephogramType : int {
+		DisplaymentX = 0,
+		DisplaymentY = 1,
+		DisplaymentZ = 2,
+		StressN = 3,
+		StressM1 = 4,
+		StressM2 = 5,
+		StressM3 = 6
+	};
 };

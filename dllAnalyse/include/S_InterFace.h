@@ -6,6 +6,7 @@
 class Node;
 class Node_Base;
 class Element_Base;
+class Outputter;
 
 template<class ET>
 class Manage_Entity;
@@ -32,9 +33,16 @@ public:
 	virtual void Input_inp(QString& filename) = 0;
 	//读取标准txt文件
 	virtual void Input_Standard(QString& filename) = 0;
+	//坐标系转换
+	virtual void TransCoordinateSystem() = 0;
+	//过滤无效数据
+	virtual void DataFilter() = 0;
 
 	//设置输出文件的路径和节点号
 	virtual void set_outInfo(QString filePath, std::vector<int> pid) = 0;
+
+	//获得idStep分析步每一帧的输出结果
+	virtual std::vector<Outputter> get_outputter(int idStep) = 0;
 
 	//设置是否使用常数矩阵（简化计算）
 	virtual void set_ConstK(bool flag) = 0;
@@ -70,6 +78,8 @@ public:
 	virtual void  execute() = 0;
 	//计算自平衡
 	virtual void  executeEq() = 0;
+	//按分析步计算
+	virtual void execute_Stepping() = 0;
 
 	//设置加载步数
 	virtual void setStep(int N) = 0;

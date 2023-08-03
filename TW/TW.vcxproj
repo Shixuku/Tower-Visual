@@ -115,6 +115,7 @@
     <ClCompile Include="Creat_Loads.cpp" />
     <ClCompile Include="Element_Ice.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
+    <ClCompile Include="Ele_Location.cpp" />
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="IceLoad.cpp" />
     <ClCompile Include="Instance.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="ParameterConstraint.cpp" />
     <ClCompile Include="ParameterGravity.cpp" />
     <ClCompile Include="ParameterIceElement.cpp" />
+    <ClCompile Include="ParameterStableWind.cpp" />
     <ClCompile Include="Polynomial.cpp" />
     <ClCompile Include="RandomWind.cpp" />
     <ClCompile Include="resultVisualize.cpp" />
@@ -205,6 +207,7 @@
     <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />
     <QtMoc Include="Element_Ice.h" />
+    <ClInclude Include="Ele_Location.h" />
     <ClInclude Include="Instance.h" />
     <QtMoc Include="resultVisualize.h" />
     <QtMoc Include="TowerCaculate.h" />
@@ -216,6 +219,7 @@
     <QtMoc Include="UI_Calculate.h" />
     <QtMoc Include="Spacer.h" />
     <QtMoc Include="ui_AnalysisStep.h" />
+    <ClInclude Include="ParameterStableWind.h" />
     <ClInclude Include="WireData.h" />
     <QtMoc Include="Wire_InterFace.h" />
     <QtMoc Include="WindList.h" />

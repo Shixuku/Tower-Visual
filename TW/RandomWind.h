@@ -6,11 +6,12 @@
 #include"Node_Base.h"
 #include"Node.h"
 #include<set>
-#include"CreatWire.h"
+#include"TowerWireGroup.h"
 #include <QtCharts/QChartView>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include"Ele_Location.h"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -24,7 +25,7 @@ class RandomWind : public QDialog
 
 		friend class Wind;
 public:
-	RandomWind(QWidget *parent = nullptr);
+	RandomWind(Wind* m_wind, QWidget *parent = nullptr);
 	~RandomWind();
 
 	InterFace* m_pInterFace = nullptr;
@@ -38,8 +39,7 @@ public:
 	QValueAxis* axisX = nullptr;
 	QValueAxis* axisY = nullptr;
 	Wind* wd = nullptr;
-	//CreatWire* R_pcreatWire = nullptr;
-	CreatWire* R_pcreatWire = nullptr;
+	TowerWireGroup* R_pcreatWire = nullptr;
 	//m_pair(1.29), alf(0.16), z0(0.03), v10(30) int N, int M, double w_up, double T
 	double z0;//地表粗糙长度
 	double v10;//十米高10分钟平均速度
@@ -57,6 +57,10 @@ public:
 	void CreatCombobox();
 	void Initialize();
 	void CreatSegment();
+	void CreatEleGather();
+	void ComputeEleCoordinate();//计算每个单元的等效坐标
+	std::vector<Ele_Location>m_EleLocation;
+	std::map<int, int>m_EleWind;
 
 public slots:
 	void ShowPic(int index);//显示随机风的曲线图

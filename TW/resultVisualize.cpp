@@ -37,6 +37,15 @@ resultVisualize::resultVisualize(QWidget *parent)
 	connect(ui.checkBox_loop, &QCheckBox::clicked, this, &resultVisualize::set_loopPlay);
 	//动画结束
 	connect(this, &resultVisualize::animationFinished, [=]() {	m_frames = 0; });
+
+	//云图combox
+	QStringList qstrlist;
+	qstrlist << "U1" << "U2" << "U3" << "S11";
+	ui.comboBox_nephogram->addItems(qstrlist);
+	void (QComboBox:: * MycurrentIndexChanged)(int) = &QComboBox::currentIndexChanged;
+	connect(ui.comboBox_nephogram, MycurrentIndexChanged, this, &resultVisualize::setNephogramType);
+
+	connect(ui.comboBox_step, MycurrentIndexChanged, this, &resultVisualize::setCurrentStep);
 }
 
 resultVisualize::~resultVisualize()
@@ -49,45 +58,91 @@ void resultVisualize::set_fps(int fps)
 
 void resultVisualize::showOriginalActor(bool flag)
 {
-	m_ins->Node_actor->SetVisibility(flag);
-	m_ins->m_BeamActor->SetVisibility(flag);
-	m_ins->m_TrussActor->SetVisibility(flag);
+	if (m_ins->Node_actor) m_ins->Node_actor->SetVisibility(flag);
+	if (m_ins->m_BeamActor) m_ins->m_BeamActor->SetVisibility(flag);
+	if (m_ins->m_TrussActor) m_ins->m_TrussActor->SetVisibility(flag);
 	pCAE->m_renderWindow->Render();
+}
+
+
+void resultVisualize::getBoundary()
+{
+	double max_x = 0;
+	double min_x = 0;
+	double max_y = 0;
+	double min_y = 0;
+	double max_z = 0;
+	double min_z = 0;
+	for (auto& i : m_nodes)
+	{
+		if (max_x < i->m_x) max_x = i->m_x;
+		if (min_x > i->m_x) min_x = i->m_x;
+
+		if (max_y < i->m_y) max_y = i->m_y;
+		if (min_y > i->m_y) min_y = i->m_y;
+
+		if (max_z < i->m_z) max_z = i->m_z;
+		if (min_z > i->m_z) min_z = i->m_z;
+	}
+	if (boundary < (max_x - min_x)) boundary = max_x - min_x;
+	if (boundary < (max_y - min_y)) boundary = max_y - min_y;
+	if (boundary < (max_z - min_z)) boundary = max_z - min_z;
 }
 
 void resultVisualize::update()
 {
-	if (m_frames >= p_nodes[0]->Get_DisplaymentXData().size())
+	if (m_frames >= outputData->size())
 	{
 		if (loopPlay) emit animationFinished();
 		return;
 	}
 	double ampFactor = ui.lineEdit->text().toDouble();//放大因子
 
-	//vtkIdType pointsNum = m_points->GetNumberOfPoints();
-	vtkIdType pointsNum = p_nodes.size();
-	//修改点数据中的坐标
-	for (auto& i : p_nodes)
+	vtkIdType pointsNum = m_nodes.size();
+
+	Outputter* iframe = &outputData->at(m_frames);
+	//修改点的坐标
+	for (auto& i : iframe->nodeData)
 	{
-		std::vector<double>yData = i->Get_DisplaymentXData();
-		std::vector<double>zData = i->Get_DisplaymentYData();
-		std::vector<double>xData = i->Get_DisplaymentZData();
-		double* p = m_originalPoints->GetPoint(i->m_id - 1);
-		m_points->SetPoint(i->m_id - 1, p[0] + ampFactor * xData[m_frames], p[1] + ampFactor * yData[m_frames], p[2] + ampFactor * zData[m_frames]);
+		double* p = m_originalPoints->GetPoint(i.first - 1);
+		m_points->SetPoint(i.first - 1, p[0] + ampFactor * i.second.displaymentX, p[1] + ampFactor * i.second.displaymentY, p[2] + ampFactor * i.second.displaymentZ);
+
+		//添加云图数据
+		switch (currentType)
+		{
+		case static_cast<int>(nephogramType::DisplaymentX):
+			scalars->SetValue(i.first - 1, i.second.displaymentX);
+			break;
+		case static_cast<int>(nephogramType::DisplaymentY):
+			scalars->SetValue(i.first - 1, i.second.displaymentY);
+			break;
+		case static_cast<int>(nephogramType::DisplaymentZ):
+			scalars->SetValue(i.first - 1, i.second.displaymentZ);
+			break;
+		case static_cast<int>(nephogramType::StressN):
+			scalars->SetValue(i.first - 1, i.second.stressN);
+			break;
+		default:
+			qDebug() << "未知云图类型！";
+			break;
+		}
 
 	}
 	m_frames++;//帧++
 	ui.label_frame->setText(QString::number(m_frames));//帧
+	//ui.label_time->setText(QString::number(m_frames*0.05));//帧
 
 	//更新vtkActor和vtkPolyData的数据
 	m_points->Modified();
-	//m_vtkNodes->GetMapper()->Update();
+	//scalars->Modified();
+
 	pCAE->m_renderWindow->Render();
 }
 
 void resultVisualize::start()
 {
 	if (m_vtkNodes == nullptr) return;
+	assert(outputData);
 
 	int msec = m_dt / m_speed;
 	qDebug() << "current time interval: " << msec << "ms";
@@ -118,40 +173,21 @@ void resultVisualize::quit()
 void resultVisualize::autoFactor(bool flag)
 {
 	if (!flag) return;
-	double max_x = 0;
-	double min_x = 0;
-	double max_y = 0;
-	double min_y = 0;
-	double max_z = 0;
-	double min_z = 0;
+
 	double max_disp = 0;
-	for (auto& i : p_nodes)
+	for (auto& i : *outputData)
 	{
-		if (max_x < i->m_x) max_x = i->m_x;
-		if (min_x > i->m_x) min_x = i->m_x;
+		double max_dx = i.getBoundaryDisplaymentX()[1];
+		if (max_disp < max_dx) max_disp = max_dx;
 
-		if (max_y < i->m_y) max_y = i->m_y;
-		if (min_y > i->m_y) min_y = i->m_y;
+		double max_dy = i.getBoundaryDisplaymentY()[1];
+		if (max_disp < max_dy) max_disp = max_dy;
 
-		if (max_z < i->m_z) max_z = i->m_z;
-		if (min_z > i->m_z) min_z = i->m_z;
-
-		vector<double> dux = i->Get_DisplaymentXData();
-		vector<double> duy = i->Get_DisplaymentYData();
-		vector<double> duz = i->Get_DisplaymentZData();
-		double dX = abs(dux[dux.size() - 1]);
-		double dY = abs(duy[duy.size() - 1]);
-		double dZ = abs(duz[duz.size() - 1]);
-		if (max_disp < dX) max_disp = dX;
-		if (max_disp < dY) max_disp = dY;
-		if (max_disp < dZ) max_disp = dZ;
+		double max_dz = i.getBoundaryDisplaymentZ()[1];
+		if (max_disp < max_dz) max_disp = max_dz;
 	}
-	double bd = 0;
-	if (bd < (max_x - min_x)) bd = max_x - min_x;
-	if (bd < (max_y - min_y)) bd = max_y - min_y;
-	if (bd < (max_z - min_z)) bd = max_z - min_z;
 
-	double ampFator = bd / max_disp / 10;
+	double ampFator = boundary / max_disp / 10;
 
 	ui.lineEdit->setText(QString::number(ampFator));
 }
@@ -163,10 +199,33 @@ void resultVisualize::addData(vector<Node_Base*>node, Instance* ins)
 
 	for (auto& i : node)
 	{
-		p_nodes.push_back(i);
+		m_nodes.push_back(i);
 	}
 	addActorData();//添加主界面数据(copy)
 
+	//添加分析步结果数据
+	int numStep = 2;//分析步数量
+	for (int i = 1; i <= numStep; ++i)
+	{
+		stepData.insert(std::make_pair(i, ins->s->get_outputter(i)));
+	}
+	
+	for (auto& i : stepData)
+	{
+		for (auto& iframe: i.second)
+		{
+			iframe.SortData();//找最值
+		}
+	}
+	getBoundary();
+
+	//分析步combox
+	for (auto& i : stepData)
+	{
+		ui.comboBox_step->addItem(QString("Step-") + QString::number(i.first));
+	}
+
+	setCurrentStep(0);
 	pCAE->m_Renderer->ResetCamera();
 }
 
@@ -196,8 +255,18 @@ void resultVisualize::addActorData()
 	mapper->SetInputConnection(VertexFilter->GetOutputPort());
 	m_vtkNodes = vtkSmartPointer<vtkActor>::New();
 	m_vtkNodes->SetMapper(mapper);
-	m_vtkNodes->GetProperty()->SetColor(1, 0, 0);
+	m_vtkNodes->GetProperty()->SetColor(0, 0, 0);
 	m_vtkNodes->GetProperty()->SetPointSize(3);
+
+	//应力渲染
+	int numPts = points->GetNumberOfPoints();
+	scalars = vtkSmartPointer<vtkDoubleArray>::New();
+	scalars->SetNumberOfComponents(1);
+	scalars->SetNumberOfValues(numPts);
+	for (int i = 0; i < numPts; ++i)
+	{
+		scalars->SetValue(i, 0);
+	}
 
 	//create the visualized line
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
@@ -205,16 +274,27 @@ void resultVisualize::addActorData()
 	linesPolyData->SetPoints(m_points);
 	//点数据的连接形式(lines)形成的单元数据(cell Data)构成数据集拓扑结构
 	linesPolyData->SetLines(lines);
+	linesPolyData->GetPointData()->SetScalars(scalars);
 
 	vtkSmartPointer<vtkPolyDataMapper> linesmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	linesmapper->SetInputData(linesPolyData);
+	linesmapper->ScalarVisibilityOn();
+	linesmapper->SetScalarModeToUsePointData();
+	//color_mapper->SetColorModeToMapScalars();
+	linesmapper->SetScalarRange(0, 1);
 
 	m_vtklines = vtkSmartPointer<vtkActor>::New();
 	m_vtklines->SetMapper(linesmapper);
-	m_vtklines->GetProperty()->SetColor(1, 0, 0);
+	m_vtklines->GetProperty()->SetColor(0, 0, 0);
+
+	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
+	scalarBar->SetLookupTable(linesmapper->GetLookupTable());
+	scalarBar->SetTitle("U1");
+	scalarBar->SetNumberOfLabels(20);
 
 	pCAE->m_Renderer->AddActor(m_vtkNodes);
 	pCAE->m_Renderer->AddActor(m_vtklines);
+	pCAE->m_Renderer->AddActor(scalarBar);
 	pCAE->m_renderWindow->Render();
 }
 
@@ -222,7 +302,85 @@ void resultVisualize::removeActor()
 {
 	pCAE->m_Renderer->RemoveActor(m_vtkNodes);
 	pCAE->m_Renderer->RemoveActor(m_vtklines);
+	pCAE->m_Renderer->RemoveActor(scalarBar);
 
 	m_vtkNodes = nullptr;
 	m_vtklines = nullptr;
+}
+
+void resultVisualize::setNephogramType(int iTpye)
+{
+	currentType = iTpye;
+
+	qDebug() << "云图类型：" << currentType;
+
+	//setBoundary
+	vector<double> boundary(2);
+
+	switch (currentType)
+	{
+	case static_cast<int>(nephogramType::DisplaymentX):
+
+		boundary = outputData->at(0).getBoundaryDisplaymentX();
+		for (auto& i : *outputData)
+		{
+			vector<double> boundaryX = i.getBoundaryDisplaymentX();
+			if (boundary[0] < boundaryX[0]) boundary[0] = boundaryX[0];
+			if (boundary[1] > boundaryX[1]) boundary[1] = boundaryX[1];
+		}
+		scalarBar->SetTitle("U1");
+		break;
+	case static_cast<int>(nephogramType::DisplaymentY):
+
+		boundary = outputData->at(0).getBoundaryDisplaymentY();
+		for (auto& i : *outputData)
+		{
+			vector<double> boundaryY = i.getBoundaryDisplaymentY();
+			if (boundary[0] < boundaryY[0]) boundary[0] = boundaryY[0];
+			if (boundary[1] > boundaryY[1]) boundary[1] = boundaryY[1];
+		}
+		scalarBar->SetTitle("U2");
+		break;
+	case static_cast<int>(nephogramType::DisplaymentZ):
+
+		boundary = outputData->at(0).getBoundaryDisplaymentZ();
+		for (auto& i : *outputData)
+		{
+			vector<double> boundaryZ = i.getBoundaryDisplaymentZ();
+			if (boundary[0] < boundaryZ[0]) boundary[0] = boundaryZ[0];
+			if (boundary[1] > boundaryZ[1]) boundary[1] = boundaryZ[1];
+		}
+		scalarBar->SetTitle("U3");
+		break;
+	case static_cast<int>(nephogramType::StressN):
+
+		boundary = outputData->at(0).getBoundaryStressN();
+		for (auto& i : *outputData)
+		{
+			vector<double> boundaryN = i.getBoundaryStressN();
+			if (boundary[0] < boundaryN[0]) boundary[0] = boundaryN[0];
+			if (boundary[1] > boundaryN[1]) boundary[1] = boundaryN[1];
+		}
+		scalarBar->SetTitle("Stress");
+		break;
+	default:
+		qDebug() << "未知云图类型！";
+		break;
+	}
+	qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+
+	if (boundary[0] > boundary[1]) std::swap(boundary[0], boundary[1]);
+
+	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+}
+
+void resultVisualize::setCurrentStep(int idStep)
+{
+	idStep += 1;
+	qDebug() << "current step:" << idStep;
+	outputData = &stepData.find(idStep)->second;
+
+	//初始化为U1
+	//ui.comboBox_nephogram->setCurrentIndex(0);
+	setNephogramType(0);
 }

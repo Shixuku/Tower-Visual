@@ -36,7 +36,7 @@
       <item row="0" column="1">
        <widget class="QRadioButton" name="rad_sag">
         <property name="text">
-         <string>弧垂找型</string>
+         <string>弧垂找形</string>
         </property>
        </widget>
       </item>
@@ -120,7 +120,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>弧垂(mm)</string>
+             <string>弧垂(m)</string>
             </property>
            </widget>
           </item>

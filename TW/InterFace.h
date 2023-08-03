@@ -47,6 +47,7 @@ class ParameterIceElement;
 class Element_Ice;
 class InteractorStyle;
 class ui_AnalysisStep;
+class Instance_Calculate;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -110,8 +111,7 @@ public:
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
-     //计算
-     S_InterFace* s = nullptr;
+
      //try  要改
      vtkNew<InteractorStyle> style;
      vtkNew<vtkAppendPolyData> appendFilter;
@@ -169,6 +169,9 @@ private:
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
+    vtkAxesActor* Axes;
+    vtkOrientationMarkerWidget* widgetAxes;
+    bool isAxesCreated = false;
    
-   
+    Instance_Calculate* ui_calculate = nullptr;
 };

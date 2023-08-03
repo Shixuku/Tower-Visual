@@ -19,6 +19,16 @@ public:
 	void on_btk_ok_clicked();
 	void visual();
 
+	void update();
+
+	void CreateActor();
+
+public slots:
+	void on_btn_import_clicked();
+
+signals:
+	void msg_CreateModel();
+
 private:
 	Ui::UI_CalculateClass ui;
 	InterFace* m_InterFace = nullptr;
@@ -26,6 +36,10 @@ private:
 	resultVisualize* display = nullptr;
 
 	std::vector<Instance*> list_Instance;
+
+	Instance* m_ins = nullptr;
+
+	Manage_Entity<Node_Base> m_Nodes;
+	Manage_Entity<Element_Base> m_LineElements;
 };
-#pragma once
 
