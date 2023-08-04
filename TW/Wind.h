@@ -50,7 +50,7 @@ public:
 	Instance* m_pInstance = nullptr;
 
 	//Test
-	double WindSpeedInterpolation(int pointIndex, double time);//找区间
+	//double WindSpeedInterpolation(int pointIndex, double time);//找区间
 private:
 	Ui::WindClass ui;
 	//QVBoxLayout* layout;

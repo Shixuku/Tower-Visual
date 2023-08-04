@@ -419,9 +419,9 @@ void Instance::MaterialTxT()
 	for (int i = 0; i < 3; i++)
 	{
 		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
-		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.0 << "  " << 1e4 <<"  " << 0 << "\n";
+		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "\n";
 	}
-	Stream << "   " << 4 << "  " << 6.3e10 << "  " << 0.3 << "  " << 3080 << "  " << 0 << "\n";
+	Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080 << "  " << 0 << "\n";
 	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "\n";
 	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "\n";
 }
@@ -462,8 +462,8 @@ void Instance::Section_Assign()
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
 
-		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[2] << "  " 
-			<<m_Elements_beams[i].direction[1] << "  " << "\n";
+		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
+			<<m_Elements_beams[i].direction[2] << "  " << "\n";
 	}
 }
 

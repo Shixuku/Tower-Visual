@@ -54,6 +54,7 @@ void Section::GetLIxyz()
 	B_Iy = 1. / 12 * b * (2 * a2 - 2 * a * b + b2) * (2 * a - b);
 	B_Iz = b * (2 * a3 * a - 4 * a3 * b + 8 * a2 * b2 - 6 * a * b3 + b3 * b) / (24 * a - 12 * b);
 	B_Iyz = 0;
+
 	double L2 = a, t2 = b;
 	B_J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
 	L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);

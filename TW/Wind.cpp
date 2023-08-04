@@ -4,7 +4,6 @@
 #include <cmath>
 #include <QMessageBox>
 #include"RandomWind.h"
-#include"Force_Wind.h"
 #include<math.h>
 #include<Eigen/Dense>
 #include"Creat_Loads.h"
@@ -198,7 +197,7 @@ void Wind::BtnOk()
 			for (int i = 0; i < num; i++)
 			{
 				t += StepSize;
-				WindSpeedInterpolation(j, t);
+				//WindSpeedInterpolation(j, t);
 
 			}
 		}
@@ -308,34 +307,34 @@ std::vector<double> Wind::CountWindForce()
 	return Wx_values;
 }
 
-double Wind::WindSpeedInterpolation(int pointIndex, double time)
-{
-	double T = 0, Dt = 0;
-	Eigen::MatrixXd velocitiys;
-	Eigen::VectorXd v;
-	if (ran->fw)
-	{
-		velocitiys = ran->fw->getVelocityMat();
-		v = velocitiys.col(pointIndex);//第i点的风速
-
-		Dt = 0.5;
-		//double Dt = ran->fw->getDt();
-		T = ran->T;
-	}
-	else
-	{
-		QMessageBox::warning(this, "提示", "请创建随机风！");
-	}
-	double re_v = 0;
-	
-	int start = time / Dt;//第几次开始
-
-	if ((time >= (start * Dt)) && (time <= ((start + 1) * Dt)))
-	{
-		re_v = v[start] + (v[start + 1] - v[start]) * (time - Dt * start) / Dt;
-		cout << pointIndex + 1 << "  " << "(" << v[start] << "," << v[start + 1] << "): " << re_v << "\n";
-	}
-	return re_v;
-}
+//double Wind::WindSpeedInterpolation(int pointIndex, double time)
+//{
+//	double T = 0, Dt = 0;
+//	Eigen::MatrixXd velocitiys;
+//	Eigen::VectorXd v;
+//	if (ran->fw)
+//	{
+//		velocitiys = ran->fw->getVelocityMat();
+//		v = velocitiys.col(pointIndex);//第i点的风速
+//
+//		Dt = 0.5;
+//		//double Dt = ran->fw->getDt();
+//		T = ran->T;
+//	}
+//	else
+//	{
+//		QMessageBox::warning(this, "提示", "请创建随机风！");
+//	}
+//	double re_v = 0;
+//	
+//	int start = time / Dt;//第几次开始
+//
+//	if ((time >= (start * Dt)) && (time <= ((start + 1) * Dt)))
+//	{
+//		re_v = v[start] + (v[start + 1] - v[start]) * (time - Dt * start) / Dt;
+//		cout << pointIndex + 1 << "  " << "(" << v[start] << "," << v[start + 1] << "): " << re_v << "\n";
+//	}
+//	return re_v;
+//}
 
 

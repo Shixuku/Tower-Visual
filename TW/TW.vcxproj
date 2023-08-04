@@ -61,6 +61,7 @@
     <IncludePath>../dllAnalyse/include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
     <IncludePath>../dllAnalyse\include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
     <IncludePath>../VTK\include\vtk-9.0;../eigen-3.4.0;../dllAnalyse\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

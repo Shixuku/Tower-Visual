@@ -16,7 +16,7 @@
 QT_CHARTS_USE_NAMESPACE
 
 class InterFace;
-class Force_Wind;
+//class Force_Wind;
 class Wind;
 
 class RandomWind : public QDialog
@@ -68,5 +68,5 @@ public slots:
 private:
 	Ui::RandomWindClass ui;
 
-	Force_Wind* fw = nullptr;
+	//Force_Wind* fw = nullptr;
 };

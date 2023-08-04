@@ -183,9 +183,11 @@ void TowerWireGroup::addRestraintNode(Tower* tower)
 	for (int i = 0; i < ResNode; i++)
 	{
 		this->RestraintNode.push_back(tower->RestraintNode[i]);
-		RestraintNode[i] = tower->FindGroupIdNode(tower->RestraintNode[i]);
+		int id = RestraintNode.size() - 1;
+		RestraintNode[id] = tower->FindGroupIdNode(tower->RestraintNode[i]);
 	}
 }
+
 
 void TowerWireGroup::AddSuspensionNode(Tower* tower)
 {

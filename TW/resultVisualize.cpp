@@ -1,6 +1,6 @@
 #include "resultVisualize.h"
 #include"InterFace.h"
-resultVisualize::resultVisualize(QWidget *parent)
+resultVisualize::resultVisualize(QWidget * parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
@@ -204,15 +204,15 @@ void resultVisualize::addData(vector<Node_Base*>node, Instance* ins)
 	addActorData();//添加主界面数据(copy)
 
 	//添加分析步结果数据
-	int numStep = 2;//分析步数量
+	int numStep = pCAE->ME_AnalysisSteps.size();//分析步数量
 	for (int i = 1; i <= numStep; ++i)
 	{
 		stepData.insert(std::make_pair(i, ins->s->get_outputter(i)));
 	}
-	
+
 	for (auto& i : stepData)
 	{
-		for (auto& iframe: i.second)
+		for (auto& iframe : i.second)
 		{
 			iframe.SortData();//找最值
 		}
