@@ -799,8 +799,8 @@ void Part_Base::SetCir(Element_Beam& beam)
 		//Section* pSection = pInterFace->Ms.Find_Entity(i);
 		if (beam.ClassSectionID == i.second->m_id)
 		{
-			x = i.second->a;
-			y = i.second->b;
+			x = i.second->a/2;
+			y = (i.second->a-2* i.second->b)/2;
 
 		}
 	}

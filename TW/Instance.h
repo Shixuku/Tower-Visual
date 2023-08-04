@@ -93,7 +93,7 @@ public:
 	//画约束
 	void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
 	void Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer);
-
+	
 	//计算
 	S_InterFace* s = nullptr;
 	void Section_Assign();//为各单元的截面指派情况

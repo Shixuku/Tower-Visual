@@ -1,7 +1,6 @@
 #include "RandomWind.h"
 
 #include"InterFace.h"
-#include"Force_Wind.h"
 #include"Wind.h"
 
 #include <qmessagebox.h>
@@ -33,16 +32,16 @@ RandomWind::RandomWind(Wind* m_wind, QWidget *parent)
 
 RandomWind::~RandomWind()
 {
-	if (m_line) delete m_line;
-	if (fw) delete fw;
-	if (m_chartView != nullptr)
-	{
-		delete m_chartView;
-	}
-	if (m_chart != nullptr)
-	{
-		delete m_chart;
-	}
+	//if (m_line) delete m_line;
+	//if (fw) delete fw;
+	//if (m_chartView != nullptr)
+	//{
+	//	delete m_chartView;
+	//}
+	//if (m_chart != nullptr)
+	//{
+	//	delete m_chart;
+	//}
 }
 
 void RandomWind::InputPoints()
@@ -81,13 +80,13 @@ void RandomWind::SimulateWind()
 	//}
 	CreatSegment();
 	//
-	if (fw) delete fw;  //·ÀÖ¹ÄÚ´æÐ¹Â¶
-	//fw = new Force_Wind;
-	
-	fw = new Force_Wind(1.29, wd->alf, z0, v10, N, M, w_up, T);
-	fw->set_FilePath(QString("D:/"));
-	fw->input_node(points);
-	fw->simulate();
+	//if (fw) delete fw;  //·ÀÖ¹ÄÚ´æÐ¹Â¶
+	////fw = new Force_Wind;
+	//
+	//fw = new Force_Wind(1.29, wd->alf, z0, v10, N, M, w_up, T);
+	//fw->set_FilePath(QString("D:/"));
+	//fw->input_node(points);
+	//fw->simulate();
 	
 }
 
@@ -149,8 +148,8 @@ void RandomWind::CreatSegment()
 void RandomWind::ShowPic(int index)
 {
 
-	QLineSeries* qline = fw->getQLineSeries(index);
-	Plot(qline);
+	/*QLineSeries* qline = fw->getQLineSeries(index);
+	Plot(qline);*/
 }
 
 void RandomWind::initChart()
