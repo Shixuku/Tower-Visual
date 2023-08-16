@@ -78,7 +78,7 @@ void T_Foot::Initialize()
 {
 	ui.line_L2->setText("15.160");//设置初始值
 
-	int T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount() + 1;//塔腿数量
+	int T_legs = m_InterFace->TP_leg.size() + 1;//塔腿数量
 	QString str("塔腿部件-");
 	str += QString::number(T_legs);     //str转字符
 	ui.part_name->setText(str);//设置初始值

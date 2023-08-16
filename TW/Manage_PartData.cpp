@@ -175,7 +175,7 @@ void Manage_PartData::Modify_Data()
 				T_body->Get_Data(t);
 				t->Create_Mesh();
 				t->m_id = Index + 1;
-				childItem->setText(0, t->m_name);//命名
+				childItem->setText(0, t->m_Name);//命名
 				t->Item = childItem;
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
@@ -183,7 +183,7 @@ void Manage_PartData::Modify_Data()
 				m_InterFace->TP_body.Add_Entity(t);
 
 				//设置界面数据变化
-				ui.tableWidget_2->setItem(Index, 0, new QTableWidgetItem(t->m_name));
+				ui.tableWidget_2->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
 				//设置节点单元数量
 				ui.tableWidget_2->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
 				int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();
@@ -216,7 +216,7 @@ void Manage_PartData::Modify_Data()
 				T_crossArm->Get_Data(*t);
 				t->Create_Mesh();
 				t->m_id = Index + 1;
-				childItem->setText(0, t->m_name);//命名
+				childItem->setText(0, t->m_Name);//命名
 				t->Item = childItem;
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
@@ -224,7 +224,7 @@ void Manage_PartData::Modify_Data()
 				m_InterFace->TP_CrossArm.Add_Entity(t);
 
 				//设置界面数据变化
-				ui.tableWidget_3->setItem(Index, 0, new QTableWidgetItem(t->m_name));
+				ui.tableWidget_3->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
 				//设置节点单元数量
 				ui.tableWidget_3->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
 				int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();

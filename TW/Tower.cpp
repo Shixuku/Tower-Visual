@@ -208,6 +208,15 @@ void Tower::SaveTo(QDataStream& fin) const
 	{
 		fin << SuspensionNode[i];
 	}
+	fin << m_name;//ÊµÀýÃû³Æ
+	//Ô¼Êø
+	int nRestraintNode = RestraintNode.size();
+	fin << nRestraintNode;
+	for (int i = 0; i < nRestraintNode; i++)
+	{
+		fin << RestraintNode[i];
+		cout << RestraintNode[i] << "\n";
+	}
 }
 
 void Tower::Input(QDataStream& fin)
@@ -240,6 +249,14 @@ void Tower::Input(QDataStream& fin)
 	for (int i = 0; i < nSuspension; ++i)
 	{
 		fin >> SuspensionNode[i];
+	}
+	fin >> m_name;
+	int nRestraintNode;
+	fin >> nRestraintNode;
+	RestraintNode.resize(nRestraintNode);
+	for (int i = 0; i < nRestraintNode; i++)
+	{
+		fin >> RestraintNode[i];
 	}
 }
 
@@ -438,6 +455,7 @@ void Tower::addElementToTower(Part_Base* part)
 void Tower::addRestraintNode(Part_Base* part)
 {
 	size_t ResNode = part->RestraintNode.size();
+	cout << "ResNode= " << ResNode << "\n";
 	for (int i = 0; i < ResNode; i++)
 	{
 		this->RestraintNode.push_back(part->RestraintNode[i]);

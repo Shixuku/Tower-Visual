@@ -47,6 +47,7 @@ class ParameterIceElement;
 class Element_Ice;
 class InteractorStyle;
 class ui_AnalysisStep;
+class Manage_Section;
 class Instance_Calculate;
 //class Manage_Loads;
 class InterFace : public QMainWindow
@@ -111,7 +112,6 @@ public:
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
-
      //try  要改
      vtkNew<InteractorStyle> style;
      vtkNew<vtkAppendPolyData> appendFilter;
@@ -131,7 +131,6 @@ public slots:
     void ui_Management_InsData();
     void ui_Interphase_spacer(QTreeWidgetItem* item);
     void ui_Wire_InterFace(QTreeWidgetItem* item);
-    void ui_Element_Ice();
     void SaveFile();
     void OpenFile();
     void ui_Section();
@@ -147,15 +146,15 @@ public slots:
     void CreateTowerInp(QTreeWidgetItem* item);
     void CreateGroupInp(QTreeWidgetItem* item);
 
-    void ui_Wind();
     void ui_SingleWire();
-
-   // void ui_ManageLoads();
     void ui_TowerWireGroup();
 
     void ui_SingleWireSpacer(QTreeWidgetItem* item);
+    void btn_ice();
+    void btn_show();
 private:
-
+    Outputter* m_Outputter=nullptr;
+    resultVisualize* display=nullptr;
     QHBoxLayout* layout;
     QVTKOpenGLNativeWidget* m_VtkWidget;
     // 菜单事件

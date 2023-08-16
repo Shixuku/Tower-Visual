@@ -206,9 +206,6 @@
     <ClCompile Include="Calculate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Element_Ice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InteractorStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -228,6 +225,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ele_Location.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Manage_Section.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterIceType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -346,6 +349,9 @@
     <ClInclude Include="Ele_Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterIceType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="IceLoad.h">
@@ -441,10 +447,10 @@
     <QtMoc Include="Calculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Element_Ice.h">
+    <QtMoc Include="ui_AnalysisStep.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="ui_AnalysisStep.h">
+    <QtMoc Include="Manage_Section.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -530,9 +536,6 @@
     <QtUic Include="Calculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="Element_Ice.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="Calculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -543,6 +546,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ui_AnalysisStep.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Manage_Section.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

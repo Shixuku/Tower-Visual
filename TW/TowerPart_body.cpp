@@ -53,7 +53,7 @@ void TowerPart_body::type1(int iQuadrant, int layer)
 	{
 		Creat_Beams1(m_Elements_beams, { node[0],node[1],node[3],node[2] });//塔身立柱
 	}
-	Creat_Beams(m_Elements_beams, {node[1],node[4],node[3]});//中间梁
+	Creat_Beams(m_Elements_beams, { node[1],node[4],node[3] });//中间梁
 }
 void TowerPart_body::type2(int iQuadrant, int layer)
 {
@@ -74,8 +74,8 @@ void TowerPart_body::type2(int iQuadrant, int layer)
 
 	if (iQuadrant == 0 || iQuadrant == 1)//正面类型生成梁 侧面类型不生成
 	{
-		Creat_Beams(m_Elements_beams, { node[0],node[5],node[1] });//立柱
-		Creat_Beams(m_Elements_beams, { node[2],node[7],node[3] });//立柱
+		Creat_Beams1(m_Elements_beams, { node[5],node[0],node[5],node[1],node[7],node[2],node[7] ,node[3] });//立柱
+		//Creat_Beams(m_Elements_beams, { node[2],node[7],node[3] });//立柱
 	}
 
 	Creat_Beams(m_Elements_beams, { node[3],node[8],node[4],node[6],node[1] });//一串梁单元
@@ -104,8 +104,8 @@ void TowerPart_body::type3(int iQuadrant, int layer)
 
 	if (iQuadrant == 0 || iQuadrant == 1)//正面类型生成梁 侧面类型不生成
 	{
-		Creat_Beams(m_Elements_beams, { node[0],node[5],node[6],node[1] });//立柱
-		Creat_Beams(m_Elements_beams, { node[2],node[9],node[10],node[3] });//立柱
+		Creat_Beams1(m_Elements_beams, { node[0],node[5],node[5],node[6],node[6],node[1],node[2],node[9],node[9],node[10],node[10],node[3] });//立柱
+		//Creat_Beams(m_Elements_beams, { node[2],node[9],node[10],node[3] });//立柱
 	}
 	Creat_Trusses1(m_Elements_Trusses, { node[6],node[8],node[12],node[10]});//杆单元
 	Creat_Trusses1(m_Elements_Trusses, { node[5],node[8],node[12],node[9]});//杆单元
@@ -137,13 +137,13 @@ void TowerPart_body::type4(int iQuadrant, int layer)
 	//生成单元
 	if (iQuadrant == 0 || iQuadrant == 1)//正面类型生成梁 侧面类型不生成
 	{
-		Creat_Beams(m_Elements_beams, { node[0],node[5],node[6],node[1] });//立柱
-		Creat_Beams(m_Elements_beams, { node[2],node[7],node[8],node[3] });//立柱
+		Creat_Beams1(m_Elements_beams, { node[0],node[5],node[5],node[6],node[6],node[1],node[2],node[7],node[7],node[8],node[8],node[3] });//立柱
+		//Creat_Beams(m_Elements_beams, { node[2],node[7],node[8],node[3] });//立柱
 	}
-	Creat_Beams(m_Elements_beams, {node[1],node[10],node[4],node[11],node[2] });//中间梁单元
-	Creat_Beams(m_Elements_beams, {node[3],node[12],node[4],node[9],node[0] });//中间梁单元
-	Creat_Trusses(m_Elements_Trusses, {node[12],node[8],node[11]});//一串桁架单元
-	Creat_Trusses(m_Elements_Trusses, {node[10],node[6],node[9]});//一串桁架单元
+	Creat_Beams1(m_Elements_beams, { node[1],node[10],node[10],node[4],node[4],node[11],node[11],node[2], node[3],node[12],node[12],node[4],node[4],node[9],node[9],node[0] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, {node[3],node[12],node[4],node[9],node[0] });//中间梁单元
+	Creat_Trusses1(m_Elements_Trusses, {node[12],node[8],node[8],node[11],node[10],node[6],node[6],node[9] });//一串桁架单元
+	//Creat_Trusses(m_Elements_Trusses, {node[10],node[6],node[9]});//一串桁架单元
 	Creat_Trusses1(m_Elements_Trusses, {node[12],node[11],node[10],node[9]});//一串桁架单元
 	Creat_Trusses1(m_Elements_Trusses, {node[7],node[11],node[9],node[5]});//一串桁架单元
 }
@@ -166,13 +166,14 @@ void TowerPart_body::type5(int iQuadrant, int layer)
 	}
 	if (iQuadrant == 0 || iQuadrant == 1)//正面类型生成梁 侧面类型不生成
 	{
-		Creat_Beams(m_Elements_beams, { node[0],node[5],node[1] });//立柱
-		Creat_Beams(m_Elements_beams, { node[2],node[6],node[3] });//立柱
+		Creat_Beams1(m_Elements_beams, { node[0],node[5],node[5],node[1],node[2],node[6],node[6],node[3] });//立柱
+		//Creat_Beams(m_Elements_beams, { node[2],node[6],node[3] });//立柱
 	}
-	Creat_Beams(m_Elements_beams, {node[1],node[8],node[4],node[9],node[2] });//中间梁单元
-	Creat_Beams(m_Elements_beams, {node[3],node[10],node[4],node[7],node[0] });//中间梁单元
-	Creat_Trusses(m_Elements_Trusses, { node[5],node[8],node[7],node[5] });//中间桁架单元
-	Creat_Trusses(m_Elements_Trusses, { node[9],node[6],node[10],node[9] });//中间桁架单元
+	//Creat_Beams(m_Elements_beams, {node[1],node[8],node[4],node[9],node[2] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, {node[3],node[10],node[4],node[7],node[0] });//中间梁单元
+	Creat_Beams1(m_Elements_beams, { node[1],node[8],node[8],node[4],node[4],node[9],node[9],node[2],node[3],node[10],node[10],node[4],node[4],node[7],node[7],node[0] });//中间梁单元
+	Creat_Trusses1(m_Elements_Trusses, { node[5],node[8],node[8],node[7],node[7],node[5],node[9],node[6],node[6],node[10],node[10],node[9] });//中间桁架单元
+	//Creat_Trusses(m_Elements_Trusses, { node[9],node[6],node[10],node[9] });//中间桁架单元
 }
 void TowerPart_body::type6(int iQuadrant, int layer)
 {
@@ -189,8 +190,8 @@ void TowerPart_body::type6(int iQuadrant, int layer)
 	{
 		Creat_Beams1(m_Elements_beams, { node[0],node[1],node[2],node[3] });//立柱
 	}
-	Creat_Beams(m_Elements_beams, { node[0],node[4],node[3] });//中间梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[4],node[2] });//中间梁单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[4],node[4],node[3],node[1],node[4],node[4],node[2] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, { node[1],node[4],node[2] });//中间梁单元
 	
 }
 void TowerPart_body::type7(int iQuadrant, int layer)
@@ -209,8 +210,9 @@ void TowerPart_body::type7(int iQuadrant, int layer)
 	{
 		Creat_Beams1(m_Elements_beams, { node[0],node[1],node[2],node[3] });//立柱
 	}
-	Creat_Beams(m_Elements_beams, { node[0],node[4],node[3] });//中间梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[4],node[2] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, { node[0],node[4],node[3] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, { node[1],node[4],node[2] });//中间梁单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[4],node[4],node[3],node[1],node[4],node[4],node[2] });//中间梁单元
 	Creat_Trusses(m_Elements_Trusses, { node[4],node[5] });//一圈桁架单元
 }
 void TowerPart_body::type8(int iQuadrant, int layer)
@@ -250,11 +252,11 @@ void TowerPart_body::type9(int iQuadrant, int layer)
 	}
 	if (iQuadrant == 0 || iQuadrant == 1)//正面类型生成梁 侧面类型不生成
 	{
-		Creat_Beams(m_Elements_beams, { node[0],node[5],node[1]});//立柱
-		Creat_Beams(m_Elements_beams, { node[2],node[6],node[3]});//立柱
+		Creat_Beams1(m_Elements_beams, { node[0],node[5],node[5],node[1],node[2],node[6],node[6],node[3] });//立柱
+		//Creat_Beams(m_Elements_beams, { node[2],node[6],node[3]});//立柱
 	}
-	Creat_Beams(m_Elements_beams, {node[1],node[4],node[2] });//中间梁单元
-	Creat_Beams(m_Elements_beams, {node[3],node[4],node[0] });//中间梁单元
+	Creat_Beams1(m_Elements_beams, { node[4],node[0],node[4],node[1],node[4],node[2],node[4],node[3] });//中间梁单元
+	//Creat_Beams(m_Elements_beams, {node[3],node[4],node[0] });//中间梁单元
 	Creat_Trusses(m_Elements_Trusses, { node[5],node[4],node[6] });//中间桁架单元
 
 }
@@ -372,14 +374,18 @@ void TowerPart_body::G_Type1(int tier, int pos)
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[5],node[6],node[1],node[7],node[8],node[9],node[2],node[10],node[11],node[12],node[3],node[13],node[14],node[15],node[0] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[15],node[16],node[17],node[6],node[18],node[19],node[9],node[20],node[21],node[12],node[22],node[23],node[15] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[13],node[23],node[16],node[4],node[17],node[18],node[7],node[19],node[20],node[10],node[21],node[22],node[13] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[3],node[22] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[14],node[23] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[16] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[5],node[17] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[18] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[8],node[19] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[20] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[11],node[21] });//一串梁单元
+
+	Creat_Beams1(m_Elements_beams, { node[3],node[22], node[0],node[16],node[1],node[18],node[2],node[20] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[14],node[23],node[5],node[17],node[8],node[19],node[11],node[21] });//一串梁单元
+
+	//Creat_Beams(m_Elements_beams, { node[3],node[22] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[14],node[23] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[0],node[16] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[5],node[17] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[1],node[18] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[8],node[19] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[2],node[20] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[11],node[21] });//一串梁单元
 
 }
 
@@ -395,8 +401,10 @@ void TowerPart_body::G_Type2(int tier, int pos)
 	}
 	//生成单元
 	Creat_Beams(m_Elements_beams, { node[0],node[1],node[2],node[3],node[0] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[4],node[3] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[4],node[0],node[4],node[1],node[4],node[2],node[4],node[3] });//一串梁单元
+
+	//Creat_Beams(m_Elements_beams, { node[0],node[4],node[1] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[2],node[4],node[3] });//一串梁单元
 }
 
 void TowerPart_body::G_Type3(int tier, int pos)
@@ -416,8 +424,9 @@ void TowerPart_body::G_Type3(int tier, int pos)
 	//生成单元
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1],node[5],node[2],node[6],node[3],node[7],node[0] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[4],node[5],node[6],node[7],node[4] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[4],node[8],node[6] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[5],node[8],node[7] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[4],node[8],node[6] });//一圈梁单元
+	Creat_Beams1(m_Elements_beams, { node[8],node[4],node[8],node[5], node[8],node[6],node[8],node[7] });//一圈梁单元
+	//Creat_Beams(m_Elements_beams, { node[5],node[8],node[7] });//一串梁单元
 
 }
 
@@ -442,10 +451,11 @@ void TowerPart_body::G_Type4(int tier, int pos)
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1],node[5],node[2],node[6],node[3],node[7],node[0] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[8],node[4],node[9],node[5],node[10],node[6],node[11],node[7],node[8] });//一串梁单元
 	Creat_Beams(m_Elements_beams, { node[8],node[9],node[10],node[11],node[8] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[8] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[9] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[10] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[3],node[11] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[8],node[1],node[9],node[2],node[10],node[3],node[11] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[0],node[8] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[1],node[9] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[2],node[10] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[3],node[11] });//一串梁单元
 
 }
 
@@ -469,12 +479,28 @@ void TowerPart_body::G_Type5(int tier, int pos)
 	//生成单元
 	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1],node[5],node[2],node[6],node[3],node[7],node[0] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[8],node[4],node[9],node[5],node[10],node[6],node[11],node[7],node[8] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[8],node[11] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[9],node[10] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[8] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[9] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[10] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[3],node[11] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[8],node[1],node[9],node[2],node[10],node[3],node[11] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[8],node[11],node[9],node[10] });//一串梁单元
+
+	//Creat_Beams(m_Elements_beams, { node[8],node[11] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[9],node[10] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[0],node[8] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[1],node[9] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[2],node[10] });//一串梁单元
+	//Creat_Beams(m_Elements_beams, { node[3],node[11] });//一串梁单元
+}
+
+void TowerPart_body::G_Type6(int Tier, int pos)
+{
+	Node node2[4];
+	int node[4];
+	G_Get_Node4(Tier, node2, pos);
+	for (int i = 0; i < 4; i++)
+	{
+		node[i] = Creat_Node(node2[i].x, node2[i].y, node2[i].z);
+	}
+	//生成单元
+	Creat_Beams(m_Elements_beams, { node[0],node[1],node[2],node[3],node[0] });//一圈梁单元
 }
 
 void TowerPart_body::Create_Mesh()
@@ -599,6 +625,9 @@ void TowerPart_body::Create_Mesh()
 			break;
 		case 5:
 			G_Type5(i, 0);
+			break;
+		case 6:
+			G_Type6(i, 0);
 			break;
 		default:break;
 		}

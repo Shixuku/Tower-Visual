@@ -135,8 +135,16 @@ void Instance_Calculate::visual()
 	ins = list_Instance[index];
 	if (!ins) return;
 	vector<Node_Base*> ptr_nodes = ins->s->GetNodes();
-	
-	display->addData(ptr_nodes, ins);
+	std::list<std::vector<double>> nodes;
+
+	for (auto& i : ptr_nodes)
+	{
+		std::vector<double> coor(3);
+		coor = { i->m_x,i->m_y,i->m_z };
+		nodes.push_back(coor);
+	}
+
+	display->addData(nodes, ins);
 }
 
 void Instance_Calculate::update()

@@ -69,26 +69,26 @@ void resultVisualize::showOriginalActor(bool flag)
 
 void resultVisualize::getBoundary()
 {
-	double max_x = 0;
-	double min_x = 0;
-	double max_y = 0;
-	double min_y = 0;
-	double max_z = 0;
-	double min_z = 0;
-	for (auto& i : m_nodes)
-	{
-		if (max_x < i->m_x) max_x = i->m_x;
-		if (min_x > i->m_x) min_x = i->m_x;
+	//double max_x = 0;
+	//double min_x = 0;
+	//double max_y = 0;
+	//double min_y = 0;
+	//double max_z = 0;
+	//double min_z = 0;
+	//for (auto& i : m_nodes)
+	//{
+	//	if (max_x < i.x) max_x = i.m_x;
+	//	if (min_x > i.m_x) min_x = i.m_x;
 
-		if (max_y < i->m_y) max_y = i->m_y;
-		if (min_y > i->m_y) min_y = i->m_y;
+	//	if (max_y < i.m_y) max_y = i->m_y;
+	//	if (min_y > i->m_y) min_y = i->m_y;
 
-		if (max_z < i->m_z) max_z = i->m_z;
-		if (min_z > i->m_z) min_z = i->m_z;
-	}
-	if (boundary < (max_x - min_x)) boundary = max_x - min_x;
-	if (boundary < (max_y - min_y)) boundary = max_y - min_y;
-	if (boundary < (max_z - min_z)) boundary = max_z - min_z;
+	//	if (max_z < i->m_z) max_z = i->m_z;
+	//	if (min_z > i->m_z) min_z = i->m_z;
+	//}
+	//if (boundary < (max_x - min_x)) boundary = max_x - min_x;
+	//if (boundary < (max_y - min_y)) boundary = max_y - min_y;
+	//if (boundary < (max_z - min_z)) boundary = max_z - min_z;
 }
 
 void resultVisualize::update()
@@ -192,6 +192,19 @@ void resultVisualize::quit()
 
 void resultVisualize::autoFactor(bool flag)
 {
+	//if (!flag) return;
+	//double max_disp = 0;
+	//for (auto& i : *outputData)
+	//{
+	//	double max_dx = i.getBoundaryDisplaymentX()[1];
+	//	if (max_disp < max_dx) max_disp = max_dx;
+	//	double max_dy = i.getBoundaryDisplaymentY()[1];
+	//	if (max_disp < max_dy) max_disp = max_dy;
+	//	double max_dz = i.getBoundaryDisplaymentZ()[1];
+	//	if (max_disp < max_dz) max_disp = max_dz;
+	//}
+	//double ampFator = boundary / max_disp / 10;
+	//ui.lineEdit->setText(QString::number(ampFator));
 	if (!flag) return;
 
 	double max_disp = 0;
@@ -210,14 +223,14 @@ void resultVisualize::autoFactor(bool flag)
 	ui.lineEdit->setText(QString::number(ampFator));
 }
 
-void resultVisualize::addData(vector<Node_Base*>node, Instance* ins)
+void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* ins)
 {//刷新数据（主界面数据变化后）
 	m_ins = ins;
 	assert(m_ins);
 
-	for (auto& i : node)
+	for (auto& i : nodes)
 	{
-		m_nodes.push_back(i);
+		m_nodes.push_back(Node(0, i[0], i[1], i[2], 0.));
 	}
 	addActorData();//添加主界面数据(copy)
 

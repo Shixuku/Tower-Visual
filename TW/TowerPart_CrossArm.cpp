@@ -82,7 +82,7 @@ void TowerPart_CrossArm::SideType3(int type, int iQuadrant, int layer)
 	Creat_Beams(m_Elements_beams, { node[0], node[2], node[1] });
 }
 
-void TowerPart_CrossArm::BandU_Type1(int type, int iQuadrant, int layer)
+void TowerPart_CrossArm::BandU_Type1(int type, int iQuadrant, int layer)//iQuadrant表示左右
 {
 	Node Node1[11];
 	int node[11];
@@ -98,10 +98,13 @@ void TowerPart_CrossArm::BandU_Type1(int type, int iQuadrant, int layer)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	Creat_Beams(m_Elements_beams, { node[0],node[9],node[1],node[6],node[4],node[5],node[0] });//一圈桁架单元
-	Creat_Beams(m_Elements_beams, { node[2],node[10],node[3],node[8],node[4],node[7],node[2] });//一圈桁架单元
-	Creat_Trusses(m_Elements_Trusses, { node[9],node[5],node[6],node[9] });//一圈桁架单元
-	Creat_Trusses(m_Elements_Trusses, { node[8],node[7],node[10],node[8] });//一圈桁架单元
+	//Creat_Beams(m_Elements_beams, { node[0],node[9],node[1],node[6],node[4],node[5],node[0] });//一圈桁架单元
+	//Creat_Beams(m_Elements_beams, { node[2],node[10],node[3],node[8],node[4],node[7],node[2] });//一圈桁架单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[9],node[9],node[1],node[1],node[6],node[6],node[4],node[4],node[5],node[5],node[0] ,
+		node[2],node[10],node[10],node[3],node[3],node[8],node[8],node[4],node[4],node[7],node[7],node[2] });//一圈桁架单元
+	//Creat_Trusses(m_Elements_Trusses, { node[9],node[5],node[6],node[9] });//一圈桁架单元
+	//Creat_Trusses(m_Elements_Trusses, { node[8],node[7],node[10],node[8] });//一圈桁架单元
+	Creat_Trusses1(m_Elements_Trusses, { node[9],node[5],node[5],node[6],node[6],node[9],node[8],node[7],node[7],node[10],node[10],node[8] });//一圈桁架单元
 }
 
 void TowerPart_CrossArm::BandU_Type2(int type, int iQuadrant, int layer)
@@ -140,8 +143,9 @@ void TowerPart_CrossArm::BandU_Type4(int type, int iQuadrant, int layer)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	Creat_Beams(m_Elements_beams, { node[0],node[1],node[4],node[2],node[3],node[4],node[0] });
-	Creat_Beams(m_Elements_beams, { node[1],node[3] });
+	//Creat_Beams(m_Elements_beams, { node[0],node[1],node[4],node[2],node[3],node[4],node[0] });
+	Creat_Beams(m_Elements_beams, { node[1],node[3],node[2],node[4],node[1],node[0],node[4],node[3] });
+//	Creat_Beams(m_Elements_beams, { node[1],node[3] });
 }
 
 void TowerPart_CrossArm::G_Get_Node4(int type, Node* n, int iQuadrant, int layer)
@@ -225,18 +229,13 @@ void TowerPart_CrossArm::G_Type1(int type, int iQuadrant, int layer)
 		node[i] = Creat_Node(node1[i].x, node1[i].y, node1[i].z);
 	}
 	//生成单元
-	Creat_Beams(m_Elements_beams, { node[0],node[4],node[5],node[6],node[1] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[10],node[11],node[12],node[3] });//一圈梁单元
+	
+	Creat_Beams1(m_Elements_beams, { node[0],node[4],node[4],node[5],node[5],node[6],node[6],node[1],node[2],node[10],node[10],node[11],node[11],node[12],node[12],node[3] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[15],node[16],node[17],node[6],node[18],node[19],node[9],node[20],node[21],node[12],node[22],node[23],node[15] });//一圈梁单元
 	Creat_Beams(m_Elements_beams, { node[13],node[23],node[16],node[4],node[17],node[18],node[7],node[19],node[20],node[10],node[21],node[22],node[13] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[3],node[22] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[14],node[23] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[16] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[5],node[17] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[1],node[18] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[8],node[19] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[20] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[11],node[21] });//一串梁单元
+
+	Creat_Beams1(m_Elements_beams, { node[3],node[22], node[0],node[16],node[1],node[18],node[2],node[20] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[14],node[23],node[5],node[17],node[8],node[19],node[11],node[21] });//一串梁单元
 }
 
 void TowerPart_CrossArm::G_Type2(int type, int iQuadrant, int layer)
@@ -251,10 +250,8 @@ void TowerPart_CrossArm::G_Type2(int type, int iQuadrant, int layer)
 
 	}
 	//生成单元
-	Creat_Beams(m_Elements_beams, { node[0],node[1] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[3] });//一圈梁单元
-	Creat_Beams(m_Elements_beams, { node[0],node[4],node[1] });//一串梁单元
-	Creat_Beams(m_Elements_beams, { node[2],node[4],node[3] });//一串梁单元
+	Creat_Beams1(m_Elements_beams, { node[0],node[1], node[2],node[3]});//一圈梁单元
+	Creat_Beams1(m_Elements_beams, { node[4],node[0],node[4],node[1],node[4],node[2],node[4],node[3] });//一串梁单元
 }
 
 void TowerPart_CrossArm::G_Type3(int type, int iQuadrant, int layer)
@@ -345,82 +342,56 @@ void TowerPart_CrossArm::Create_Mesh()
 		int bu_type = m_layerArm[i - 1].m_TypeButtom;
 		int side_type = m_layerArm[i - 1].m_TypeSide;
 		int g_type = m_layerArm[i - 1].m_TypeSeptum;//隔面型号
-		if (m_Type == 1)//支架
-		{
-			//顶面 
-			switch (up_type)
-			{
-			case 1:
-				BandU_Type1(1, m_position, i);// 0表示右
-				break;
-			case 2:
-				BandU_Type2(1, m_position, i);
-				break;
-			case 3:
-				BandU_Type3(1, m_position, i);
-				break;
-			case 4:
-				BandU_Type4(1, m_position, i);
-				break;
-			default:break;
-			}
-			//底面
-			switch (bu_type)
-			{
-			case 1:
-				BandU_Type1(2, m_position, i);// 0表示右
-				break;
-			case 2:
-				BandU_Type2(2, m_position, i);
-				break;
-			case 3:
-				BandU_Type3(2, m_position, i);
-				break;
-			case 4:
-				BandU_Type4(2, m_position, i);
-				break;
-			default:break;
-			}
-		}
-		else if (m_Type == 3)//横担
-		{
-			//顶面 
-			switch (up_type)
-			{
-			case 1:
-				BandU_Type1(4, m_position, i);// 0表示右
-				break;
-			case 2:
-				BandU_Type2(4, m_position, i);
-				break;
-			case 3:
-				BandU_Type3(4, m_position, i);
-				break;
-			case 4:
-				BandU_Type4(4, m_position, i);
-				break;
-			default:break;
-			}
-			//底面
-			switch (bu_type)
-			{
-			case 1:
-				BandU_Type1(3, m_position, i);// 0表示右
-				break;
-			case 2:
-				BandU_Type2(3, m_position, i);
-				break;
-			case 3:
-				BandU_Type3(3, m_position, i);
-				break;
-			case 4:
-				BandU_Type4(3, m_position, i);
-				break;
-			default:break;
-			}
-		}
 
-		//右边侧面
+		//隔面
+		if (m_position == 0 || m_position == 1)// 右边或者左边
+		{
+			switch (g_type)
+			{
+			case 1:
+				G_Type1(m_Type, m_position, i);
+				break;
+			case 2:
+				G_Type2(m_Type, m_position, i);
+				break;
+			case 3:
+				G_Type3(m_Type, m_position, i);
+				break;
+			case 4:
+				G_Type4(m_Type, m_position, i);
+				break;
+			case 5:
+				G_Type5(m_Type, m_position, i);
+				break;
+			default:break;
+			}
+		}
+		else if (m_position == 2)//两边都有
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				switch (g_type)
+				{
+				case 1:
+					G_Type1(m_Type, j, i);
+					break;
+				case 2:
+					G_Type2(m_Type, j, i);
+					break;
+				case 3:
+					G_Type3(m_Type, j, i);
+					break;
+				case 4:
+					G_Type4(m_Type, j, i);
+					break;
+				case 5:
+					G_Type5(m_Type, j, i);
+					break;
+				default:break;
+				}
+			}
+		}
+		//右边
 		if (m_position == 0)
 		{
 			switch (side_type)
@@ -439,8 +410,82 @@ void TowerPart_CrossArm::Create_Mesh()
 				break;
 			default: break;
 			}
+			if (m_Type == 1)//支架
+			{
+				//顶面 
+				switch (up_type)
+				{
+				case 1:
+					BandU_Type1(1, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(1, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(1, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(1, m_position, i);
+					break;
+				default:break;
+				}
+				//底面
+				switch (bu_type)
+				{
+				case 1:
+					BandU_Type1(2, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(2, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(2, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(2, m_position, i);
+					break;
+				default:break;
+				}
+			}
+			else if (m_Type == 3)//横担
+			{
+				//顶面 
+				switch (up_type)
+				{
+				case 1:
+					BandU_Type1(4, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(4, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(4, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(4, m_position, i);
+					break;
+				default:break;
+				}
+				//底面
+				switch (bu_type)
+				{
+				case 1:
+					BandU_Type1(3, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(3, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(3, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(3, m_position, i);
+					break;
+				default:break;
+				}
+			}
 		}
-		//左边侧面
+		//左边
 		else if (m_position == 1)
 		{
 			switch (side_type)
@@ -459,8 +504,82 @@ void TowerPart_CrossArm::Create_Mesh()
 				break;
 			default: break;
 			}
+			if (m_Type == 1)//支架
+			{
+				//顶面 
+				switch (up_type)
+				{
+				case 1:
+					BandU_Type1(1, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(1, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(1, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(1, m_position, i);
+					break;
+				default:break;
+				}
+				//底面
+				switch (bu_type)
+				{
+				case 1:
+					BandU_Type1(2, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(2, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(2, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(2, m_position, i);
+					break;
+				default:break;
+				}
+			}
+			else if (m_Type == 3)//横担
+			{
+				//顶面 
+				switch (up_type)
+				{
+				case 1:
+					BandU_Type1(4, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(4, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(4, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(4, m_position, i);
+					break;
+				default:break;
+				}
+				//底面
+				switch (bu_type)
+				{
+				case 1:
+					BandU_Type1(3, m_position, i);// 0表示右
+					break;
+				case 2:
+					BandU_Type2(3, m_position, i);
+					break;
+				case 3:
+					BandU_Type3(3, m_position, i);
+					break;
+				case 4:
+					BandU_Type4(3, m_position, i);
+					break;
+				default:break;
+				}
+			}
 		}
-		//左右侧面
+		//两边
 		else if (m_position == 2)
 		{
 			//顶面和底面
@@ -542,106 +661,25 @@ void TowerPart_CrossArm::Create_Mesh()
 				}
 			}
 			//侧面
-			switch (side_type)
+			for (int j = 0; j < 4; j++)
 			{
-			case 1:
-				SideType1(m_Type, 0, i);//0 右前
-				SideType1(m_Type, 1, i);//1 右后
-				break;
-			case 2:
-				SideType2(m_Type, 0, i);//0 右前
-				SideType2(m_Type, 1, i);//1 右后
-				break;
-			case 3:
-				SideType3(m_Type, 0, i);//0 右前
-				SideType3(m_Type, 1, i);//1 右后
-				break;
-			default: break;
+				switch (side_type)
+				{
+				case 1:
+					SideType1(m_Type, j, i);
+					break;
+				case 2:
+					SideType2(m_Type, j, i);
+					break;
+				case 3:
+					SideType3(m_Type, j, i);
+					break;
+				default: break;
+				}
 			}
-			switch (side_type)
-			{
-			case 1:
-				SideType1(m_Type, 2, i);//左前
-				SideType1(m_Type, 3, i);//左后
-				break;
-			case 2:
-				SideType2(m_Type, 2, i);//左前
-				SideType2(m_Type, 3, i);//左后
-				break;
-			case 3:
-				SideType3(m_Type, 2, i);//左前
-				SideType3(m_Type, 3, i);//左后
-				break;
-			default: break;
 			}
-		}
 
-		//隔面
-		if (m_position == 0 || m_position == 1)//   ||表示或者
-		{
-			switch (g_type)
-			{
-			case 1:
-				G_Type1(m_Type, m_position, i);
-				break;
-			case 2:
-				G_Type2(m_Type, m_position, i);
-				break;
-			case 3:
-				G_Type3(m_Type, m_position, i);
-				break;
-			case 4:
-				G_Type4(m_Type, m_position, i);
-				break;
-			case 5:
-				G_Type5(m_Type, m_position, i);
-				break;
-			default:break;
-			}
-		}
-		else if (m_position == 2)
-		{
-			switch (g_type)
-			{
-			case 1:
-				G_Type1(m_Type, 0, i);
-				break;
-			case 2:
-				G_Type2(m_Type, 0, i);
-				break;
-			case 3:
-				G_Type3(m_Type, 0, i);
-				break;
-			case 4:
-				G_Type4(m_Type, 0, i);
-				break;
-			case 5:
-				G_Type5(m_Type, 0, i);
-				break;
-			default:break;
-			}
-			switch (g_type)
-			{
-			case 1:
-				G_Type1(m_Type, 1, i);
-				break;
-			case 2:
-				G_Type2(m_Type, 1, i);
-				break;
-			case 3:
-				G_Type3(m_Type, 1, i);
-				break;
-			case 4:
-				G_Type4(m_Type, 1, i);
-				break;
-			case 5:
-				G_Type5(m_Type, 1, i);
-				break;
-			default:break;
-			}
-		}
 	}
-
 }
 
 
