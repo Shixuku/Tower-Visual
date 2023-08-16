@@ -42,8 +42,6 @@ public:
 		}
 		return s_pStructure; 
 	}
-
-
 };
 
 

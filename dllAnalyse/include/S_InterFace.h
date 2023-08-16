@@ -41,8 +41,8 @@ public:
 	//设置输出文件的路径和节点号
 	virtual void set_outInfo(QString filePath, std::vector<int> pid) = 0;
 
-	//获得idStep分析步每一帧的输出结果
-	virtual std::vector<Outputter> get_outputter(int idStep) = 0;
+	//获得idStep分析步输出结果
+	virtual Outputter& get_outputter(int idStep) = 0;
 
 	//设置是否使用常数矩阵（简化计算）
 	virtual void set_ConstK(bool flag) = 0;
@@ -89,6 +89,8 @@ public:
 	virtual void setMaxIterations(int iterations) = 0;
 	//得到总的迭代次数
 	virtual int getTotalIterations() const = 0;
+	//得到总的分析步数
+	virtual int getTotalSteps() const = 0;
 
 	//设置迭代增量的模的最小容许值
 	virtual void set_stol(double s) = 0;

@@ -23,17 +23,17 @@ Wind::Wind(Creat_Loads* creat_loads, QWidget *parent): QDialog(parent)
 	connect(ui.rad_stab, &QRadioButton::clicked, this, [=]() {ui.stackedWidget_2->setCurrentIndex(0); });
 	connect(ui.rad_ran, &QRadioButton::clicked, this, [=]() {ui.stackedWidget_2->setCurrentIndex(1); });
 
-	connect(ui.rad_A, &QRadioButton::clicked, [=]() {alf = 0.12; });
-	connect(ui.rad_B, &QRadioButton::clicked, [=]() {alf = 0.16; });
-	connect(ui.rad_C, &QRadioButton::clicked, [=]() {alf = 0.20; });
-	connect(ui.rad_D, &QRadioButton::clicked, [=]() {alf = 0.30; });
+	connect(ui.rad_A, &QRadioButton::clicked, [=]() {alf = 0.12;  m_pInstance->LandformsType = "A";  });
+	connect(ui.rad_B, &QRadioButton::clicked, [=]() {alf = 0.16;  m_pInstance->LandformsType = "B"; });
+	connect(ui.rad_C, &QRadioButton::clicked, [=]() {alf = 0.20;  m_pInstance->LandformsType = "C"; });
+	connect(ui.rad_D, &QRadioButton::clicked, [=]() {alf = 0.30;  m_pInstance->LandformsType = "D";  });
 
 	ShowObject();
 	void (QComboBox:: * intChanged)(int) = &QComboBox::currentIndexChanged;
 	//connect(ui.object_com, intChanged, this, &Wind::ShowObject);
 	connect(ui.sure_btn_2, &QPushButton::clicked, this, &Wind::ui_Speed);
 	//connect(ui.count_btn, &QPushButton::clicked, this, [=]() {m_pcreatWire->CreateOutPut(); this->close(); });
-	connect(ui.sure_btn, &QPushButton::clicked, this, &Wind::Get_ui_Data);
+	connect(ui.sure_btn, &QPushButton::clicked, this, [=]() {Get_ui_Data();this->close(); });
 
 	
 }
@@ -45,7 +45,7 @@ void Wind::Initialize()
 {
 	ui.ice_edi->setText("5");
 	ui.wind_edi->setText("10");
-	ui.direction_edi->setText("90");
+	ui.direction_edi->setText("0");
 	ui.StepSize_edi->setText("0.3");
 	ui.Step_edi->setText("100");
 	//分析步的combobox
@@ -90,6 +90,7 @@ void Wind::ShowObject()
 
 void Wind::ui_Speed()
 {
+	Get_ui_Data();
 	if (ui.wind_com->currentIndex() == 0)
 	{
 		if (w_l == nullptr)
@@ -101,6 +102,7 @@ void Wind::ui_Speed()
 		{
 			w_l->show();
 		}
+	
 	}
 	else if (ui.wind_com->currentIndex() == 1)
 	{
@@ -207,13 +209,45 @@ void Wind::BtnOk()
 
 void Wind::Get_ui_Data()
 {
-	int id = m_pInstance->m_StableWind.size() + 1;
+	 id = m_pInstance->m_StableWind.size() + 1;
 	//分析步
-	int AnalysisStep = ui.comboBox->currentIndex() + 1;
-	QString Ele = "a";
-	double v = ui.wind_edi->text().toDouble();
-	m_pInstance->m_StableWind.push_back(ParameterStableWind(id, AnalysisStep, Ele, 90.0, v));
-	this->accept();
+	 AnalysisStep = ui.comboBox->currentIndex() + 1;
+	 v = ui.wind_edi->text().toDouble();
+	 angle = ui.direction_edi->text().toInt();
+	
+	//cout << "xxxx" << "  " << ui.stackedWidget_2->currentIndex() << "\n";
+	if (ui.stackedWidget_2->currentIndex() == 0)
+	{
+		m_pInstance->TypeWind = 0;
+	}
+	else if(ui.stackedWidget_2->currentIndex() == 1)
+	{
+		m_pInstance->TypeWind = 1;
+	}
+	double d = 2 * sqrt(m_pInstance->areaWire / 3.1415926);
+	if (ui.rad_t->isChecked() || d < 17)
+	{
+		miusc = 1.2;
+	}
+	else if (d >= 17)
+	{
+		miusc = 1.1;
+	}
+	if (ui.ice_edi->text().toDouble() <= 5)
+	{
+		B = 1.1;
+	}
+	else if (ui.ice_edi->text().toDouble() > 5)
+	{
+		B = 1.2;
+	}
+	else
+	{
+		B = 1.1;
+	}
+	WindCoefficient = miusc * B;
+	//m_pInstance->WindCoefficient = WindCoefficient;
+	//this->accept();
 }
 
 double Wind::CountUz(double h)

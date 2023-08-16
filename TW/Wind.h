@@ -37,6 +37,13 @@ public:
 	int num_node;//分析实例的节点个数
 	int num_ele;//分析实例的单元个数
 	double alf = 0;
+	double WindCoefficient = 0;//风荷载系数(风压不均匀系数=1*风荷载调整系数=1*体型系数*覆冰增大系数)
+	double miusc = 0;//体型系数
+	double B = 0;//覆冰增大系数
+	int id;
+	int AnalysisStep;
+	double v;
+	int angle;
 	std::vector<double>Uz_node;//每个节点的风压系数
 	std::vector<double>Uz_ele;//每个单元的风压系数
 	std::vector<double>L_ele;//每个单元的长度
