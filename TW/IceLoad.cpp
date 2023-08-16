@@ -4,6 +4,7 @@
 #include"InterFace.h"
 #include"InteractorStyle.h"
 #include"ParameterIceElement.h"
+#include"ParameterIceType.h"
 #pragma execution_character_set("utf-8")
 
 IceLoad::IceLoad(Creat_Loads * creat_loads, QWidget* parent) : QDialog(parent)
@@ -54,20 +55,17 @@ void IceLoad::Initialization()
 
 void IceLoad::GetData()
 {
-	int size = m_pInstance->m_Elements.size();//124
-	for (int i = 1; i < size+1; i++)
-	{
-		int m_id = i + size;//±ùµ¥Ôª±àºÅ
-		int Element = i;//µ¥Ôª±àºÅ
-		QWidget* widget_Start = ui.tableWidget->cellWidget(0, 0);
-		QWidget* widget_End = ui.tableWidget->cellWidget(0, 1);
-		QComboBox* combox1 = (QComboBox*)widget_Start;
-		QComboBox* combox2 = (QComboBox*)widget_End;
-		int addIce = combox1->currentIndex() + 1;//¸²±ù·ÖÎö²½
-		int reduceIce = combox2->currentIndex() + 1;//ÍÑ±ù·ÖÎö²½
-		double m_thickness = ui.tableWidget->item(0, 2)->text().toDouble();//¸²±ùºñ¶È
-		m_pInstance->m_IceElement.push_back(ParameterIceElement(m_id, Element, addIce, reduceIce, m_thickness));
-	}
+	int size = m_pInstance->m_Elements_beams.size() + m_pInstance->m_Elements_Trusses.size();//124
+	QWidget* widget_Start = ui.tableWidget->cellWidget(0, 0);
+	QWidget* widget_End = ui.tableWidget->cellWidget(0, 1);
+	QComboBox* combox1 = (QComboBox*)widget_Start;
+	QComboBox* combox2 = (QComboBox*)widget_End;
+	int addIce = combox1->currentIndex() + 1;//¸²±ù·ÖÎö²½
+	int reduceIce = combox2->currentIndex() + 1;//ÍÑ±ù·ÖÎö²½
+	double m_thickness = ui.tableWidget->item(0, 2)->text().toDouble();//¸²±ùºñ¶È
+
+	int type_id = m_pInstance->m_IceTypeElement.size() + 1;
+	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id, addIce, reduceIce, m_thickness));
 	this->accept();
 }
 

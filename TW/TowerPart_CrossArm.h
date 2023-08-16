@@ -28,7 +28,7 @@ public:
 
 	void Create_Mesh();
 
-	QString m_name;
+	//QString m_name;
 	virtual enum Part_Type My_PartType()const
 	{
 		return ET_PartCrossArm;

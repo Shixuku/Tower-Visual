@@ -28,7 +28,8 @@ Creat_Loads::~Creat_Loads()
 
 void Creat_Loads::btn_continue_clicked()
 {
-	if (m_pInterFace->ME_AnalysisSteps.size() == 0)
+	int size = m_pInterFace->ME_AnalysisSteps.size();//这一步必须要，不然下面条件没有判断
+	if (size == 0)
 	{
 		QMessageBox::information(this, "Tips", "请先创建分析步！"); return;
 	}

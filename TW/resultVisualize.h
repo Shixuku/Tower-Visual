@@ -19,7 +19,7 @@
 #include <vtkScalarBarActor.h>
 #include <map>
 #include <vtkActor.h>
-#include"Node_Base.h"
+#include"Node.h"
 #include"Outputter.h"
 
 class InterFace;
@@ -34,7 +34,7 @@ public:
 	InterFace* pCAE = nullptr;
 	Instance* m_ins = nullptr;
 
-	std::vector<Node_Base*> m_nodes;//包含位移的点
+	std::vector<Node> m_nodes;//包含位移的点
 
 	QTimer* updateTimer;
 	double m_dt = 1000;//ms
@@ -59,7 +59,7 @@ public:
 	void quit();
 	void autoFactor(bool flag);
 
-	void addData(vector<Node_Base*>node, Instance* ins);//界面的数据
+	void addData(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
 	void addActorData();//添加界面的actor
 	void removeActor();
 

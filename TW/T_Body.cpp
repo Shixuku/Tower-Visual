@@ -40,7 +40,7 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 
 	ui.tabWidget->setCurrentIndex(0);//设置tab第一页最先显示
 
-	int T_bodys = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount() + 1;//塔腿数量
+	int T_bodys = m_InterFace->TP_body.size() + 1;//塔身数量
 	QString str("塔身部件-");
 	str += QString::number(T_bodys);     //str转字符
 	ui.part_name->setText(str);//设置初始值
@@ -114,7 +114,7 @@ void T_Body::Set_body2()
 		<< "2.500" << "2.500" << "2.500" << "2.000" << "2.000";//层高
 	TypeFront << "6" << "7" << "6" << "6" << "6" << "7" << "6" << "6" << "6" << "6" << "7" << "6";//正面类型
 	TypeSide << "6" << "8" << "6" << "6" << "6" << "8" << "6" << "6" << "6" << "6" << "8" << "6";//侧面类型
-	U_septum << "5" << "0" << "0" << "0" << "5" << "5" << "0" << "0" << "0" << "5" << "3" << "2";//上部隔面
+	U_septum << "5" << "6" << "0" << "0" << "5" << "6" << "0" << "0" << "0" << "5" << "3" << "2";//上部隔面
 	M_septum << "0" << "0" << "0" << "0" << "0" << "0" << "0" << "0" << "0" << "0" << "0" << "0";//中部隔面
 
 	for (int i = 0; i < 12; i++)
@@ -172,7 +172,7 @@ void T_Body::Get_Data(TowerPart_body* body)
 		layer.m_TypeSeptumMiddle = ui.tableWidget->item(i, 5)->text().toInt();//上部隔面类型
 		body->m_layer.push_back(layer);
 	}
-	body->m_name = ui.part_name->text();
+	body->m_Name = ui.part_name->text();
 }
 
 QString T_Body::Get_line_Zn(int tier)

@@ -115,7 +115,7 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
 	Node_actor->GetProperty()->SetColor(255, 255, 0);
-	Node_actor->GetProperty()->SetPointSize(5);
+	Node_actor->GetProperty()->SetPointSize(4);
 	renderer->AddActor(Node_actor);
 }
 
@@ -420,12 +420,11 @@ void Instance::WindTxT()
 
 void Instance::IceLoadTxT()
 {
-	Stream << "*IceLoad," << m_IceElement.size() << "\n";
-	for (int i = 0; i < m_IceElement.size(); i++)
+	//新改的
+	Stream << "*Element_ice, " << m_IceTypeElement.size() << "\n";
+	for (int i = 0; i < m_IceTypeElement.size(); i++)
 	{
-		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
-		Stream << "   " << m_IceElement[i].m_id << "  " << m_IceElement[i].m_idElement << "  " << m_IceElement[i].m_StartAnalysisStep
-			<< "  " << m_IceElement[i].m_EndAnalysisStep << "  " << m_IceElement[i].m_Thickness << "\n";
+		Stream << "   " << m_IceTypeElement[i].m_id << "  "<< m_IceTypeElement[i].m_StartAnalysisStep<< "  " << m_IceTypeElement[i].m_EndAnalysisStep << "  " << m_IceTypeElement[i].m_Thickness << "\n";
 	}
 }
 
@@ -485,7 +484,13 @@ void Instance::WindEleTxT()
 void Instance::Section_Assign()
 {
 	int TotalElementSize = m_Elements_Trusses.size() + m_Elements_beams.size();
+	//考虑冰单元
+	if (m_IceTypeElement.size() > 0)
+	{
+		TotalElementSize *= 2;
+	}
 	Stream << "*Section_Assign," << TotalElementSize << " \n";
+	
 	//先杆
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
@@ -497,6 +502,14 @@ void Instance::Section_Assign()
 
 		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
 			<<m_Elements_beams[i].direction[2] << "  " << "\n";
+	}
+	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
+	if (m_IceTypeElement.size() > 0)
+	{
+		for (int i = 1; i < m_Elements_Trusses.size() + m_Elements_beams.size() + 1; i++)
+		{//冰单元编号，单元编号，冰单元类型
+			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << i << "  " << "1" << "\n";
+		}
 	}
 }
 

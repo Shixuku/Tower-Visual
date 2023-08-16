@@ -169,7 +169,7 @@ void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
 		layer.m_TypeSeptum = ui.tableWidget->item(i, 5)->text().toInt();//隔面类型
 		tp_ca.m_layerArm.push_back(layer);
 	}
-	tp_ca.m_name = ui.part_name->text();//取名称
+	tp_ca.m_Name = ui.part_name->text();//取名称
 
 	int duan= ui.combo_body->currentIndex() + 1;//哪个塔身段
 	int ceng = ui.combo_Tier->currentIndex() + 1;
@@ -187,19 +187,16 @@ void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
 void T_CrossArm::Set_combobox()
 {
 	//塔身段
-	int a= m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->childCount();//塔身段数量
+	int a = m_InterFace->TP_body.size();
 	for (int i = 0; i < a; i++)
 	{
-		QString name = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(i)->text(0);
-		ui.combo_body->addItem(name);
-	}
-	//层数
-	int m_body = 1;//默认第一个塔身段的层数
-	TowerPart_body* body = m_InterFace->TP_body.Find_Entity(m_body);
-	int tier = body->m_Tier;
-	for (int i = 0; i < tier; i++)
-	{
-		ui.combo_Tier->addItem("第" + QString::number(i + 1) + "层");
+		TowerPart_body* body = m_InterFace->TP_body.Find_Entity(i + 1);
+		ui.combo_body->addItem(body->m_Name);
+		int tier= body->m_Tier;
+		for (int j = 0; j < tier; j++)
+		{
+			ui.combo_Tier->addItem("第" + QString::number(j + 1) + "层");
+		}
 	}
 }
 

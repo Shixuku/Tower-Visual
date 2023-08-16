@@ -52,7 +52,6 @@ public:
 		LLI n = 0;
 		s >> n;//读出对象个数
 		qDebug() << n;
-
 		for (LLI i = 0; i < n; ++i)
 		{
 			enum Part_Type iType;
@@ -66,16 +65,10 @@ public:
 				Read_Stream<TowerPart_body>(s, size); break;
 			case Part_Type::ET_PartCrossArm:
 				Read_Stream<TowerPart_CrossArm>(s, size); break;
-			//case Part_Type::ET_PartInsulator:
-			//	Read_Stream<TowerPart_Insulator>(s); break;
 			case Part_Type::ET_Tower:
 				Read_Stream<Tower>(s, size); break;
-			//case Part_Type::ET_TowerWireGroup:
-			//	Read_Stream<TowerWireGroup>(s, size); break;
 			case Part_Type::ET_Section:
 				Read_Stream<Section>(s, size); break;
-			//case Part_Type::ET_LoadForce://集中力
-			//	Read_Stream<LoadForce>(s, size); break;
 
 			default:
 			{
@@ -117,7 +110,7 @@ public:
 
 	void Add_Entity(ET* pEntity)
 	{//向Map中加入一个对象指针
-		LLI idEntity = pEntity->Get_id();//加入对象的编号
+		LLI idEntity = pEntity->Get_id();//加入对象的编号--找到Base类里面的数据
 
 		auto i = this->find(idEntity);
 		if (i != this->end())

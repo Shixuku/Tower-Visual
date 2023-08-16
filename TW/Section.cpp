@@ -91,12 +91,12 @@ void Section::GetCircleIxyz()
 
 void Section::SaveTo(QDataStream& fin) const
 {
-	fin << a << b << m_id << ClassSe << ClassM << S << B_Iy << B_Iz << B_J;//Ωÿ√Ê±‡∫≈
+	fin << a << b << m_id << ClassSe << ClassM << S << B_Iy << B_Iz << B_J << m_Name;//Ωÿ√Ê±‡∫≈
 }
 
 void Section::Input(QDataStream& fin)
 {
-	fin >> a >> b >> m_id >> ClassSe >> ClassM >> S >> B_Iy >> B_Iz >> B_J;//Ωÿ√Ê±‡∫≈
+	fin >> a >> b >> m_id >> ClassSe >> ClassM >> S >> B_Iy >> B_Iz >> B_J >> m_Name;//Ωÿ√Ê±‡∫≈
 }
 
 

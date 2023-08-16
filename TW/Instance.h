@@ -14,8 +14,8 @@
 #include"S_InterFace.h"
 #include"ParameterGravity.h"
 #include"ParameterAnalysisStep.h"
-#include"ParameterIceElement.h"
 #include"ParameterStableWind.h"
+#include"ParameterIceType.h"
 class Instance :public Base
 {
 public:
@@ -72,8 +72,8 @@ public:
 	vector<LoadForce>Load;//集中力的容器
 	vector<ParameterGravity>m_Gravitys;//重力的容器
 	vector<ParameterConstraint> m_Constraint;//约束的容器
-	vector<ParameterIceElement> m_IceElement;//分析步的容器
 	vector<ParameterStableWind>m_StableWind;//稳定风的容器
+	vector<ParameterIceType> m_IceTypeElement;//冰单元类型
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力

@@ -25,6 +25,7 @@ public:
 	void G_Type3(int Tier, int pos); //隔面类型3
 	void G_Type4(int Tier, int pos); //隔面类型4
 	void G_Type5(int Tier, int pos); //隔面类型5
+	void G_Type6(int Tier, int pos); //隔面类型5
 
 	void Create_Mesh();
 
@@ -32,6 +33,6 @@ public:
 	{
 		return ET_PartBody;
 	}
-	QString m_name;
+	//QString m_name;
 };
 

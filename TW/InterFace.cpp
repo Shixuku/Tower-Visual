@@ -30,8 +30,9 @@
 #include<vtkAppendPolyData.h>
 #include "UI_Calculate.h"
 #include"ParameterIceElement.h"
-#include"Element_Ice.h"
 #include"ui_AnalysisStep.h"
+#include"Manage_Section.h"
+#include"dll.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -74,6 +75,8 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
 	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
+	connect(ui.btn_ice, &QPushButton::clicked, this, &InterFace::btn_ice);
+	connect(ui.btn_show, &QPushButton::clicked, this, &InterFace::btn_show);
 	// 创建坐标轴部件
 	Axes = vtkAxesActor::New();
 	widgetAxes = vtkOrientationMarkerWidget::New();
@@ -128,16 +131,15 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
 	AnalysisStep->setText(0, QString("分析步"));
 
-	QTreeWidgetItem* attribute = new QTreeWidgetItem(ui.treeWidget);
-	attribute->setText(0, QString("截面材料"));
+	QTreeWidgetItem* sectionMaterial = new QTreeWidgetItem(ui.treeWidget);
+	sectionMaterial->setText(0, QString("截面材料"));
 
-	QTreeWidgetItem* WIndLoad = new QTreeWidgetItem(ui.treeWidget);
-	WIndLoad->setText(0, QString("创建风载荷"));
-
-
-
-	//QTreeWidgetItem* Calculate = new QTreeWidgetItem(ui.treeWidget);
-	//Calculate->setText(0, QString("计算"));
+	QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
+	manageSection->setText(0, QString("管理"));
+	QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
+	saveSection->setText(0, QString("保存"));
+	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
+	openSection->setText(0, QString("读取"));
 
 }
 //双击树item相应事件
@@ -230,11 +232,61 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Section();
 	}
-	//风载荷
-	else if (item == ui.treeWidget->topLevelItem(6))
+	else if (item == ui.treeWidget->topLevelItem(5)->child(0))
 	{
-		ui_Wind();
+		Manage_Section* manageSection = new Manage_Section(this);
+		manageSection->show();
 	}
+	else if (item == ui.treeWidget->topLevelItem(5)->child(1))
+	{//只保存截面
+		QString str = QFileDialog::getSaveFileName(this, "保存", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
+		QFile Qf;
+		QDataStream Stream;
+		if (str != nullptr)
+		{
+			qDebug() << str;
+			Qf.setFileName(str);
+			Qf.open(QIODevice::ReadWrite);
+
+			Stream.setDevice(&Qf);
+			if (!Qf.isOpen())
+			{
+				cout << "文件打开失败！\n";
+			}
+			else
+			{
+				Ms.Save(Stream);//保存截面数据
+			}
+			Qf.close();
+		}
+	}
+	else if (item == ui.treeWidget->topLevelItem(5)->child(2))
+	{//只读取截面
+		QString str = QFileDialog::getOpenFileName(this, "打开", "/", "datafile(*.dat);;textfile(*.txt);;c file(*.cpp);;All file(*.*)");
+		QFile Qf1;
+		QDataStream Stream1;
+		if (str != nullptr)
+		{
+			qDebug() << str;
+
+			Qf1.setFileName(str);
+			Qf1.open(QIODevice::ReadWrite);
+
+			Stream1.setDevice(&Qf1);
+			if (!Qf1.isOpen())
+			{
+				cout << "文件打开失败！\n";
+			}
+			else
+			{
+				int MsSize = Ms.size();//截面
+				Ms.Read(Stream1, MsSize);
+			}
+		}
+		Qf1.close();
+		emit Msg_CreateModel();
+	}
+
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -299,7 +351,7 @@ void InterFace::ui_Body()
 		AddPartFunction(item);
 		TowerPart_body* t = new TowerPart_body;
 		T_body->Get_Data(t);
-		item->setText(0, t->m_name);
+		item->setText(0, t->m_Name);
 		m_Renderer->RemoveAllViewProps();
 		t->Item = item;
 
@@ -331,7 +383,7 @@ void InterFace::ui_CrossArm()
 		T_ca->Get_Data(*t);
 		m_Renderer->RemoveAllViewProps();
 		t->Item = item;
-		item->setText(0, t->m_name);
+		item->setText(0, t->m_Name);
 		
 		t->Create_Mesh();
 		t->m_id= parent->childCount();
@@ -373,7 +425,8 @@ void InterFace::ui_Tower()
 		m_Renderer->RemoveAllViewProps();
 
 		tw->Item = item;
-		item->setText(0, T_As->Get_name());
+		tw->m_name = T_As->Get_name();
+		item->setText(0, tw->m_name);
 		tw->m_id = TP.size() + 1;//编号
 
 		tw->Show_VTKnode(m_Renderer);
@@ -520,11 +573,37 @@ void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 
 }
 
-void InterFace::ui_Element_Ice()
+void InterFace::btn_ice()
 {
-	Element_Ice* element_Ice = new Element_Ice(this);
-	element_Ice->show();
+	QString fileName = QFileDialog::getOpenFileName(this, tr("选择输入文件"), "", tr("TXT(*.txt)"));
+	if (fileName.isEmpty())
+	{
+		qDebug() << "文件选择路径有误";
+		return;
+	}
+	run_procedure(fileName);
 }
+
+void InterFace::btn_show()
+{
+	//m_Outputter = &get_outputter();
+	//std::list<std::vector<double>> nodes;
+	//for (auto& i : ptr_nodes)
+	//{
+	//	std::vector<double> coor(3);
+	//	coor = { i->m_x,i->m_y,i->m_z };
+	//	nodes.push_back(coor);
+	//}
+	//display->refresh();
+	/*int index = ui.tableWidget->currentRow();
+	Instance* ins = nullptr;
+	ins = list_Instance[index];
+	if (!ins) return;
+	vector<Node_Base*> ptr_nodes = ins->s->GetNodes();
+
+	display->addData(ptr_nodes, ins);*/
+}
+
 
 void InterFace::SaveFile()
 {
@@ -547,11 +626,9 @@ void InterFace::SaveFile()
 			TP_leg.Save(Stream);//有多少 保存多少
 			TP_body.Save(Stream);
 			TP_CrossArm.Save(Stream);
-			//towerPartInsulator.Save(Stream);//绝缘子串
 			TP.Save(Stream);
 			Ms.Save(Stream);//保存截面数据
-			//ME_LoadForce.Save(Stream);//保存集中力数据
-			//TWG.Save(Stream);
+
 		}
 		Qf.close();
 	}
@@ -575,43 +652,32 @@ void InterFace::OpenFile()
 		}
 		else
 		{
-			int legSize = TP_leg.size();
-			int bodysize = TP_body.size();
-			int crossArmSize = TP_CrossArm.size();
-			int towerSize = TP.size();
-			//int twgsize = TWG.size();
-			int MsSize = Ms.size();
-			//int Me_LoadForce = ME_LoadForce.size();
+			int legSize = TP_leg.size();//塔腿
+			int bodysize = TP_body.size();//塔身
+			int crossArmSize = TP_CrossArm.size();//塔头
+			int towerSize = TP.size();//杆塔实例
+			int MsSize = Ms.size();//截面
 
 			TP_leg.Read(Stream1, legSize);
 			TP_body.Read(Stream1, bodysize);
 			TP_CrossArm.Read(Stream1, crossArmSize);
-			//towerPartInsulator.Read(Stream1);
 			TP.Read(Stream1, towerSize);
-			//TWG.Read(Stream1, twgsize);
-			Ms.Read(Stream1, MsSize);//打开截面数据
-			//ME_LoadForce.Read(Stream1, Me_LoadForce);//打开集中力数据
+			Ms.Read(Stream1, MsSize);
 
 			for (int i = legSize; i < TP_leg.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("读塔腿部件" + str));
-				//QString str = TP_leg.Find_Entity(i + 1)->m_Name;//名字没有换过来
-				//item->setText(0, str);
+				item->setText(0, TP_leg.Find_Entity(i + 1)->m_Name);
 				TP_leg.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
-
-				//TP_leg[i]->Item = item;
 			}
 
 			for (int i = bodysize; i < TP_body.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("读塔身部件" + str));
+				item->setText(0, TP_body.Find_Entity(i + 1)->m_Name);
 				TP_body.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
 			}
@@ -619,8 +685,7 @@ void InterFace::OpenFile()
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("读横担部件" + str));
+				item->setText(0, TP_CrossArm.Find_Entity(i + 1)->m_Name);
 				TP_CrossArm.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
 				QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
@@ -631,22 +696,10 @@ void InterFace::OpenFile()
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 				QString str = QString::number(parent->childCount());     //str转字符
-				item->setText(0, QString("读输电塔" + str));
+				item->setText(0, TP.Find_Entity(i + 1)->m_name);
 				TP.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
 			}
-			//for (int i = twgsize; i < TWG.size(); i++)
-			//{
-			//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
-			//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-			//	QString str = QString::number(parent->childCount());     //str转字符
-			//	item->setText(0, QString("读塔线组" + str));
-			//	//TWG.Find_Entity(i + 1)->Item = item;
-			//}
-
-			//for (int i = MsSize; i < Ms.size(); i++)
-			//{//Ms.Find_Entity(i + 1)直接写是空指针
-			//}
 		}
 	}
 	Qf1.close();
@@ -775,10 +828,10 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
-	for (auto& i : Part->PartNactor)
-	{
-		m_Renderer->AddActor(i);
-	}
+	//for (auto& i : Part->PartNactor)
+	//{
+	//	m_Renderer->AddActor(i);
+	//}
 
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
@@ -1289,11 +1342,6 @@ void InterFace::ui_Constraint(QTreeWidgetItem* item)
 	//显示选择的约束界面
 	Create_Constraint* con = new Create_Constraint(instance, this);
 	con->show();
-}
-void InterFace::ui_Wind()
-{
-	//wd = new Wind(this);//改了黄瞻的combobox
-	//wd->show();
 }
 
 void InterFace::ui_SingleWire()

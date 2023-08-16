@@ -55,12 +55,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>../dllAnalyse\include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\towervisual\h_dll\h_dll;D:\towervisual\h_dll;../dllAnalyse\include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <IncludePath>../dllAnalyse/include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
     <IncludePath>../dllAnalyse\include;../VTK/include/vtk-9.0;../eigen-3.4.0;$(IncludePath)</IncludePath>
-    <IncludePath>../VTK\include\vtk-9.0;../eigen-3.4.0;../dllAnalyse\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>D:\towervisual\h_dll\h_dll;../VTK\include\vtk-9.0;../eigen-3.4.0;../dllAnalyse\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -69,13 +69,13 @@
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../VTK/lib_debug/*.lib;../dllAnalyse/lib_debug/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../VTK/lib_debug/*.lib;../dllAnalyse/lib_debug/*.lib;ice3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalDependencies>../VTK/lib_release/*.lib;../dllAnalyse/lib_release/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies>../dllAnalyse/lib_release/*.lib;../VTK/lib_release/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../dllAnalyse/lib_release/*.lib;../VTK/lib_release/*.lib;ice3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -114,7 +114,6 @@
     <ClCompile Include="ConcentrateForce.cpp" />
     <ClCompile Include="CreatWire.cpp" />
     <ClCompile Include="Creat_Loads.cpp" />
-    <ClCompile Include="Element_Ice.cpp" />
     <ClCompile Include="Element_Wire.cpp" />
     <ClCompile Include="Ele_Location.cpp" />
     <ClCompile Include="Gravity.cpp" />
@@ -126,11 +125,13 @@
     <ClCompile Include="Manage_Loads.cpp" />
     <ClCompile Include="Manage_PartData.cpp" />
     <ClCompile Include="Manage_InsData.cpp" />
+    <ClCompile Include="Manage_Section.cpp" />
     <ClCompile Include="ParameterAnalysisStep.cpp" />
     <ClCompile Include="ParameterConstraint.cpp" />
     <ClCompile Include="ParameterGravity.cpp" />
     <ClCompile Include="ParameterIceElement.cpp" />
     <ClCompile Include="ParameterStableWind.cpp" />
+    <ClCompile Include="ParameterIceType.cpp" />
     <ClCompile Include="Polynomial.cpp" />
     <ClCompile Include="RandomWind.cpp" />
     <ClCompile Include="resultVisualize.cpp" />
@@ -168,7 +169,6 @@
     <QtUic Include="Calculate.ui" />
     <QtUic Include="ConcentrateForce.ui" />
     <QtUic Include="Creat_Loads.ui" />
-    <QtUic Include="Element_Ice.ui" />
     <QtUic Include="Gravity.ui" />
     <QtUic Include="Create_Constraint.ui" />
     <QtUic Include="IceLoad.ui" />
@@ -177,6 +177,7 @@
     <QtUic Include="Manage_Loads.ui" />
     <QtUic Include="Manage_PartData.ui" />
     <QtUic Include="Manage_InsData.ui" />
+    <QtUic Include="Manage_Section.ui" />
     <QtUic Include="Polynomial.ui" />
     <QtUic Include="RandomWind.ui" />
     <QtUic Include="resultVisualize.ui" />
@@ -207,12 +208,12 @@
   <ItemGroup>
     <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />
-    <QtMoc Include="Element_Ice.h" />
     <ClInclude Include="Ele_Location.h" />
     <ClInclude Include="Instance.h" />
     <QtMoc Include="resultVisualize.h" />
     <QtMoc Include="TowerCaculate.h" />
     <ClInclude Include="InteractorStyle.h" />
+    <QtMoc Include="Manage_Section.h" />
     <ClInclude Include="ParameterAnalysisStep.h" />
     <ClInclude Include="ParameterConstraint.h" />
     <ClInclude Include="ParameterGravity.h" />
@@ -220,6 +221,7 @@
     <QtMoc Include="UI_Calculate.h" />
     <QtMoc Include="Spacer.h" />
     <QtMoc Include="ui_AnalysisStep.h" />
+    <ClInclude Include="ParameterIceType.h" />
     <ClInclude Include="ParameterStableWind.h" />
     <ClInclude Include="WireData.h" />
     <QtMoc Include="Wire_InterFace.h" />

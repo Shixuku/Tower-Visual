@@ -25,6 +25,7 @@ class InterFace;
 class Part_Base :public Base
 {
 public:
+	QString m_Name;
 	int m_nodeID = 0;//节点编号
 	vector<Node> m_Nodes;//节点合集
 
@@ -48,9 +49,8 @@ public:
 	vtkSmartPointer<vtkActor> m_TrussActor;
 	std::vector<vtkSmartPointer<vtkActor>>PartNactor;//截面actor合集
 
-	//std::vector<Section>pSection;
 	std::vector<int>pSection;
-	//map<int, Section>pSection;
+
 	vtkSmartPointer<vtkActor> Node_actor;//黄瞻
 	vector<int>RestraintNode;//放入约束节点
 	vector<int>SuspensionNode;//放入挂线点的标识
@@ -83,7 +83,6 @@ public:
 	void CreatWireBeams(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成导线
 	void Creat_Beams(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成梁单元
 	void Creat_Beams1(vector<Element_Beam>& m_Elements_Beams, vector<int>ids);//生成梁单元
-
 	void Creat_Trusses(vector<Element_Truss>& m_Elements_Trusses, vector<int>ids);//生成杆单元
 	void Creat_Trusses1(vector<Element_Truss>& m_Elements_Trusses, vector<int>ids);//生成杆单元
 	void InPutRestraintNode(vector<int>ids);//将4个脚点放入单元

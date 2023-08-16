@@ -64,7 +64,7 @@ void Part_Base::Show_VTKbeam(vtkRenderer* renderer)
 	m_BeamActor->SetMapper(mapper);
 	m_BeamActor->GetProperty()->SetColor(0, 0, 0);//设置颜色(0,0,0)表示黑色
 	renderer->AddActor(m_BeamActor);
-	
+
 }
 
 void Part_Base::ShowMessage()
@@ -114,7 +114,6 @@ void Part_Base::Show_VTKnode(vtkRenderer* renderer)
 	Node_actor->GetProperty()->SetColor(255, 255, 0);
 	Node_actor->GetProperty()->SetPointSize(5);
 	renderer->AddActor(Node_actor);
-
 }
 
 
@@ -394,7 +393,16 @@ void Part_Base::SaveTo(QDataStream& fin) const//写
 	{
 		fin << SuspensionNode[i];
 	}
-
+	fin << m_Name;
+	//约束点--暂时没有用
+	int nRestraintNode = RestraintNode.size();
+	cout << nRestraintNode << "\n";
+	fin << nRestraintNode;
+	for (int i = 0; i < nRestraintNode; i++)
+	{
+		fin << RestraintNode[i];
+		//cout << RestraintNode[i] << "\n";
+	}
 }
 
 void Part_Base::Input(QDataStream& fin)
@@ -429,6 +437,15 @@ void Part_Base::Input(QDataStream& fin)
 	for (int i = 0; i < nSuspension; ++i)
 	{
 		fin >> SuspensionNode[i];
+	}
+	fin >> m_Name;//部件名称
+	//约束
+	int nRestraintNode;
+	fin >> nRestraintNode;
+	RestraintNode.resize(nRestraintNode);
+	for (int i = 0; i < nRestraintNode; i++)
+	{
+		fin >> RestraintNode[i];
 	}
 
 }

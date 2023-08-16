@@ -27,12 +27,12 @@ void Manage_InsData::Set_headertext()
 	
 	ui.tableWidget->setRowCount(T_tower);//设置行数
 
-	QVector<Tower*> ve_tower;//!
-	m_InterFace->TP.Get_Array(ve_tower, true);//!
+	QVector<Tower*> ve_tower;
+	m_InterFace->TP.Get_Array(ve_tower, true);
 
 	for (int i = 0; i < T_tower; i++)
 	{
-		Tower* tower = ve_tower[i];//!
+		Tower* tower = ve_tower[i];
 		//设置名称//设置节点单元数量
 		int E_num = tower->m_Elements_beams.size() + tower->m_Elements_Trusses.size();
 		QString name = m_InterFace->ui.treeWidget->topLevelItem(1)->child(i)->text(0);

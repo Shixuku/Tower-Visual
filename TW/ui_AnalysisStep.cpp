@@ -7,9 +7,9 @@ ui_AnalysisStep::ui_AnalysisStep(InterFace* m_Interface, QWidget *parent)
 {
 	ui.setupUi(this);
 	m_pInterFace = m_Interface;
-
+	int size = m_pInterFace->ME_AnalysisSteps.size();
 	Initialization();
-	ui.line_name->setText("分析步 " + QString::number(m_pInterFace->ME_AnalysisSteps.size() + 1));
+	ui.line_name->setText("分析步 " + QString::number(size + 1));
 	ui.line_zxrxz->setText("1e-5");
 	ui.line_zdddcs->setText("16");
 

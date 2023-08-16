@@ -27,7 +27,7 @@ public:
 		return ET_PartLeg;
 	}
 
-	QString m_Name;
+	//QString m_Name;
 
 };
 

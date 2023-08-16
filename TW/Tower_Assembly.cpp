@@ -14,7 +14,7 @@ Tower_Assembly::Tower_Assembly(InterFace* InterFace, QWidget* parent)
     connect(ui.cancel_btn, &QPushButton::clicked, this, &Tower_Assembly::reject);
 
     //初始化
-    int T_towers = m_InterFace->ui.treeWidget->topLevelItem(1)->childCount() + 1;//塔腿数量
+    int T_towers = m_InterFace->TP.size() + 1;;//塔腿数量
     QString str("杆塔实例-");
     str += QString::number(T_towers);     //str转字符
     ui.line_name->setText(str);//设置初始值
@@ -38,13 +38,13 @@ void Tower_Assembly::Create_combobox()
 
     for (int i = 0; i < T_bodys; i++)
     {
-        QString name = m_InterFace->TP_body.Find_Entity(i + 1)->m_name;
+        QString name = m_InterFace->TP_body.Find_Entity(i + 1)->m_Name;
         ui.combo_body->addItem(name);
     }
 
     for (int i = 0; i < T_heads; i++)
     {
-        QString name = m_InterFace->TP_CrossArm.Find_Entity(i + 1)->m_name;
+        QString name = m_InterFace->TP_CrossArm.Find_Entity(i + 1)->m_Name;
         ui.combo_head->addItem(name);
     }
 
@@ -106,7 +106,7 @@ void Tower_Assembly::Get_PartData()
         {
             if (m_InterFace->TP_body.Find_Entity(i)->m_Elements_beams[j].ClassSectionID == 0)
             {
-                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_body.Find_Entity(i)->m_name + "赋截面！");
+                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_body.Find_Entity(i)->m_Name + "赋截面！");
                 msg_error = true;
                 return;
             }
@@ -115,7 +115,7 @@ void Tower_Assembly::Get_PartData()
         {
             if (m_InterFace->TP_body.Find_Entity(i)->m_Elements_Trusses[j].ClassSectionID == 0)
             {
-                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_body.Find_Entity(i)->m_name + "赋截面！");
+                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_body.Find_Entity(i)->m_Name + "赋截面！");
                 msg_error = true;
                 return;
             }
@@ -130,7 +130,7 @@ void Tower_Assembly::Get_PartData()
         {
             if (m_InterFace->TP_CrossArm.Find_Entity(i)->m_Elements_beams[j].ClassSectionID == 0)
             {
-                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_CrossArm.Find_Entity(i)->m_name + "赋截面！");
+                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_CrossArm.Find_Entity(i)->m_Name + "赋截面！");
                 msg_error = true;
                 return;
             }
@@ -139,7 +139,7 @@ void Tower_Assembly::Get_PartData()
         {
             if (m_InterFace->TP_CrossArm.Find_Entity(i)->m_Elements_Trusses[j].ClassSectionID == 0)
             {
-                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_CrossArm.Find_Entity(i)->m_name + "赋截面！");
+                QMessageBox::information(this, "Tips", "请给" + m_InterFace->TP_CrossArm.Find_Entity(i)->m_Name + "赋截面！");
                 msg_error = true;
                 return;
             }

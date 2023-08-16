@@ -21,9 +21,11 @@ Set_Section::Set_Section(InterFace* InterFace,QWidget *parent): QDialog(parent)
 	ui.label_2->resize(img->width(), img->height());
 	ui.label_2->setPixmap(QPixmap::fromImage(*img));
 	ui.LEdit_a->setText("0.200");
-	ui.LEdit_b->setText("0.020");
+	ui.LEdit_b->setText("0.008");
 	ui.line_name->setText("Section-" + QString::number(m_pInterFace->Ms.size() + 1));
 	ui.label_type->setText("a(m)：");
+	ui.comboBox->setCurrentIndex(1);//设置combobox初始index
+	ui.comboBox_2->setCurrentIndex(1);//设置combobox初始index
 }
 
 
