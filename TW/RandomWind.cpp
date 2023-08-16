@@ -83,6 +83,14 @@ void RandomWind::SimulateWind()
 	//}
 	CreatSegment();
 	//
+	//if (fw) delete fw;  //·ÀÖ¹ÄÚ´æĞ¹Â¶
+	////fw = new Force_Wind;
+	//
+	//fw = new Force_Wind(1.29, wd->alf, z0, v10, N, M, w_up, T);
+	//fw->set_FilePath(QString("D:/"));
+	//fw->input_node(points);
+	//fw->simulate();
+	
 	
 	if (fw) delete fw;  //·ÀÖ¹ÄÚ´æĞ¹Â¶
 	//fw = new Force_Wind;

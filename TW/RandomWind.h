@@ -73,6 +73,7 @@ public slots:
 private:
 	Ui::RandomWindClass ui;
 
+	//Force_Wind* fw = nullptr;
 	Force_Wind* fw = nullptr;
-	
+
 };
