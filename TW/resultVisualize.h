@@ -74,23 +74,10 @@ public slots:
 private:
 	Ui::resultVisualizeClass ui;
 
-	std::map<int, vector<Outputter>> stepData; //int分析步号，vector<Outputter>每一帧数据
-
-	vector<Outputter>* outputData = nullptr;//当前选择分析步的数据指针
+	Outputter* m_Outputter = nullptr;
 
 	void getBoundary();
 	double boundary = 0; //模型边界大小
 
-
-	int currentType; //当前云图类型
-
-	enum class nephogramType : int {
-		DisplaymentX = 0,
-		DisplaymentY = 1,
-		DisplaymentZ = 2,
-		StressN = 3,
-		StressM1 = 4,
-		StressM2 = 5,
-		StressM3 = 6
-	};
+	DataType currentType;
 };

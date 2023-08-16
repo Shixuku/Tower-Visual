@@ -52,9 +52,15 @@ public:
 	map<int, Element_Beam>BeamData;
 	map<int, Element_Truss>TrussData;
 	map<int, Section>SectionData;
+	map<int, vector<int>>m_EleWind;//存放风区单元集
 	vector<int>susPoint;
 	vector<int>realSuspoint;
 	int Truss_elementsID = 0;
+	int TypeWind = 0;//风的类型
+	int Splits= 0;//导线分裂数
+	double WindCoefficient = 0;//风荷载系数
+	double areaWire = 0;
+	QString LandformsType;//地貌类型
 	QTreeWidgetItem* Item = nullptr;
     int Creat_Node(double x, double y, double z);//生成点
     void SaveSus(vector<int>ids);//保存悬挂点的id
@@ -82,12 +88,13 @@ public:
 	void AnalysisStepTxT();//分析步
 	void ConcentrationTxT();//集中力
 	void GravityTxT();//重力
-	void StableWindTxt();//稳定风载荷
+	void WindTxT();//稳定风载荷
 	void IceLoadTxT();
 	void RestraintTxT();//约束
 	void MaterialTxT();//材料
 	void BeamSectionTxT();//梁截面信息
 	void TrussSectionTxT();//杆截面信息
+	void WindEleTxT();
 	void Suspensioncombined();//悬挂点排序
 	vector<std::pair<int, int>> combined;
 	//画约束

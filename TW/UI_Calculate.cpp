@@ -53,13 +53,13 @@ void Instance_Calculate::on_btn_import_clicked()
 	m_ins->s = GetStructure();//生成structure类对象
 	m_ins->s->Input_Standard(str);
 
-	//坐标系转换
-	m_ins->s->TransCoordinateSystem();
-
 	//将点和线添加到界面
 	m_ins->s->transToNodeBase(m_Nodes);
 	m_ins->s->transToElementBase(m_LineElements);
 
+
+	//坐标系转换
+	m_ins->s->TransCoordinateSystem();
 	emit msg_CreateModel();
 
 	//过滤无效数据
@@ -73,7 +73,7 @@ void Instance_Calculate::on_btn_import_clicked()
 	start = clock();
 	m_ins->s->execute_Stepping();//计算
 	end = clock();
-	//int Totalit = ins->s->getTotalIterations();
+	int Totalit = m_ins->s->getTotalIterations();
 	//qDebug() << "总迭代次数： " << Totalit;
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
@@ -117,7 +117,7 @@ void Instance_Calculate::on_btk_ok_clicked()
 	start = clock();
 	ins->s->execute_Stepping();//计算
 	end = clock();
-	//int Totalit = ins->s->getTotalIterations();
+	int Totalit = ins->s->getTotalIterations();
 	//qDebug() << "总迭代次数： " << Totalit;
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";

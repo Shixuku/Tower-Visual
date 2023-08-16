@@ -291,6 +291,8 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 
 void TowerWireGroup::AddAxialForceToInsulator(CreatWire* wire)
 {
+	Splits = wire->fenlie;
+	areaWire = wire->area;
 	//暂时只考虑悬垂型（加入塔线组合需修改）
 	for (int i = 0; i < this->SuspensionElementClass.size(); i++)
 	{

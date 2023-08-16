@@ -307,7 +307,7 @@ void Instance::CreateOutPut()
 		//1（多项式函数数量）
 		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
 		//Stream << 0 << "\n";//多项式函数暂时为空
-		StableWindTxt();//风载荷
+		WindTxT();//风载荷
 		//边界条件
 		RestraintTxT();
 		//add冰单元类别
@@ -317,6 +317,10 @@ void Instance::CreateOutPut()
 		BeamSectionTxT();//梁截面数据
 		Section_Assign();//单元指派
 		Axial_force();//初始轴力
+		if (TypeWind == 1)
+		{
+			WindEleTxT();//风区单元集
+		}
 		// 关闭文件
 		Qf.close();
 	}
@@ -392,13 +396,25 @@ void Instance::GravityTxT()
 	}
 }
 
-void Instance::StableWindTxt()
+void Instance::WindTxT()
 {
 	int StableWindSize = m_StableWind.size();
 	Stream << "*Force_Wind," << StableWindSize << "\n";//风载荷
-	for (int i = 0; i < StableWindSize; i++)
-	{	//1 0 - 9.8(编号 方向012-xyz 大小)
-		Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  " << m_StableWind[i].m_a << "  " << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_v << "\n";
+	if (TypeWind == 0)
+	{
+		for (int i = 0; i < StableWindSize; i++)
+		{	//1 0 - 9.8(编号 方向012-xyz 大小)
+			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  "  << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_v << "  " 
+				<< m_StableWind[i].m_splitCount << "  " << m_StableWind[i].m_alf_select << "  " << m_StableWind[i].m_coeff << "\n";
+		}
+	}
+	else
+	{
+		for (int i = 0; i < StableWindSize; i++)
+		{	//1 0 - 9.8(编号 方向012-xyz 大小)
+			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  "  << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_fileName
+				<< "  " << m_StableWind[i].m_splitCount << "  " << m_StableWind[i].m_alf_select << "  " << m_StableWind[i].m_coeff << "\n";
+		}
 	}
 }
 
@@ -446,6 +462,23 @@ void Instance::TrussSectionTxT()
 	for (auto& i : pInterFace->Ms)
 	{//**截面的编号，材料号，面积
 		Stream << "   " << i.second->m_id << "  " << i.second->ClassM << "  " << i.second->S << "\n";
+	}
+}
+
+void Instance::WindEleTxT()
+{
+	int TotalWindEle = m_EleWind.size();
+	//Stream << "*Elset," << TotalWindEle << " \n";
+	for (const auto& windEle : m_EleWind)
+	{
+		int segmentIndex = windEle.first;//风区
+		const std::vector<int>& eleIds = windEle.second;//单元集合
+		Stream << "*Elset,"  << segmentIndex << " \n ";
+		for (int eleId : eleIds)
+		{
+			Stream << eleId << "  ";
+		}
+		Stream << "\n";
 	}
 }
 

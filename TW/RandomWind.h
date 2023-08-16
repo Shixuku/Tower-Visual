@@ -12,6 +12,8 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include"Ele_Location.h"
+#include"Instance.h"
+#include <Force_Wind.h>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -19,7 +21,7 @@ class InterFace;
 //class Force_Wind;
 class Wind;
 
-class RandomWind : public QDialog
+class RandomWind : public QDialog 
 {
 	Q_OBJECT
 
@@ -39,7 +41,8 @@ public:
 	QValueAxis* axisX = nullptr;
 	QValueAxis* axisY = nullptr;
 	Wind* wd = nullptr;
-	TowerWireGroup* R_pcreatWire = nullptr;
+	//std::unique_ptr<Instance> ins;
+	//TowerWireGroup* R_pcreatWire = nullptr;
 	//m_pair(1.29), alf(0.16), z0(0.03), v10(30) int N, int M, double w_up, double T
 	double z0;//地表粗糙长度
 	double v10;//十米高10分钟平均速度
@@ -60,13 +63,17 @@ public:
 	void CreatEleGather();
 	void ComputeEleCoordinate();//计算每个单元的等效坐标
 	std::vector<Ele_Location>m_EleLocation;
-	std::map<int, int>m_EleWind;
+	//std::map<int, int>m_EleWind;//存放风区单元集
 
 public slots:
 	void ShowPic(int index);//显示随机风的曲线图
+
+	void setFileName();
 
 private:
 	Ui::RandomWindClass ui;
 
 	//Force_Wind* fw = nullptr;
+	Force_Wind* fw = nullptr;
+
 };

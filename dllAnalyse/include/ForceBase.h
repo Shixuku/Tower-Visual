@@ -10,6 +10,7 @@ class ForceBase :
 {
 public:
 	int idStep; //分析步号
+	int m_direction;
 	bool overTime = false; //是否随时间变化
 
 	virtual void Input(QDataStream& fin) = 0;
