@@ -134,27 +134,6 @@ double TowerData_CrossArm::Get_layerHi(int type, int i)
 	return Hi;
 }
 
-
-//double TowerData_CrossArm::Get_m_bodyButtomL()
-//{
-//	m_bodyButtomL = m_databodyTier->Get_LayerL(m_bodyTier - 1);
-//	return m_bodyButtomL;
-//}
-//double TowerData_CrossArm::Get_m_bodyUpL()
-//{
-//	m_bodyUpL= m_databodyTier->Get_LayerL(m_bodyTier);
-//	return m_bodyUpL;
-//}
-//double TowerData_CrossArm::Get_m_bodyButtomH()
-//{
-//	m_bodyButtomH = m_databodyTier->Get_LayerH(m_bodyTier - 1);
-//	return m_bodyButtomH;
-//}
-//double TowerData_CrossArm::Get_m_bodyUpH()
-//{
-//	m_bodyUpH = m_databodyTier->Get_LayerH(m_bodyTier);
-//	return m_bodyUpH;
-//}
 void TowerData_CrossArm::addInsulator(TowerPart_Insulator* insulator)
 {
 	addInsulatorNode(insulator);
@@ -201,7 +180,6 @@ void TowerData_CrossArm::addInsulatorNode(TowerPart_Insulator* insulator)
 				this->m_Nodes.push_back(insulator->m_Nodes[i]);
 				size_t total = this->m_Nodes.size() - 1;//
 				this->m_Nodes[total].m_idNode = total + 1;
-				//part-tower 节点对应关系
 				insulator->part_to_tower.push_back(total + 1);
 			}
 

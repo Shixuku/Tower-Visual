@@ -150,8 +150,7 @@ public slots:
     void ui_TowerWireGroup();
 
     void ui_SingleWireSpacer(QTreeWidgetItem* item);
-    void btn_ice();
-    void btn_show();
+
 private:
     Outputter* m_Outputter=nullptr;
     resultVisualize* display=nullptr;

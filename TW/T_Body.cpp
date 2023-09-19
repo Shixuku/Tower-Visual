@@ -64,7 +64,7 @@ void T_Body::Set_headertext()
 void T_Body::Set_No1_picture()
 {
 	QImage* img = new QImage;
-	img->load("./tuiup1.png");
+	img->load("./shen1.png");
 	ui.label_b->resize(img->width(), img->height());
 	ui.label_b->setPixmap(QPixmap::fromImage(*img));
 
@@ -219,34 +219,43 @@ void T_Body::Change_Picture_body()
 	switch (Index)
 	{
 	case 0:
-		img->load("./tuiup1.png");
-		break;
-	case 1:
-		img->load("./tuiup2.png");
-		break;
-	case 2:
-		img->load("./tuiup3.png");
-		break;
-	case 3:
 		img->load("./shen1.png");
 		break;
-	case 4:
+	case 1:
 		img->load("./shen2.png");
 		break;
-	case 5:
+	case 2:
 		img->load("./shen3.png");
 		break;
-	case 6:
+	case 3:
 		img->load("./shen4.png");
 		break;
-	case 7:
+	case 4:
 		img->load("./shen5.png");
 		break;
-	case 8:
+	case 5:
 		img->load("./shen6.png");
 		break;
-	case 9:
+	case 6:
 		img->load("./shen7.png");
+		break;
+	case 7:
+		img->load("./shen8.png");
+		break;
+	case 8:
+		img->load("./shen9.png");
+		break;
+	case 9:
+		img->load("./shen10.png");
+		break;
+	case 10:
+		img->load("./shen11.png");
+		break;
+	case 11:
+		img->load("./shen12.png");
+		break;
+	case 12:
+		img->load("./shen13.png");
 		break;
 	}
 	ui.label_b->resize(img->width(), img->height());

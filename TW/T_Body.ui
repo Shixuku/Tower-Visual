@@ -206,6 +206,21 @@
               <string>类型10</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>类型11</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>类型12</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>类型13</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

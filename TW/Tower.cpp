@@ -45,9 +45,9 @@ void Tower::addPart(Part_Base* part)
 	part->part_to_tower.clear();
 }
 
-void Tower::Check()
+void Tower::Check_Beam()
 {
-	for (vector<Element>::iterator it = m_Elements.begin(); it != m_Elements.end(); ++it)
+	for (vector<Element_Beam>::iterator it = m_Elements_beams.begin(); it != m_Elements_beams.end(); ++it)
 	{
 		Node* n1 = FindNode(it->m_idNode[0]);
 		Node* n2 = FindNode(it->m_idNode[1]);
@@ -71,15 +71,12 @@ void Tower::Check()
 			{//点在线段内
 				it->m_idNode[0] = j.m_idNode;
 				it->m_idNode[1] = n1->m_idNode;
-				//cout << "修改了一个单元\n";
-
-				int num = m_Elements.size();
-				m_Elements.push_back(Element(num + 1, j.m_idNode, n2->m_idNode));
+				int num = m_Elements_beams.size() + m_Elements_Trusses.size();
+				m_Elements_beams.push_back(Element_Beam(num + 1, j.m_idNode, n2->m_idNode, it->ClassSectionID, it->direction, 1));
 
 			}
 		}
 	}
-
 }
 
 Node* Tower::FindNode(int id)
@@ -455,7 +452,6 @@ void Tower::addElementToTower(Part_Base* part)
 void Tower::addRestraintNode(Part_Base* part)
 {
 	size_t ResNode = part->RestraintNode.size();
-	cout << "ResNode= " << ResNode << "\n";
 	for (int i = 0; i < ResNode; i++)
 	{
 		this->RestraintNode.push_back(part->RestraintNode[i]);

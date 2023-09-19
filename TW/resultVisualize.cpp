@@ -69,94 +69,143 @@ void resultVisualize::showOriginalActor(bool flag)
 
 void resultVisualize::getBoundary()
 {
-	//double max_x = 0;
-	//double min_x = 0;
-	//double max_y = 0;
-	//double min_y = 0;
-	//double max_z = 0;
-	//double min_z = 0;
-	//for (auto& i : m_nodes)
-	//{
-	//	if (max_x < i.x) max_x = i.m_x;
-	//	if (min_x > i.m_x) min_x = i.m_x;
-
-	//	if (max_y < i.m_y) max_y = i->m_y;
-	//	if (min_y > i->m_y) min_y = i->m_y;
-
-	//	if (max_z < i->m_z) max_z = i->m_z;
-	//	if (min_z > i->m_z) min_z = i->m_z;
-	//}
-	//if (boundary < (max_x - min_x)) boundary = max_x - min_x;
-	//if (boundary < (max_y - min_y)) boundary = max_y - min_y;
-	//if (boundary < (max_z - min_z)) boundary = max_z - min_z;
+	double max_x = 0;
+	double min_x = 0;
+	double max_y = 0;
+	double min_y = 0;
+	double max_z = 0;
+	double min_z = 0;
+	for (auto& i : m_nodes)
+	{
+		if (max_x < i.x) max_x = i.x;
+		if (min_x > i.x) min_x = i.x;
+		if (max_y < i.y) max_y = i.y;
+		if (min_y > i.y) min_y = i.y;
+		if (max_z < i.z) max_z = i.z;
+		if (min_z > i.z) min_z = i.z;
+	}
+	if (boundary < (max_x - min_x)) boundary = max_x - min_x;
+	if (boundary < (max_y - min_y)) boundary = max_y - min_y;
+	if (boundary < (max_z - min_z)) boundary = max_z - min_z;
 }
 
 void resultVisualize::update()
 {
-	if (m_frames >= m_Outputter->dataSet.size())
+	if (m_Outputter != nullptr)
 	{
-		if (loopPlay) emit animationFinished();
-		return;
-	}
-	double ampFactor = ui.lineEdit->text().toDouble();//放大因子
-
-	vtkIdType pointsNum = m_nodes.size();
-
-	DataFrame* iframe = m_Outputter->dataSet[m_frames];
-	//修改点的坐标
-	for (auto& i : iframe->nodeDatas)
-	{
-		int pointIndex = i.first - 1;
-		NodeData& node = i.second;
-		double* p = m_originalPoints->GetPoint(pointIndex);
-		m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
-
-		//添加云图数据
-		switch (currentType)
+		if (m_frames >= m_Outputter->dataSet.size())
 		{
-		case DataType::U1:
-			scalars->SetValue(pointIndex, node.displaymentZ);
-			break;
-		case DataType::U2:
-			scalars->SetValue(pointIndex, node.displaymentX);
-			break;
-		case DataType::U3:
-			scalars->SetValue(pointIndex, node.displaymentY);
-			break;
-		case DataType::UR1:
-			scalars->SetValue(pointIndex, node.rotationZ);
-			break;
-		case DataType::UR2:
-			scalars->SetValue(pointIndex, node.rotationX);
-			break;
-		case DataType::UR3:
-			scalars->SetValue(pointIndex, node.rotationY);
-			break;
-		case DataType::N:
-			scalars->SetValue(pointIndex, node.stressN);
-			break;
-		case DataType::M2:
-			scalars->SetValue(pointIndex, node.stressM2);
-			break;
-		case DataType::M3:
-			scalars->SetValue(pointIndex, node.stressM3);
-			break;
-		case DataType::Mises:
-			scalars->SetValue(pointIndex, node.mises);
-			break;
-		default:
-			break;
+			if (loopPlay) emit animationFinished();
+			return;
 		}
+		double ampFactor = ui.lineEdit->text().toDouble();//放大因子
 
+		vtkIdType pointsNum = m_nodes.size();
+
+		DataFrame* iframe = m_Outputter->dataSet[m_frames];
+		//修改点的坐标
+		for (auto& i : iframe->nodeDatas)
+		{
+			int pointIndex = i.first - 1;
+			NodeData& node = i.second;
+			double* p = m_originalPoints->GetPoint(pointIndex);
+			m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
+
+			//添加云图数据
+			switch (currentType)
+			{
+			case DataType::U1:
+				scalars->SetValue(pointIndex, node.displaymentZ);
+				break;
+			case DataType::U2:
+				scalars->SetValue(pointIndex, node.displaymentX);
+				break;
+			case DataType::U3:
+				scalars->SetValue(pointIndex, node.displaymentY);
+				break;
+			case DataType::UR1:
+				scalars->SetValue(pointIndex, node.rotationZ);
+				break;
+			case DataType::UR2:
+				scalars->SetValue(pointIndex, node.rotationX);
+				break;
+			case DataType::UR3:
+				scalars->SetValue(pointIndex, node.rotationY);
+				break;
+			case DataType::N:
+				scalars->SetValue(pointIndex, node.stressN);
+				break;
+			case DataType::M2:
+				scalars->SetValue(pointIndex, node.stressM2);
+				break;
+			case DataType::M3:
+				scalars->SetValue(pointIndex, node.stressM3);
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
+	if (m_Outputter_ice != nullptr)
+	{
+		if (m_frames >= m_Outputter_ice->dataSet.size())
+		{
+			if (loopPlay) emit animationFinished();
+			return;
+		}
+		double ampFactor = ui.lineEdit->text().toDouble();//放大因子
+
+		vtkIdType pointsNum = m_nodes.size();
+
+		DataFrame_ice* iframe = m_Outputter_ice->dataSet[m_frames];
+		//修改点的坐标
+		for (auto& i : iframe->nodeDatas)
+		{
+			int pointIndex = i.first - 1;
+			NodeData_ice& node = i.second;
+			double* p = m_originalPoints->GetPoint(pointIndex);
+			m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
+
+			//添加云图数据
+			switch (currentType_ice)
+			{
+			case DataType_ice::U1:
+				scalars->SetValue(pointIndex, node.displaymentZ);
+				break;
+			case DataType_ice::U2:
+				scalars->SetValue(pointIndex, node.displaymentX);
+				break;
+			case DataType_ice::U3:
+				scalars->SetValue(pointIndex, node.displaymentY);
+				break;
+			case DataType_ice::UR1:
+				scalars->SetValue(pointIndex, node.rotationZ);
+				break;
+			case DataType_ice::UR2:
+				scalars->SetValue(pointIndex, node.rotationX);
+				break;
+			case DataType_ice::UR3:
+				scalars->SetValue(pointIndex, node.rotationY);
+				break;
+			case DataType_ice::N:
+				scalars->SetValue(pointIndex, node.stressN);
+				break;
+			case DataType_ice::M2:
+				scalars->SetValue(pointIndex, node.stressM2);
+				break;
+			case DataType_ice::M3:
+				scalars->SetValue(pointIndex, node.stressM3);
+				break;
+			default:
+				break;
+			}
+
+		}
 	}
 	m_frames++;//帧++
 	ui.label_frame->setText(QString::number(m_frames));//帧
-	//ui.label_time->setText(QString::number(m_frames*0.05));//帧
-
-	//更新vtkActor和vtkPolyData的数据
 	m_points->Modified();
-	//scalars->Modified();
-
 	pCAE->m_renderWindow->Render();
 }
 
@@ -192,35 +241,43 @@ void resultVisualize::quit()
 
 void resultVisualize::autoFactor(bool flag)
 {
-	//if (!flag) return;
-	//double max_disp = 0;
-	//for (auto& i : *outputData)
-	//{
-	//	double max_dx = i.getBoundaryDisplaymentX()[1];
-	//	if (max_disp < max_dx) max_disp = max_dx;
-	//	double max_dy = i.getBoundaryDisplaymentY()[1];
-	//	if (max_disp < max_dy) max_disp = max_dy;
-	//	double max_dz = i.getBoundaryDisplaymentZ()[1];
-	//	if (max_disp < max_dz) max_disp = max_dz;
-	//}
-	//double ampFator = boundary / max_disp / 10;
-	//ui.lineEdit->setText(QString::number(ampFator));
-	if (!flag) return;
+	if (m_Outputter != nullptr)
+	{
+		if (!flag) return;
 
-	double max_disp = 0;
+		double max_disp = 0;
 
-	double max_dx = m_Outputter->getBoundaryDisplaymentX()[1];
-	if (max_disp < max_dx) max_disp = max_dx;
+		double max_dx = m_Outputter->getBoundaryDisplaymentX()[1];
+		if (max_disp < max_dx) max_disp = max_dx;
 
-	double max_dy = m_Outputter->getBoundaryDisplaymentY()[1];
-	if (max_disp < max_dy) max_disp = max_dy;
+		double max_dy = m_Outputter->getBoundaryDisplaymentY()[1];
+		if (max_disp < max_dy) max_disp = max_dy;
 
-	double max_dz = m_Outputter->getBoundaryDisplaymentZ()[1];
-	if (max_disp < max_dz) max_disp = max_dz;
+		double max_dz = m_Outputter->getBoundaryDisplaymentZ()[1];
+		if (max_disp < max_dz) max_disp = max_dz;
 
-	double ampFator = boundary / max_disp / 10;
+		double ampFator = boundary / max_disp / 10;
+		ui.lineEdit->setText(QString::number(ampFator));
+	}
+	if (m_Outputter_ice != nullptr)
+	{
+		if (!flag) return;
 
-	ui.lineEdit->setText(QString::number(ampFator));
+		double max_disp = 0;
+
+		double max_dx = m_Outputter_ice->getBoundaryDisplaymentX()[1];
+		if (max_disp < max_dx) max_disp = max_dx;
+
+		double max_dy = m_Outputter_ice->getBoundaryDisplaymentY()[1];
+		if (max_disp < max_dy) max_disp = max_dy;
+
+		double max_dz = m_Outputter_ice->getBoundaryDisplaymentZ()[1];
+		if (max_disp < max_dz) max_disp = max_dz;
+
+		double ampFator = boundary / max_disp / 10;
+		ui.lineEdit->setText(QString::number(ampFator));
+	}
+
 }
 
 void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* ins)
@@ -236,10 +293,12 @@ void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* i
 
 	//添加分析步结果数据
 	int stepnum = ins->s->getTotalSteps();
+
 	//分析步boundary
 	for (int i = 1; i <= stepnum; ++i)
 	{
 		ins->s->get_outputter(i).FindBoundary();
+
 	}
 
 	if (stepnum == ui.comboBox_step->count()) return;
@@ -250,6 +309,24 @@ void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* i
 	{
 		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
 	}
+	pCAE->m_Renderer->ResetCamera();
+}
+
+void resultVisualize::addData_ice(std::list<std::vector<double>>& nodes, Instance* ins)
+{//刷新数据（主界面数据变化后）
+	m_ins = ins;
+	assert(m_ins);
+
+	for (auto& i : nodes)
+	{
+		m_nodes.push_back(Node(0., i[0], i[1], i[2], 0.));
+	}
+	addActorData();//添加主界面数据(copy)
+
+	getBoundary();
+	//分析步boundary
+	m_Outputter_ice = &m_ins->s_ice->get_outputter(1);
+	m_ins->s_ice->get_outputter(1).FindBoundary();
 	pCAE->m_Renderer->ResetCamera();
 }
 
@@ -292,11 +369,8 @@ void resultVisualize::addActorData()
 		scalars->SetValue(i, 0);
 	}
 
-	//create the visualized line
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	//点数据(pt)所定义的一系列点构成数据集(vtkDataSet)的几何结构
 	linesPolyData->SetPoints(m_points);
-	//点数据的连接形式(lines)形成的单元数据(cell Data)构成数据集拓扑结构
 	linesPolyData->SetLines(lines);
 	linesPolyData->GetPointData()->SetScalars(scalars);
 
@@ -304,7 +378,6 @@ void resultVisualize::addActorData()
 	linesmapper->SetInputData(linesPolyData);
 	linesmapper->ScalarVisibilityOn();
 	linesmapper->SetScalarModeToUsePointData();
-	//color_mapper->SetColorModeToMapScalars();
 	linesmapper->SetScalarRange(0, 1);
 
 	m_vtklines = vtkSmartPointer<vtkActor>::New();
@@ -316,9 +389,6 @@ void resultVisualize::addActorData()
 	scalarBar->SetTitle("U1");
 	scalarBar->SetNumberOfLabels(16);
 	scalarBar->SetMaximumNumberOfColors(8);
-
-	//scalarBar->SetWidth(0.07);  // 设置标量条的宽度为0.1（百分比，相对于渲染窗口的宽度）
-	//scalarBar->SetHeight(0.8); // 设置标量条的高度为0.8（百分比，相对于渲染窗口的高度）
 
 	pCAE->m_Renderer->AddActor(m_vtkNodes);
 	pCAE->m_Renderer->AddActor(m_vtklines);
@@ -338,77 +408,132 @@ void resultVisualize::removeActor()
 
 void resultVisualize::setNephogramType(int iTpye)
 {
-	currentType = static_cast<DataType>(iTpye);
-
-	//qDebug() << "云图类型：" << currentType;
-
-	//setBoundary
 	vector<double> boundary(2);
-
-	switch (currentType)
+	if (m_Outputter != nullptr)
 	{
-	case DataType::U1:
-		boundary = m_Outputter->getBoundaryDisplaymentZ();
-		scalarBar->SetTitle("U1");
-		break;
-	case DataType::U2:
-		boundary = m_Outputter->getBoundaryDisplaymentX();
-		scalarBar->SetTitle("U2");
-		break;
-	case DataType::U3:
-		boundary = m_Outputter->getBoundaryDisplaymentY();
-		scalarBar->SetTitle("U3");
-		break;
-	case DataType::UR1:
-		boundary = m_Outputter->getBoundaryRotationZ();
-		scalarBar->SetTitle("UR1");
-		break;
-	case DataType::UR2:
-		boundary = m_Outputter->getBoundaryRotationX();
-		scalarBar->SetTitle("UR2");
-		break;
-	case DataType::UR3:
-		boundary = m_Outputter->getBoundaryRotationY();
-		scalarBar->SetTitle("UR3");
-		break;
-	case DataType::N:
-		boundary = m_Outputter->getBoundaryStressN();
-		scalarBar->SetTitle("StressN");
-		break;
-	case DataType::M2:
-		boundary = m_Outputter->getBoundaryStressM2();
-		scalarBar->SetTitle("StressM2");
-		break;
-	case DataType::M3:
-		boundary = m_Outputter->getBoundaryStressM3();
-		scalarBar->SetTitle("StressM3");
-		break;
-	case DataType::Mises:
-		boundary = m_Outputter->getBoundaryMises();
-		scalarBar->SetTitle("Mises");
-		break;
-	default:
-		qDebug() << "未知云图类型！";
-		break;
-	}
-	qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+		currentType = static_cast<DataType>(iTpye);
 
+		switch (currentType)
+		{
+		case DataType::U1:
+			boundary = m_Outputter->getBoundaryDisplaymentZ();
+			scalarBar->SetTitle("U1");
+			break;
+		case DataType::U2:
+			boundary = m_Outputter->getBoundaryDisplaymentX();
+			scalarBar->SetTitle("U2");
+			break;
+		case DataType::U3:
+			boundary = m_Outputter->getBoundaryDisplaymentY();
+			scalarBar->SetTitle("U3");
+			break;
+		case DataType::UR1:
+			boundary = m_Outputter->getBoundaryRotationZ();
+			scalarBar->SetTitle("UR1");
+			break;
+		case DataType::UR2:
+			boundary = m_Outputter->getBoundaryRotationX();
+			scalarBar->SetTitle("UR2");
+			break;
+		case DataType::UR3:
+			boundary = m_Outputter->getBoundaryRotationY();
+			scalarBar->SetTitle("UR3");
+			break;
+		case DataType::N:
+			boundary = m_Outputter->getBoundaryStressN();
+			scalarBar->SetTitle("StressN");
+			break;
+		case DataType::M2:
+			boundary = m_Outputter->getBoundaryStressM2();
+			scalarBar->SetTitle("StressM2");
+			break;
+		case DataType::M3:
+			boundary = m_Outputter->getBoundaryStressM3();
+			scalarBar->SetTitle("StressM3");
+			break;
+		case DataType::Mises:
+			boundary = m_Outputter->getBoundaryMises();
+			scalarBar->SetTitle("Mises");
+			break;
+		default:
+			qDebug() << "未知云图类型！";
+			break;
+		}
+		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	}
+	if (m_Outputter_ice != nullptr)
+	{
+		currentType_ice = static_cast<DataType_ice>(iTpye);
+
+		switch (currentType_ice)
+		{
+		case DataType_ice::U1:
+			boundary = m_Outputter_ice->getBoundaryDisplaymentZ();
+			scalarBar->SetTitle("U1");
+			break;
+		case DataType_ice::U2:
+			boundary = m_Outputter_ice->getBoundaryDisplaymentX();
+			scalarBar->SetTitle("U2");
+			break;
+		case DataType_ice::U3:
+			boundary = m_Outputter_ice->getBoundaryDisplaymentY();
+			scalarBar->SetTitle("U3");
+			break;
+		case DataType_ice::UR1:
+			boundary = m_Outputter_ice->getBoundaryRotationZ();
+			scalarBar->SetTitle("UR1");
+			break;
+		case DataType_ice::UR2:
+			boundary = m_Outputter_ice->getBoundaryRotationX();
+			scalarBar->SetTitle("UR2");
+			break;
+		case DataType_ice::UR3:
+			boundary = m_Outputter_ice->getBoundaryRotationY();
+			scalarBar->SetTitle("UR3");
+			break;
+		case DataType_ice::N:
+			boundary = m_Outputter_ice->getBoundaryStressN();
+			scalarBar->SetTitle("StressN");
+			break;
+		case DataType_ice::M2:
+			boundary = m_Outputter_ice->getBoundaryStressM2();
+			scalarBar->SetTitle("StressM2");
+			break;
+		case DataType_ice::M3:
+			boundary = m_Outputter_ice->getBoundaryStressM3();
+			scalarBar->SetTitle("StressM3");
+			break;
+		default:
+			qDebug() << "未知云图类型！";
+			break;
+		}
+		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	}
 	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 }
 
 void resultVisualize::setCurrentStep(int idStep)
 {
 	idStep += 1;
+	if (m_ins->s != nullptr)
+	{
+		m_Outputter = &(m_ins->s->get_outputter(idStep));
+		qDebug() << "current step:" << m_Outputter->m_idStep;
+		ui.comboBox_nephogram->setCurrentIndex(0);
+		vector<double>boundary = m_Outputter->getBoundaryDisplaymentX();
+		scalarBar->SetTitle("U1");
+		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 
-	m_Outputter = &(m_ins->s->get_outputter(idStep));
-
-	qDebug() << "current step:" << m_Outputter->m_idStep;
-
-	//初始化为U1
-	ui.comboBox_nephogram->setCurrentIndex(0);
-	vector<double>boundary = m_Outputter->getBoundaryDisplaymentX();
-	scalarBar->SetTitle("U1");
-	qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
-
-	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+	}
+	if (m_ins->s_ice != nullptr)
+	{
+		m_Outputter_ice = &(m_ins->s_ice->get_outputter(idStep));
+		qDebug() << "current step:" << m_Outputter_ice->m_idStep;
+		ui.comboBox_nephogram->setCurrentIndex(0);
+		vector<double>boundary = m_Outputter_ice->getBoundaryDisplaymentX();
+		scalarBar->SetTitle("U1");
+		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+	}	
 }

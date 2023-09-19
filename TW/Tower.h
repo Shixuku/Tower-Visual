@@ -42,12 +42,8 @@ public:
 
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	int FindGroupIdNode(int idNode) const;
-
-
-
-
 	void addPart(Part_Base* part);
-	void Check();
+	void Check_Beam();
 	Node* FindNode(int id);
 
 	void move(double dx, double dy, double dz);

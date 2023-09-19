@@ -75,8 +75,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
 	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
-	connect(ui.btn_ice, &QPushButton::clicked, this, &InterFace::btn_ice);
-	connect(ui.btn_show, &QPushButton::clicked, this, &InterFace::btn_show);
+
 	// 创建坐标轴部件
 	Axes = vtkAxesActor::New();
 	widgetAxes = vtkOrientationMarkerWidget::New();
@@ -421,7 +420,7 @@ void InterFace::ui_Tower()
 			tw->addPart(TP_CrossArm.Find_Entity(i));
 		}
 
-		tw->Check();
+		tw->Check_Beam();
 		m_Renderer->RemoveAllViewProps();
 
 		tw->Item = item;
@@ -572,38 +571,6 @@ void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 	IS->show();
 
 }
-
-void InterFace::btn_ice()
-{
-	QString fileName = QFileDialog::getOpenFileName(this, tr("选择输入文件"), "", tr("TXT(*.txt)"));
-	if (fileName.isEmpty())
-	{
-		qDebug() << "文件选择路径有误";
-		return;
-	}
-	run_procedure(fileName);
-}
-
-void InterFace::btn_show()
-{
-	//m_Outputter = &get_outputter();
-	//std::list<std::vector<double>> nodes;
-	//for (auto& i : ptr_nodes)
-	//{
-	//	std::vector<double> coor(3);
-	//	coor = { i->m_x,i->m_y,i->m_z };
-	//	nodes.push_back(coor);
-	//}
-	//display->refresh();
-	/*int index = ui.tableWidget->currentRow();
-	Instance* ins = nullptr;
-	ins = list_Instance[index];
-	if (!ins) return;
-	vector<Node_Base*> ptr_nodes = ins->s->GetNodes();
-
-	display->addData(ptr_nodes, ins);*/
-}
-
 
 void InterFace::SaveFile()
 {
