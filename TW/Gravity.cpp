@@ -35,7 +35,7 @@ void Gravity::Get_ui_Data()
 	int id = m_pInstance->m_Gravitys.size() + 1;
 	//分析步
 	int AnalysisStep = ui.comboBox->currentIndex() + 1;
-	int direction = ui.line_direction->text().toInt();
+	int direction = ui.comboBox_2->currentIndex();//0 1 2 对应x y z方向
 	double g = ui.line_g->text().toDouble();
 	m_pInstance->m_Gravitys.push_back(ParameterGravity(id, AnalysisStep, direction, g));
 	this->accept();

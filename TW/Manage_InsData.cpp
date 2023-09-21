@@ -77,7 +77,7 @@ void Manage_InsData::Modify_Data()
 			{
 				tw->addPart(m_InterFace->TP_CrossArm.Find_Entity(i));
 			}
-			tw->Check();
+			tw->Check_Beam();
 			childItem->setText(0, T_As->Get_name());
 			tw->Item = childItem;
 			tw->m_id = Index + 1;

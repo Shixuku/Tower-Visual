@@ -12,6 +12,7 @@
 #include<vtkSmartPointer.h>
 #include<qdebug.h>
 #include"S_InterFace.h"
+#include"dll.h"
 #include"ParameterGravity.h"
 #include"ParameterAnalysisStep.h"
 #include"ParameterStableWind.h"
@@ -103,6 +104,7 @@ public:
 	
 	//计算
 	S_InterFace* s = nullptr;
+	S_InterFace_ice* s_ice = nullptr;
 	void Section_Assign();//为各单元的截面指派情况
 	void Axial_force();//初始轴力
 

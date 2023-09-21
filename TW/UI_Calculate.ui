@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>795</width>
-    <height>400</height>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>UI_Calculate</string>
+   <string>计算</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -21,15 +21,26 @@
        <widget class="QTableWidget" name="tableWidget"/>
       </item>
       <item>
-       <widget class="QPushButton" name="ptn_import">
-        <property name="text">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
          <string>导入模型</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="widget_3" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_2"/>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="ptn_import">
+           <property name="text">
+            <string>算风</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_CaculateModelIce">
+           <property name="text">
+            <string>算冰</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -39,22 +50,9 @@
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="QPushButton" name="btn_ok">
         <property name="text">
-         <string>确定</string>
+         <string>算风</string>
         </property>
        </widget>
       </item>
@@ -74,12 +72,52 @@
       <item>
        <widget class="QPushButton" name="btn_show">
         <property name="text">
-         <string>显示</string>
+         <string>显示风</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_caculateIce">
+        <property name="text">
+         <string>算冰</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_displayIce">
+        <property name="text">
+         <string>显示冰</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

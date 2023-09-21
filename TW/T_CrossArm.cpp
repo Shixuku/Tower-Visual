@@ -40,7 +40,6 @@ T_CrossArm::T_CrossArm(InterFace* interFace, QWidget *parent)
 	connect(ui.combo_S, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_S()));
 	connect(ui.combo_g, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_gemian()));
 
-
 }
 
 T_CrossArm::~T_CrossArm()
@@ -181,7 +180,7 @@ void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
 
 	tp_ca.m_bodyButtomH = body->Get_LayerH(ceng-1);
 	tp_ca.m_bodyUpH = body->Get_LayerH(ceng);
-	
+
 }
 
 void T_CrossArm::Set_combobox()

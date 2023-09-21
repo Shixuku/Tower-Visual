@@ -17,6 +17,9 @@ public:
 	void type8(int iQuadrant, int layer);//shen5
 	void type9(int iQuadrant, int layer);//shen6
 	void type10(int iQuadrant, int layer);//shen7
+	void type11(int iQuadrant, int layer);
+	void type12(int iQuadrant, int layer);
+	void type13(int iQuadrant, int layer);//shen2+1
 
 	//隔面
 	void G_Get_Node4(int Tier, Node* n,int pos);//得到直接由数据给出的4个点 pos=0顶面 pos=1中间

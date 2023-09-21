@@ -49,6 +49,7 @@ void IceLoad::Initialization()
 		AnalysisStep2->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
 	}
 	ui.tableWidget->setCellWidget(0, 1, (QWidget*)AnalysisStep2);
+	ui.tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(0.002)));//Ä¬ÈÏ¸²±ùºñ¶È
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 }

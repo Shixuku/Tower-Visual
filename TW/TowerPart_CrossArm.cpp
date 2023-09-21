@@ -98,12 +98,8 @@ void TowerPart_CrossArm::BandU_Type1(int type, int iQuadrant, int layer)//iQuadr
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	//Creat_Beams(m_Elements_beams, { node[0],node[9],node[1],node[6],node[4],node[5],node[0] });//一圈桁架单元
-	//Creat_Beams(m_Elements_beams, { node[2],node[10],node[3],node[8],node[4],node[7],node[2] });//一圈桁架单元
 	Creat_Beams1(m_Elements_beams, { node[0],node[9],node[9],node[1],node[1],node[6],node[6],node[4],node[4],node[5],node[5],node[0] ,
 		node[2],node[10],node[10],node[3],node[3],node[8],node[8],node[4],node[4],node[7],node[7],node[2] });//一圈桁架单元
-	//Creat_Trusses(m_Elements_Trusses, { node[9],node[5],node[6],node[9] });//一圈桁架单元
-	//Creat_Trusses(m_Elements_Trusses, { node[8],node[7],node[10],node[8] });//一圈桁架单元
 	Creat_Trusses1(m_Elements_Trusses, { node[9],node[5],node[5],node[6],node[6],node[9],node[8],node[7],node[7],node[10],node[10],node[8] });//一圈桁架单元
 }
 
@@ -143,9 +139,30 @@ void TowerPart_CrossArm::BandU_Type4(int type, int iQuadrant, int layer)
 	{
 		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
 	}
-	//Creat_Beams(m_Elements_beams, { node[0],node[1],node[4],node[2],node[3],node[4],node[0] });
 	Creat_Beams(m_Elements_beams, { node[1],node[3],node[2],node[4],node[1],node[0],node[4],node[3] });
-//	Creat_Beams(m_Elements_beams, { node[1],node[3] });
+}
+
+void TowerPart_CrossArm::BandU_Type5(int type, int iQuadrant, int layer)
+{//与BandU_Type1的区别在于加了一条线
+	Node Node1[11];
+	int node[11];
+	Get_BandUNode4(type, Node1, iQuadrant, layer);
+	Node4_Creat1(Node1[0], Node1[3], Node1[1], Node1[2], Node1[4]);
+	interpolation(Node1[0], Node1[4], 0.5, Node1[5]);
+	interpolation(Node1[1], Node1[4], 0.5, Node1[6]);
+	interpolation(Node1[2], Node1[4], 0.5, Node1[7]);
+	interpolation(Node1[3], Node1[4], 0.5, Node1[8]);
+	interpolation(Node1[0], Node1[1], 0.5, Node1[9]);
+	interpolation(Node1[2], Node1[3], 0.5, Node1[10]);
+	for (int i = 0; i < 11; i++)
+	{
+		node[i] = Creat_Node(Node1[i].x, Node1[i].y, Node1[i].z);
+	}
+
+	Creat_Beams1(m_Elements_beams, { node[0],node[9],node[9],node[1],node[1],node[6],node[6],node[4],node[4],node[5],node[5],node[0] ,
+		node[2],node[10],node[10],node[3],node[3],node[8],node[8],node[4],node[4],node[7],node[7],node[2] });//一圈桁架单元
+	Creat_Beams(m_Elements_beams, { node[1],node[3] });//加了一条线
+	Creat_Trusses1(m_Elements_Trusses, { node[9],node[5],node[5],node[6],node[6],node[9],node[8],node[7],node[7],node[10],node[10],node[8] });//一圈桁架单元
 }
 
 void TowerPart_CrossArm::G_Get_Node4(int type, Node* n, int iQuadrant, int layer)
@@ -336,6 +353,7 @@ void TowerPart_CrossArm::G_Type5(int type, int iQuadrant, int layer)
 
 void TowerPart_CrossArm::Create_Mesh()
 {
+	//原来段
 	for (int i = 1; i < m_count + 1; i++)
 	{
 		int up_type = m_layerArm[i - 1].m_TypeUp;
@@ -427,6 +445,9 @@ void TowerPart_CrossArm::Create_Mesh()
 				case 4:
 					BandU_Type4(1, m_position, i);
 					break;
+				case 5:
+					BandU_Type5(1, m_position, i);
+					break;
 				default:break;
 				}
 				//底面
@@ -443,6 +464,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					break;
 				case 4:
 					BandU_Type4(2, m_position, i);
+					break;
+				case 5:
+					BandU_Type5(2, m_position, i);
 					break;
 				default:break;
 				}
@@ -464,6 +488,9 @@ void TowerPart_CrossArm::Create_Mesh()
 				case 4:
 					BandU_Type4(4, m_position, i);
 					break;
+				case 5:
+					BandU_Type5(4, m_position, i);
+					break;
 				default:break;
 				}
 				//底面
@@ -480,6 +507,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					break;
 				case 4:
 					BandU_Type4(3, m_position, i);
+					break;
+				case 5:
+					BandU_Type5(3, m_position, i);
 					break;
 				default:break;
 				}
@@ -521,6 +551,9 @@ void TowerPart_CrossArm::Create_Mesh()
 				case 4:
 					BandU_Type4(1, m_position, i);
 					break;
+				case 5:
+					BandU_Type5(1, m_position, i);
+					break;
 				default:break;
 				}
 				//底面
@@ -537,6 +570,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					break;
 				case 4:
 					BandU_Type4(2, m_position, i);
+					break;
+				case 5:
+					BandU_Type5(2, m_position, i);
 					break;
 				default:break;
 				}
@@ -558,6 +594,9 @@ void TowerPart_CrossArm::Create_Mesh()
 				case 4:
 					BandU_Type4(4, m_position, i);
 					break;
+				case 5:
+					BandU_Type5(4, m_position, i);
+					break;
 				default:break;
 				}
 				//底面
@@ -574,6 +613,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					break;
 				case 4:
 					BandU_Type4(3, m_position, i);
+					break;
+				case 5:
+					BandU_Type5(3, m_position, i);
 					break;
 				default:break;
 				}
@@ -602,6 +644,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					case 4:
 						BandU_Type4(1, p, i);
 						break;
+					case 5:
+						BandU_Type5(1, p, i);
+						break;
 					default:break;
 					}
 					//底面
@@ -618,6 +663,9 @@ void TowerPart_CrossArm::Create_Mesh()
 						break;
 					case 4:
 						BandU_Type4(2, p, i);
+						break;
+					case 5:
+						BandU_Type5(2, p, i);
 						break;
 					default:break;
 					}
@@ -639,6 +687,9 @@ void TowerPart_CrossArm::Create_Mesh()
 					case 4:
 						BandU_Type4(4, p, i);
 						break;
+					case 5:
+						BandU_Type5(4, p, i);
+						break;
 					default:break;
 					}
 					//底面
@@ -655,6 +706,9 @@ void TowerPart_CrossArm::Create_Mesh()
 						break;
 					case 4:
 						BandU_Type4(3, p, i);
+						break;
+					case 5:
+						BandU_Type5(3, p, i);
 						break;
 					default:break;
 					}

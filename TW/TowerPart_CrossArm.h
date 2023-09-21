@@ -17,6 +17,7 @@ public:
 	void BandU_Type2(int type,int iQuadrant, int layer);
 	void BandU_Type3(int type,int iQuadrant, int layer);
 	void BandU_Type4(int type,int iQuadrant, int layer);
+	void BandU_Type5(int type, int iQuadrant, int layer);
 
 	void G_Get_Node4(int type, Node* n, int iQuadrant, int layer);//得到直接由数据给出的4个点
 	void G_Create_point(const Node& n1, const Node& n2, const Node& n3, const Node& n4, Node& n);
