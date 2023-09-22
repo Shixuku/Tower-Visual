@@ -28,6 +28,8 @@ public:
 	void NodeList(Part_Base* part, QStringList parts);
 	void Element_Beam3DList(Part_Base* part, QStringList parts);
 	int GetSectionId(QString MaterialName, QString SectionName);
+	void HighList(QStringList parts);
+	void HangPointList(QStringList parts);
 };
 
 

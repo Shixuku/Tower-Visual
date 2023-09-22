@@ -3,6 +3,8 @@
 #include"Material.h"
 #include"Section_L.h"
 #include"Section.h"
+#include"NominalHeight.h"
+#include"HangPoint.h"
 void WireWiring::GetAllPartTXT(string path, vector<string>& files)
 {
 	intptr_t hFile = 0;
@@ -40,12 +42,13 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 	//for (const auto& ph : fileNames) {
 	//	std::cout << ph << "\n";
 	//}
+	qDebug() << "fileNames.size()！"<< fileNames.size()<<"\t";
 	for (int i = 0; i < fileNames.size(); i++)
 	{
 		str = QString::fromStdString(fileNames[i]);
 		if (!str.isEmpty())
 		{
-			//qDebug() << str;
+			qDebug() << str;
 			Qf1.setFileName(str);
 			if (!Qf1.open(QIODevice::ReadOnly | QIODevice::Text))
 			{
@@ -99,10 +102,33 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 					{
 						PartList(parts);
 					}
-
+					else if (keyword.compare("High", Qt::CaseInsensitive) == 0)
+					{
+						HighList(parts);
+					}
+					else if (keyword.compare("HangPoint", Qt::CaseInsensitive) == 0)
+					{
+						HangPointList(parts);
+					}
 				}
 			}
 
+		}
+	}
+	for (const auto& j : m_pInterFace->TWG)
+	{
+		qDebug() << j.second->m_Name << "\t";
+		for (const auto& i : j.second->TWG_TP)
+		{
+			qDebug() << i.second->m_Name << "  " << i.second->TP_Height.size() << "\t";
+			for (const auto& l : i.second->TP_Part)
+			{
+				qDebug() << l.second->m_id <<"  "<< l.second->TP_HangPoint.size() << "\t";
+				for (const auto& k : l.second->TP_HangPoint)
+				{
+					qDebug() << k.second->m_id<<"  "<<k.second->Wire<<"  "<<k.second->StringClass << "\t";
+				}
+			}
 		}
 	}
 }
@@ -147,7 +173,7 @@ void WireWiring::PartList(QStringList parts)
 				else if (keyword.compare("Element_Beam3D", Qt::CaseInsensitive) == 0)
 				{
 					Element_Beam3DList(Part, Partparts);
-
+					processedCount++;
 				}
 			}
 
@@ -258,4 +284,83 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 		}
 	}
 	return id;
+}
+
+void WireWiring::HighList(QStringList parts)
+{
+	int HighCount = parts[1].toInt();
+	for (int i = 0; i < HighCount; ++i)
+	{
+		int processedCount = 0;// 记录已处理的呼高数量
+		NominalHeight* nominalHeight = new NominalHeight();
+		// 读取和处理每个呼高组合的数据
+		while (processedCount < 3)
+		{
+			QString line = Stream1.readLine();
+			if (line.startsWith("**") || line.isEmpty())
+			{
+				// 跳过以 "**" 开头的行和空行
+				continue;
+			}
+			
+			// 解析数据
+			if (processedCount == 0)
+			{
+				QStringList HighLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+				int highNumber = HighLine[0].toInt();
+				double height = HighLine[1].toDouble();
+				nominalHeight->m_id = highNumber;
+				nominalHeight->hight = height;
+				processedCount++;
+			}
+			else if (processedCount == 1)
+			{
+				QStringList PartLine = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+				QStringList partBody = PartLine.mid(0);
+				for (int j = 0; j < partBody.size(); j++)
+				{
+					nominalHeight->BodyList.push_back(partBody[j].toInt());
+				}
+				processedCount++;
+			}
+			else if (processedCount == 2)
+			{
+				QStringList LegLine = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+				QStringList partLeg = LegLine.mid(0);
+				for (int j = 0; j < partLeg.size(); j++)
+				{
+					nominalHeight->LegList.push_back(partLeg[j].toInt());
+				}
+				processedCount++;
+				tower->TP_Height.Add_Entity(nominalHeight);
+			}
+		}
+	}
+}
+
+void WireWiring::HangPointList(QStringList parts)
+{
+	int HangPointCount = parts[1].toInt();
+	int processedCount = 0;
+	while (processedCount < HangPointCount)
+	{
+		QString HangPointLine = Stream1.readLine();
+		if (HangPointLine.startsWith("**") || HangPointLine.isEmpty())
+		{
+			// 跳过说明行和空行
+			continue;
+		}
+		QStringList HangPointParts = HangPointLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+		int id = HangPointParts[0].toInt();
+		QString Wire = HangPointParts[1];
+		QString StringClass = HangPointParts[2];
+		QString WireLoge = HangPointParts[3];
+		QString Partnumber= HangPointParts[4];
+		int nodeid= HangPointParts[5].toInt();
+		QStringList Partid=Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
+		int FindPartid = Partid[1].toInt();
+		HangPoint* hangPoint = new HangPoint(id, Wire, StringClass, WireLoge, nodeid);
+		tower->TP_Part.Find_Entity(FindPartid)->TP_HangPoint.Add_Entity(hangPoint);
+		processedCount++;
+	}
 }
