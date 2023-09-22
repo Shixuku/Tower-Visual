@@ -10,6 +10,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkCellArray.h>
 #include"Part_Base.h"
+#include"NominalHeight.h"
 #include<Eigen/Dense>
 #include<QDataStream>
 #include<QTreeWidgetItem>
@@ -59,7 +60,7 @@ public:
 	
 
 	Manage_Entity<Part_Base> TP_Part;
-
+	Manage_Entity<NominalHeight>TP_Height;
 protected:
 	void addNodeToTower(Part_Base* part);
 	

@@ -17,6 +17,7 @@
 #include<vtkVertexGlyphFilter.h>//显示点
 #include"Base.h"
 #include"Section.h"
+#include"HangPoint.h"
 #include <map>
 
 using namespace std;
@@ -37,7 +38,7 @@ public:
 
 	vector<Element_Beam> m_Elements_beams;//梁单元合集
 	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
-
+	Manage_Entity<HangPoint> TP_HangPoint;
 	int id_BeamSection = 0;
 	int id_TrussSection = 0;
 
