@@ -27,12 +27,13 @@ class TowerWireGroup:public Instance
 {
 public:
 	int Get_id()const;
+	QString m_Name;
 	void SaveTo(QDataStream& fin)const;
 	void Input(QDataStream& fin);
 	int groupId = 0;
 	vector<int>SuspensionNode;//悬挂点
 	vector<int>realSuspoint;//真实悬挂点
-
+	Manage_Entity<Tower> TWG_TP;
 	void VectorToMap();
 	map<int, Node>NodeData;
 	//添加塔

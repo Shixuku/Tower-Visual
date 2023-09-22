@@ -33,6 +33,8 @@
 #include"ui_AnalysisStep.h"
 #include"Manage_Section.h"
 #include"dll.h"
+#include"InputMaterial.h"
+#include"WireWiring.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -54,7 +56,9 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	SetupCentralWidget();
 	//左边窗口
 	TreeWidgetShow();
-	
+	//打开软件自动运行
+	ReadMaterialTXT();
+	ReadPartTXT();
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
@@ -140,6 +144,16 @@ void InterFace::TreeWidgetShow()
 	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
 	openSection->setText(0, QString("读取"));
 
+}
+void InterFace::ReadMaterialTXT()
+{
+	InputMaterial aa;
+	aa.ReadMaterial(this);
+}
+void InterFace::ReadPartTXT()
+{
+	WireWiring aa;
+	aa.ReadWireWiring(this);
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)

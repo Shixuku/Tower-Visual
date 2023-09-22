@@ -28,7 +28,7 @@ class Tower:public Instance
 public:
 	//子类节点添加到父类里面
 	Tower();
-
+	QString m_Name;
 	void SaveTo(QDataStream& fin)const;
 	void Input(QDataStream& fin);
 
@@ -57,6 +57,8 @@ public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;
 	
+
+	Manage_Entity<Part_Base> TP_Part;
 
 protected:
 	void addNodeToTower(Part_Base* part);

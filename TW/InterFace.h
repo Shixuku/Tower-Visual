@@ -49,6 +49,9 @@ class InteractorStyle;
 class ui_AnalysisStep;
 class Manage_Section;
 class Instance_Calculate;
+class Material;
+class Section_L;
+class Section_C;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -61,7 +64,10 @@ public:
     void TreeWidgetShow();//左窗口
 
     vtkRenderer* m_Renderer;//放部件的vtk窗口
-   
+   //打开自动运行读取线路文件
+    void ReadMaterialTXT();
+    void ReadPartTXT();
+
     vtkGenericOpenGLRenderWindow* m_renderWindow;
     QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
    
@@ -80,6 +86,9 @@ public:
      //Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
      //vector<ParameterIceElement*> ME_ElementIce;//冰单元合集
      Manage_Entity<TowerWireGroup> TWG;
+     Manage_Entity < Material> ME_Material;
+     Manage_Entity < Section_L> ME_Section_L;
+     Manage_Entity < Section_C> ME_Section_C;
     // Manage_Entity<TowerWireGroup> creatWire;
     // Manage_Entity<CreatWire> creatWire;
      vector<T_Foot*> t_foots;

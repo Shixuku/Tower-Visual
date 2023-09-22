@@ -5,6 +5,7 @@
 #include"Element.h"
 #include<vtkTransform.h>
 #include <vtkIdTypeArray.h>
+#include"Manage_Entity.h"
 #include <QOpenGLWidget>//UINT_PTR
 #include <vtkPointData.h>//->AddArray(Ptr
 enum Part_Type :int
