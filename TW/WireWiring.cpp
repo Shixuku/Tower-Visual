@@ -5,6 +5,7 @@
 #include"Section.h"
 #include"NominalHeight.h"
 #include"HangPoint.h"
+#include"TowerList.h"
 void WireWiring::GetAllPartTXT(string path, vector<string>& files)
 {
 	intptr_t hFile = 0;
@@ -92,7 +93,7 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 							towerWire->m_id = id;
 							m_pInterFace->TWG.Add_Entity(towerWire);
 						}
-						tower = new Tower();
+						tower = new TowerList();
 						tower->m_Name = towerNumber;
 						int id = towerWire->TWG_TP.size() + 1;
 						tower->m_id = id;
@@ -121,12 +122,11 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 		for (const auto& i : j.second->TWG_TP)
 		{
 			qDebug() << i.second->m_Name << "  " << i.second->TP_Height.size() << "\t";
-			for (const auto& l : i.second->TP_Part)
+			for (const auto& l : i.second->TP_Height)
 			{
-				qDebug() << l.second->m_id <<"  "<< l.second->TP_HangPoint.size() << "\t";
-				for (const auto& k : l.second->TP_HangPoint)
+				for (int i = 0; i < l.second->BodyList.size(); i++)
 				{
-					qDebug() << k.second->m_id<<"  "<<k.second->Wire<<"  "<<k.second->StringClass << "\t";
+					qDebug() << l.second->BodyList[i] << "\t";
 				}
 			}
 		}

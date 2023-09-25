@@ -67,6 +67,7 @@ public:
    //打开自动运行读取线路文件
     void ReadMaterialTXT();
     void ReadPartTXT();
+    void ReadInstanceTXT();
 
     vtkGenericOpenGLRenderWindow* m_renderWindow;
     QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
