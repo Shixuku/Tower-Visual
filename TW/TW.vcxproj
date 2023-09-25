@@ -121,6 +121,7 @@
     <ClCompile Include="IceLoad.cpp" />
     <ClCompile Include="InputMaterial.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="InstanceWire.cpp" />
     <ClCompile Include="InteractorStyle.cpp" />
     <ClCompile Include="Interphase_spacer.cpp" />
     <ClCompile Include="LoadForce.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="TowerData_CrossArm.cpp" />
     <ClCompile Include="TowerData_Insulator.cpp" />
     <ClCompile Include="TowerData_leg.cpp" />
+    <ClCompile Include="TowerList.cpp" />
     <ClCompile Include="TowerPart_body.cpp" />
     <ClCompile Include="TowerPart_CrossArm.cpp" />
     <ClCompile Include="TowerPart_Insulator.cpp" />
@@ -214,7 +216,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HangPoint.h" />
+    <ClInclude Include="InstanceWire.h" />
     <ClInclude Include="NominalHeight.h" />
+    <ClInclude Include="TowerList.h" />
     <ClInclude Include="WireWiring.h" />
     <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />

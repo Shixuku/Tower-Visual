@@ -35,6 +35,7 @@
 #include"dll.h"
 #include"InputMaterial.h"
 #include"WireWiring.h"
+#include"InstanceWire.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -59,6 +60,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//打开软件自动运行
 	ReadMaterialTXT();
 	ReadPartTXT();
+	ReadInstanceTXT();
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
@@ -154,6 +156,11 @@ void InterFace::ReadPartTXT()
 {
 	WireWiring aa;
 	aa.ReadWireWiring(this);
+}
+void InterFace::ReadInstanceTXT()
+{
+	InstanceWire aa;
+	aa.ReadInstanceWire(this);
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)

@@ -13,6 +13,7 @@ class InterFace;
 class Part_Base;
 class TowerWireGroup;
 class Tower;
+class TowerList;
 class WireWiring
 {
 public:
@@ -23,7 +24,7 @@ public:
 	QFile Qf1;
 	QTextStream Stream1;
 	TowerWireGroup* towerWire = nullptr;
-	Tower* tower = nullptr;
+	TowerList* tower = nullptr;
 	void PartList(QStringList parts);
 	void NodeList(Part_Base* part, QStringList parts);
 	void Element_Beam3DList(Part_Base* part, QStringList parts);

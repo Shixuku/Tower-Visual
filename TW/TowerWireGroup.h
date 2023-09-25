@@ -1,5 +1,6 @@
 #pragma once
 #include"Tower.h"
+#include"TowerList.h"
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
@@ -33,7 +34,7 @@ public:
 	int groupId = 0;
 	vector<int>SuspensionNode;//悬挂点
 	vector<int>realSuspoint;//真实悬挂点
-	Manage_Entity<Tower> TWG_TP;
+	Manage_Entity<TowerList> TWG_TP;
 	void VectorToMap();
 	map<int, Node>NodeData;
 	//添加塔
