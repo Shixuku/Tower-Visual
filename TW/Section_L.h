@@ -8,6 +8,7 @@ public:
 	double Iu;
 	double Iv;
 	double J;
-	Section_L(int id,QString iname, double iIu, double iIv, double iJ);
+	double A;
+	Section_L(int id,QString iname, double iIu, double iIv, double iJ,double iA);
 };
 

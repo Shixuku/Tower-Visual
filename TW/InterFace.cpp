@@ -34,8 +34,10 @@
 #include"Manage_Section.h"
 #include"dll.h"
 #include"InputMaterial.h"
+#include"InputSection.h"
 #include"WireWiring.h"
 #include"InstanceWire.h"
+#include <vtkCamera.h>
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -59,6 +61,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	TreeWidgetShow();
 	//打开软件自动运行
 	ReadMaterialTXT();
+	ReadSectionTXT();
 	ReadPartTXT();
 	ReadInstanceTXT();
 	//默认打开的是part的vtk窗口
@@ -152,6 +155,11 @@ void InterFace::ReadMaterialTXT()
 	InputMaterial aa;
 	aa.ReadMaterial(this);
 }
+void InterFace::ReadSectionTXT()
+{
+	InputSection aa;
+	aa.ReadSection(this);
+}
 void InterFace::ReadPartTXT()
 {
 	WireWiring aa;
@@ -214,6 +222,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	else if (isChildOfTower(1,item, 3))
 	{//输出inp文件
 		//CreateInp(item);
+	}
+	else if (isChildOfGroupTower(item))
+	{
+		ShowGroupTower(item);
 	}
 	//单导实例
 	else if (item == ui.treeWidget->topLevelItem(2))
@@ -324,7 +336,7 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 		Instance* instance = OnFindInstance(item);
 		Show_Tower(instance);
 	}
-	else if (item->parent() == ui.treeWidget->topLevelItem(2))
+	else if (item->parent() == ui.treeWidget->topLevelItem(3))
 	{
 		Instance* instance = OnFindInstance(item);
 		Show_Wire(instance);
@@ -911,6 +923,22 @@ void InterFace::Display()
 
 }
 
+void InterFace::ShowGroupTower(QTreeWidgetItem* item)
+{
+	int towerId = 0;
+	vtkCamera* camera = vtkCamera::New();
+	QTreeWidgetItem* parentItem = item->parent();
+	int towerCount = parentItem->childCount();//取得有几个塔循环
+	for (int i = 0; i < towerCount; i++)
+	{
+		if (item == parentItem->child(i))
+		{
+			towerId = i+1;
+		}
+	}
+
+}
+
 //导线部分
 void InterFace::Add_Select(vtkSmartPointer<vtkActor> pActor)
 {
@@ -1232,6 +1260,26 @@ bool InterFace::isChildOfSingleWire(QTreeWidgetItem* item, int childNumber)
 	return false;
 }
 
+bool InterFace::isChildOfGroupTower(QTreeWidgetItem* item)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(3);
+	int towerWireGroupChildCount = towerWireGroup->childCount();//取得有几个塔线组循环
+	for (int i = 0; i < towerWireGroupChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
+		QTreeWidgetItem* towerItem = childItem->child(0);
+		int towerCount = towerItem->childCount();//取得有几个塔循环
+		for (int j = 0; j < towerCount; j++)
+		{
+			if (item == towerItem->child(j))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void InterFace::Close_Point()
 {
 	UnSelect_Nodes();
@@ -1313,8 +1361,18 @@ void InterFace::Show_Wire(Instance* instance)
 {
 	if (instance == nullptr) return;
 	m_Renderer->RemoveAllViewProps();
-	instance->Node_actor->VisibilityOn();
-	instance->m_TrussActor->VisibilityOn();
+	//if (instance->Node_actor != nullptr)
+	//{
+		instance->Show_VTKnode(m_Renderer);
+		instance->Show_VTKtruss(m_Renderer);
+		instance->Show_VTKbeam(m_Renderer);
+	/*}*/
+	/*else
+	{
+		instance->Node_actor->VisibilityOn();
+		instance->m_TrussActor->VisibilityOn();
+	}*/
+
 	
 	m_Renderer->ResetCamera();
 }

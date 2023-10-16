@@ -66,6 +66,7 @@ public:
     vtkRenderer* m_Renderer;//放部件的vtk窗口
    //打开自动运行读取线路文件
     void ReadMaterialTXT();
+    void ReadSectionTXT();
     void ReadPartTXT();
     void ReadInstanceTXT();
 
@@ -100,7 +101,8 @@ public:
      void Display();
 
      std::vector<QStringList> Scetion_lists;
-
+     //显示塔线实例下的单塔
+     void ShowGroupTower(QTreeWidgetItem* item);
      //导线部分
      std::list<vtkSmartPointer<vtkActor>> m_NodeSelected;
      void Add_Select(vtkSmartPointer<vtkActor> pActor);
@@ -116,7 +118,7 @@ public:
      void Area_Inqure();//框选point
      void AreaElement_Inqure();//框选Element
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);
-
+     bool isChildOfGroupTower(QTreeWidgetItem* item);
      void Close_Point();
      //HZ
      //风

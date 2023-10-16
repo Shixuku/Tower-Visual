@@ -117,13 +117,16 @@
     <ClCompile Include="Element_Wire.cpp" />
     <ClCompile Include="Ele_Location.cpp" />
     <ClCompile Include="Gravity.cpp" />
+    <ClCompile Include="HangList.cpp" />
     <ClCompile Include="HangPoint.cpp" />
     <ClCompile Include="IceLoad.cpp" />
     <ClCompile Include="InputMaterial.cpp" />
+    <ClCompile Include="InputSection.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="InstanceWire.cpp" />
     <ClCompile Include="InteractorStyle.cpp" />
     <ClCompile Include="Interphase_spacer.cpp" />
+    <ClCompile Include="LineMaterial.cpp" />
     <ClCompile Include="LoadForce.cpp" />
     <ClCompile Include="Manage_Loads.cpp" />
     <ClCompile Include="Manage_PartData.cpp" />
@@ -215,8 +218,11 @@
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HangList.h" />
     <ClInclude Include="HangPoint.h" />
+    <ClInclude Include="InputSection.h" />
     <ClInclude Include="InstanceWire.h" />
+    <ClInclude Include="LineMaterial.h" />
     <ClInclude Include="NominalHeight.h" />
     <ClInclude Include="TowerList.h" />
     <ClInclude Include="WireWiring.h" />

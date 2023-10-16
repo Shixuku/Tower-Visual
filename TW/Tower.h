@@ -68,7 +68,8 @@ protected:
 	//void addSectionToTower(Part_Base* part);
 	void addRestraintNode(Part_Base* part);
 	void addSuspensionNode(Part_Base* part);
-
+	void addHangPoint(Part_Base* part);
+	void HangPintList();
 	//QFile Qf;
 	//QTextStream Stream;
 };

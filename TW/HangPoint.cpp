@@ -1,10 +1,13 @@
 #include "HangPoint.h"
 
-HangPoint::HangPoint(int id, QString iWire, QString iStringClass, QString iWireLoge, int iNodeId)
+HangPoint::HangPoint(int id, QString iStringClass, QString iWireLoge, int iNodeId)
 {
 	m_id = id;
-	Wire = iWire;
 	StringClass = iStringClass;
-	iWireLoge = WireLoge;
+	WireLoge = iWireLoge;
 	NodeId = iNodeId;
+}
+
+HangPoint::HangPoint()
+{
 }

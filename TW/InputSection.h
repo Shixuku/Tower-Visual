@@ -4,15 +4,14 @@
 #include<QFile>
 #include<QTextStream>
 #include<QString>
-class InputMaterial
+class InputSection
 {
 public:
-	void ReadMaterial(InterFace* m_pInterFace);
+	void ReadSection(InterFace* m_pInterFace);
 	InterFace* m_pInterFace = nullptr;
 	QString str;
 	QFile Qf1;
 	QTextStream Stream1;
-	void MaterialList(QStringList parts);
 
 };
 
