@@ -26,7 +26,7 @@
 #include <vtkPolyData.h>
 #include"InterFace.h"
 #include <vtkAssembly.h>
-
+#include"HangPoint.h"
 int Tower::FindGroupIdNode(int idNode) const
 {
 	return TowerToGroup[idNode - 1];
@@ -42,6 +42,8 @@ void Tower::addPart(Part_Base* part)
 	//addSectionToTower(part);//不每次都把截面添加进去，只能添加一次
 	addRestraintNode(part);
 	addSuspensionNode(part);
+	addHangPoint(part);
+	HangPintList();
 	part->part_to_tower.clear();
 }
 
@@ -475,6 +477,61 @@ void Tower::addSuspensionNode(Part_Base* part)
 		this->realSuspoint.push_back(part->realSuspoint[i]);
 		size_t totalT = this->realSuspoint.size() - 1;
 		realSuspoint[totalT] = part->Find_tower_idNode(part->realSuspoint[i]);
+	}
+}
+
+void Tower::addHangPoint(Part_Base* part)
+{
+	size_t HangPointSize = part->TP_HangPoint.size();
+	for (int i = 0; i < HangPointSize; i++)
+	{
+		HangPoint* hangPoint = new HangPoint();
+		hangPoint->m_id = this->TP_HangPoint.size() + 1;
+		hangPoint->StringClass = part->TP_HangPoint.Find_Entity(i + 1)->StringClass;
+		QString tt= part->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
+		qDebug() << tt << "\n";
+		hangPoint->WireLoge = part->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
+		qDebug() << part->TP_HangPoint.Find_Entity(i + 1)->NodeId << "\n";
+		hangPoint->NodeId= part->Find_tower_idNode(part->TP_HangPoint.Find_Entity(i + 1)->NodeId);
+		this->TP_HangPoint.Add_Entity(hangPoint);
+	}
+}
+
+void Tower::HangPintList()
+{
+	size_t HangPointSize = this->TP_HangPoint.size();
+	for (int i = 0; i < HangPointSize; i++)
+	{
+		QString StringClass = TP_HangPoint.Find_Entity(i + 1)->StringClass;
+		QString WireLoge = TP_HangPoint.Find_Entity(i + 1)->StringClass;
+		int nodeid= TP_HangPoint.Find_Entity(i + 1)->NodeId;
+		int HangSize = this->m_HangList.size() + 1;
+		if (StringClass == "V")
+		{
+			bool isFind = false;
+			for (auto j : m_HangList)
+			{
+				if (j.StringClass == StringClass)
+				{
+					if (j.WireLoge == WireLoge)
+					{
+						j.NodeId.push_back(nodeid);
+						isFind = true;
+					}
+				}
+			}
+			if (isFind == false)
+			{
+				m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
+				m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+			}
+		}
+		else
+		{
+			m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
+			m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+		}
+		
 	}
 }
 

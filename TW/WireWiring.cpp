@@ -352,15 +352,38 @@ void WireWiring::HangPointList(QStringList parts)
 		}
 		QStringList HangPointParts = HangPointLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 		int id = HangPointParts[0].toInt();
-		QString Wire = HangPointParts[1];
-		QString StringClass = HangPointParts[2];
-		QString WireLoge = HangPointParts[3];
-		QString Partnumber= HangPointParts[4];
-		int nodeid= HangPointParts[5].toInt();
-		QStringList Partid=Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
-		int FindPartid = Partid[1].toInt();
-		HangPoint* hangPoint = new HangPoint(id, Wire, StringClass, WireLoge, nodeid);
-		tower->TP_Part.Find_Entity(FindPartid)->TP_HangPoint.Add_Entity(hangPoint);
+		QString StringClass = HangPointParts[1];
+		QString WireLoge = HangPointParts[2];
+		if (StringClass == "V")
+		{
+			QString Partnumber = HangPointParts[3];
+			int nodeid = HangPointParts[4].toInt();
+			QStringList Partid = Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
+			int FindPartid1 = Partid[1].toInt();
+			int id1 = tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.size() + 1;
+			HangPoint* hangPoint1 = new HangPoint(id1, StringClass, WireLoge, nodeid);
+			tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.Add_Entity(hangPoint1);
+
+			QString Partnumber2 = HangPointParts[5];
+			int nodeid2 = HangPointParts[6].toInt();
+			QStringList Partid2 = Partnumber2.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
+			int FindPartid2 = Partid2[1].toInt();
+			int id2 = tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.size() + 1;
+			HangPoint* hangPoint2 = new HangPoint(id2, StringClass, WireLoge, nodeid2);
+			tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.Add_Entity(hangPoint2);
+		}
+		else
+		{
+			QString Partnumber = HangPointParts[3];
+			int nodeid = HangPointParts[4].toInt();
+			QStringList Partid = Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
+			int FindPartid = Partid[1].toInt();
+			int id1 = tower->TP_Part.Find_Entity(FindPartid)->TP_HangPoint.size() + 1;
+			HangPoint* hangPoint = new HangPoint(id1, StringClass, WireLoge, nodeid);
+			tower->TP_Part.Find_Entity(FindPartid)->TP_HangPoint.Add_Entity(hangPoint);
+		} 
 		processedCount++;
 	}
 }
+
+

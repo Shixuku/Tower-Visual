@@ -87,11 +87,12 @@ void TowerWireGroup::VectorToMap()
 
 void TowerWireGroup::AddTowerToGroup(Tower* tower, int towerId, double dx, double dy, double dz, double dAngle)
 {
+	rotation(dAngle, towerId);
 	AddTowerNode(tower, towerId, dx, dy, dz);
 	AddTowerElement(tower, towerId);
-	rotation(dAngle, towerId);
 	AddSuspensionNode(tower);
 	addRestraintNode(tower);
+	addHangPoint(tower);
 	tower->TowerToGroup.clear();
 }
 
@@ -205,6 +206,23 @@ void TowerWireGroup::AddSuspensionNode(Tower* tower)
 		this->realSuspoint.push_back(tower->realSuspoint[i]);
 		size_t totalT = this->realSuspoint.size() - 1;
 		realSuspoint[totalT] = tower->FindGroupIdNode(tower->realSuspoint[i]);
+	}
+}
+
+void TowerWireGroup::addHangPoint(Tower* tower)
+{
+	size_t HangPointSize = tower->TP_HangPoint.size();
+	for (int i = 0; i < HangPointSize; i++)
+	{
+		HangPoint* hangPoint = new HangPoint();
+		hangPoint->m_id = this->TP_HangPoint.size() + 1;
+		hangPoint->StringClass = tower->TP_HangPoint.Find_Entity(i + 1)->StringClass;
+		QString tt = tower->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
+		qDebug() << tt << "\n";
+		hangPoint->WireLoge = tower->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
+		qDebug() << tower->TP_HangPoint.Find_Entity(i + 1)->NodeId << "\n";
+		hangPoint->NodeId = tower->FindGroupIdNode(tower->TP_HangPoint.Find_Entity(i + 1)->NodeId);
+		this->TP_HangPoint.Add_Entity(hangPoint);
 	}
 }
 

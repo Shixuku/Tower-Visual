@@ -43,6 +43,7 @@ public:
 	void AddTowerElement(Tower* tower, int towerId);
 	void addRestraintNode(Tower* tower);
 	void AddSuspensionNode(Tower* tower);
+	void addHangPoint(Tower* tower);
 	//添加线
 	void AddWireToGroup(CreatWire* wire);
 	void AddWireNode(CreatWire* wire);
@@ -64,6 +65,7 @@ public:
 	void addSpacerNode(Part_Base* base);
 	void addSpacerElement(Part_Base* base);
 	void addSpacerSuspensionNode(Part_Base* base);
+
 public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;//保存Item，用于查找

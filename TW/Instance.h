@@ -17,6 +17,7 @@
 #include"ParameterAnalysisStep.h"
 #include"ParameterStableWind.h"
 #include"ParameterIceType.h"
+#include"HangList.h"
 class Instance :public Base
 {
 public:
@@ -34,6 +35,7 @@ public:
 	vector<Element> m_Elements;//单元合集
 	vector<Element_Beam> m_Elements_beams;//梁单元合集
 	vector<Element_Truss> m_Elements_Trusses;//杆单元合集
+	vector<HangList>m_HangList;
 	vector<int>RestraintNode;//添加约束节点
 	vector<int>SuspensionNode;//添加悬挂点
 	vector<double>WireGravity;//每档导线的重力
@@ -56,6 +58,7 @@ public:
 	map<int, vector<int>>m_EleWind;//存放风区单元集
 	vector<int>susPoint;
 	vector<int>realSuspoint;
+	Manage_Entity<HangPoint> TP_HangPoint;
 	int Truss_elementsID = 0;
 	int TypeWind = 0;//风的类型
 	int Splits= 0;//导线分裂数

@@ -1,6 +1,7 @@
 #include "InstanceWire.h"
 #include"InterFace.h"
 #include "NominalHeight.h"
+#include <QRegExp>
 #pragma execution_character_set("utf-8")
 void InstanceWire::GetAllInstanceTXT(string path, vector<string>& files)
 {
@@ -81,21 +82,43 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 				}
 				else if (qLine.startsWith("*"))
 				{
-					QStringList parts = qLine.mid(1).split(",", Qt::SkipEmptyParts);
+					QStringList parts = qLine.mid(1).split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 					keyword = parts[0].trimmed();
 					if (keyword.compare("Line", Qt::CaseInsensitive) == 0)
 					{
 						QString lineName = parts[1].trimmed();
-						TowerSize = parts[2].toInt();
-						Spilt= parts[3].toInt();
+						Ground= parts[2].toInt();
+						Conductor= parts[3].toInt();
+						Spilt = parts[4].toInt();
+						TowerSize = parts[5].toInt();
+						
 						for (const auto& j : m_pInterFace->TWG)
 						{
 							if (j.second->m_Name == lineName)
 							{
 								towerWire = j.second;
+								CreatTowerWierGroupItem(lineName);
 								break;
 							}
 						}
+						QString filePath = "../HangPointTXT/" + lineName + ".txt";
+						Qf.setFileName(filePath);  // 创建 QFile 对象并指定文件路径
+
+						if (Qf.open(QIODevice::WriteOnly | QIODevice::Text)) {
+							qDebug() << "文件打开成功！";
+							Stream.setDevice(&Qf);
+							
+						}
+						else {
+							qDebug() << "文件打开失败！";
+							// 文件打开失败，处理错误
+						}
+					}
+					else if (keyword.compare("Section", Qt::CaseInsensitive) == 0)
+					{
+						Stream << qLine << "\n";
+						SectionList(parts);
+						
 					}
 					else if (keyword.compare("Instance", Qt::CaseInsensitive) == 0)
 					{
@@ -103,15 +126,24 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 						tower->m_id= parts[1].toInt();
 						QString TowerName = parts[2];
 						Line = parts[3].toInt();
+						if (Line == 1)
+						{
+							LineSegment1= Tension;
+						}
+						else if (Line == 0)
+						{
+							LineSegment1 = Tension;
+							LineSegment2 = Tension+1;
+						}
 						for (const auto& j : towerWire->TWG_TP)
 						{
+							qDebug() << j.second->m_Name << "  " << TowerName << "\n";
 							if (j.second->m_Name == TowerName)
 							{
 								towerList = j.second;
 								break;
 							}
 						}
-						qDebug() << towerList->TP_Height.size() << "\t";
 						if (towerList == nullptr)
 						{
 							qDebug() << "y有问题" << "\t";
@@ -124,9 +156,68 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 					}
 				}
 			}
+			WriteHangList();
+			Qf.close();
 		}
 	}
-	showGroup(towerWire);
+
+	//showGroup(towerWire);
+}
+
+void InstanceWire::SectionList(QStringList parts)
+{
+	int SectionID = parts[1].toInt();
+	int processedCount = 0;// 记录已处理的数量
+	QRegExp regex(".*");
+	QString keyword;
+	while (processedCount < SectionID)
+	{
+		QString line = Stream1.readLine();
+		if (line.startsWith("**") || line.isEmpty())
+		{
+			// 跳过以 "**" 开头的行和空行
+			continue;
+		}
+		// 解析数据
+		
+
+		else if (line.startsWith("*"))
+		{
+			QStringList parts = line.mid(1).split(",", Qt::SkipEmptyParts);
+			keyword = parts[0].trimmed();
+			if (keyword.compare("Tension", Qt::CaseInsensitive) == 0)
+			{
+				Stream << line << "\n";
+			}
+			else if (keyword.compare("Conductor_Line", Qt::CaseInsensitive) == 0)
+			{
+				Stream << line << "\n";
+			}
+			else if (keyword.compare("Ground_Line", Qt::CaseInsensitive) == 0)
+			{
+				Stream << line << "\n";
+				GroungLineList(parts);
+				processedCount++;
+			}
+		}
+	}
+}
+
+void InstanceWire::GroungLineList(QStringList parts)
+{
+	int GroundLineID = parts[1].toInt();
+	int processedCount = 0;// 记录已处理的呼高数量
+	while (processedCount < GroundLineID)
+	{
+		QString line = Stream1.readLine();
+		if (line.startsWith("**") || line.isEmpty())
+		{
+			// 跳过以 "**" 开头的行和空行
+			continue;
+		}
+		Stream << line << "\n";
+		processedCount++;
+	}
 }
 
 void InstanceWire::instanceList(QStringList parts)
@@ -134,7 +225,9 @@ void InstanceWire::instanceList(QStringList parts)
 	int instanceID = parts[1].toInt();
 	int processedCount = 0;// 记录已处理的呼高数量
 	QString keyword;
-	while (processedCount < 4)
+	int circulate = 5;
+
+	while (processedCount < circulate)
 	{
 		QString line = Stream1.readLine();
 		if (line.startsWith("**") || line.isEmpty())
@@ -149,11 +242,17 @@ void InstanceWire::instanceList(QStringList parts)
 			keyword = parts[0].trimmed();
 			if (keyword.compare("TowerPosition", Qt::CaseInsensitive) == 0)
 			{
-				TowerPosition(parts);
+				//TowerPosition(parts);
+				QStringList xyzLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+				x = xyzLine[1].toDouble();
+				y = xyzLine[2].toDouble();
+				z = xyzLine[3].toDouble();
 			}
 			else if (keyword.compare("Angle", Qt::CaseInsensitive) == 0)
 			{
-				Angle(parts);
+				//Angle(parts);
+				QStringList AngleLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+				dAngle = AngleLine[1].toDouble();
 			}
 			else if (keyword.compare("Body", Qt::CaseInsensitive) == 0)
 			{
@@ -161,7 +260,11 @@ void InstanceWire::instanceList(QStringList parts)
 			}
 			else if (keyword.compare("Leg", Qt::CaseInsensitive) == 0)
 			{
-				LegList();
+				LegList(parts);
+			}
+			else if (keyword.compare("String", Qt::CaseInsensitive) == 0)
+			{
+				StringList(parts);
 			}
 			processedCount++;
 		}
@@ -169,6 +272,8 @@ void InstanceWire::instanceList(QStringList parts)
 	}
 	if (tower != nullptr)
 	{
+
+		qDebug() << x << "   " << y << "   " << z << "\t";
 		towerWire->AddTowerToGroup(tower, instanceID, x*1000, y*1000, z*1000, dAngle);
 	}
 
@@ -224,76 +329,116 @@ void InstanceWire::NomHeight(QStringList parts)
 
 }
 
-void InstanceWire::LegList()
+void InstanceWire::LegList(QStringList parts)
 {
-	int processedCount = 0;
-	while (processedCount < 1)
+	int LegId = parts[1].toInt();//这是A
+	int LegIdB = parts[2].toInt();//B
+	int LegIdC = parts[3].toInt();//C
+	int LegIdD = parts[4].toInt();//D
+	//处理A--第三象限
+	Part_Base* part = towerList->TP_Part.Find_Entity(LegId);//A
+	if (part == nullptr)
 	{
-		QString line = Stream1.readLine();
-		if (line.startsWith("**") || line.isEmpty())
-		{
-			// 跳过以 "**" 开头的行和空行
-			continue;
-		}
-		QStringList legLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
-		int LegId = legLine[0].toInt();//这是A
-		int LegIdB = legLine[1].toInt();//B
-		int LegIdC = legLine[2].toInt();//C
-		int LegIdD = legLine[3].toInt();//D
-
-		//处理A--第三象限
-		Part_Base* part = towerList->TP_Part.Find_Entity(LegId);//A
-		if (part == nullptr)
-		{
-			qDebug() << "有问题" << "\t";
-		}
+		qDebug() << "有问题" << "\t";
+	}
+	for (int i = 0; i < part->m_Nodes.size(); i++)
+	{
+		part->m_Nodes[i].x *= -1;
+		part->m_Nodes[i].y *= -1;
+	}
+	if (part != nullptr)
+	{
+		tower->addPart(part);
+		//还原
 		for (int i = 0; i < part->m_Nodes.size(); i++)
 		{
 			part->m_Nodes[i].x *= -1;
 			part->m_Nodes[i].y *= -1;
 		}
-		if (part != nullptr)
-		{
-			tower->addPart(part);
-			//还原
-			for (int i = 0; i < part->m_Nodes.size(); i++)
-			{
-				part->m_Nodes[i].x *= -1;
-				part->m_Nodes[i].y *= -1;
-			}
-		}
-		//处理B--第二象限
-		Part_Base* partB = towerList->TP_Part.Find_Entity(LegIdB);//B
+	}
+	//处理B--第二象限
+	Part_Base* partB = towerList->TP_Part.Find_Entity(LegIdB);//B
+	for (int i = 0; i < partB->m_Nodes.size(); i++)
+	{
+		partB->m_Nodes[i].x *= -1;
+	}
+	if (partB != nullptr)
+	{
+		tower->addPart(partB);
 		for (int i = 0; i < partB->m_Nodes.size(); i++)
 		{
 			partB->m_Nodes[i].x *= -1;
 		}
-		if (partB != nullptr)
-		{
-			tower->addPart(partB);
-			for (int i = 0; i < partB->m_Nodes.size(); i++)
-			{
-				partB->m_Nodes[i].x *= -1;
-			}
-		}
-		//处理C--第一象限
-		Part_Base* partC = towerList->TP_Part.Find_Entity(LegIdC);//C
-		if (partC != nullptr)
-		{
-			tower->addPart(partC);
-		}
-		//处理D--第四象限
-		Part_Base* partD = towerList->TP_Part.Find_Entity(LegIdD);//D
+	}
+	//处理C--第一象限
+	Part_Base* partC = towerList->TP_Part.Find_Entity(LegIdC);//C
+	if (partC != nullptr)
+	{
+		tower->addPart(partC);
+	}
+	//处理D--第四象限
+	Part_Base* partD = towerList->TP_Part.Find_Entity(LegIdD);//D
+	for (int i = 0; i < partD->m_Nodes.size(); i++)
+	{
+		partD->m_Nodes[i].y *= -1;
+	}
+	if (partD != nullptr)
+	{
+		tower->addPart(partD);
 		for (int i = 0; i < partD->m_Nodes.size(); i++)
 		{
 			partD->m_Nodes[i].y *= -1;
 		}
-		if (partD != nullptr)
+	}	
+}
+void InstanceWire::StringList(QStringList parts)
+{
+	int StringCount = parts[1].toInt();
+	int processedCount = 0;// 记录已处理的部件数量
+	while (processedCount < StringCount)
+	{
+		QString StringLine = Stream1.readLine();
+		if (StringLine.startsWith("**") || StringLine.isEmpty())
 		{
-			tower->addPart(partD);
-			for (int i = 0; i < partD->m_Nodes.size(); i++)
+			// 跳过说明行和空行
+			continue;
+		}
+		QStringList StringParts = StringLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+		int StringNumber = StringParts[0].toInt();
+		QString WireLog = StringParts[1];
+		for (auto& j : tower->m_HangList)
+		{
+			if (j.WireLoge == WireLog)
 			{
-				partD->m_Nodes[i].y *= -1;
+				if (j.StringClass == "V")
+				{
+					double angle1 = StringParts[2].toDouble();
+					double angle2 = StringParts[3].toDouble();
+					j.Angle.push_back(angle1);
+					j.Angle.push_back(angle2);
+					j.Material = StringParts[4];
+					j.Section = StringParts[5];
+					j.LineSegment = LineSegment1;
+				}
+				else
+				{
+					double Length = StringParts[2].toDouble();
+					j.length = Length;
+					j.Material = StringParts[3];
+					j.Section = StringParts[4];
+					if (j.StringClass == "OS")
+					{
+						j.LineSegment = LineSegment1;
+					}
+					else if (j.StringClass == "OB")
+					{
+						j.LineSegment = LineSegment2;
+					}
+					else
+					{
+						j.LineSegment = LineSegment1;
+					}
+				}
 			}
 		}
 		processedCount++;
@@ -305,4 +450,40 @@ void InstanceWire::showGroup(TowerWireGroup* towerWireGroup)
 	towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer);
 	towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer);
 	m_pInterFace->m_Renderer->ResetCamera();
+}
+
+void InstanceWire::CreatTowerWierGroupItem(QString lineName)
+{
+	QTreeWidgetItem* towerWierGroupItem = new QTreeWidgetItem(m_pInterFace->creat_towerwire_instance);
+	QString str = QString::number(m_pInterFace->creat_towerwire_instance->childCount());     //塔线组的item
+	towerWierGroupItem->setText(0, QString(lineName));
+	//放入每个杆塔
+	QTreeWidgetItem* GroupTower = new QTreeWidgetItem(towerWierGroupItem);
+	GroupTower->setText(0, QString("杆塔"));
+	for (int i = 0; i < TowerSize; i++)
+	{
+		QTreeWidgetItem* GroupTowerItem = new QTreeWidgetItem(GroupTower);
+		QString str = QString::number(i+1);     //str转字符
+		GroupTowerItem->setText(0, QString("杆塔编号" + str));
+	}
+	towerWire->Item = towerWierGroupItem;
+	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
+	Wire_modeling->setText(0, QString("导线建模"));
+
+	QTreeWidgetItem* calculate = new QTreeWidgetItem(towerWierGroupItem);
+	calculate->setText(0, QString("计算文件"));
+
+	QTreeWidgetItem* Loads = new QTreeWidgetItem(towerWierGroupItem);
+	Loads->setText(0, QString("施加荷载"));
+}
+
+void InstanceWire::WriteHangList()
+{
+	QString xx = "*Sus" ;
+	Stream << xx << "," << towerWire->TP_HangPoint.size()<<"\n";
+
+	for (const auto& j : towerWire->TP_HangPoint)
+	{
+		Stream <<j.second->m_id <<"  " << j.second->StringClass << "  " << j.second->WireLoge << "  " << "\n";
+	}
 }
