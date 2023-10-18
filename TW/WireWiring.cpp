@@ -195,9 +195,9 @@ void WireWiring::NodeList(Part_Base* part, QStringList parts)
 		}
 		QStringList NodeParts = NodeLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 		int NodeNumber = NodeParts[0].toInt();
-		double NodeX = NodeParts[1].toDouble();
-		double NodeY = NodeParts[2].toDouble();
-		double NodeZ = NodeParts[3].toDouble();
+		double NodeX = NodeParts[1].toDouble() * 10e-3;
+		double NodeY = NodeParts[2].toDouble() * 10e-3;
+		double NodeZ = NodeParts[3].toDouble() * 10e-3;
 		part->m_Nodes.push_back(Node(NodeNumber, NodeX, NodeY, NodeZ, 0));
 		processedCount++;
 	}
