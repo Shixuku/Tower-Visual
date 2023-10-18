@@ -1,5 +1,6 @@
 #include "TowerWireGroup.h"
 #include"CreatWire.h"
+#include <algorithm>
 int TowerWireGroup::Get_id() const
 {
 	return m_id;
@@ -211,10 +212,25 @@ void TowerWireGroup::AddSuspensionNode(Tower* tower)
 
 void TowerWireGroup::addHangPoint(Tower* tower)
 {
-	size_t HangPointSize = tower->TP_HangPoint.size();
-	for (int i = 0; i < HangPointSize; i++)
+	size_t m_HangListSize = tower->m_HangList.size();
+	qDebug() << "m_HangListSize" << m_HangListSize << "\n";
+	for (int i = 0; i < m_HangListSize; i++)
 	{
-		HangPoint* hangPoint = new HangPoint();
+		this->m_HangList.push_back(tower->m_HangList[i]);
+		size_t totalT = this->m_HangList.size() - 1;
+		m_HangList[totalT].m_id = totalT + 1;
+		if (tower->m_HangList[i].StringClass == "V")
+		{
+			m_HangList[totalT].NodeId[0] = tower->FindGroupIdNode(tower->m_HangList[i].NodeId[0]);
+			m_HangList[totalT].NodeId[1] = tower->FindGroupIdNode(tower->m_HangList[i].NodeId[1]);
+		}
+		else
+		{
+			m_HangList[totalT].NodeId[0] = tower->FindGroupIdNode(tower->m_HangList[i].NodeId[0]);
+		}
+		
+
+		/*HangPoint* hangPoint = new HangPoint();
 		hangPoint->m_id = this->TP_HangPoint.size() + 1;
 		hangPoint->StringClass = tower->TP_HangPoint.Find_Entity(i + 1)->StringClass;
 		QString tt = tower->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
@@ -222,7 +238,7 @@ void TowerWireGroup::addHangPoint(Tower* tower)
 		hangPoint->WireLoge = tower->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
 		qDebug() << tower->TP_HangPoint.Find_Entity(i + 1)->NodeId << "\n";
 		hangPoint->NodeId = tower->FindGroupIdNode(tower->TP_HangPoint.Find_Entity(i + 1)->NodeId);
-		this->TP_HangPoint.Add_Entity(hangPoint);
+		this->TP_HangPoint.Add_Entity(hangPoint);*/
 	}
 }
 

@@ -43,7 +43,7 @@ void Tower::addPart(Part_Base* part)
 	addRestraintNode(part);
 	addSuspensionNode(part);
 	addHangPoint(part);
-	HangPintList();
+	//HangPintList();
 	part->part_to_tower.clear();
 }
 
@@ -488,28 +488,18 @@ void Tower::addHangPoint(Part_Base* part)
 		HangPoint* hangPoint = new HangPoint();
 		hangPoint->m_id = this->TP_HangPoint.size() + 1;
 		hangPoint->StringClass = part->TP_HangPoint.Find_Entity(i + 1)->StringClass;
-		QString tt= part->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
-		qDebug() << tt << "\n";
 		hangPoint->WireLoge = part->TP_HangPoint.Find_Entity(i + 1)->WireLoge;
-		qDebug() << part->TP_HangPoint.Find_Entity(i + 1)->NodeId << "\n";
 		hangPoint->NodeId= part->Find_tower_idNode(part->TP_HangPoint.Find_Entity(i + 1)->NodeId);
+		
 		this->TP_HangPoint.Add_Entity(hangPoint);
-	}
-}
-
-void Tower::HangPintList()
-{
-	size_t HangPointSize = this->TP_HangPoint.size();
-	for (int i = 0; i < HangPointSize; i++)
-	{
-		QString StringClass = TP_HangPoint.Find_Entity(i + 1)->StringClass;
-		QString WireLoge = TP_HangPoint.Find_Entity(i + 1)->StringClass;
-		int nodeid= TP_HangPoint.Find_Entity(i + 1)->NodeId;
+		QString StringClass = hangPoint->StringClass;
+		QString WireLoge = hangPoint->WireLoge;
+		int nodeid = hangPoint->NodeId;
 		int HangSize = this->m_HangList.size() + 1;
 		if (StringClass == "V")
 		{
 			bool isFind = false;
-			for (auto j : m_HangList)
+			for (auto& j : m_HangList)
 			{
 				if (j.StringClass == StringClass)
 				{
@@ -531,7 +521,46 @@ void Tower::HangPintList()
 			m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
 			m_HangList[HangSize - 1].NodeId.push_back(nodeid);
 		}
-		
 	}
 }
+
+//void Tower::HangPintList()
+//{
+//	size_t HangPointSize = this->TP_HangPoint.size();
+//	for (int i = 0; i < HangPointSize; i++)
+//	{
+//		QString StringClass = TP_HangPoint.Find_Entity(i + 1)->StringClass;
+//		QString WireLoge = TP_HangPoint.Find_Entity(i + 1)->WireLoge;
+//		int nodeid= TP_HangPoint.Find_Entity(i + 1)->NodeId;
+//		int HangSize = this->m_HangList.size() + 1;
+//		if (StringClass == "V")
+//		{
+//			bool isFind = false;
+//			for (auto& j : m_HangList)
+//			{
+//				if (j.StringClass == StringClass)
+//				{
+//					if (j.WireLoge == WireLoge)
+//					{
+//						j.NodeId.push_back(nodeid);
+//						isFind = true;
+//					}
+//				}
+//			}
+//			if (isFind == false)
+//			{
+//				m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
+//				m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+//			}
+//		}
+//		else
+//		{
+//			m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
+//			m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+//		}
+//		
+//	}
+//	size_t m_HangListSize = m_HangList.size();
+//	qDebug() << "m_HangListSize" << m_HangListSize << "\n";
+//}
 
