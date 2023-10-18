@@ -18,6 +18,7 @@ class Part_Base;
 class TowerWireGroup;
 class Tower;
 class TowerList;
+class HangPoint;
 class InstanceWire
 {
 public:
@@ -55,5 +56,6 @@ public:
 	void WriteHangList();
 	int LineSegment1 = 0;
 	int LineSegment2 = 0;
+
 };
 

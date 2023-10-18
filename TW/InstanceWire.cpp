@@ -1,6 +1,7 @@
 #include "InstanceWire.h"
 #include"InterFace.h"
 #include "NominalHeight.h"
+#include"HangList.h"
 #include <QRegExp>
 #pragma execution_character_set("utf-8")
 void InstanceWire::GetAllInstanceTXT(string path, vector<string>& files)
@@ -159,6 +160,14 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 			WriteHangList();
 			Qf.close();
 		}
+		Tension = 0;//耐张段数
+		Line = 0;//直线塔或者耐张塔
+		TowerSize = 0;
+		Ground = 0;//地线数量
+		Conductor = 0;//导线
+		Spilt = 0;
+		LineSegment1 = 0;
+		LineSegment2 = 0;
 	}
 
 	//showGroup(towerWire);
@@ -480,10 +489,49 @@ void InstanceWire::CreatTowerWierGroupItem(QString lineName)
 void InstanceWire::WriteHangList()
 {
 	QString xx = "*Sus" ;
-	Stream << xx << "," << towerWire->TP_HangPoint.size()<<"\n";
-
-	for (const auto& j : towerWire->TP_HangPoint)
+	towerWire->VectorToMap();
+	int m_HangListSize = towerWire->m_HangList.size();
+	int LostPointSize = (Ground + Conductor) * 2;
+	Stream << xx << "," << m_HangListSize - LostPointSize <<","<<Spilt << "\n";
+	for (int i = 0; i < towerWire->m_HangList.size(); i++)
 	{
-		Stream <<j.second->m_id <<"  " << j.second->StringClass << "  " << j.second->WireLoge << "  " << "\n";
+		if (towerWire->m_HangList[i].StringClass == "V")
+		{
+			int id1 = towerWire->m_HangList[i].NodeId[0];
+			int id2 = towerWire->m_HangList[i].NodeId[1];
+			Stream << towerWire->m_HangList[i].StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].LineSegment <<"  " << towerWire->m_HangList[i] .Angle[0]
+				<<"  "<< towerWire->m_HangList[i].Angle[1] <<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
+				towerWire->NodeData[id1].z << "  " << towerWire->NodeData[id2].x << "  " << towerWire->NodeData[id2].y << "  " <<
+				towerWire->NodeData[id2].z << "\n";
+		}
+		else
+		{
+			if (i <= LostPointSize && towerWire->m_HangList[i].StringClass == "OS")
+			{
+				continue;
+			}
+			else if (i >= m_HangListSize - LostPointSize && towerWire->m_HangList[i].StringClass == "OB")
+			{
+				continue;
+			}
+			else 
+			{
+				QString StringClass;
+				if (towerWire->m_HangList[i].StringClass == "OS" || towerWire->m_HangList[i].StringClass == "OB")
+				{
+					StringClass = "O";
+				}
+				else
+				{
+					StringClass = towerWire->m_HangList[i].StringClass;
+				}
+				int id1 = towerWire->m_HangList[i].NodeId[0];
+				Stream  << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].LineSegment <<"  "<<
+					towerWire->m_HangList[i].length<<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
+					towerWire->NodeData[id1].z << "\n";
+			}
+		}
+		
+
 	}
 }
