@@ -327,9 +327,13 @@ void TowerWireGroup::AddAxialForceToInsulator(CreatWire* wire)
 {
 	Splits = wire->fenlie;
 	areaWire = wire->area;
+	cout << "erro" << TrussData.size() << "\n";
 	//暂时只考虑悬垂型（加入塔线组合需修改）
 	for (int i = 0; i < this->SuspensionElementClass.size(); i++)
 	{
+		int xxx=this->SuspensionElement[i];
+		int kkk = wire->WireGravity[i];
+		int zzz = wire->WireGravity[i + 1];
 		 TrussData[this->SuspensionElement[i]].AxialForce = 
 			 (wire->WireGravity[i] + wire->WireGravity[i + 1]) / 2;
 		 for (int j = 0; j < m_Elements_Trusses.size(); j++)

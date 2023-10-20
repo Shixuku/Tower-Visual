@@ -65,7 +65,7 @@ void CreatWire::CreateWire()
 	rou = unitMass * 9.8 / area;//±»‘ÿ N/mm^2*m
 	int n = N;
 	int num = WireRealSus.size() / wireQty - 1;
-	
+
 	for (int j = 0; j < wireQty; j++)
 	{
 		int* node = new int[num * (n + 1) * fenlie];

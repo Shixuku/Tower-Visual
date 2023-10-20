@@ -117,7 +117,7 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 					}
 					else if (keyword.compare("Section", Qt::CaseInsensitive) == 0)
 					{
-						Stream << qLine << "\n";
+						//Stream << qLine << "\n";
 						SectionList(parts);
 						
 					}
@@ -179,6 +179,8 @@ void InstanceWire::SectionList(QStringList parts)
 	int processedCount = 0;// 记录已处理的数量
 	QRegExp regex(".*");
 	QString keyword;
+	QString Ten = "*Tension";
+	Stream << Ten<<"," << SectionID << "\n";
 	while (processedCount < SectionID)
 	{
 		QString line = Stream1.readLine();
@@ -253,9 +255,9 @@ void InstanceWire::instanceList(QStringList parts)
 			{
 				//TowerPosition(parts);
 				QStringList xyzLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
-				x = xyzLine[1].toDouble();
-				y = xyzLine[2].toDouble();
-				z = xyzLine[3].toDouble();
+				x = xyzLine[1].toDouble() * 10e-3;
+				y = xyzLine[2].toDouble() * 10e-3;
+				z = xyzLine[3].toDouble() * 10e-3;
 			}
 			else if (keyword.compare("Angle", Qt::CaseInsensitive) == 0)
 			{
@@ -443,7 +445,7 @@ void InstanceWire::StringList(QStringList parts)
 					{
 						j.LineSegment = LineSegment2;
 					}
-					else
+					else if(j.StringClass == "H"|| j.StringClass == "V")
 					{
 						j.LineSegment = LineSegment1;
 					}
@@ -504,34 +506,58 @@ void InstanceWire::WriteHangList()
 				towerWire->NodeData[id1].z << "  " << towerWire->NodeData[id2].x << "  " << towerWire->NodeData[id2].y << "  " <<
 				towerWire->NodeData[id2].z << "\n";
 		}
-		else
+		else if (towerWire->m_HangList[i].StringClass == "OS")
 		{
-			if (i <= LostPointSize && towerWire->m_HangList[i].StringClass == "OS")
+			if (i <= LostPointSize)
 			{
 				continue;
 			}
-			else if (i >= m_HangListSize - LostPointSize && towerWire->m_HangList[i].StringClass == "OB")
+			else
 			{
-				continue;
-			}
-			else 
-			{
-				QString StringClass;
-				if (towerWire->m_HangList[i].StringClass == "OS" || towerWire->m_HangList[i].StringClass == "OB")
+				QString StringClass = "O";
+				if (towerWire->m_HangList[i].WireLoge == "1" || towerWire->m_HangList[i].WireLoge == "2")
 				{
-					StringClass = "O";
-				}
-				else
-				{
-					StringClass = towerWire->m_HangList[i].StringClass;
+					StringClass = "G";
 				}
 				int id1 = towerWire->m_HangList[i].NodeId[0];
-				Stream  << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].LineSegment <<"  "<<
-					towerWire->m_HangList[i].length<<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
+				Stream << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  " << towerWire->m_HangList[i].length <<"  " << towerWire->m_HangList[i].LineSegment << "  "
+					<< towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
 					towerWire->NodeData[id1].z << "\n";
 			}
 		}
-		
+		else if (towerWire->m_HangList[i].StringClass == "OB")
+		{
+			if (i >= m_HangListSize - LostPointSize)
+			{
+				continue;
+			}
+			else
+			{
+				QString StringClass = "O";
+				if (towerWire->m_HangList[i].WireLoge == "1" || towerWire->m_HangList[i].WireLoge == "2")
+				{
+					StringClass = "G";
+				}
 
+				int id1 = towerWire->m_HangList[i].NodeId[0];
+				Stream << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  " << towerWire->m_HangList[i].length << "  " 
+					<< towerWire->m_HangList[i].LineSegment << "  "
+					<< towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
+					towerWire->NodeData[id1].z << "\n";
+			}
+		}
+		else if(towerWire->m_HangList[i].StringClass == "H")
+		{
+			QString StringClass = "H";
+			if (towerWire->m_HangList[i].WireLoge == "1" || towerWire->m_HangList[i].WireLoge == "2")
+			{
+				StringClass = "G";
+			}
+			int id1 = towerWire->m_HangList[i].NodeId[0];
+			Stream  << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].length <<"  "<<
+					towerWire->m_HangList[i].LineSegment <<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
+					towerWire->NodeData[id1].z << "\n";
+		}
+		
 	}
 }
