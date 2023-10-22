@@ -255,9 +255,9 @@ void InstanceWire::instanceList(QStringList parts)
 			{
 				//TowerPosition(parts);
 				QStringList xyzLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
-				x = xyzLine[1].toDouble() * 10e-3;
-				y = xyzLine[2].toDouble() * 10e-3;
-				z = xyzLine[3].toDouble() * 10e-3;
+				x = xyzLine[1].toDouble();
+				y = xyzLine[2].toDouble();
+				z = xyzLine[3].toDouble();
 			}
 			else if (keyword.compare("Angle", Qt::CaseInsensitive) == 0)
 			{
@@ -285,7 +285,7 @@ void InstanceWire::instanceList(QStringList parts)
 	{
 
 		qDebug() << x << "   " << y << "   " << z << "\t";
-		towerWire->AddTowerToGroup(tower, instanceID, x*1000, y*1000, z*1000, dAngle);
+		towerWire->AddTowerToGroup(tower, instanceID, x, y, z, dAngle);
 	}
 
 }
