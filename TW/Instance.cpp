@@ -97,7 +97,8 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 		p[3] = m_Nodes[i].z;
 		m_pts->SetPoint(i, p[1], p[2], p[3]);
 		Node* pNode = &m_Nodes[i];//zhan
-		Ptr->InsertNextValue((UINT_PTR)pNode);//将地址转换为整数		
+		Ptr->InsertNextValue((UINT_PTR)pNode);//将地址转换为整数	
+		//cout << "  " << "id" << "  " << p[0] << "  " << p[1] << "  " << p[2] << "  " << p[3] << "\n";
 	}
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_pts);
@@ -155,8 +156,9 @@ void Instance::SaveSus(vector<int> ids)
 	realSuspoint.push_back(ids[0]);
 }
 
-void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids)
+void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid)
 {
+	if (ids.size() == 0)return;
 	size_t size = ids.size();
 	int node1 = ids[0];
 	for (int i = 1; i < size; i++)
@@ -168,11 +170,38 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids)
 		}
 		else
 		{
-			m_Elements_Trusses.push_back(Element_Truss(Truss_elementsID + 1, node1, node2, 0, 0));
-			Truss_elementsID++;
+			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 10000));
+			id++;
 			node1 = node2;
 		}
 	}
+}
+
+void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid)
+{
+	if (ids.size() == 0)return;
+	size_t size = ids.size();
+	int node1 = ids[0];
+	for (int i = 1; i < size; i++)
+	{
+		int node2 = ids[i];
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
+			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection));
+			id++;
+			node1 = node2;
+		}
+	}
+}
+
+void Instance::SaveApSus(vector<int> ids)
+{
+	ap_realSuspoint.push_back(ids[0]);
 }
 
 void Instance::SaveTo(QDataStream& fin) const
@@ -430,15 +459,14 @@ void Instance::IceLoadTxT()
 
 void Instance::MaterialTxT()
 {
-	Stream <<"*Material," << 6 << "\n";
-	for (int i = 0; i < 3; i++)
+
+	InterFace* pInterFace = Base::Get_InterFace();
+	int MaterialSize = pInterFace->ME_Material.size();
+	Stream <<"*Material," << MaterialSize << "\n";
+	for (auto& i : pInterFace->ME_Material)
 	{
-		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
-		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "\n";
+		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second ->Poisson<< "  " << i.second->Density <<"  " << i.second->Thermal << "\n";
 	}
-	Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080 << "  " << 0 << "\n";
-	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "\n";
-	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "\n";
 }
 
 void Instance::BeamSectionTxT()
@@ -548,7 +576,23 @@ void Instance::RestraintTxT()
 {
 	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
-	int totalRestraint = RestraintNodesize + m_ConstraintSize;
+	// 首先对容器进行排序
+	std::sort(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	// 使用std::unique函数去除相邻的重复元素
+	auto newEnd = std::unique(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	StrainAllRestraintNode.resize(std::distance(StrainAllRestraintNode.begin(), newEnd));
+
+	// 首先对容器进行排序
+	std::sort(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	// 使用std::unique函数去除相邻的重复元素
+	auto End = std::unique(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	StrainJointRestraintNode.resize(std::distance(StrainJointRestraintNode.begin(), End));
+
+	int WireAllStrainSize = StrainAllRestraintNode.size() * 6;
+	int WireJointStrainSize = StrainJointRestraintNode.size() * 3;
+	int totalRestraint = RestraintNodesize + m_ConstraintSize + WireAllStrainSize + WireJointStrainSize;
 
 	Stream <<"*Constraint," << totalRestraint << "\n";
 	int m_id=1;
@@ -559,6 +603,25 @@ void Instance::RestraintTxT()
 			Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
 			m_id++;
 		}	
+	}
+	int m_allId = 1;
+	for (int i = 0; i < StrainAllRestraintNode.size(); i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			Stream << "  " << m_allId << "  " << StrainAllRestraintNode[i] << "  " << j << "  " << 0 << "\n";
+			m_allId++;
+		}
+	}
+
+	int m_jointId = 1;
+	for (int i = 0; i < StrainJointRestraintNode.size(); i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			Stream << "  " << m_jointId << "  " << StrainJointRestraintNode[i] << "  " << j << "  " << 0 << "\n";
+			m_jointId++;
+		}
 	}
 	//默认约束
 	for (int i = 0; i < m_ConstraintSize; i++)

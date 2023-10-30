@@ -26,6 +26,7 @@
 //fl_Dll
 #include"S_InterFace.h"
 #include"Node_Base.h"
+#include"InputWireInfor.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -52,6 +53,7 @@ class Instance_Calculate;
 class Material;
 class Section_L;
 class Section_C;
+class CreateStrainWire;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {
@@ -184,4 +186,7 @@ private:
     bool isAxesCreated = false;
    
     Instance_Calculate* ui_calculate = nullptr;
+    void ReadWireInforTxT();
+    void CreateStrain(QTreeWidgetItem* item);
+ 
 };

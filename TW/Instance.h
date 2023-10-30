@@ -18,6 +18,9 @@
 #include"ParameterStableWind.h"
 #include"ParameterIceType.h"
 #include"HangList.h"
+#include"Insulator_Base.h"
+#include"WireProperties.h"
+#include"Material.h"
 class Instance :public Base
 {
 public:
@@ -64,11 +67,14 @@ public:
 	int Splits= 0;//导线分裂数
 	double WindCoefficient = 0;//风荷载系数
 	double areaWire = 0;
+	vector<int>ap_realSuspoint;
 	QString LandformsType;//地貌类型
 	QTreeWidgetItem* Item = nullptr;
     int Creat_Node(double x, double y, double z);//生成点
     void SaveSus(vector<int>ids);//保存悬挂点的id
-    void CreatWireEle(vector<Element_Truss>& m_Elements, vector<int> ids);
+    void CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
+	void CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid);
+	void SaveApSus(vector<int>ids);
 	virtual void SaveTo(QDataStream& fin)const;
 	virtual void Input(QDataStream& fin);
 	void VectorToMap();
@@ -115,5 +121,22 @@ public:
 	void DrawForceX(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceY(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
 	void DrawForceZ(Node* n, int a, vtkRenderer* renderer);//a传1或者-1
+
+	map<int, vector<Insulator_Base>>Test_a;
+	map<int, vector<Insulator_Base>>RealSus;
+	map<int, vector<Insulator_Base>>G_RealSus;
+	vector<WireProperties>Property;
+	WireProperties* Find_WireProperties(int id)
+	{
+		for (auto& i : Property) {
+			if (i.m_id == id) return &i;
+		}
+		cout << "没找到导线材料\n";
+		return nullptr;
+	}
+	map<int, vector<int>>StrainSpacerNum;
+
+	vector<int>StrainAllRestraintNode;//完全约束
+	vector<int>StrainJointRestraintNode;//铰接
 };
 

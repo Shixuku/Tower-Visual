@@ -38,25 +38,6 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 	vector<string> fileNames;
 	string path("../InstanceTXT"); 	//自己选择目录测试
 	GetAllInstanceTXT(path, fileNames);
-	//for (const auto& ph : fileNames) {
-	//	std::cout << ph << "\n";
-	//}
-	//qDebug() << "fileNames.size()！" << fileNames.size() << "\t";
-	//for (const auto& j : m_pInterFace->TWG)
-	//{
-	//	qDebug() << j.second->m_Name << "\t";
-	//	for (const auto& i : j.second->TWG_TP)
-	//	{
-	//		qDebug() << i.second->m_Name << "  " << i.second->TP_Height.size() << "\t";
-	//		for (const auto& l : i.second->TP_Height)
-	//		{
-	//			for (int i = 0; i < l.second->BodyList.size(); i++)
-	//			{
-	//				qDebug() << l.second->BodyList[i] << "\t";
-	//			}
-	//		}
-	//	}
-	//}
 	for (int i = 0; i < fileNames.size(); i++)
 	{
 		str = QString::fromStdString(fileNames[i]);
@@ -303,8 +284,8 @@ void InstanceWire::TowerPosition(QStringList parts)
 		}
 		QStringList xyzLine = line.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 		x = xyzLine[0].toDouble();
-		y = xyzLine[1].toDouble();
-		z = xyzLine[2].toDouble();
+		y = xyzLine[1].toDouble() ;
+		z = xyzLine[2].toDouble() ;
 		processedCount++;
 	}
 }

@@ -110,6 +110,7 @@
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
+    <ClCompile Include="CreateStrainWire.cpp" />
     <ClCompile Include="Create_Constraint.cpp" />
     <ClCompile Include="ConcentrateForce.cpp" />
     <ClCompile Include="CreatWire.cpp" />
@@ -122,8 +123,10 @@
     <ClCompile Include="IceLoad.cpp" />
     <ClCompile Include="InputMaterial.cpp" />
     <ClCompile Include="InputSection.cpp" />
+    <ClCompile Include="InputWireInfor.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="InstanceWire.cpp" />
+    <ClCompile Include="Insulator_Base.cpp" />
     <ClCompile Include="InteractorStyle.cpp" />
     <ClCompile Include="Interphase_spacer.cpp" />
     <ClCompile Include="LineMaterial.cpp" />
@@ -152,6 +155,7 @@
     <ClCompile Include="MultiSelectComboBox.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="Spacer.cpp" />
+    <ClCompile Include="StrainInfor.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerCaculate.cpp" />
     <ClCompile Include="TowerData_Body.cpp" />
@@ -174,6 +178,7 @@
     <ClCompile Include="Wind.cpp" />
     <ClCompile Include="WindList.cpp" />
     <ClCompile Include="WireData.cpp" />
+    <ClCompile Include="WireProperties.cpp" />
     <ClCompile Include="WireWiring.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
@@ -218,13 +223,18 @@
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreateStrainWire.h" />
     <ClInclude Include="HangList.h" />
     <ClInclude Include="HangPoint.h" />
     <ClInclude Include="InputSection.h" />
+    <ClInclude Include="InputWireInfor.h" />
     <ClInclude Include="InstanceWire.h" />
+    <ClInclude Include="Insulator_Base.h" />
     <ClInclude Include="LineMaterial.h" />
     <ClInclude Include="NominalHeight.h" />
+    <ClInclude Include="StrainInfor.h" />
     <ClInclude Include="TowerList.h" />
+    <ClInclude Include="WireProperties.h" />
     <ClInclude Include="WireWiring.h" />
     <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />

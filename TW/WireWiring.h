@@ -31,6 +31,7 @@ public:
 	int GetSectionId(QString MaterialName, QString SectionName);
 	void HighList(QStringList parts);
 	void HangPointList(QStringList parts);
+	void GetLIxyz(double a, double b, double& Iu, double& Iv, double& J, double& S);
 };
 
 

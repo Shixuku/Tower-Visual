@@ -573,7 +573,7 @@
 *Leg,20,20,20,20
 *TowerPosition,-2899.220578,12705.37332,-15.7
 *Angle,0
-*String, 5
+*String, 8
 1,1,0.0,String_O,D100
 2,2,0.0,String_O,D100
 3,1A,0.0,String_O,D100

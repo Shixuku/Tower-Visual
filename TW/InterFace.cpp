@@ -38,6 +38,7 @@
 #include"WireWiring.h"
 #include"InstanceWire.h"
 #include <vtkCamera.h>
+#include"CreateStrainWire.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -247,7 +248,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (isChildOfGroup(item, 1) || isChildOfSingleWire(item, 1))
 	{//导线建模
-		ui_Wire_InterFace(item);
+		//ui_Wire_InterFace(item);
+		//ReadWireInforTxT();
+		CreateStrain(item);
+		
 	}
 	else if (isChildOfGroup(item,2))
 	{//输出inp文件
@@ -825,6 +829,33 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 	}
 	return nullptr;
 }
+
+void InterFace::ReadWireInforTxT()
+{
+	InputWireInfor aa;
+	aa.ReadWireInfor(this);
+}
+
+void InterFace::CreateStrain(QTreeWidgetItem* item)
+{
+	InputWireInfor aa;
+	aa.ReadWireInfor(this);
+	aa.towerWire = OnFindGroup(item->parent());
+	aa.towerWire->Suspensioncombined();
+	aa.towerWire->VectorToMap();
+	m_Renderer->RemoveAllViewProps();
+	CreateStrainWire* c = new CreateStrainWire();
+	c->Test_a = aa.wd->Test_a;
+	c->Property = aa.wd->Property;
+	c->Create_Mesh();
+	aa.towerWire->AddStrainWireToGroup(c);
+	aa.towerWire->Show_VTKnode(m_Renderer);
+	aa.towerWire->Show_VTKbeam(m_Renderer);
+	aa.towerWire->Show_VTKtruss(m_Renderer);
+	m_Renderer->ResetCamera();
+}
+
+
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面

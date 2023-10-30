@@ -24,7 +24,7 @@ public:
 	int ClassM = 0;//代表使用哪种材料的编号
 	Section(QString name,double ia, double ib, int id, int iClassSe, int iClassM);//重载一个 加了名称的
 	Section(double ia, double ib, int id, int iClassSe, int iClassM);
-	Section(int id, QString name, double iIy, double iTz, int iJ, int iClassM);
+	Section(int id, QString name, double iIy, double iTz, double iJ, int iClassM,double A);
 	~Section();
 	void GetLIxyz();
 	void GetOIxyz();

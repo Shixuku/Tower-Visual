@@ -195,9 +195,9 @@ void WireWiring::NodeList(Part_Base* part, QStringList parts)
 		}
 		QStringList NodeParts = NodeLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 		int NodeNumber = NodeParts[0].toInt();
-		double NodeX = NodeParts[1].toDouble() /100;
-		double NodeY = NodeParts[2].toDouble() /100;
-		double NodeZ = NodeParts[3].toDouble() /100;
+		double NodeX = NodeParts[1].toDouble()/1000 ;
+		double NodeY = NodeParts[2].toDouble() /1000;
+		double NodeZ = NodeParts[3].toDouble()/1000 ;
 		part->m_Nodes.push_back(Node(NodeNumber, NodeX, NodeY, NodeZ, 0));
 		processedCount++;
 	}
@@ -240,6 +240,7 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 	double Iu=0;
 	double Iv=0;
 	double J=0;
+	double Area = 0;
 	for (const auto& j : m_pInterFace->ME_Material)
 	{
 		if (j.second->m_Name == MaterialName)
@@ -247,6 +248,10 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 
 			MaterialId = j.second->m_id;
 		}
+	}
+	if (MaterialId == 0)
+	{
+		qDebug() << "没有找到：" << MaterialName << "\n";
 	}
 	for (const auto& j : m_pInterFace->ME_Section_L)
 	{
@@ -256,11 +261,45 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 			Iu = j.second->Iu;
 			Iv = j.second->Iv;
 			J = j.second->J;
+			Area = j.second->A;
 		}
 	}
+	if (SectionId == 0)
+	{
+		QString currentSegment = "";
+		QStringList segments; // 用于保存拆分后的部分
+
+		for (int i = 0; i < SectionName.length(); i++)
+		{
+			QChar currentChar = SectionName.at(i);
+
+			if (currentChar.isLetter())
+			{
+				if (!currentSegment.isEmpty())
+				{
+					segments.append(currentSegment); // 将拆分后的部分添加到 QStringList
+					currentSegment = ""; // 重置 currentSegment
+				}
+				segments.append(currentChar); // 将字母字符添加到 QStringList
+			}
+			else if (currentChar.isDigit()) {
+				currentSegment += currentChar;
+			}
+		}
+
+		// 检查是否还有未添加的数字部分
+		if (!currentSegment.isEmpty()) {
+			segments.append(currentSegment);
+		}
+		SectionId = m_pInterFace->ME_Section_L.size() + 1;
+		GetLIxyz(segments[1].toDouble()/100, segments[3].toDouble() / 100, Iu, Iv, J, Area);
+		Section_L* section = new Section_L(SectionId, SectionName, Iu, Iv, J, Area);
+		m_pInterFace->ME_Section_L.Add_Entity(section);
+	}
+
 	if (sectionSize == 0)
 	{
-		Section* section = new Section(1, SectionName, Iu, Iv, J, MaterialId);
+		Section* section = new Section(1, SectionName, Iu, Iv, J, MaterialId, Area);
 		m_pInterFace->Ms.Add_Entity(section);
 		id = 1;
 	}
@@ -279,7 +318,7 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 		if (id == 0)
 		{
 			id = m_pInterFace->Ms.size() + 1;
-			Section* section = new Section(id, SectionName, Iu, Iv, J, MaterialId);
+			Section* section = new Section(id, SectionName, Iu, Iv, J, MaterialId, Area);
 			m_pInterFace->Ms.Add_Entity(section);
 		}
 	}
@@ -384,6 +423,22 @@ void WireWiring::HangPointList(QStringList parts)
 		} 
 		processedCount++;
 	}
+}
+
+void WireWiring::GetLIxyz(double a, double b, double& Iu, double& Iv, double& J, double& S)
+{
+	double a2 = a * a;
+	double a3 = a2 * a;
+	double b2 = b * b;
+	double b3 = b2 * b;
+	Iu = 1. / 12 * b * (2 * a2 - 2 * a * b + b2) * (2 * a - b);
+	Iv = b * (2 * a3 * a - 4 * a3 * b + 8 * a2 * b2 - 6 * a * b3 + b3 * b) / (24 * a - 12 * b);
+
+
+	double L2 = a, t2 = b;
+	J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
+		L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
+	S = 2 * a * b - b * b;
 }
 
 

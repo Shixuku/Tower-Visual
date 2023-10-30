@@ -24,6 +24,7 @@
 #include <QOpenGLWidget>//UINT_PTR
 #include <vtkPointData.h>//->AddArray(Ptr)
 class CreatWire;
+class CreateStrainWire;
 class TowerWireGroup:public Instance
 {
 public:
@@ -65,7 +66,11 @@ public:
 	void addSpacerNode(Part_Base* base);
 	void addSpacerElement(Part_Base* base);
 	void addSpacerSuspensionNode(Part_Base* base);
-
+	void AddStrainWireToGroup(CreateStrainWire* wire);
+    void AddStrainWireNode(CreateStrainWire* wire);
+	void AddWireElement(CreateStrainWire* wire);
+	void AddAxialForceToInsulator(CreateStrainWire* wire);//给绝缘子施加轴力
+	void AddRestraintId(CreateStrainWire* wire);
 public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;//保存Item，用于查找
