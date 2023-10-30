@@ -18,7 +18,7 @@ public:
 	Creat_Loads* m_pCreat_loads = nullptr;
 	Instance* m_pInstance = nullptr;
 	
-	std::vector<Node*>m_ffNodes;//点集合
+	std::list<Node*>m_ffNodes;//点集合
 	void initialization();
 	void Get_Nodes();
 	void draw();

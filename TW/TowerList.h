@@ -2,8 +2,7 @@
 #include "Instance.h"
 #include "NominalHeight.h"
 #include<QString.h>
-class TowerList :
-    public Instance
+class TowerList :public Instance
 {
 public:
     QString m_Name;

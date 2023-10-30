@@ -47,5 +47,7 @@ private:
 	vector<Element_Truss> m_beam;//包含位移的杆单元
 	Manage_Entity<Node_Base> m_Nodes;
 	Manage_Entity<Element_Base> m_LineElements;
+	QString m_str;
+	QString m_fileName;
 };
 

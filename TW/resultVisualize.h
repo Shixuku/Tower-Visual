@@ -3,7 +3,6 @@
 #include <QDialog>
 #include "ui_resultVisualize.h"
 #include "QTimer"
-
 #include<vtkCellArray.h>
 #include<vtkLine.h>
 #include<vtkPolyData.h>

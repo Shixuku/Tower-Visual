@@ -22,7 +22,7 @@ public:
 	//Tower* m_pTower = new Tower;
 	Instance* m_pInstance = new Instance;
 
-	std::vector<Node>Con_Nodes;
+	std::list<Node>Con_Nodes;
 	QMap<int, QVector<double>> nodeCoordinates; // 存储节点坐标信息
 	QMap<int, int> idMap; // 存储ID与索引的映射关系
 	int index = 0;

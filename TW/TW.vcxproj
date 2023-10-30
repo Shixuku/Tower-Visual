@@ -23,7 +23,6 @@
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -39,6 +38,7 @@
     <QtInstall>5.15.2_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets;charts</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtPlugin>false</QtPlugin>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -77,6 +77,9 @@
       <AdditionalDependencies>../VTK/lib_release/*.lib;../dllAnalyse/lib_release/*.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalDependencies>../dllAnalyse/lib_release/*.lib;../VTK/lib_release/*.lib;ice3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard>Default</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -106,7 +109,6 @@
     <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
-    <ClCompile Include="Calculate.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
@@ -183,7 +185,6 @@
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
-    <QtUic Include="Calculate.ui" />
     <QtUic Include="ConcentrateForce.ui" />
     <QtUic Include="Creat_Loads.ui" />
     <QtUic Include="Gravity.ui" />
@@ -236,7 +237,6 @@
     <ClInclude Include="TowerList.h" />
     <ClInclude Include="WireProperties.h" />
     <ClInclude Include="WireWiring.h" />
-    <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />
     <ClInclude Include="Ele_Location.h" />
     <ClInclude Include="InputMaterial.h" />

@@ -6,6 +6,7 @@
 #include <set>
 #include<QVector>
 #include<QDataStream>
+#include<QDebug>
 #  define LLI long long
 template<class ET>
 class Manage_Entity : public std::unordered_map<LLI, ET*>

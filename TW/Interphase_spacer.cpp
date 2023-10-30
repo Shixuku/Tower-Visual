@@ -73,6 +73,7 @@ Interphase_spacer::Interphase_spacer(TowerData_CrossArm* CrossArm, TowerWireGrou
 	}
 	ui.lineEdit_WireLogo->setText("1");
 	ui.lineEdit_5->setText("30");
+	ui.line_H->setText("1");
 }
 
 Interphase_spacer::~Interphase_spacer()

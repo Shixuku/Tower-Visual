@@ -217,26 +217,20 @@ void resultVisualize::start()
 	qDebug() << "current time interval: " << msec << "ms";
 	updateTimer->setInterval(msec);
 	updateTimer->start();
-
-	qDebug() << "play";
 }
 
 void resultVisualize::stop()
 {
 	updateTimer->stop();
-
-	qDebug() << "stop";
 }
 
 void resultVisualize::quit()
 {
 	updateTimer->stop();
 	m_frames = 0;
-
 	removeActor();
 	pCAE->m_renderWindow->Render();
-
-	qDebug() << "quit";
+	this->accept();
 }
 
 void resultVisualize::autoFactor(bool flag)
@@ -309,6 +303,7 @@ void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* i
 	{
 		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
 	}
+
 	pCAE->m_Renderer->ResetCamera();
 }
 
@@ -386,7 +381,7 @@ void resultVisualize::addActorData()
 
 	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
 	scalarBar->SetLookupTable(linesmapper->GetLookupTable());
-	scalarBar->SetTitle("U1");
+	//scalarBar->SetTitle("U1");
 	scalarBar->SetNumberOfLabels(16);
 	scalarBar->SetMaximumNumberOfColors(8);
 
@@ -417,15 +412,15 @@ void resultVisualize::setNephogramType(int iTpye)
 		{
 		case DataType::U1:
 			boundary = m_Outputter->getBoundaryDisplaymentZ();
-			scalarBar->SetTitle("U1");
+			//scalarBar->SetTitle("U1");
 			break;
 		case DataType::U2:
 			boundary = m_Outputter->getBoundaryDisplaymentX();
-			scalarBar->SetTitle("U2");
+			//scalarBar->SetTitle("U2");
 			break;
 		case DataType::U3:
 			boundary = m_Outputter->getBoundaryDisplaymentY();
-			scalarBar->SetTitle("U3");
+			//scalarBar->SetTitle("U3");
 			break;
 		case DataType::UR1:
 			boundary = m_Outputter->getBoundaryRotationZ();
@@ -469,15 +464,15 @@ void resultVisualize::setNephogramType(int iTpye)
 		{
 		case DataType_ice::U1:
 			boundary = m_Outputter_ice->getBoundaryDisplaymentZ();
-			scalarBar->SetTitle("U1");
+			//scalarBar->SetTitle("U1");
 			break;
 		case DataType_ice::U2:
 			boundary = m_Outputter_ice->getBoundaryDisplaymentX();
-			scalarBar->SetTitle("U2");
+			//scalarBar->SetTitle("U2");
 			break;
 		case DataType_ice::U3:
 			boundary = m_Outputter_ice->getBoundaryDisplaymentY();
-			scalarBar->SetTitle("U3");
+			//scalarBar->SetTitle("U3");
 			break;
 		case DataType_ice::UR1:
 			boundary = m_Outputter_ice->getBoundaryRotationZ();
@@ -507,7 +502,7 @@ void resultVisualize::setNephogramType(int iTpye)
 			qDebug() << "Î´ÖªÔÆÍ¼ÀàÐÍ£¡";
 			break;
 		}
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 	}
 	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 }
@@ -518,22 +513,22 @@ void resultVisualize::setCurrentStep(int idStep)
 	if (m_ins->s != nullptr)
 	{
 		m_Outputter = &(m_ins->s->get_outputter(idStep));
-		qDebug() << "current step:" << m_Outputter->m_idStep;
+		//qDebug() << "current step:" << m_Outputter->m_idStep;
 		ui.comboBox_nephogram->setCurrentIndex(0);
 		vector<double>boundary = m_Outputter->getBoundaryDisplaymentX();
-		scalarBar->SetTitle("U1");
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+		//scalarBar->SetTitle("U1");
+		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 
 		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 	}
 	if (m_ins->s_ice != nullptr)
 	{
 		m_Outputter_ice = &(m_ins->s_ice->get_outputter(idStep));
-		qDebug() << "current step:" << m_Outputter_ice->m_idStep;
+		//qDebug() << "current step:" << m_Outputter_ice->m_idStep;
 		ui.comboBox_nephogram->setCurrentIndex(0);
 		vector<double>boundary = m_Outputter_ice->getBoundaryDisplaymentX();
-		scalarBar->SetTitle("U1");
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+		//scalarBar->SetTitle("U1");
+		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 	}	
 }

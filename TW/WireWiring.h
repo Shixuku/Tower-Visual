@@ -28,10 +28,11 @@ public:
 	void PartList(QStringList parts);
 	void NodeList(Part_Base* part, QStringList parts);
 	void Element_Beam3DList(Part_Base* part, QStringList parts);
-	int GetSectionId(QString MaterialName, QString SectionName);
+	int GetSectionId1(QString MaterialName, QString SectionName);//在姜瑞丰基础之上按照我的逻辑又写了一遍
+	//后面四个参数要传指针才可以在函数外部继续用
+	void GetLIxyz(double a, double b, double *Iu, double *Iv, double *J, double *S);
 	void HighList(QStringList parts);
 	void HangPointList(QStringList parts);
-	void GetLIxyz(double a, double b, double& Iu, double& Iv, double& J, double& S);
 };
 
 

@@ -27,7 +27,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QPushButton" name="ptn_import">
+          <widget class="QPushButton" name="btn_import">
            <property name="text">
             <string>算风</string>
            </property>
@@ -70,7 +70,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_show">
+       <widget class="QPushButton" name="btn_showWind">
         <property name="text">
          <string>显示风</string>
         </property>
@@ -110,7 +110,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_displayIce">
+       <widget class="QPushButton" name="btn_showIce">
         <property name="text">
          <string>显示冰</string>
         </property>

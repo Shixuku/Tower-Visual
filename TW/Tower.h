@@ -37,8 +37,6 @@ public:
 	void ShowElement()const;//显示所有单元
 	void ShowTrussElement()const;//显示所有杆单元
 	void ShowBeamElement()const;//显示所有梁单元
-	void Show_Beam(int BeamID, int SectionClass, double a, double b);//没有调用
-	void AddNewSection(int id);
 	void AddNewSection(vector<int>& idSections) { pSection = idSections; }
 
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
@@ -57,22 +55,17 @@ public:
 
 	//界面
 	QTreeWidgetItem* Item = nullptr;
-	
 
 	Manage_Entity<Part_Base> TP_Part;
 	Manage_Entity<NominalHeight>TP_Height;
+	void showHangPoint(vtkRenderer* renderer);
+	void addRestraintNode(Part_Base* part);
+	
 protected:
 	void addNodeToTower(Part_Base* part);
-	
 	void addElementToTower(Part_Base* part);
-	//void addSectionToTower(Part_Base* part);
-	void addRestraintNode(Part_Base* part);
+	//void addRestraintNode(Part_Base* part);
 	void addSuspensionNode(Part_Base* part);
 	void addHangPoint(Part_Base* part);
-	//void HangPintList();
-	//QFile Qf;
-	//QTextStream Stream;
 };
-//xxxxxxxxx
-
 

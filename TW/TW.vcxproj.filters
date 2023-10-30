@@ -194,16 +194,10 @@
     <ClCompile Include="ParameterConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Calculate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UI_Calculate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Spacer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Calculate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InteractorStyle.cpp">
@@ -537,16 +531,10 @@
     <QtMoc Include="TowerCaculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Calculate.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="UI_Calculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Spacer.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Calculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ui_AnalysisStep.h">
@@ -633,12 +621,6 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="TowerCaculate.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Calculate.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Calculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="UI_Calculate.ui">

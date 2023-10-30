@@ -40,24 +40,28 @@ void Create_Constraint::Draw_Con1()
 		}
 		if (ui.radioButton->isChecked())//铰接
 		{
-			for (int i = conSIze; i < Con_Nodes.size(); i++)
+			// 使用迭代器遍历访问 list 中的数据
+			std::list<Node>::iterator it = Con_Nodes.begin();
+			std::advance(it, conSIze);
+			for (; it != Con_Nodes.end(); ++it) 
 			{
-				m_pInstance->Draw_hinge_joint(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_Renderer);
+				m_pInstance->Draw_hinge_joint(it->x, it->y, it->z, m_pInterFace->m_Renderer);
 				for (int j = 0; j < 3; j++)
 				{
 					int id = m_pInstance->m_Constraint.size() + 1;//约束编号
 					m_pInstance->m_Constraint.push_back(ParameterConstraint(id, nodeId, j));
 				}
-				
 			}
 
 		}
 		else if (ui.radioButton_2->isChecked())//固定约束
 		{
-
-			for (int i = conSIze; i < Con_Nodes.size(); i++)
+			// 使用迭代器遍历访问 list 中的数据
+			std::list<Node>::iterator it = Con_Nodes.begin();
+			std::advance(it, conSIze);
+			for (; it != Con_Nodes.end(); ++it)
 			{
-				m_pInstance->Draw_fixed_Constrained(Con_Nodes[i].x, Con_Nodes[i].y, Con_Nodes[i].z, m_pInterFace->m_CurrentRenderer);
+				m_pInstance->Draw_fixed_Constrained(it->x, it->y, it->z, m_pInterFace->m_CurrentRenderer);
 				for (int j = 0; j < 6; j++)
 				{
 					int id = m_pInstance->m_Constraint.size() + 25;//约束编号

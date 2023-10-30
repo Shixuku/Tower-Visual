@@ -41,7 +41,7 @@ Section::Section(double ia, double ib, int id, int iClassSe, int iClassM)
 	}
 }
 
-Section::Section(int id, QString name, double iIy, double iIz, double iJ, int iClassM, double A)
+Section::Section(int id, QString name, double iIy, double iIz, double iJ, int iClassM, double iS)
 {
 	m_id = id;
 	B_Iy = iIy;
@@ -49,7 +49,7 @@ Section::Section(int id, QString name, double iIy, double iIz, double iJ, int iC
 	B_J = iJ;
 	m_Name = name;
 	ClassM = iClassM;
-	S = A;
+	S = iS;
 }
 
 Section::~Section()

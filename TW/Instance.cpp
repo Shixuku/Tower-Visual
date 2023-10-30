@@ -7,7 +7,8 @@
 #include <vtkPolyData.h>
 #include <vtkIdFilter.h>
 #include<vtkDataSetSurfaceFilter.h>
-
+#include"Material.h"
+#include"Section_L.h"
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
@@ -40,11 +41,8 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 	surfaceFilter->Update();
 
 	vtkPolyData* input = surfaceFilter->GetOutput();
-	//std::cout << "points" << input->GetNumberOfPoints() << "cells:" << input->GetNumberOfCells() << std::endl;
-
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	//mapper->SetInputData(linesPolyData);
-	//kuangxuang
+
 	mapper->SetInputData(input);
 	mapper->ScalarVisibilityOff();
 
@@ -105,7 +103,6 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 	linesPolyData->GetPointData()->AddArray(Ptr);
 
 	//点
-	Node_actor = vtkSmartPointer<vtkActor>::New();
 	vtkNew<vtkVertexGlyphFilter> VertexFilter;
 	VertexFilter->SetInputData(linesPolyData);
 	VertexFilter->Update();
@@ -116,7 +113,7 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
 	Node_actor->GetProperty()->SetColor(255, 255, 0);
-	Node_actor->GetProperty()->SetPointSize(4);
+	Node_actor->GetProperty()->SetPointSize(3);
 	renderer->AddActor(Node_actor);
 }
 
@@ -333,9 +330,7 @@ void Instance::CreateOutPut()
 		ConcentrationTxT();//集中力
 		GravityTxT();//重力
 		IceLoadTxT();//冰单元
-		//1（多项式函数数量）
-		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
-		//Stream << 0 << "\n";//多项式函数暂时为空
+
 		WindTxT();//风载荷
 		//边界条件
 		RestraintTxT();
@@ -362,8 +357,7 @@ void Instance::NodeTxT()
 	Stream <<"*Node," << NodeSize << " \n";
 	for (int i = 0; i < m_Nodes.size(); i++)
 	{
-		Stream << "  " << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y <<
-			"  " << m_Nodes[i].z << "  " << "\n";
+		Stream << "  " << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y <<"  " << m_Nodes[i].z << "  " << "\n";
 	}
 }
 
@@ -449,23 +443,38 @@ void Instance::WindTxT()
 
 void Instance::IceLoadTxT()
 {
-	//新改的
 	Stream << "*Element_ice, " << m_IceTypeElement.size() << "\n";
-	for (int i = 0; i < m_IceTypeElement.size(); i++)
+
+	// 使用迭代器遍历访问 list 中的数据
+	std::list<ParameterIceType>::iterator it;
+	for (it = m_IceTypeElement.begin(); it != m_IceTypeElement.end(); ++it) 
 	{
-		Stream << "   " << m_IceTypeElement[i].m_id << "  "<< m_IceTypeElement[i].m_StartAnalysisStep<< "  " << m_IceTypeElement[i].m_EndAnalysisStep << "  " << m_IceTypeElement[i].m_Thickness << "\n";
+		Stream << "   " << it->m_id << "  " << it->m_StartAnalysisStep << "  " << it->m_EndAnalysisStep << "  " << it->m_Thickness << "\n";
 	}
+	//for (int i = 0; i < m_IceTypeElement.size(); i++)
+	//{
+	//	Stream << "   " << m_IceTypeElement[i].m_id << "  "<< m_IceTypeElement[i].m_StartAnalysisStep<< "  " << m_IceTypeElement[i].m_EndAnalysisStep << "  " << m_IceTypeElement[i].m_Thickness << "\n";
+	//}
 }
 
 void Instance::MaterialTxT()
 {
-
+	////原模型
+	//Stream <<"*Material," << 6 << "\n";
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
+	//	Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "\n";
+	//}
+	//Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080 << "  " << 0 << "\n";
+	//Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "\n";
+	//Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "\n";
 	InterFace* pInterFace = Base::Get_InterFace();
 	int MaterialSize = pInterFace->ME_Material.size();
-	Stream <<"*Material," << MaterialSize << "\n";
+	Stream << "*Material," << MaterialSize << "\n";
 	for (auto& i : pInterFace->ME_Material)
 	{
-		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second ->Poisson<< "  " << i.second->Density <<"  " << i.second->Thermal << "\n";
+		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal << "\n";
 	}
 }
 
@@ -530,6 +539,10 @@ void Instance::Section_Assign()
 
 		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
 			<<m_Elements_beams[i].direction[2] << "  " << "\n";
+		if (m_Elements_beams[i].ClassSectionID > 83)
+		{//判断截面是否有问题
+			qDebug() << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].ClassSectionID << "\n";
+		}
 	}
 	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
 	if (m_IceTypeElement.size() > 0)
@@ -576,23 +589,7 @@ void Instance::RestraintTxT()
 {
 	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
-	// 首先对容器进行排序
-	std::sort(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
-	// 使用std::unique函数去除相邻的重复元素
-	auto newEnd = std::unique(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
-	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
-	StrainAllRestraintNode.resize(std::distance(StrainAllRestraintNode.begin(), newEnd));
-
-	// 首先对容器进行排序
-	std::sort(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
-	// 使用std::unique函数去除相邻的重复元素
-	auto End = std::unique(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
-	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
-	StrainJointRestraintNode.resize(std::distance(StrainJointRestraintNode.begin(), End));
-
-	int WireAllStrainSize = StrainAllRestraintNode.size() * 6;
-	int WireJointStrainSize = StrainJointRestraintNode.size() * 3;
-	int totalRestraint = RestraintNodesize + m_ConstraintSize + WireAllStrainSize + WireJointStrainSize;
+	int totalRestraint = RestraintNodesize + m_ConstraintSize;
 
 	Stream <<"*Constraint," << totalRestraint << "\n";
 	int m_id=1;
@@ -604,33 +601,8 @@ void Instance::RestraintTxT()
 			m_id++;
 		}	
 	}
-	int m_allId = 1;
-	for (int i = 0; i < StrainAllRestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			Stream << "  " << m_allId << "  " << StrainAllRestraintNode[i] << "  " << j << "  " << 0 << "\n";
-			m_allId++;
-		}
-	}
-
-	int m_jointId = 1;
-	for (int i = 0; i < StrainJointRestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			Stream << "  " << m_jointId << "  " << StrainJointRestraintNode[i] << "  " << j << "  " << 0 << "\n";
-			m_jointId++;
-		}
-	}
-	//默认约束
-	for (int i = 0; i < m_ConstraintSize; i++)
-	{
-		Stream << "  " << m_Constraint[i].m_idConstraint << "  " << m_Constraint[i].m_idNode << "  " << m_Constraint[i].m_Direction << "  " << 0 << "\n";
-	}
 }
 
-//尝试 画约束
 void Instance::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)
 {
 	struct ConeInfo
@@ -677,8 +649,6 @@ void Instance::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer*
 		renderer->AddActor(coneActor);
 
 	}
-
-	//renderer->ResetCamera();
 }
 
 void Instance::Draw_hinge_joint(double x, double y, double z, vtkRenderer* renderer)

@@ -43,7 +43,7 @@ void InstanceWire::ReadInstanceWire(InterFace* InterFace)
 		str = QString::fromStdString(fileNames[i]);
 		if (!str.isEmpty())
 		{
-			qDebug() << str;
+			//qDebug() << str;
 			Qf1.setFileName(str);
 			if (!Qf1.open(QIODevice::ReadOnly | QIODevice::Text))
 			{
@@ -310,7 +310,7 @@ void InstanceWire::Angle(QStringList parts)
 void InstanceWire::NomHeight(QStringList parts)
 {
 	int highid = parts[1].toInt();
-	qDebug() << towerList->TP_Height.size() << "\t";
+	//qDebug() << towerList->TP_Height.size() << "\t";
     NominalHeight*heigt=towerList->TP_Height.Find_Entity(highid);
 
 	for (const auto& j : heigt->BodyList)
@@ -328,60 +328,200 @@ void InstanceWire::LegList(QStringList parts)
 	int LegIdC = parts[3].toInt();//C
 	int LegIdD = parts[4].toInt();//D
 	//处理A--第三象限
-	Part_Base* part = towerList->TP_Part.Find_Entity(LegId);//A
-	if (part == nullptr)
+	Part_Base* partA = towerList->TP_Part.Find_Entity(LegId);
+	if (partA != nullptr)
 	{
-		qDebug() << "有问题" << "\t";
-	}
-	for (int i = 0; i < part->m_Nodes.size(); i++)
-	{
-		part->m_Nodes[i].x *= -1;
-		part->m_Nodes[i].y *= -1;
-	}
-	if (part != nullptr)
-	{
-		tower->addPart(part);
-		//还原
-		for (int i = 0; i < part->m_Nodes.size(); i++)
+		vector<double> v_id;
+		//改坐标
+		for (int i = 0; i < partA->m_Nodes.size(); i++)
 		{
-			part->m_Nodes[i].x *= -1;
-			part->m_Nodes[i].y *= -1;
+			partA->m_Nodes[i].x *= -1;
+			partA->m_Nodes[i].y *= -1;
+			v_id.push_back(partA->m_Nodes[i].z);
+		}
+		//添加A塔腿
+		tower->addPart(partA);
+		// 求partB中z最小值
+		auto min_itA = min_element(v_id.begin(), v_id.end());		double min_valueA = *min_itA;
+		//找最低点编号--在整个tower里面去找
+		for (const auto& i : tower->m_Nodes)
+		{
+			if (abs(min_valueA - i.z) < 1e-5)
+			{
+				int id = i.m_idNode;
+				tower->RestraintNode.push_back(id);
+			}
+
+		}
+		//还原
+		for (int i = 0; i < partA->m_Nodes.size(); i++)
+		{
+			partA->m_Nodes[i].x *= -1;
+			partA->m_Nodes[i].y *= -1;
 		}
 	}
+
 	//处理B--第二象限
-	Part_Base* partB = towerList->TP_Part.Find_Entity(LegIdB);//B
-	for (int i = 0; i < partB->m_Nodes.size(); i++)
-	{
-		partB->m_Nodes[i].x *= -1;
-	}
+	Part_Base* partB = towerList->TP_Part.Find_Entity(LegIdB);
 	if (partB != nullptr)
 	{
+		vector<double> v_id;
+		//改坐标
+		for (int i = 0; i < partB->m_Nodes.size(); i++)
+		{
+			partB->m_Nodes[i].x *= -1;
+			v_id.push_back(partB->m_Nodes[i].z);
+		}
+		//添加B塔腿
 		tower->addPart(partB);
+		// 求partB中z最小值
+		auto min_itA = min_element(v_id.begin(), v_id.end());		double min_valueA = *min_itA;
+		//找最低点编号--在整个tower里面去找
+		for (const auto& i : tower->m_Nodes)
+		{
+			if (abs(min_valueA - i.z) < 1e-5 && i.x < 0 && i.y>0)
+			{
+				int id = i.m_idNode;
+				// 判断新的数据是否已经存在于向量中
+				auto it = std::find(tower->RestraintNode.begin(), tower->RestraintNode.end(), id);
+				if (it == tower->RestraintNode.end())
+				{
+					// 向量中不存在该数据，可以添加
+					tower->RestraintNode.push_back(id);
+				}
+
+			}
+		}
+		//还原
 		for (int i = 0; i < partB->m_Nodes.size(); i++)
 		{
 			partB->m_Nodes[i].x *= -1;
 		}
 	}
+
 	//处理C--第一象限
-	Part_Base* partC = towerList->TP_Part.Find_Entity(LegIdC);//C
+	Part_Base* partC = towerList->TP_Part.Find_Entity(LegIdC);
 	if (partC != nullptr)
 	{
+		vector<double> v_id;
+		//存数据
+		for (int i = 0; i < partC->m_Nodes.size(); i++)
+		{
+			v_id.push_back(partC->m_Nodes[i].z);
+		}
+		//添加C塔腿
 		tower->addPart(partC);
+		// 求partB中z最小值
+		auto min_itA = min_element(v_id.begin(), v_id.end());		double min_valueA = *min_itA;
+		//找最低点编号--在整个tower里面去找
+		for (const auto& i : tower->m_Nodes)
+		{
+			if (abs(min_valueA - i.z) < 1e-5 && i.x > 0 && i.y > 0)
+			{
+				int id = i.m_idNode;
+				// 判断新的数据是否已经存在于向量中
+				auto it = std::find(tower->RestraintNode.begin(), tower->RestraintNode.end(), id);
+				if (it == tower->RestraintNode.end())
+				{
+					// 向量中不存在该数据，可以添加
+					tower->RestraintNode.push_back(id);
+				}
+			}
+		}
 	}
+
 	//处理D--第四象限
-	Part_Base* partD = towerList->TP_Part.Find_Entity(LegIdD);//D
-	for (int i = 0; i < partD->m_Nodes.size(); i++)
-	{
-		partD->m_Nodes[i].y *= -1;
-	}
+	Part_Base* partD = towerList->TP_Part.Find_Entity(LegIdD);
 	if (partD != nullptr)
 	{
+		vector<double> v_id;
+		//改坐标
+		for (int i = 0; i < partD->m_Nodes.size(); i++)
+		{
+			partD->m_Nodes[i].y *= -1;
+			v_id.push_back(partD->m_Nodes[i].z);
+		}
+		//添加D塔腿
 		tower->addPart(partD);
+		auto min_itA = min_element(v_id.begin(), v_id.end());		double min_valueA = *min_itA;
+		//找最低点编号--在整个tower里面去找
+		for (const auto& i : tower->m_Nodes)
+		{
+			if (abs(min_valueA - i.z) < 1e-5 && i.y < 0 && i.x>0)
+			{
+				int id = i.m_idNode;
+				// 判断新的数据是否已经存在于向量中
+				auto it = std::find(tower->RestraintNode.begin(), tower->RestraintNode.end(), id);
+				if (it == tower->RestraintNode.end())
+				{
+					// 向量中不存在该数据，可以添加
+					tower->RestraintNode.push_back(id);
+				}
+			}
+		}
+		//还原
 		for (int i = 0; i < partD->m_Nodes.size(); i++)
 		{
 			partD->m_Nodes[i].y *= -1;
 		}
-	}	
+	}
+
+
+	////处理A--第三象限
+	//Part_Base* part = towerList->TP_Part.Find_Entity(LegId);//A
+	//if (part == nullptr)
+	//{
+	//	qDebug() << "有问题" << "\t";
+	//}
+	//for (int i = 0; i < part->m_Nodes.size(); i++)
+	//{
+	//	part->m_Nodes[i].x *= -1;
+	//	part->m_Nodes[i].y *= -1;
+	//}
+	//if (part != nullptr)
+	//{
+	//	tower->addPart(part);
+	//	//还原
+	//	for (int i = 0; i < part->m_Nodes.size(); i++)
+	//	{
+	//		part->m_Nodes[i].x *= -1;
+	//		part->m_Nodes[i].y *= -1;
+	//	}
+	//}
+	////处理B--第二象限
+	//Part_Base* partB = towerList->TP_Part.Find_Entity(LegIdB);//B
+	//for (int i = 0; i < partB->m_Nodes.size(); i++)
+	//{
+	//	partB->m_Nodes[i].x *= -1;
+	//}
+	//if (partB != nullptr)
+	//{
+	//	tower->addPart(partB);
+	//	for (int i = 0; i < partB->m_Nodes.size(); i++)
+	//	{
+	//		partB->m_Nodes[i].x *= -1;
+	//	}
+	//}
+	////处理C--第一象限
+	//Part_Base* partC = towerList->TP_Part.Find_Entity(LegIdC);//C
+	//if (partC != nullptr)
+	//{
+	//	tower->addPart(partC);
+	//}
+	////处理D--第四象限
+	//Part_Base* partD = towerList->TP_Part.Find_Entity(LegIdD);//D
+	//for (int i = 0; i < partD->m_Nodes.size(); i++)
+	//{
+	//	partD->m_Nodes[i].y *= -1;
+	//}
+	//if (partD != nullptr)
+	//{
+	//	tower->addPart(partD);
+	//	for (int i = 0; i < partD->m_Nodes.size(); i++)
+	//	{
+	//		partD->m_Nodes[i].y *= -1;
+	//	}
+	//}	
 }
 void InstanceWire::StringList(QStringList parts)
 {

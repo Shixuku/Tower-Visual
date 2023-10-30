@@ -40,16 +40,14 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 	vector<string> fileNames;
 	string path("../PartTXT"); 	//自己选择目录测试
 	GetAllPartTXT(path, fileNames);
-	//for (const auto& ph : fileNames) {
-	//	std::cout << ph << "\n";
-	//}
-	qDebug() << "fileNames.size()！"<< fileNames.size()<<"\t";
+
+	//qDebug() << "fileNames.size()！"<< fileNames.size()<<"\t";
 	for (int i = 0; i < fileNames.size(); i++)
 	{
 		str = QString::fromStdString(fileNames[i]);
 		if (!str.isEmpty())
 		{
-			qDebug() << str;
+			//qDebug() << str;
 			Qf1.setFileName(str);
 			if (!Qf1.open(QIODevice::ReadOnly | QIODevice::Text))
 			{
@@ -74,8 +72,8 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 					keyword = parts[0].trimmed();
 					if (keyword.compare("Line", Qt::CaseInsensitive) == 0)
 					{
-						QString lineName = parts[1].trimmed();
-						QString towerNumber = parts[2].trimmed();
+						QString lineName = parts[1].trimmed();//线路名称
+						QString towerNumber = parts[2].trimmed();//塔类型
 						bool isExist = 0;
 						for (const auto& j : m_pInterFace->TWG)
 						{
@@ -92,12 +90,14 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 							int id = m_pInterFace->TWG.size() + 1;
 							towerWire->m_id = id;
 							m_pInterFace->TWG.Add_Entity(towerWire);
+							
 						}
 						tower = new TowerList();
 						tower->m_Name = towerNumber;
 						int id = towerWire->TWG_TP.size() + 1;
 						tower->m_id = id;
 						towerWire->TWG_TP.Add_Entity(tower);
+						
 					}
 					else if (keyword.compare("Parts", Qt::CaseInsensitive) == 0)
 					{
@@ -114,21 +114,6 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 				}
 			}
 
-		}
-	}
-	for (const auto& j : m_pInterFace->TWG)
-	{
-		qDebug() << j.second->m_Name << "\t";
-		for (const auto& i : j.second->TWG_TP)
-		{
-			qDebug() << i.second->m_Name << "  " << i.second->TP_Height.size() << "\t";
-			for (const auto& l : i.second->TP_Height)
-			{
-				for (int i = 0; i < l.second->BodyList.size(); i++)
-				{
-					qDebug() << l.second->BodyList[i] << "\t";
-				}
-			}
 		}
 	}
 }
@@ -157,12 +142,10 @@ void WireWiring::PartList(QStringList parts)
 			{
 				Part = new Part_Base();
 				QString lineName = Partparts[1].trimmed();//部件类型
-				int towerNumber = Partparts[2].toInt();
+				int towerNumber = Partparts[2].toInt();//部件编号
 				QString drawingNumber = Partparts[3].trimmed();//图纸名称
-				//QString LinkPart = Partparts[4].trimmed();//上接部件号
 				Part->m_id = towerNumber;
 				tower->TP_Part.Add_Entity(Part);
-				//qDebug() << "tower->TP_Part" << tower->TP_Part.size()<<"\t";
 			}
 			else if (Part != nullptr)
 			{
@@ -173,6 +156,7 @@ void WireWiring::PartList(QStringList parts)
 				else if (keyword.compare("Element_Beam3D", Qt::CaseInsensitive) == 0)
 				{
 					Element_Beam3DList(Part, Partparts);
+					//std::cout << "m_pInterFace->Ms.size() =  "<< m_pInterFace->Ms.size() << "\n";//==83个
 					processedCount++;
 				}
 			}
@@ -222,57 +206,47 @@ void WireWiring::Element_Beam3DList(Part_Base* part, QStringList parts)
 		double Element_Beam3DDirectionX= Element_Beam3DParts[3].toDouble();
 		double Element_Beam3DDirectionY = Element_Beam3DParts[4].toDouble();
 		double Element_Beam3DDirectionZ = Element_Beam3DParts[5].toDouble();
-		QString Element_Beam3DMaterial = Element_Beam3DParts[6];
-		QString Element_Beam3DSection = Element_Beam3DParts[7];
+		QString Element_Beam3DMaterial = Element_Beam3DParts[6];//材料
+		QString Element_Beam3DSection = Element_Beam3DParts[7];//截面
 		double Direction[3] = { Element_Beam3DDirectionX,Element_Beam3DDirectionY,Element_Beam3DDirectionZ };
-		int id = GetSectionId(Element_Beam3DMaterial, Element_Beam3DSection);
+		int id = GetSectionId1(Element_Beam3DMaterial, Element_Beam3DSection);//截面编号
 		part->m_Elements_beams.push_back(Element_Beam(Element_Beam3DNumber, Element_Beam3DidNode1, Element_Beam3DidNode2, id, Direction,1));
 		processedCount++;
 	}
 }
 
-int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
+int WireWiring::GetSectionId1(QString MaterialName, QString SectionName)
 {
-	int id = 0;
-	int sectionSize = m_pInterFace->Ms.size();
+	//1、找--对应的材料编号和截面编号
 	int MaterialId = 0;
-	int SectionId = 0;
-	double Iu=0;
-	double Iv=0;
-	double J=0;
-	double Area = 0;
 	for (const auto& j : m_pInterFace->ME_Material)
 	{
-		if (j.second->m_Name == MaterialName)
+		if (MaterialName == j.second->m_Name)//找材料编号
 		{
-
 			MaterialId = j.second->m_id;
+			break;
 		}
 	}
-	if (MaterialId == 0)
-	{
-		qDebug() << "没有找到：" << MaterialName << "\n";
-	}
+	int SectionId = 0;
+	double Iu = 0;
+	double Iv = 0;
+	double J = 0;
+	double A = 0;
 	for (const auto& j : m_pInterFace->ME_Section_L)
 	{
-		if (j.second->m_Name == SectionName)
+		if (SectionName == j.second->m_Name)//找截面编号
 		{
 			SectionId = j.second->m_id;
-			Iu = j.second->Iu;
-			Iv = j.second->Iv;
-			J = j.second->J;
-			Area = j.second->A;
 		}
 	}
+	//找不到截面编号得情况-得自己算Iu, Iv, J, A，然后添加到ME_Section_L里面
 	if (SectionId == 0)
 	{
 		QString currentSegment = "";
 		QStringList segments; // 用于保存拆分后的部分
-
 		for (int i = 0; i < SectionName.length(); i++)
 		{
 			QChar currentChar = SectionName.at(i);
-
 			if (currentChar.isLetter())
 			{
 				if (!currentSegment.isEmpty())
@@ -282,9 +256,7 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 				}
 				segments.append(currentChar); // 将字母字符添加到 QStringList
 			}
-			else if (currentChar.isDigit()) {
-				currentSegment += currentChar;
-			}
+			else if (currentChar.isDigit()) { currentSegment += currentChar; }
 		}
 
 		// 检查是否还有未添加的数字部分
@@ -292,39 +264,63 @@ int WireWiring::GetSectionId(QString MaterialName, QString SectionName)
 			segments.append(currentSegment);
 		}
 		SectionId = m_pInterFace->ME_Section_L.size() + 1;
-		GetLIxyz(segments[1].toDouble()/100, segments[3].toDouble() / 100, Iu, Iv, J, Area);
-		Section_L* section = new Section_L(SectionId, SectionName, Iu, Iv, J, Area);
+		GetLIxyz(segments[1].toDouble()/1000.0, segments[3].toDouble()/1000.0, &Iu, &Iv, &J, &A);
+		Section_L* section = new Section_L(SectionId, SectionName, Iu, Iv, J, A);
 		m_pInterFace->ME_Section_L.Add_Entity(section);
 	}
+	// 2、 判断--Ms.size()=0的情况；
+	int MsSize = m_pInterFace->Ms.size();
 
-	if (sectionSize == 0)
+	if (MsSize == 0)
 	{
-		Section* section = new Section(1, SectionName, Iu, Iv, J, MaterialId, Area);
-		m_pInterFace->Ms.Add_Entity(section);
-		id = 1;
+		Iu = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->Iu;
+		Iv = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->Iv;
+		J = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->J;
+		A = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->A;
+		Section* section = new Section(MsSize + 1, SectionName, Iu, Iv, J, MaterialId, A);
+		m_pInterFace->Ms.Add_Entity(section);//添加进去
+		return 1;
 	}
+	// 3、截面size不为0的情况下，在原来的Ms里面没有找到相同的材料号或者截面名称
 	else
 	{
-		for (const auto& j : m_pInterFace->Ms)
+		int index = 0;//相当于一个标识符
+		for (const auto& i : m_pInterFace->Ms)
 		{
-			if (j.second->m_Name == SectionName)
-			{
-				if (j.second->ClassM = MaterialId)
-				{
-					id = j.second->m_id;
-				}
-			}
+			//1、在已经添加的截面里面找得到已经有得截面名称或者材料编号
+			if (i.second->m_Name == SectionName && i.second->ClassM == MaterialId)	
+				index= i.second->m_id;
+			if(index != 0)	return index;
 		}
-		if (id == 0)
+		if (index == 0)
 		{
-			id = m_pInterFace->Ms.size() + 1;
-			Section* section = new Section(id, SectionName, Iu, Iv, J, MaterialId, Area);
-			m_pInterFace->Ms.Add_Entity(section);
+			Iu = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->Iu;
+			Iv = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->Iv;
+			J = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->J;
+			A = m_pInterFace->ME_Section_L.Find_Entity(SectionId)->A;
+			Section* section = new Section(MsSize + 1, SectionName, Iu, Iv, J, MaterialId, A);
+			m_pInterFace->Ms.Add_Entity(section);//添加进去
+			return MsSize + 1;
 		}
 	}
-	return id;
+	return -1;
 }
 
+void WireWiring::GetLIxyz(double a, double b, double* Iu, double* Iv, double* J, double* S)
+{
+	double a2 = a * a;
+	double a3 = a2 * a;
+	double b2 = b * b;
+	double b3 = b2 * b;
+	*Iu = 1. / 12 * b * (2 * a2 - 2 * a * b + b2) * (2 * a - b);
+	*Iv = b * (2 * a3 * a - 4 * a3 * b + 8 * a2 * b2 - 6 * a * b3 + b3 * b) / (24 * a - 12 * b);
+
+
+	double L2 = a, t2 = b;
+	*J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
+		L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
+	*S = 2 * a * b - b * b;
+}
 void WireWiring::HighList(QStringList parts)
 {
 	int HighCount = parts[1].toInt();
@@ -400,7 +396,8 @@ void WireWiring::HangPointList(QStringList parts)
 			QStringList Partid = Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
 			int FindPartid1 = Partid[1].toInt();
 			int id1 = tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.size() + 1;
-			HangPoint* hangPoint1 = new HangPoint(id1, StringClass, WireLoge, nodeid);
+			QString StringClass1 = StringClass + QString::number(1);//区分V1
+			HangPoint* hangPoint1 = new HangPoint(id1, StringClass1, WireLoge, nodeid);
 			tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.Add_Entity(hangPoint1);
 
 			QString Partnumber2 = HangPointParts[5];
@@ -408,7 +405,8 @@ void WireWiring::HangPointList(QStringList parts)
 			QStringList Partid2 = Partnumber2.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
 			int FindPartid2 = Partid2[1].toInt();
 			int id2 = tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.size() + 1;
-			HangPoint* hangPoint2 = new HangPoint(id2, StringClass, WireLoge, nodeid2);
+			QString StringClass2 = StringClass + QString::number(2);//区分V2
+			HangPoint* hangPoint2 = new HangPoint(id2, StringClass2, WireLoge, nodeid2);
 			tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.Add_Entity(hangPoint2);
 		}
 		else
@@ -423,22 +421,6 @@ void WireWiring::HangPointList(QStringList parts)
 		} 
 		processedCount++;
 	}
-}
-
-void WireWiring::GetLIxyz(double a, double b, double& Iu, double& Iv, double& J, double& S)
-{
-	double a2 = a * a;
-	double a3 = a2 * a;
-	double b2 = b * b;
-	double b3 = b2 * b;
-	Iu = 1. / 12 * b * (2 * a2 - 2 * a * b + b2) * (2 * a - b);
-	Iv = b * (2 * a3 * a - 4 * a3 * b + 8 * a2 * b2 - 6 * a * b3 + b3 * b) / (24 * a - 12 * b);
-
-
-	double L2 = a, t2 = b;
-	J = pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.105e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2 - t2, -0.4e1) / 0.192e3) / (L2 - t2)) * (L2 - t2) +
-		L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
-	S = 2 * a * b - b * b;
 }
 
 

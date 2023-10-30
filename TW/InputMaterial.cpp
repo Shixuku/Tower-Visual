@@ -48,10 +48,6 @@ void InputMaterial::ReadMaterial(InterFace* InterFace)
 				{
 					MaterialList(parts);
 				}
-				//else if (keyword.compare("Section_L", Qt::CaseInsensitive) == 0)
-				//{
-				//	Section_LList(parts);
-				//}
 			}
 		}
 		Qf1.close();
@@ -85,5 +81,4 @@ void InputMaterial::MaterialList(QStringList parts)
 		++processedCount;
 	}
 }
-
 

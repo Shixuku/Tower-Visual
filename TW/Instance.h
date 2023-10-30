@@ -41,6 +41,7 @@ public:
 	vector<HangList>m_HangList;
 	vector<int>RestraintNode;//添加约束节点
 	vector<int>SuspensionNode;//添加悬挂点
+	vector<int>HangPointID;//悬挂点编号
 	vector<double>WireGravity;//每档导线的重力
 	vector<int>WireLogo;
 	void Show_VTKtruss(vtkRenderer* renderer);
@@ -52,7 +53,8 @@ public:
 	vtkSmartPointer<vtkPolyData> linesPolyData;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;//集中力actor
 	std::vector<vtkSmartPointer<vtkActor>>m_ConstraintActor;//约束actor
-	std::vector<vtkSmartPointer<vtkActor>>InstanceNactor;//暂时没发现有什么用
+	std::list<vtkSmartPointer<vtkActor>>m_HangPointActor;//悬垂串actor
+	std::list<vtkSmartPointer<vtkActor2D>>m_HangPointLabelActor;//悬垂串标签actor
 	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
 	map<int, Node>NodeData;
 	map<int, Element_Beam>BeamData;
@@ -81,9 +83,9 @@ public:
 	//创建输出文件
 	vector<LoadForce>Load;//集中力的容器
 	vector<ParameterGravity>m_Gravitys;//重力的容器
-	vector<ParameterConstraint> m_Constraint;//约束的容器
+	list<ParameterConstraint> m_Constraint;//约束的容器
 	vector<ParameterStableWind>m_StableWind;//稳定风的容器
-	vector<ParameterIceType> m_IceTypeElement;//冰单元类型
+	list<ParameterIceType> m_IceTypeElement;//冰单元类型
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力

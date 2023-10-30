@@ -36,8 +36,11 @@
 #include"InputMaterial.h"
 #include"InputSection.h"
 #include"WireWiring.h"
+//#include"CreateSingleTower.h"
 #include"InstanceWire.h"
 #include <vtkCamera.h>
+#include"Material.h"
+#include"Section_L.h"
 #include"CreateStrainWire.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
@@ -83,6 +86,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
+	connect(ui.btn_singleTower, &QPushButton::clicked, this, &InterFace::ui_CreateSingleTower);
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
 	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
 
@@ -155,16 +159,32 @@ void InterFace::ReadMaterialTXT()
 {
 	InputMaterial aa;
 	aa.ReadMaterial(this);
+	//读的材料正常输出
+	//for (const auto& i : ME_Material)
+	//{
+	//	qDebug() << i.second->m_id << " " << i.second->m_Name << "\n";
+	//}
+	
 }
 void InterFace::ReadSectionTXT()
 {
 	InputSection aa;
 	aa.ReadSection(this);
+	//截面正常输出
+	//for (const auto& i : ME_Section_L)
+	//{
+	//	qDebug() << i.second->m_id << " " << i.second->m_Name << "\n";
+	//}
 }
 void InterFace::ReadPartTXT()
 {
 	WireWiring aa;
 	aa.ReadWireWiring(this);
+	//for (const auto& i : Ms)
+	//{
+	//	qDebug() << i.second->m_id << " " << i.second->S << " "<< i.second->B_J << "\n";
+	//}
+
 }
 void InterFace::ReadInstanceTXT()
 {
@@ -390,7 +410,6 @@ void InterFace::ui_Body()
 		item->setText(0, t->m_Name);
 		m_Renderer->RemoveAllViewProps();
 		t->Item = item;
-
 		t->Create_Mesh();
 		t->m_id=parent->childCount();
 		t->Show_VTKnode(m_Renderer);
@@ -607,6 +626,23 @@ void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 	Interphase_spacer* IS = new Interphase_spacer(arm, t, this);
 	IS->show();
 
+}
+
+void InterFace::ui_CreateSingleTower()
+{
+	//CreateSingleTower* createSingleTower = new CreateSingleTower(this);
+	//int ret = createSingleTower->exec();
+	//if (ret == QDialog::Accepted)
+	//{
+	//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
+	//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+	//	AddPartFunction(item);
+	//	Tower* tower = new Tower;
+	//	createSingleTower->BtnOK(tower);
+	//	TP.Add_Entity(tower);
+	//	item->setText(0, "单塔 "+QString::number(tower->m_id));
+	//	tower->Item = item;
+	//}
 }
 
 void InterFace::SaveFile()
@@ -1381,7 +1417,17 @@ void InterFace::Show_Tower(Instance* instance)
 		i->VisibilityOn();
 	}
 	for (auto& i : instance->m_ConstraintActor)
-	{//暂时切换后不显示约束
+	{
+		m_Renderer->AddActor(i);
+		i->VisibilityOn();
+	}
+	for (auto& i : instance->m_HangPointActor)//悬挂点
+	{
+		m_Renderer->AddActor(i);
+		i->VisibilityOn();
+	}
+	for (auto& i : instance->m_HangPointLabelActor)//悬挂点标签
+	{
 		m_Renderer->AddActor(i);
 		i->VisibilityOn();
 	}

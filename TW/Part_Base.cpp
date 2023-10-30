@@ -328,39 +328,34 @@ void Part_Base::InPutSuspension(vector<int> ids)
 
 int Part_Base::Creat_Node(double x, double y, double z)
 {
-
 	int SIZE = m_Nodes.size();
 	if (SIZE == 0)
 	{
 		m_Nodes.push_back(Node(1, x, y, z,0));
 		return m_Nodes[0].m_idNode;
 	}
-	int Judg = 0;
-	for (int i = 0; i < SIZE; i++)
+	else 
 	{
-		if (abs(m_Nodes[i].x - x) < 1e-2 && abs(m_Nodes[i].y - y) < 1e-2 && abs(m_Nodes[i].z - z) < 1e-2)
+		int Judg = 0;
+		for (int i = 0; i < SIZE; i++)
 		{
-			return m_Nodes[i].m_idNode; //重节点
-			i = SIZE;
+			if (abs(m_Nodes[i].x - x) < 1e-2 && abs(m_Nodes[i].y - y) < 1e-2 && abs(m_Nodes[i].z - z) < 1e-2)
+			{
+				return m_Nodes[i].m_idNode; //重节点
+				i = SIZE;
+			}
+			else
+			{
+				Judg++;
+			}
 		}
-		else
+		if (Judg == SIZE)
 		{
-			Judg++;
+			m_Nodes.push_back(Node(Judg + 1, x, y, z, 0));
+			return m_Nodes[Judg].m_idNode;
 		}
+		return -1;
 	}
-
-
-	if (Judg == SIZE)
-	{
-		//m_Nodes[Judg - 1].m_idNode = SIZE;
-		//m_Nodes[Judg - 1].x = x;
-		//m_Nodes[Judg - 1].y = y;
-		//m_Nodes[Judg - 1].z = z;
-		m_Nodes.push_back(Node(Judg + 1, x, y, z,0));
-
-		return m_Nodes[Judg].m_idNode;
-	}
-	return -1;
 }
 
 void Part_Base::SaveTo(QDataStream& fin) const//写

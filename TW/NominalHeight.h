@@ -1,8 +1,7 @@
 #pragma once
 #include "Base.h"
 
-class NominalHeight :
-    public Base
+class NominalHeight :public Base
 {
 public:
     double hight = 0;

@@ -22,12 +22,13 @@ void InputSection::ReadSection(InterFace* InterFace)
 			QString section_LLine = Stream1.readLine();
 			QStringList section_LParts = section_LLine.split(QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 			QString section_LName = section_LParts[0];//名称
-			double Iu = section_LParts[1].toDouble();//弹性模量
-			double Iv = section_LParts[2].toDouble();//泊松比
-			double J = section_LParts[3].toDouble();//泊松比
-			double A = section_LParts[4].toDouble();//泊松比
+			double Iu = section_LParts[1].toDouble();
+			double Iv = section_LParts[2].toDouble();
+			double J = section_LParts[3].toDouble();
+			//qDebug() << "J =" << J << "\n";
+			double A = section_LParts[4].toDouble();
 			int size = m_pInterFace->ME_Section_L.size() + 1;
-			Section_L* section = new Section_L(size, section_LName, Iu, Iv, J,A);
+			Section_L* section = new Section_L(size, section_LName, Iu, Iv, J, A);
 			m_pInterFace->ME_Section_L.Add_Entity(section);
 		}
 		Qf1.close();

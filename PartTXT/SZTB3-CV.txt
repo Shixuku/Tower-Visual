@@ -1,4 +1,4 @@
-*line, 三门峡~洛阳500kv,SZTB3
+*line,三门峡电厂~牡丹变500kV线路工程,SZTB3
 *Parts,42
 *Part, Head, 1,      SZTB3上横担及地线支架-1,  502401-8221-015-004
 *Node,126

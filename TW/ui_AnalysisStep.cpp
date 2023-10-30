@@ -31,7 +31,7 @@ void ui_AnalysisStep::Initialization()
 
 void ui_AnalysisStep::InitializationDynamic()
 {
-	ui.line_sjd->setText("10");
+	ui.line_sjd->setText("1");
 	ui.line_sjzl->setText("0.01");
 }
 

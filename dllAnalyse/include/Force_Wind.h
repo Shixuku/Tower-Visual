@@ -7,6 +7,7 @@
 
 QT_CHARTS_USE_NAMESPACE
 
+using namespace std;
 using namespace Eigen;
 
 class Fem_Element_Base;

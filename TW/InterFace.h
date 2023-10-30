@@ -87,9 +87,8 @@ public:
      Manage_Entity<Tower> TP;
      Manage_Entity<Section> Ms;//截面合集
      Manage_Entity<ParameterAnalysisStep> ME_AnalysisSteps;//分析步合集
-     //Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
-     //vector<ParameterIceElement*> ME_ElementIce;//冰单元合集
      Manage_Entity<TowerWireGroup> TWG;
+     Manage_Entity<TowerWireGroup> CalculationModel;//与TWG区分，计算导入的模型放在不同文件夹里面
      Manage_Entity < Material> ME_Material;
      Manage_Entity < Section_L> ME_Section_L;
      Manage_Entity < Section_C> ME_Section_C;
@@ -122,11 +121,9 @@ public:
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);
      bool isChildOfGroupTower(QTreeWidgetItem* item);
      void Close_Point();
-     //HZ
      //风
      Wind* wd = nullptr;
      vtkRenderer* m_CurrentRenderer; // 记录当前选中的 m_Renderer
-     //try  要改
      vtkNew<InteractorStyle> style;
      vtkNew<vtkAppendPolyData> appendFilter;
 signals://信号
@@ -164,7 +161,7 @@ public slots:
     void ui_TowerWireGroup();
 
     void ui_SingleWireSpacer(QTreeWidgetItem* item);
-
+    void ui_CreateSingleTower();
 private:
     Outputter* m_Outputter=nullptr;
     resultVisualize* display=nullptr;

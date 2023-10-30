@@ -1,4 +1,4 @@
-*Line, 三门峡~洛阳500kv,SZTB2
+*Line,三门峡电厂~牡丹变500kV线路工程,SZTB2
 *Parts,43
 *Part, Head, 1,     SZTB2双回路直线塔地线支,  502401-8221-014-003
 *Node,126

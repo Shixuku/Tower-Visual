@@ -10,23 +10,20 @@
 #include <iostream>
 #include<fstream>
 #include <vtkAppendPolyData.h>
-#include "Tower.h"
-#include<vtkTransform.h>
-#include <vtkIdTypeArray.h>
-#include <QOpenGLWidget>//UINT_PTR
-#include <vtkPointData.h>//->AddArray(Ptr)
-#include"beamActor.h"
-#include<vtkDoubleArray.h>
-#include<vtkArrowSource.h>
-#include <vtkTubeFilter.h>
-#include <iostream>
-#include<fstream>
 #include <vtkConeSource.h>
 #include<vtkLineSource.h>
 #include <vtkPolyData.h>
 #include"InterFace.h"
 #include <vtkAssembly.h>
+#include<vtkTextProperty.h>
+#include<vtkLabelHierarchy.h>
+#include<vtkStringArray.h>
+#include<vtkPointSetToLabelHierarchy.h>
+#include<vtkLabelPlacementMapper.h>
+#include<vtkFreeTypeLabelRenderStrategy.h>
+
 #include"HangPoint.h"
+#include<vtkActor2D.h>
 int Tower::FindGroupIdNode(int idNode) const
 {
 	return TowerToGroup[idNode - 1];
@@ -40,7 +37,7 @@ void Tower::addPart(Part_Base* part)
 	addNodeToTower(part);
 	addElementToTower(part);
 	//addSectionToTower(part);//不每次都把截面添加进去，只能添加一次
-	addRestraintNode(part);
+	//addRestraintNode(part);
 	addSuspensionNode(part);
 	addHangPoint(part);
 	//HangPintList();
@@ -130,6 +127,71 @@ void Tower::rotation(double angle)//直接旋转
 	}
 }
 
+void Tower::showHangPoint(vtkRenderer* renderer)
+{
+	vtkSmartPointer<vtkPoints> m_pts = vtkSmartPointer<vtkPoints>::New();
+	m_pts->SetNumberOfPoints(TP_HangPoint.size());
+	vtkSmartPointer<vtkPoints> PYm_pts = vtkSmartPointer<vtkPoints>::New();//设置偏移
+	PYm_pts->SetNumberOfPoints(TP_HangPoint.size());
+	vtkNew<vtkLabelHierarchy> polyData;
+	vtkSmartPointer<vtkStringArray>label = vtkSmartPointer<vtkStringArray>::New();
+	vtkNew<vtkTextProperty> TextProperty;
+	vtkNew<vtkPointSetToLabelHierarchy> Hie;
+	vtkNew<vtkLabelPlacementMapper> MapperLabel;
+	vtkNew<vtkFreeTypeLabelRenderStrategy> strategy_tmp;
+	// 创建一个vtkActor2D并将vtkTextMapper设置为其映射器
+	vtkSmartPointer<vtkActor2D> actor = vtkSmartPointer<vtkActor2D>::New();
+	for (int i = 0; i < TP_HangPoint.size(); i++)
+	{
+		for (const auto& m : m_Nodes)
+		{
+			if (TP_HangPoint.Find_Entity(i + 1)->NodeId == m.m_idNode)//如果节点的id==悬垂串
+			{
+				//设置悬挂点高亮
+				m_pts->SetPoint(i, m.x, m.y, m.z);
+				vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
+				linesPolyData->SetPoints(m_pts);
+				vtkNew<vtkVertexGlyphFilter> VertexFilter;
+				VertexFilter->SetInputData(linesPolyData);
+				VertexFilter->Update();
+				vtkSmartPointer<vtkPolyDataMapper> Node_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+				Node_mapper->SetInputConnection(VertexFilter->GetOutputPort());
+				vtkSmartPointer<vtkActor>Node_actor = vtkSmartPointer<vtkActor>::New();
+				Node_actor->SetMapper(Node_mapper);
+				Node_actor->GetProperty()->SetColor(0.818, 0.365, 0.132);//偏橙色
+				Node_actor->GetProperty()->SetPointSize(8);
+				renderer->AddActor(Node_actor);
+				m_HangPointActor.push_back(Node_actor);//加入到actor容器里面
+				////设置文字加判断
+				PYm_pts->SetPoint(i, m.x + 0.030, m.y + 0.030, m.z + 0.030);//文字偏移的位置
+				QString WireLoge = TP_HangPoint.Find_Entity(i + 1)->WireLoge + "-" + TP_HangPoint.Find_Entity(i + 1)->StringClass;
+				std::string str = WireLoge.toStdString();
+				const char* name = str.c_str();
+				label->InsertNextValue(name);
+				label->SetName("Labels");
+				polyData->SetPoints(PYm_pts);
+				polyData->GetPointData()->AddArray(label);
+				TextProperty->SetFontSize(15);
+				TextProperty->SetColor(0.818, 0.365, 0.132);//偏橙色
+				TextProperty->SetBold(true);
+				TextProperty->SetFontFamilyToArial();
+				Hie->SetInputData(polyData);
+				Hie->SetMaximumDepth(1000);
+				Hie->SetLabelArrayName("Labels");
+				Hie->SetTextProperty(TextProperty);
+				MapperLabel->SetInputConnection(Hie->GetOutputPort());	
+				MapperLabel->SetRenderStrategy(strategy_tmp);
+				MapperLabel->SetShapeToNone();
+				MapperLabel->UseDepthBufferOn();
+				MapperLabel->SetStyleToOutline();
+				actor->SetMapper(MapperLabel);
+				renderer->AddActor(actor);
+				m_HangPointLabelActor.push_back(actor);
+			}
+		}
+	}
+}
+
 void Tower::addNodeToTower(Part_Base* part)
 {
 	size_t partNode = part->m_Nodes.size();//part中的节点
@@ -176,9 +238,7 @@ void Tower::addNodeToTower(Part_Base* part)
 
 }
 
-Tower::Tower()
-{
-}
+Tower::Tower(){}
 
 void Tower::SaveTo(QDataStream& fin) const
 {
@@ -297,95 +357,6 @@ void Tower::ShowBeamElement() const
 	{
 		j.showid();
 	}
-}
-
-void Tower::Show_Beam(int BeamID, int SectionClass, double a, double b)
-{
-	for (int i = 0; i < m_Elements_beams.size(); i++)
-	{
-		if (m_Elements_beams[i].m_idElement == BeamID)
-		{
-			beamActor bA;
-			int ipt1 = m_Elements_beams[i].m_idNode[0] - 1; //id
-			int ipt2 = m_Elements_beams[i].m_idNode[1] - 1;
-			double x1 = m_Nodes[ipt1].x; double y1 = m_Nodes[ipt1].y; double z1 = m_Nodes[ipt1].z;
-			double x2 = m_Nodes[ipt2].x; double y2 = m_Nodes[ipt2].y; double z2 = m_Nodes[ipt2].z;
-			if (z2 - z1 > 0.01)//
-			{
-				bA.setNode(x1, y1, z1, x2, y2, z2);
-				double x[6];
-				double y[6];
-
-
-
-				x[0] = 0; x[1] = a; x[2] = a; x[3] = b; x[4] = b; x[5] = 0;
-				y[0] = 0; y[1] = 0;   y[2] = b; y[3] = b; y[4] = a; y[5] = a;
-
-				bA.SetSection(x, y);
-				int n11 = m_Elements_beams[i].m_idNode[0] - 1;
-				int n12 = m_Elements_beams[i].m_idNode[1] - 1;
-				if (m_Nodes[n11].x > 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-				{
-					bA.Set_zAxis(0, -1, 0);
-				}
-				else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-				{
-					bA.Set_zAxis(0, 1, 0);
-				}
-				else if (m_Nodes[n11].x > 0 && m_Nodes[n11].y < 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-				{
-					bA.Set_zAxis(-1, 0, 0);
-				}
-				else if (m_Nodes[n11].x < 0 && m_Nodes[n11].y > 0 && m_Nodes[n11].z != m_Nodes[n12].z)
-				{
-					bA.Set_zAxis(1, 0, 0);
-				}
-			}
-			else
-			{
-				double Horizontalvectors1[3];
-				double Horizontalvectors2[3];
-				double Horizontalvectors3[3];
-				Horizontalvectors1[0] = x2 - x1;
-				Horizontalvectors1[1] = y2 - y1;
-				Horizontalvectors1[2] = z2 - z1;
-				Horizontalvectors2[0] = 0 - x1;
-				Horizontalvectors2[1] = 0 - y1;
-				Horizontalvectors2[2] = z1 - z1;
-				vtkMath::Cross(Horizontalvectors1, Horizontalvectors2, Horizontalvectors3);
-				if (Horizontalvectors3[2] < 0)
-				{
-					bA.setNode(x1, y1, z1, x2, y2, z2);
-					double x[6];
-					double y[6];
-					x[0] = 0; x[1] = a; x[2] = a; x[3] = b; x[4] = b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = b; y[3] = b; y[4] = a; y[5] = a;
-					bA.SetSection(x, y);
-					bA.Set_zAxis(0, 0, -1);
-				}
-				else
-				{
-					bA.setNode(x2, y2, z2, x1, y1, z1);
-					double x[6];
-					double y[6];
-					x[0] = 0; x[1] = a; x[2] = a; x[3] = b; x[4] = b; x[5] = 0;
-					y[0] = 0; y[1] = 0;   y[2] = b; y[3] = b; y[4] = a; y[5] = a;
-					bA.SetSection(x, y);
-					bA.Set_zAxis(0, 0, -1);
-				}
-			}
-			vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-			//vtkSmartPointer<vtkAssembly>test_assemblyNactor = vtkSmartPointer<vtkAssembly>::New();
-			//bA.Create_Actor(0, 1, 0, actor/*, test_assemblyNactor*/);
-			//InstanceNactor.push_back(actor);
-		}
-	}
-
-}
-
-void Tower::AddNewSection(int id)
-{
-	 pSection.push_back(id);
 }
 
 void Tower::addElementToTower(Part_Base* part)

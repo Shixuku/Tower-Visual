@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <map>
+#include <set>
 #include <QString>
 
 enum Entity_Type :int
@@ -14,33 +16,41 @@ class Structure;
 class EntityBase
 {//对象基类
 private:
-	static Structure* s_pStructure;
+	static std::map<int, Structure*> s_pStructures; // 结构指针
 
 	virtual enum Entity_Type My_EntityType() const = 0;
 
 public:
-	int m_id;//编号
-
 	static const double pi;
+
+	int m_id; // 编号
+
+	int m_idStructure = -1; // 模型编号
+
+	void Set_idStructure(int id)
+	{
+		m_idStructure = id;
+	}
+	int Get_idStructure() const
+	{
+		return m_idStructure;
+	}
 
 	int Get_id()
 	{
 		return m_id;
 	}
 
-	static void Set_Structure(Structure* pStructure) 
-	{
-		s_pStructure = pStructure;
-	}
+	static void AddToStructures(Structure* pStructure);
 
-	static Structure* Get_Structure() 
+	Structure* Get_Structure() const
 	{
-		if (s_pStructure==nullptr)
+		if (m_idStructure == -1)
 		{
 			std::cout << "结构指针没有设置！\n";
 			exit(1);
 		}
-		return s_pStructure; 
+		return s_pStructures[m_idStructure];
 	}
 };
 

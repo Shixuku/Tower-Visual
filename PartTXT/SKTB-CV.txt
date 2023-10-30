@@ -1,4 +1,4 @@
-*Line, 三门峡~洛阳500kv,SKTB
+*Line,三门峡电厂~牡丹变500kV线路工程,SKTB
 *Parts,27
 *Part, Head, 1,       SKTB地线支架及上横担-1,      S2701S-T0318-02
 *Node,122
