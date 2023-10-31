@@ -54,6 +54,7 @@ class Material;
 class Section_L;
 class Section_C;
 class CreateStrainWire;
+class CreateSingleTower;
 //class Manage_Loads;
 class InterFace : public QMainWindow
 {

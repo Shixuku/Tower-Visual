@@ -112,6 +112,7 @@
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
+    <ClCompile Include="CreateSingleTower.cpp" />
     <ClCompile Include="CreateStrainWire.cpp" />
     <ClCompile Include="Create_Constraint.cpp" />
     <ClCompile Include="ConcentrateForce.cpp" />
@@ -186,6 +187,7 @@
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
     <QtUic Include="ConcentrateForce.ui" />
+    <QtUic Include="CreateSingleTower.ui" />
     <QtUic Include="Creat_Loads.ui" />
     <QtUic Include="Gravity.ui" />
     <QtUic Include="Create_Constraint.ui" />
@@ -224,6 +226,7 @@
     <QtUic Include="Wire_InterFace.ui" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="CreateSingleTower.h" />
     <ClInclude Include="CreateStrainWire.h" />
     <ClInclude Include="HangList.h" />
     <ClInclude Include="HangPoint.h" />

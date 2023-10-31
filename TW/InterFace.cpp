@@ -42,6 +42,7 @@
 #include"Material.h"
 #include"Section_L.h"
 #include"CreateStrainWire.h"
+#include"CreateSingleTower.h"
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -630,19 +631,19 @@ void InterFace::ui_SingleWireSpacer(QTreeWidgetItem* item)
 
 void InterFace::ui_CreateSingleTower()
 {
-	//CreateSingleTower* createSingleTower = new CreateSingleTower(this);
-	//int ret = createSingleTower->exec();
-	//if (ret == QDialog::Accepted)
-	//{
-	//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
-	//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-	//	AddPartFunction(item);
-	//	Tower* tower = new Tower;
-	//	createSingleTower->BtnOK(tower);
-	//	TP.Add_Entity(tower);
-	//	item->setText(0, "µ¥Ëþ "+QString::number(tower->m_id));
-	//	tower->Item = item;
-	//}
+	CreateSingleTower* createSingleTower = new CreateSingleTower(this);
+	int ret = createSingleTower->exec();
+	if (ret == QDialog::Accepted)
+	{
+		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
+		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		AddPartFunction(item);
+		Tower* tower = new Tower;
+		createSingleTower->BtnOK(tower);
+		TP.Add_Entity(tower);
+		item->setText(0, "µ¥Ëþ "+QString::number(tower->m_id));
+		tower->Item = item;
+	}
 }
 
 void InterFace::SaveFile()
