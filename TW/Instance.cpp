@@ -196,6 +196,27 @@ void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, ve
 	}
 }
 
+void Instance::CreateXuanChuiInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid)
+{
+	if (ids.size() == 0)return;
+	size_t size = ids.size();
+	int node1 = ids[0];
+	for (int i = 1; i < size; i++)
+	{
+		int node2 = ids[i];
+		if (node1 == node2)
+		{
+			node1 = node2;
+		}
+		else
+		{
+			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 20000));
+			id++;
+			node1 = node2;
+		}
+	}
+}
+
 void Instance::SaveApSus(vector<int> ids)
 {
 	ap_realSuspoint.push_back(ids[0]);
@@ -357,6 +378,7 @@ void Instance::NodeTxT()
 	Stream <<"*Node," << NodeSize << " \n";
 	for (int i = 0; i < m_Nodes.size(); i++)
 	{
+		Stream.setRealNumberPrecision(16);//增加准确度
 		Stream << "  " << m_Nodes[i].m_idNode << "  " << m_Nodes[i].x << "  " << m_Nodes[i].y <<"  " << m_Nodes[i].z << "  " << "\n";
 	}
 }
@@ -587,20 +609,71 @@ void Instance::Suspensioncombined()
 
 void Instance::RestraintTxT()
 {
+	//int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
+	//int m_ConstraintSize = m_Constraint.size();//增加的约束
+	//int totalRestraint = RestraintNodesize + m_ConstraintSize;
+
+	//Stream <<"*Constraint," << totalRestraint << "\n";
+	//int m_id=1;
+	//for (int i = 0; i < RestraintNode.size(); i++)
+	//{
+	//	for (int j = 0; j < 6; j++)
+	//	{
+	//		Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+	//		m_id++;
+	//	}	
+	//}
+
 	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
-	int totalRestraint = RestraintNodesize + m_ConstraintSize;
+	// 首先对容器进行排序
+	std::sort(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	// 使用std::unique函数去除相邻的重复元素
+	auto newEnd = std::unique(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	StrainAllRestraintNode.resize(std::distance(StrainAllRestraintNode.begin(), newEnd));
 
-	Stream <<"*Constraint," << totalRestraint << "\n";
-	int m_id=1;
+	// 首先对容器进行排序
+	std::sort(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	// 使用std::unique函数去除相邻的重复元素
+	auto End = std::unique(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	StrainJointRestraintNode.resize(std::distance(StrainJointRestraintNode.begin(), End));
+
+	int WireAllStrainSize = StrainAllRestraintNode.size() * 6;
+	int WireJointStrainSize = StrainJointRestraintNode.size() * 3;
+	int totalRestraint = RestraintNodesize + m_ConstraintSize + WireAllStrainSize + WireJointStrainSize;
+
+	Stream << "*Constraint," << totalRestraint << "\n";
+	int m_id = 1;
 	for (int i = 0; i < RestraintNode.size(); i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
 			Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
 			m_id++;
-		}	
+		}
 	}
+	int m_allId = 1;
+	for (int i = 0; i < StrainAllRestraintNode.size(); i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			Stream << "  " << m_allId << "  " << StrainAllRestraintNode[i] << "  " << j << "  " << 0 << "\n";
+			m_allId++;
+		}
+	}
+
+	int m_jointId = 1;
+	for (int i = 0; i < StrainJointRestraintNode.size(); i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			Stream << "  " << m_jointId << "  " << StrainJointRestraintNode[i] << "  " << j << "  " << 0 << "\n";
+			m_jointId++;
+		}
+	}
+
 }
 
 void Instance::Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer)

@@ -41,7 +41,7 @@ public:
 	//static  bool cmp(const Insulator_Base& left, const Insulator_Base& right);
 	static  void sort_line(vector<Insulator_Base>& object);
 
-	void Show();
+
 	WireData* wd = nullptr;
 };
 

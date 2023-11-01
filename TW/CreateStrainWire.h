@@ -28,12 +28,15 @@ public:
 	vector<int>V_InsulatorId;
 	vector<double>m_Angle;
 	map<int, vector<Node>>EndPoint; 
-	int FindGroupIdNode(int idNode) const;
 	static int GetSectionId(QString MaterialName, QString SectionName);
 	int O_Id = 0;
 	int H_Id = 0;
 	int V_Id = 0;
 	int S_Id = 0;
-
+	int FindGroupIdNode(int idNode) const;
+	virtual enum Part_Type My_PartType()const
+	{
+		return ET_Wire;
+	}
 };
 

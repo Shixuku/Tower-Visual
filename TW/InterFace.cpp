@@ -882,6 +882,7 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 	aa.towerWire->VectorToMap();
 	m_Renderer->RemoveAllViewProps();
 	CreateStrainWire* c = new CreateStrainWire();
+	c->fenlie = aa.wd->fenlie;
 	c->Test_a = aa.wd->Test_a;
 	c->Property = aa.wd->Property;
 	c->Create_Mesh();

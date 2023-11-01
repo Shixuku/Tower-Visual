@@ -76,6 +76,7 @@ public:
     void SaveSus(vector<int>ids);//±£´æÐü¹ÒµãµÄid
     void CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
 	void CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid);
+	void CreateXuanChuiInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
 	void SaveApSus(vector<int>ids);
 	virtual void SaveTo(QDataStream& fin)const;
 	virtual void Input(QDataStream& fin);

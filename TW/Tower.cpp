@@ -211,7 +211,7 @@ void Tower::addNodeToTower(Part_Base* part)
 		{
 			for (int j = 0; j < a; j++)
 			{
-				if (abs(this->m_Nodes[j].x - part->m_Nodes[i].x) < 1e-2 && abs(this->m_Nodes[j].y - part->m_Nodes[i].y) < 1e-2 && abs(this->m_Nodes[j].z - part->m_Nodes[i].z) < 1e-2)
+				if (abs(this->m_Nodes[j].x - part->m_Nodes[i].x) < 1e-3 && abs(this->m_Nodes[j].y - part->m_Nodes[i].y) < 1e-3 && abs(this->m_Nodes[j].z - part->m_Nodes[i].z) < 1e-3)
 				{
 					part->part_to_tower.push_back(this->m_Nodes[j].m_idNode);
 					j = a;
@@ -477,6 +477,14 @@ void Tower::addHangPoint(Part_Base* part)
 					if (j.WireLoge == WireLoge)
 					{
 						j.NodeId.push_back(nodeid);
+						for (auto& j : this->m_Nodes)
+						{
+							if (j.m_idNode == nodeid)
+							{
+								j.Type = 1;
+								break;
+							}
+						}
 						isFind = true;
 					}
 				}
@@ -485,12 +493,28 @@ void Tower::addHangPoint(Part_Base* part)
 			{
 				m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
 				m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+				for (auto& j : this->m_Nodes)
+				{
+					if (j.m_idNode == nodeid)
+					{
+						j.Type = 1;
+						break;
+					}
+				}
 			}
 		}
 		else
 		{
 			m_HangList.push_back(HangList(HangSize, StringClass, WireLoge));
 			m_HangList[HangSize - 1].NodeId.push_back(nodeid);
+			for (auto& j : this->m_Nodes)
+			{
+				if (j.m_idNode == nodeid)
+				{
+					j.Type = 1;
+					break;
+				}
+			}
 		}
 	}
 }

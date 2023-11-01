@@ -129,19 +129,41 @@ void RandomWind::Initialize()
 
 void RandomWind::CreatSegment()
 {
-	//wd->m_pInstance
-	//R_pcreatWire = wd->m_pcreatWire;
-	//R_pcreatWire->m_Nodes;
+	
 	NumOfWindzones = ui.lineEdit_segment->text().toInt();
-	//单档
-	double Lx = wd->m_pInstance->m_Nodes[1].x - wd->m_pInstance->m_Nodes[0].x;
-	double Ly = wd->m_pInstance->m_Nodes[1].y - wd->m_pInstance->m_Nodes[0].y;
+	
+	// 使用 std::min_element 和 std::max_element 来查找最小和最大 y 值
+	//y
+	auto minNode = std::min_element(wd->m_pInstance->m_Nodes.begin(), wd->m_pInstance->m_Nodes.end(), [](const Node& a, const Node& b) {
+		return a.y < b.y;
+		});
+	auto maxNode = std::max_element(wd->m_pInstance->m_Nodes.begin(), wd->m_pInstance->m_Nodes.end(), [](const Node& a, const Node& b) {
+		return a.y < b.y;
+		});
+
+	//x
+	auto minxNode = std::min_element(wd->m_pInstance->m_Nodes.begin(), wd->m_pInstance->m_Nodes.end(), [](const Node& a, const Node& b) {
+		return a.x < b.x;
+		});
+	auto maxxNode = std::max_element(wd->m_pInstance->m_Nodes.begin(), wd->m_pInstance->m_Nodes.end(), [](const Node& a, const Node& b) {
+		return a.x < b.x;
+		});
+
+	// 访问最小和最大 y 值
+	double minY = minNode->y;
+	double maxY = maxNode->y;
+
+	double minX = minxNode->x;
+	double maxX = maxxNode->x;
+	double Lx = maxX - minX;
+	double Ly = maxY - minY;
+
 	double x1 = Lx / (2 * NumOfWindzones);
 	double y1 = Ly / (2 * NumOfWindzones);
 	for (int i = 0; i < NumOfWindzones; i++)
 	{
-		double xi = x1 + 2 * i * x1;
-		double yi = y1 + 2 * i * y1;
+		double xi = minX + (2 * i + 1) * x1;
+		double yi = minY + (2 * i + 1) * y1;
 		double closestDistance = std::numeric_limits<double>::max();
 		Node closestNode;
 		for (const auto& node : wd->m_pInstance->m_Nodes)

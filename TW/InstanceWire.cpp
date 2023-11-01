@@ -622,10 +622,34 @@ void InstanceWire::WriteHangList()
 		{
 			int id1 = towerWire->m_HangList[i].NodeId[0];
 			int id2 = towerWire->m_HangList[i].NodeId[1];
+			bool isId1EX = false;
+			bool isId2EX = false;
 			Stream << towerWire->m_HangList[i].StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].LineSegment <<"  " << towerWire->m_HangList[i] .Angle[0]
 				<<"  "<< towerWire->m_HangList[i].Angle[1] <<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
 				towerWire->NodeData[id1].z << "  " << towerWire->NodeData[id2].x << "  " << towerWire->NodeData[id2].y << "  " <<
 				towerWire->NodeData[id2].z << "\n";
+			for (auto& j : towerWire->InstanceSuspoint)
+			{
+				if (j == id1)
+				{
+					isId1EX = true;
+				}
+			}
+			if (isId1EX == false)
+			{
+				towerWire->InstanceSuspoint.push_back(id1);
+			}
+			for (auto& j : towerWire->InstanceSuspoint)
+			{
+				if (j == id2)
+				{
+					isId2EX = true;
+				}
+			}
+			if (isId2EX == false)
+			{
+				towerWire->InstanceSuspoint.push_back(id2);
+			}
 		}
 		else if (towerWire->m_HangList[i].StringClass == "OS")
 		{
@@ -644,6 +668,7 @@ void InstanceWire::WriteHangList()
 				Stream << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  " << towerWire->m_HangList[i].length <<"  " << towerWire->m_HangList[i].LineSegment << "  "
 					<< towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
 					towerWire->NodeData[id1].z << "\n";
+				towerWire->InstanceSuspoint.push_back(id1);
 			}
 		}
 		else if (towerWire->m_HangList[i].StringClass == "OB")
@@ -665,6 +690,7 @@ void InstanceWire::WriteHangList()
 					<< towerWire->m_HangList[i].LineSegment << "  "
 					<< towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
 					towerWire->NodeData[id1].z << "\n";
+				towerWire->InstanceSuspoint.push_back(id1);
 			}
 		}
 		else if(towerWire->m_HangList[i].StringClass == "H")
@@ -678,6 +704,7 @@ void InstanceWire::WriteHangList()
 			Stream  << StringClass << "  " << towerWire->m_HangList[i].WireLoge << "  "<< towerWire->m_HangList[i].length <<"  "<<
 					towerWire->m_HangList[i].LineSegment <<"  " << towerWire->NodeData[id1].x << "  " << towerWire->NodeData[id1].y << "  " <<
 					towerWire->NodeData[id1].z << "\n";
+			towerWire->InstanceSuspoint.push_back(id1); 
 		}
 		
 	}

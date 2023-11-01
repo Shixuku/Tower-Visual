@@ -556,14 +556,14 @@ void TowerWireGroup::AddStrainWireNode(CreateStrainWire* wire)
 	{
 		bool isSuspensionNode = false;
 
-		for (int j = 0; j < this->realSuspoint.size(); j++)
+		for (int j = 0; j < this->InstanceSuspoint.size(); j++)
 		{
-			if ((abs(wire->m_Nodes[i].x - NodeData[realSuspoint[j]].x) < 1e-1) &&
-				(abs(wire->m_Nodes[i].y - NodeData[realSuspoint[j]].y) < 1e-1) &&
-				(abs(wire->m_Nodes[i].z - NodeData[realSuspoint[j]].z) < 1e-1))
+			if ((abs(wire->m_Nodes[i].x - NodeData[InstanceSuspoint[j]].x) < 1e-1) &&
+				(abs(wire->m_Nodes[i].y - NodeData[InstanceSuspoint[j]].y) < 1e-1) &&
+				(abs(wire->m_Nodes[i].z - NodeData[InstanceSuspoint[j]].z) < 1e-1))
 			{
 				isSuspensionNode = true;
-				wire->wireToGroup.push_back(realSuspoint.at(j));
+				wire->wireToGroup.push_back(InstanceSuspoint.at(j));
 			}
 		}
 		if (isSuspensionNode == false)

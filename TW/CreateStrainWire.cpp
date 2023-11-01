@@ -5,7 +5,6 @@
 
 void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_Base>>& SusInfor)
 {
-	//O_Id = GetSectionId("String_O","");
 	O_Id= GetSectionId("String_O", "D100");
 	H_Id = GetSectionId("String_H", "D100");
 	V_Id = GetSectionId("String_V", "D100");
@@ -24,6 +23,7 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 			}
 		}
 		wireNumberOfLine = NumberOfLine - 2;//线路数量
+		wireQty = wireNumberOfLine;
 		//确定向量
 		double angle = 0;
 		double x = vectorData[1].m_x - vectorData[0].m_x;
@@ -86,16 +86,17 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 				{
 					if (vectorData[index].H == 0)
 					{	
-						//Type_GO(index, a, vectorData, G_RealSus);
+						Type_GO(index, a, vectorData, G_RealSus);
 					}
 					else
 					{
-						//Type_G(index, a, vectorData, nodeIds, G_RealSus);
+						Type_G(index, a, vectorData, nodeIds, G_RealSus);
 					}
 				}
 				if (nodeIds.size() != 0)
 				{
 					CreateWireInsulator(m_Elements_beams, Truss_elementsID, nodeIds, H_Id);
+					//CreateXuanChuiInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					InsulatorId.push_back(Truss_elementsID);
 				}
 				if (V_1_Ids.size() != 0)
@@ -123,7 +124,7 @@ void CreateStrainWire::CreateRealSus()
 		vector<Node>m_TempNodes;
 		for (int i = 0; i < vectorData.size(); i++)
 		{
-			m_TempNodes.push_back(Node(1, vectorData[i].m_x, vectorData[i].m_y, vectorData[i].m_z, 0));
+			m_TempNodes.push_back(Node(1, vectorData[i].m_x, vectorData[i].m_y, vectorData[i].m_z, 0, 2));
 		}
 		double rou = 0;
 		double stress = 0;
@@ -187,7 +188,7 @@ void CreateStrainWire::CreateRealSus()
 				// 创建节点
 				if (index < susnum)
 				{
-					node[index] = Creat_Node(m_Str_realSus[key - 1][i].x + offsetX, m_Str_realSus[key - 1][i].y + offsetY, m_Str_realSus[key - 1][i].z + offsetZ, 0);
+					node[index] = Creat_Node(m_Str_realSus[key - 1][i].x + offsetX, m_Str_realSus[key - 1][i].y + offsetY, m_Str_realSus[key - 1][i].z + offsetZ, 0, 2);
 					SaveSus({ node[index] }); // 放入悬挂点
 					//生成耐张段
 				}
@@ -210,8 +211,8 @@ void CreateStrainWire::CreateRealSus()
 		double x2 = 0; double y2 = 0; double z2 = 0;
 		for (int i = 0; i < wireNumberOfLine; i++)
 		{
-			node[1] = Creat_Node(m_Str_realSus[key - 1][i* OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0);
-			node[2] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1 ].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0);
+			node[1] = Creat_Node(m_Str_realSus[key - 1][i* OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0, 2);
+			node[2] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1 ].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0, 2);
 			vector<int> start_ids;
 			vector<int> end_ids;
 			for (int i = 0; i < fenlie; i++)
@@ -302,7 +303,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 								double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
 								force = area * (stress + rou * (z - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
 							}
 						}
 						else if (fenlie == 2)
@@ -317,8 +318,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
 								force = area * (stress + rou * (z - y0i));
 								force = area * (stress + rou * (z - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force, 2);
 							}
 						}
 						else if (fenlie == 4)
@@ -335,10 +336,10 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 								double z1 = z + 0.225;
 								double z2 = z - 0.225;
 								force = area * (stress + rou * (z1 - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x1, y2, z2, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
 							}
 						}
 						else if (fenlie == 6)
@@ -359,12 +360,12 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 								double z1 = z + 0.35;
 								double z2 = z - 0.35;
 								force = area * (stress + rou * (z1 - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x3, y4, z, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x1, y2, z2, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 4 * num * (N + 1) + m] = Creat_Node(x4, y3, z, force);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 5 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x3, y4, z, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 4 * num * (N + 1) + m] = Creat_Node(x4, y3, z, force, 2);
+								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 5 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
 							}
 						}
 					}
@@ -509,7 +510,7 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 		vector<Node>m_TempNodes;
 		for (int i = 0; i < vectorData.size(); i++)
 		{
-			m_TempNodes.push_back(Node(1, vectorData[i].m_x, vectorData[i].m_y, vectorData[i].m_z, 0));
+			m_TempNodes.push_back(Node(1, vectorData[i].m_x, vectorData[i].m_y, vectorData[i].m_z, 0, 2));
 		}
 		double rou;
 		double stress;
@@ -557,7 +558,7 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 							double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 								sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + m_TempNodes[i].z;
 							force = area * (stress + rou * (z - y0i));
-							node[(i - m_TempNodes.size() / 2 * j) * (n + 1) + m] = Creat_Node(x, y, z, force);
+							node[(i - m_TempNodes.size() / 2 * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
 						}
 					}
 					std::vector<int> nodeIds;
@@ -566,6 +567,7 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 						nodeIds.push_back(node[i]);
 					}
 					CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds, pro[i].MaId);
+					break;
 				}
 				
 			}
@@ -583,18 +585,8 @@ void CreateStrainWire::Create_Mesh()
 	CreateInsulatorSus(fenlie , Test_a);
 	CreateRealSus();
 	CreateStrainWireInfor(Property);
-	//CreateGWire(Property);
-	for (int i = 0; i < InsulatorId.size(); i++)
-	{
-		m_Elements_Trusses[InsulatorId[i] - 1].AxialForce = (WireGravity[i] + WireGravity[i + 1]) / 2;
-	}
-	double v_angle = 44;
-	v_angle = vtkMath::RadiansFromDegrees(v_angle);
-	for (int i = 0; i < V_InsulatorId.size()/2 ; i++)
-	{
-		m_Elements_Trusses[V_InsulatorId[2 * i + 1] - 1].AxialForce = ((WireGravity[i] + WireGravity[i + 1]) / 2) / cos(v_angle);
-		m_Elements_Trusses[V_InsulatorId[2 * i] - 1].AxialForce = ((WireGravity[i] + WireGravity[i + 1]) / 2) / cos(v_angle);
-	}
+	CreateGWire(Property);
+
 	
 	//StrainSpacerNum[1] = { 10,10,10,10,10,10,10,10,10,10,10,10,10 };
 	//StrainSpacerNum[2] = { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10 };
@@ -624,17 +616,17 @@ void CreateStrainWire::Create_Mesh()
 
 void CreateStrainWire::Type_WO(int i, int StrainId, const vector<Insulator_Base>&  data, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);
 	SaveSus({ node1 }); // 放入悬挂点
 	StrainAllRestraintNode.push_back(node1);
 	RealSusInfor[StrainId].push_back(Insulator_Base("O", data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1是线路默认的 后面的改
-	EndPoint[StrainId].push_back(Node(1, data[i].m_x, data[i].m_y, data[i].m_z, 0));
+	EndPoint[StrainId].push_back(Node(1, data[i].m_x, data[i].m_y, data[i].m_z, 0, 1));
 }
 
 void CreateStrainWire::Type_WH_1(int i, int StrainId, const vector<Insulator_Base>& data, vector<int>& Id, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);//塔上悬挂点
-	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//塔上悬挂点
+	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 
 	Id.push_back(node1);
 	Id.push_back(node2);
@@ -647,12 +639,12 @@ void CreateStrainWire::Type_WH_1(int i, int StrainId, const vector<Insulator_Bas
 
 void CreateStrainWire::Type_WH_4(int i, int StrainId, double Angle, const vector<Insulator_Base>& data, vector<int>& Id, vector<int>& SpacerId, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);//塔上悬挂点
-	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0);
-	int node_1 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H, 0);
-	int node_2 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H - 0.45, 0);
-	int node_3 = Creat_Node(data[i].m_x - 0.225 * cos(Angle), data[i].m_y + 0.225 * sin(Angle), data[i].m_z - data[i].H - 0.45, 0);
-	int node_4 = Creat_Node(data[i].m_x - 0.225 * cos(Angle), data[i].m_y + 0.225 * sin(Angle), data[i].m_z - data[i].H, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//塔上悬挂点
+	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
+	int node_1 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
+	int node_2 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H - 0.45, 0, 2);
+	int node_3 = Creat_Node(data[i].m_x - 0.225 * cos(Angle), data[i].m_y + 0.225 * sin(Angle), data[i].m_z - data[i].H - 0.45, 0, 2);
+	int node_4 = Creat_Node(data[i].m_x - 0.225 * cos(Angle), data[i].m_y + 0.225 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
 	SaveSus({ node1 });
 	SaveSus({ node1 });
 	SaveSus({ node_1 });
@@ -673,14 +665,14 @@ void CreateStrainWire::Type_WH_4(int i, int StrainId, double Angle, const vector
 
 void CreateStrainWire::Type_WH_6(int i, int StrainId, double Angle, const vector<Insulator_Base>& data, vector<int>& Id, vector<int>& SpacerId, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);//塔上悬挂点
-	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0);
-	int node_1 = Creat_Node(data[i].m_x + 0.2 * cos(Angle), data[i].m_y - 0.2 * sin(Angle), data[i].m_z - data[i].H, 0);
-	int node_2 = Creat_Node(data[i].m_x + 0.4 * cos(Angle), data[i].m_y - 0.4 * sin(Angle), data[i].m_z - data[i].H - 0.35, 0);
-	int node_3 = Creat_Node(data[i].m_x + 0.2 * cos(Angle), data[i].m_y - 0.2 * sin(Angle), data[i].m_z - data[i].H - 0.7, 0);
-	int node_4 = Creat_Node(data[i].m_x - 0.2 * cos(Angle), data[i].m_y + 0.2 * sin(Angle), data[i].m_z - data[i].H - 0.7, 0);
-	int node_5 = Creat_Node(data[i].m_x - 0.4 * cos(Angle), data[i].m_y + 0.4 * sin(Angle), data[i].m_z - data[i].H - 0.35, 0);
-	int node_6 = Creat_Node(data[i].m_x - 0.2 * cos(Angle), data[i].m_y + 0.2 * sin(Angle), data[i].m_z - data[i].H, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//塔上悬挂点
+	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
+	int node_1 = Creat_Node(data[i].m_x + 0.2 * cos(Angle), data[i].m_y - 0.2 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
+	int node_2 = Creat_Node(data[i].m_x + 0.4 * cos(Angle), data[i].m_y - 0.4 * sin(Angle), data[i].m_z - data[i].H - 0.35, 0, 2);
+	int node_3 = Creat_Node(data[i].m_x + 0.2 * cos(Angle), data[i].m_y - 0.2 * sin(Angle), data[i].m_z - data[i].H - 0.7, 0, 2);
+	int node_4 = Creat_Node(data[i].m_x - 0.2 * cos(Angle), data[i].m_y + 0.2 * sin(Angle), data[i].m_z - data[i].H - 0.7, 0, 2);
+	int node_5 = Creat_Node(data[i].m_x - 0.4 * cos(Angle), data[i].m_y + 0.4 * sin(Angle), data[i].m_z - data[i].H - 0.35, 0, 2);
+	int node_6 = Creat_Node(data[i].m_x - 0.2 * cos(Angle), data[i].m_y + 0.2 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
 	SaveSus({ node1 });
 	SaveSus({ node2 });
 	SaveSus({ node_1 });
@@ -720,14 +712,14 @@ void CreateStrainWire::Type_WV_1(int i, int StrainId, double Angle, const vector
 	V_angle = vtkMath::RadiansFromDegrees(V_angle);
 	double test = cos(V_angle);
 	//塔上V串的两个悬挂点
-	int node_T1 = Creat_Node(x1, y1, z1, 0);//塔上悬挂点
-	int node_T2 = Creat_Node(x2, y2, z2, 0);
+	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//塔上悬挂点
+	int node_T2 = Creat_Node(x2, y2, z2, 0, 1);
 	double zc_part = (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) - (z2 - z1) * tan(angle_2)) / (tan(angle_1) + tan(angle_2));
 	double xc_part = abs(zc_part) * tan(angle_1);
 	double x_c = x1 + abs(xc_part) * cos(V_angle);
 	double y_c = y1 - abs(xc_part) * sin(V_angle);
 	double z_c = z1 - abs(zc_part);
-	int node_V = Creat_Node(x_c, y_c, z_c, 0);
+	int node_V = Creat_Node(x_c, y_c, z_c, 0, 2);
 	RealSusInfor[StrainId].push_back(Insulator_Base("V", x_c, y_c, z_c , 0, data[i].m_line));
 	SaveSus({ node_T1 });
 	SaveSus({ node_T2 });
@@ -758,18 +750,18 @@ void CreateStrainWire::Type_WV_4(int i, int StrainId, double Angle, const vector
 	V_angle = vtkMath::RadiansFromDegrees(V_angle);
 	double test = cos(V_angle);
 	//塔上V串的两个悬挂点
-	int node_T1 = Creat_Node(x1, y1, z1, 0);//塔上悬挂点
-	int node_T2 = Creat_Node(x2, y2, z2, 0);
+	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//塔上悬挂点
+	int node_T2 = Creat_Node(x2, y2, z2, 0, 1);
 	double zc_part = (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) - (z2 - z1) * tan(angle_2)) / (tan(angle_1) + tan(angle_2));
 	double xc_part = abs(zc_part) * tan(angle_1);
 	double x_c = x1 + abs(xc_part) * cos(V_angle);
 	double y_c = y1 - abs(xc_part) * sin(V_angle);
 	double z_c = z1 - abs(zc_part);
-	int node_V = Creat_Node(x_c, y_c, z_c, 0);
-	int node_1 = Creat_Node(x_c + 0.225 * cos(Angle), y_c - 0.225 * sin(Angle), z_c - data[i].H, 0);
-	int node_2 = Creat_Node(x_c + 0.225 * cos(Angle), y_c - 0.225 * sin(Angle), z_c - data[i].H - 0.45, 0);
-	int node_3 = Creat_Node(x_c - 0.225 * cos(Angle), y_c + 0.225 * sin(Angle), z_c - data[i].H - 0.45, 0);
-	int node_4 = Creat_Node(x_c - 0.225 * cos(Angle), y_c + 0.225 * sin(Angle), z_c - data[i].H, 0);
+	int node_V = Creat_Node(x_c, y_c, z_c, 0, 2);
+	int node_1 = Creat_Node(x_c + 0.225 * cos(Angle), y_c - 0.225 * sin(Angle), z_c - data[i].H, 0, 2);
+	int node_2 = Creat_Node(x_c + 0.225 * cos(Angle), y_c - 0.225 * sin(Angle), z_c - data[i].H - 0.45, 0, 2);
+	int node_3 = Creat_Node(x_c - 0.225 * cos(Angle), y_c + 0.225 * sin(Angle), z_c - data[i].H - 0.45, 0, 2);
+	int node_4 = Creat_Node(x_c - 0.225 * cos(Angle), y_c + 0.225 * sin(Angle), z_c - data[i].H, 0, 2);
 	RealSusInfor[StrainId].push_back(Insulator_Base("V",x_c, y_c, z_c - 0.225, 0, data[i].m_line));
 	SaveSus({ node_T1 });
 	SaveSus({ node_T2 });
@@ -794,7 +786,7 @@ void CreateStrainWire::Type_WV_4(int i, int StrainId, double Angle, const vector
 
 void CreateStrainWire::Type_GO(int i, int StrainId, const vector<Insulator_Base>& data, map<int, vector<Insulator_Base>>& G_RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);
 	SaveSus({ node1 }); // 放入悬挂点
 	StrainJointRestraintNode.push_back(node1);
 	G_RealSusInfor[StrainId].push_back(Insulator_Base("G",data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1是线路默认的 后面的改
@@ -802,15 +794,15 @@ void CreateStrainWire::Type_GO(int i, int StrainId, const vector<Insulator_Base>
 
 void CreateStrainWire::Type_G(int i, int StrainId, const vector<Insulator_Base>& data, vector<int>& Id, map<int, vector<Insulator_Base>>& G_RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0);//塔上悬挂点
-	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0);
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//塔上悬挂点
+	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 
 	Id.push_back(node1);
 	Id.push_back(node2);
 	SaveSus({ node1 });
 	SaveSus({ node2 });
 	G_RealSusInfor[StrainId].push_back(Insulator_Base("G",data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, data[i].m_line));
-	StrainJointRestraintNode.push_back(node1);
+	StrainAllRestraintNode.push_back(node1);
 	G_xuanchui.push_back(1);
 }
 

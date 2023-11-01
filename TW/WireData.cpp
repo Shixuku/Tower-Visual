@@ -1,6 +1,6 @@
 #include "WireData.h"
 
-int WireData::Creat_Node(double x, double y, double z, double f)
+int WireData::Creat_Node(double x, double y, double z, double f, int Type)
 {
 
 	int SIZE = realSuspoint.size();
@@ -25,7 +25,7 @@ int WireData::Creat_Node(double x, double y, double z, double f)
 	if (judg == SIZE)
 	{
 		int id = m_Nodes.size() + 1;
-		m_Nodes.push_back(Node(id, x, y, z, f));
+		m_Nodes.push_back(Node(id, x, y, z, f, Type));
 		NodeData[id] = m_Nodes[id - 1];
 		return m_Nodes[id - 1].m_idNode;
 	}
@@ -89,7 +89,7 @@ void WireData::CreateTempWireNode(int wireLogo, int choose, vector<Node>& sus)
 			double y = j * dyi + sus[i].y;
 			double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 				sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + sus[i].z;
-			TempListNodes.push_back(Node(1, x, y, z, 0));
+			TempListNodes.push_back(Node(1, x, y, z, 0, 0));
 		}
 		
 	}
@@ -110,10 +110,10 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 
 			if (abs(Li - strainLength) < error)
 			{
-				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0));
+				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0, 0));
 				for (int j = (wireLogo - 1) * oneWireLogoNum + 1; j < wireLogo * oneWireLogoNum; j++)
 				{
-					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0));
+					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0, 0));
 				}
 				break; // 结束循环，只添加一个节点
 			}
@@ -128,9 +128,9 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 			{
 				for (int j = (wireLogo - 1) * oneWireLogoNum; j < wireLogo * oneWireLogoNum - 1; j++)
 				{
-					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0));
+					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0, 0));
 				}
-				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0));
+				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0, 0));
 				break; // 结束循环，只添加一个节点
 			}
 		}
@@ -144,15 +144,15 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 
 			if (abs(L1i - strainLength) < error1)
 			{
-				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0));
+				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0, 0));
 				for (int j = (wireLogo - 1) * oneWireLogoNum + 1; j < wireLogo * oneWireLogoNum -1; j++)
 				{
-					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0));
+					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0, 0));
 				}
 			}
 			if (abs(L2i - strainLength) < error2)
 			{
-				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0));
+				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0, 0));
 			}
 		}
 	}
@@ -188,7 +188,7 @@ void WireData::CreateTempRealWireNode(int wireLogo, vector<Node>& sus)
 			double y = j * dyi + sus[i].y;
 			double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 				sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + sus[i].z;
-			TempRealNodes.push_back(Node(1, x, y, z, 0));
+			TempRealNodes.push_back(Node(1, x, y, z, 0, 0));
 		}
 	}
 	CreateSpacerDistance(TempRealNodes,wireLogo);
@@ -222,7 +222,7 @@ void WireData::CreateStrainTempRealWireNode(int nz, int wireLogo,double k, int S
 			double y = j * dyi + sus[i].y;
 			double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 				sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + sus[i].z;
-			TempRealNodes.push_back(Node(1, x, y, z, 0));
+			TempRealNodes.push_back(Node(1, x, y, z, 0, 0));
 		}
 	}
 	CreateStrainSpacerDistance(nz, TempRealNodes, sus, SectionId, wireLogo);
@@ -376,7 +376,7 @@ void WireData::CreatTestSpacer(vector<Element_Truss>& m_Elements_Beams, vector<i
 void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, double y, double z, vector<int> ids,int ClassId)
 {
 	//if (ids.size() < 4)return;
-	int id = Creat_Node(x, y, z, 0);
+	int id = Creat_Node(x, y, z, 0, 1);
 	int idelement = Temp_Truss.size();
 	size_t size = ids.size();
 	for (int i = 0; i < size; i++)
@@ -502,7 +502,7 @@ void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double 
 				double y = j * dyi + sus[i].y;
 				double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 					sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + sus[i].z;
-				TempListNodes.push_back(Node(1, x, y, z, 0));
+				TempListNodes.push_back(Node(1, x, y, z, 0, 0));
 			}
 
 		}
@@ -531,7 +531,7 @@ void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double 
 				double y = j * dyi + sus[i].y;
 				double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
 					sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + sus[i].z;
-				TempListNodes.push_back(Node(1, x, y, z, 0));
+				TempListNodes.push_back(Node(1, x, y, z, 0, 0));
 			}
 
 		}
@@ -567,12 +567,12 @@ void WireData::FindStrainRealSus(int wireLogo, int num, int n, vector<Node> m_No
 			closestL2Z = node.z;
 		}
 	}
-	m_Str_realSus[wireLogo - 1].push_back(Node(1, closestL1X, closestL1Y, closestL1Z, 0));
+	m_Str_realSus[wireLogo - 1].push_back(Node(1, closestL1X, closestL1Y, closestL1Z, 0, 0));
 	for (int j = (n - 1) * oneWireLogoNum + 1; j < n * oneWireLogoNum - 1; j++)
 	{
-		m_Str_realSus[wireLogo - 1].push_back(Node(1, RealSus[wireLogo][j].m_x, RealSus[wireLogo][j].m_y, RealSus[wireLogo][j].m_z, 0));
+		m_Str_realSus[wireLogo - 1].push_back(Node(1, RealSus[wireLogo][j].m_x, RealSus[wireLogo][j].m_y, RealSus[wireLogo][j].m_z, 0, 0));
 	}
-	m_Str_realSus[wireLogo - 1].push_back(Node(1, closestL2X, closestL2Y, closestL2Z, 0));
+	m_Str_realSus[wireLogo - 1].push_back(Node(1, closestL2X, closestL2Y, closestL2Z, 0, 0));
 }
 
 

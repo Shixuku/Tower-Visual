@@ -4,7 +4,7 @@
 class WireData:public Instance
 {
 public:
-	int fenlie = 4;
+	int fenlie = 0;
 	double unitMass = 0;//单位质量
 	double area = 0;//截面积
 	int N = 100; //导线分段数
@@ -21,10 +21,10 @@ public:
 	int WireSectionId = 0;//导线截面编号
 	int InsulatorSectionId = 0;//绝缘子截面编号
 	int SpacerSectionId = 0;//间隔棒截面编号
-	int wireQty = 3;//总线路数
+	int wireQty = 0;;//总线路数
 	vector<int >endpoinType1 ;//线路端点一的类型（0为挂绝缘子上，1为耐张-挂塔上）
 	vector<int> endpoinType2 ;//线路端点二的类型（0为挂绝缘子上，1为耐张-挂塔上）
-	int Creat_Node(double x, double y, double z, double f);
+	int Creat_Node(double x, double y, double z, double f,int Type);
 	void CreatRealNode();//创建真实悬挂点
 	void CreateTempWireNode(int wireLogo, int choose, vector<Node>& sus);//由列表悬挂点创建为分裂的基础节点
 	void CreateTempRealWireNode(int wireLogo,  vector<Node>& sus);//由真实悬挂点创建未分裂的基础节点用于后续确定间隔棒的安装位置

@@ -182,7 +182,7 @@ void WireWiring::NodeList(Part_Base* part, QStringList parts)
 		double NodeX = NodeParts[1].toDouble()/1000 ;
 		double NodeY = NodeParts[2].toDouble() /1000;
 		double NodeZ = NodeParts[3].toDouble()/1000 ;
-		part->m_Nodes.push_back(Node(NodeNumber, NodeX, NodeY, NodeZ, 0));
+		part->m_Nodes.push_back(Node(NodeNumber, NodeX, NodeY, NodeZ, 0, 0));
 		processedCount++;
 	}
 }
@@ -321,6 +321,7 @@ void WireWiring::GetLIxyz(double a, double b, double* Iu, double* Iv, double* J,
 		L2 * pow(t2, 0.3e1) * (0.1e1 / 0.3e1 - 0.21e0 * t2 * (0.1e1 - pow(t2, 0.4e1) * pow(L2, -0.4e1) / 0.12e2) / L2) + 0.7e-1 * pow(0.4e1 * t2 - 0.2e1 * sqrt(0.2e1) * sqrt(t2 * t2), 0.4e1);
 	*S = 2 * a * b - b * b;
 }
+
 void WireWiring::HighList(QStringList parts)
 {
 	int HighCount = parts[1].toInt();
@@ -396,7 +397,7 @@ void WireWiring::HangPointList(QStringList parts)
 			QStringList Partid = Partnumber.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
 			int FindPartid1 = Partid[1].toInt();
 			int id1 = tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.size() + 1;
-			QString StringClass1 = StringClass + QString::number(1);//区分V1
+			QString StringClass1 = StringClass;//区分V1
 			HangPoint* hangPoint1 = new HangPoint(id1, StringClass1, WireLoge, nodeid);
 			tower->TP_Part.Find_Entity(FindPartid1)->TP_HangPoint.Add_Entity(hangPoint1);
 
@@ -405,7 +406,7 @@ void WireWiring::HangPointList(QStringList parts)
 			QStringList Partid2 = Partnumber2.split(QRegExp("[\\s-]+"), Qt::SkipEmptyParts);
 			int FindPartid2 = Partid2[1].toInt();
 			int id2 = tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.size() + 1;
-			QString StringClass2 = StringClass + QString::number(2);//区分V2
+			QString StringClass2 = StringClass ;//区分V2
 			HangPoint* hangPoint2 = new HangPoint(id2, StringClass2, WireLoge, nodeid2);
 			tower->TP_Part.Find_Entity(FindPartid2)->TP_HangPoint.Add_Entity(hangPoint2);
 		}

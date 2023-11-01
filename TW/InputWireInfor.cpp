@@ -73,11 +73,12 @@ bool InputWireInfor::Input_FemData(const QString& FileName)
         }
         else if (list_str[0].compare("*Sus", Qt::CaseInsensitive) == 0)//悬挂点信息
         {//读取到挂点
-            Q_ASSERT(list_str.size() == 2);
+            Q_ASSERT(list_str.size() == 3);
 
             std::vector<Insulator_Base> Insulators;
 
             int nSus = list_str[1].toInt();//
+            wd->fenlie = list_str[2].toInt();
             qDebug() << "\n挂点数: " << nSus;
             for (int i = 0; i < nSus; ++i)
             {
@@ -140,25 +141,4 @@ void InputWireInfor::sort_line(vector<Insulator_Base>& object)
             }
         }
     }
-}
-
-
-
-
-void InputWireInfor::Show()
-{
-    towerWire = new TowerWireGroup();
-    towerWire->Suspensioncombined();
-    towerWire->VectorToMap();
-    CreateStrainWire* c = new CreateStrainWire();
-    c->Test_a = wd->Test_a;
-    c->Property = wd->Property;
-    c->Create_Mesh();
-    c->StrainAllRestraintNode = wd->StrainAllRestraintNode;
-    c->StrainJointRestraintNode = wd->StrainJointRestraintNode;
-    towerWire->AddStrainWireToGroup(c);
-    towerWire->Show_VTKnode(m_pInterFace->m_Renderer);
-    towerWire->Show_VTKbeam(m_pInterFace->m_Renderer);
-    towerWire->Show_VTKtruss(m_pInterFace->m_Renderer);
-    m_pInterFace->m_Renderer->ResetCamera();
 }
