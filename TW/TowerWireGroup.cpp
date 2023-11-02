@@ -617,6 +617,7 @@ void TowerWireGroup::AddWireElement(CreateStrainWire* wire)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
+		this->m_Elements_beams[totalT].Type = "L";
 	}
 
 	

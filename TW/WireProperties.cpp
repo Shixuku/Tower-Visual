@@ -15,7 +15,7 @@ void WireProperties::ReadInfoSus(InputWireInfor* in, QTextStream& ssin, std::vec
     //tension,i
     in->ReadLine(ssin, strdata);
     QStringList list_str = strdata.split(QRegularExpression("[\t, ]"), Qt::SkipEmptyParts);//利用空格,分解字符串
-    Q_ASSERT(list_str.size() == 2);
+    Q_ASSERT(list_str.size() == 4);
     int idT = list_str[1].toInt();//
 
     //导线

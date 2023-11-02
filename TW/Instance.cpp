@@ -389,7 +389,7 @@ void Instance::BeamTxT()
 	Stream << "*Element_Beam3D," << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
+		Stream << "  " << m_Elements_beams[i].m_idElement <<"  "<< m_Elements_beams[i].Type<< "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
 	}
 }
 
@@ -399,7 +399,7 @@ void Instance::TrussTxT()
 	Stream <<"*Element_Truss3D," << TressSize << " \n";
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
-		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
+		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_beams[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
 	}
 }
 

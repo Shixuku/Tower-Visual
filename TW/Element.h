@@ -17,7 +17,7 @@ public:
 	int groupTowerId = 0;
 	void show()const;
 	void showid()const;
-
+	QString Type = "T";
 	virtual void SaveTo(QDataStream& fin) const;
 	virtual void Input(QDataStream& fin);
 
