@@ -160,7 +160,7 @@ void InstanceWire::SectionList(QStringList parts)
 	int processedCount = 0;// 记录已处理的数量
 	QRegExp regex(".*");
 	QString keyword;
-	QString Ten = "*Tension";
+	QString Ten = "*Section";
 	Stream << Ten<<"," << SectionID << "\n";
 	while (processedCount < SectionID)
 	{
