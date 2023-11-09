@@ -13,6 +13,8 @@ class Fem_Element_Base : public Element_Base
 public:
 	int idWind = -1; //风区编号 -1表示不受到风载
 
+	QChar element_type;
+
 	vector<int> EI; //单元自由度
 	MatrixXd Kr; //单元刚度矩阵
 
@@ -44,7 +46,7 @@ public:
 	virtual void Calculate_ke(MatrixXd& ke) = 0;
 	virtual void Calculate_me(MatrixXd& me) = 0;
 	void Assemble_Ks(MatrixXd& Ks) const;
-	void Assemble_SparseKs(list<Tri>& Klist) const;
+	void Assemble_SparseKs(std::list<Tri>& K11, std::list<Tri>& K21, std::list<Tri>& K22) const;
 
 	virtual void Get_Element_GollapingForce() = 0;//计算单元气动荷载(舞动计算)
 	virtual void Get_Element_WindForce(const double t) = 0;//计算单元风荷载(风偏计算)
