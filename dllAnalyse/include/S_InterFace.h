@@ -28,7 +28,7 @@ public:
 	//设置模型name
 	virtual void set_Name(QString name) = 0;
 	//初始化数据库表
-	virtual void InitMySQLTable() = 0;
+	virtual void InitMySQLTable(QString db_name, QString db_ip, QString user_name, QString password) = 0;
 	//添加到模型库
 	virtual void AddToStructures() = 0;
 
