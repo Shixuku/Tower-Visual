@@ -23,6 +23,7 @@ public:
 	void Initialize();
 private:
 	Ui::T_CrossArmClass ui;
+	void BtnLook();
 public slots:
 	void Change_combo_Tier();//第二种方法，用选择的方式
 

@@ -169,6 +169,8 @@
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="ui_AnalysisStep.cpp" />
     <ClCompile Include="UI_Calculate.cpp" />
+    <ClCompile Include="ui_TowerBodyType.cpp" />
+    <ClCompile Include="ui_TowerHeadType.cpp" />
     <ClCompile Include="ui_TowerLegParameter.cpp" />
     <ClCompile Include="ui_TowerLegType.cpp" />
     <ClCompile Include="Wind.cpp" />
@@ -211,6 +213,8 @@
     <QtUic Include="T_Foot.ui" />
     <QtUic Include="ui_AnalysisStep.ui" />
     <QtUic Include="UI_Calculate.ui" />
+    <QtUic Include="ui_TowerBodyType.ui" />
+    <QtUic Include="ui_TowerHeadType.ui" />
     <QtUic Include="ui_TowerLegParameter.ui" />
     <QtUic Include="ui_TowerLegType.ui" />
     <QtUic Include="Wind.ui" />
@@ -227,6 +231,8 @@
     <ClInclude Include="TowerList.h" />
     <QtMoc Include="ui_TowerLegParameter.h" />
     <QtMoc Include="ui_TowerLegType.h" />
+    <QtMoc Include="ui_TowerBodyType.h" />
+    <QtMoc Include="ui_TowerHeadType.h" />
     <ClInclude Include="WireWiring.h" />
     <ClInclude Include="CreatWire.h" />
     <ClInclude Include="Ele_Location.h" />

@@ -2,6 +2,7 @@
 #pragma execution_character_set("utf-8")
 #include"TowerPart_body.h"
 #include<QMessageBox.h>
+#include"ui_TowerBodyType.h"
 T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 	: QDialog(parent)
 {
@@ -46,7 +47,7 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 
 	connect(ui.combo_b, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_body()));
 	connect(ui.combo_g, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_gem()));
-
+	connect(ui.btn_look, &QPushButton::clicked, this, &T_Body::BtnLook);
 	ui.tabWidget->setCurrentIndex(0);//设置tab第一页最先显示
 
 	int T_bodys = m_InterFace->TP_body.size() + 1;//塔身数量
@@ -193,6 +194,13 @@ QString T_Body::Get_line_Zn(int tier)
 	}
 	QString line_zn = QString::number(zn);
 	return line_zn;
+}
+
+void T_Body::BtnLook()
+{
+	ui_TowerBodyType* m_TowerBodyType = new ui_TowerBodyType(this);
+	m_TowerBodyType->show();
+
 }
 
 void T_Body::Change_Picture_gem()

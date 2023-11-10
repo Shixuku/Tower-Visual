@@ -3,6 +3,7 @@
 #include"TowerPart_CrossArm.h"
 #include"TowerData_LayerArm.h"
 #include"QMessageBox.h"
+#include"ui_TowerHeadType.h"
 T_CrossArm::T_CrossArm(InterFace* interFace, QWidget *parent)
 	: QDialog(parent)
 {
@@ -15,6 +16,7 @@ T_CrossArm::T_CrossArm(InterFace* interFace, QWidget *parent)
 
 	connect(ui.btn_ok, &QPushButton::clicked, this, &T_CrossArm::accept);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &T_CrossArm::reject);
+	connect(ui.btn_look, &QPushButton::clicked, this, &T_CrossArm::BtnLook);
 	connect(ui.rdb_up, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0);});
 	connect(ui.rdb_buttom, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(1); });
 	connect(ui.btn_creat, &QPushButton::clicked, this, [=]() {
@@ -230,6 +232,12 @@ void T_CrossArm::Initialize()
 	img_g->load("./gemian1.png");
 	ui.label_g->resize(img_g->width(), img_g->height());
 	ui.label_g->setPixmap(QPixmap::fromImage(*img_g));
+}
+
+void T_CrossArm::BtnLook()
+{
+	ui_TowerHeadType* m_TowerHeadType = new ui_TowerHeadType(this);
+	m_TowerHeadType->show();
 }
 
 void T_CrossArm::Change_Picture_BU()

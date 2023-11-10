@@ -25,6 +25,7 @@ public:
 private:
 	Ui::T_BodyClass ui;
 	InterFace* m_InterFace = nullptr;
+	void BtnLook();
 public slots:
 	void Change_Picture_body();
 	void Change_Picture_gem();
