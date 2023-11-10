@@ -2,6 +2,9 @@
 #include"CreatWire.h"
 #include"CreateStrainWire.h"
 #include <algorithm>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 int TowerWireGroup::Get_id() const
 {
 	return m_id;
@@ -89,13 +92,41 @@ void TowerWireGroup::VectorToMap()
 
 void TowerWireGroup::AddTowerToGroup(Tower* tower, int towerId, double dx, double dy, double dz, double dAngle)
 {
-	rotation(dAngle, towerId);
+	AddTowerRotation(tower, dAngle);
 	AddTowerNode(tower, towerId, dx, dy, dz);
 	AddTowerElement(tower, towerId);
 	AddSuspensionNode(tower);
 	addRestraintNode(tower);
 	addHangPoint(tower);
 	tower->TowerToGroup.clear();
+}
+
+void TowerWireGroup::AddTowerRotation(Tower* tower, double dAngle)
+{
+	double radianAngle = dAngle * M_PI / 180.0; // Convert degrees to radians
+	double cosTheta = cos(radianAngle);
+	double sinTheta = sin(radianAngle);
+	// Ðý×ª¾ØÕó
+	double rotationMatrix[3][3] = {
+		{cosTheta, -sinTheta, 0},
+		{sinTheta, cosTheta, 0},
+		{0, 0, 1} };
+	for (auto& i : tower->m_Nodes)
+	{
+		double newX = i.x * cos(radianAngle) - i.y * sin(radianAngle);
+		double newY = i.x * sin(radianAngle) + i.y * cos(radianAngle);
+		i.x = newX;
+		i.y = newY;
+	}
+	for (auto& i : tower->m_Elements_beams)
+	{
+		double newX = i.direction[0] * rotationMatrix[0][0] + i.direction[1] * rotationMatrix[0][1] + i.direction[2] * rotationMatrix[0][2];
+		double newY = i.direction[0] * rotationMatrix[1][0] + i.direction[1] * rotationMatrix[1][1] + i.direction[2] * rotationMatrix[1][2];
+		double newZ = i.direction[0] * rotationMatrix[2][0] + i.direction[1] * rotationMatrix[2][1] + i.direction[2] * rotationMatrix[2][2];
+		i.direction[0] = newX;
+		i.direction[1] = newY;
+		i.direction[2] = newZ;
+	}
 }
 
 void TowerWireGroup::AddTowerNode(Tower* tower, int towerId, double dx, double dy, double dz)
