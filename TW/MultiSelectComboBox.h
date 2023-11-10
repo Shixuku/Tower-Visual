@@ -55,6 +55,7 @@ public:
 
 	//选中的item的编号
 	QVector<int> Get_idItems();
+	QVector<QString> Get_idItemsText();
 
 protected:
 

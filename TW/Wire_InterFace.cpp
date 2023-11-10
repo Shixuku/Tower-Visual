@@ -67,7 +67,6 @@ void Wire_InterFace::SetTableWideget(int row)
 			if (towerWireGroup != nullptr)
 			{
 				int id = towerWireGroup->combined[i].first;
-				cout << "towerWireGroup->NodeData[id]" << towerWireGroup->NodeData[id].m_idNode << "\n";
 				int WireLogo = towerWireGroup->combined[i].second;
 				ui.Section_Lists->setItem(i, 1, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].x)));
 				ui.Section_Lists->setItem(i, 2, new QTableWidgetItem(QString::number(towerWireGroup->NodeData[id].y)));

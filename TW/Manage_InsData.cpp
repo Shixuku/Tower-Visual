@@ -57,60 +57,69 @@ void Manage_InsData::Modify_Data()
 	}
 	else
 	{
-		Tower_Assembly* T_As = m_InterFace->tower_assembles[Index];
-		int ret = T_As->exec();
-		if (ret == QDialog::Accepted)
+		std::vector<Tower_Assembly*>::iterator it = m_InterFace->tower_assembles.begin();
+		if (it != m_InterFace->tower_assembles.end())
 		{
-			//新增
-			QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(1);
-			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
-			Tower* tw = new Tower;
-			for (auto& i : T_As->m_ArryLeg)//塔腿
+			it = m_InterFace->tower_assembles.begin() + Index;
+			int ret = (*it)->exec();
+			if (ret == QDialog::Accepted)
 			{
-				tw->addPart(m_InterFace->TP_leg.Find_Entity(i));
-			}
-			for (auto& i : T_As->m_ArryBody)//塔身段
-			{
-				tw->addPart(m_InterFace->TP_body.Find_Entity(i));
-			}
-			for (auto& i : T_As->m_ArryHead)//塔头
-			{
-				tw->addPart(m_InterFace->TP_CrossArm.Find_Entity(i));
-			}
-			tw->Check_Beam();
-			childItem->setText(0, T_As->Get_name());
-			tw->Item = childItem;
-			tw->m_id = Index + 1;
-
-			tw->Show_VTKtruss(m_InterFace->m_Renderer);
-			tw->Show_VTKbeam(m_InterFace->m_Renderer);
-			tw->Show_VTKnode(m_InterFace->m_Renderer);
-
-			m_InterFace->TP.Add_Entity(tw);
-
-			for (auto& i : m_InterFace->TP)
-			{
-				if (i.second != nullptr)
+				//新增
+				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(1);
+				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(1)->child(Index);
+				Tower* tw = new Tower;
+				for (auto& i : (*it)->m_ArryLeg)//塔腿
 				{
-					i.second->m_BeamActor->VisibilityOn();
-					i.second->m_TrussActor->VisibilityOn();
-					i.second->Node_actor->VisibilityOn();
+					tw->addPart(m_InterFace->TP_leg.Find_Entity(i));
 				}
-			}
+				for (auto& i : (*it)->m_ArryBody)//塔身段
+				{
+					tw->addPart(m_InterFace->TP_body.Find_Entity(i));
+				}
+				for (auto& i : (*it)->m_ArryHead)//塔头
+				{
+					tw->addPart(m_InterFace->TP_CrossArm.Find_Entity(i));
+				}
+				tw->Check_Beam();
+				childItem->setText(0, (*it)->Get_name());
+				tw->Item = childItem;
+				tw->m_id = Index + 1;
 
-			//设置界面数据变化
-			ui.tableWidget->setItem(Index, 0, new QTableWidgetItem(T_As->Get_name()));
-			//设置节点单元数量
-			ui.tableWidget->setItem(Index, 1, new QTableWidgetItem(QString::number(tw->m_Nodes.size())));
-			int E_num = tw->m_Elements_beams.size() + tw->m_Elements_Trusses.size();
-			ui.tableWidget->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
-			ui.tableWidget->setItem(Index, 3, new QTableWidgetItem("暂无"));
-			for (int j = 0; j < 4; j++)//表头;
-			{
-				ui.tableWidget->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+				tw->Show_VTKtruss(m_InterFace->m_Renderer);
+				tw->Show_VTKbeam(m_InterFace->m_Renderer);
+				tw->Show_VTKnode(m_InterFace->m_Renderer);
+
+				m_InterFace->TP.Add_Entity(tw);
+
+				for (auto& i : m_InterFace->TP)
+				{
+					if (i.second != nullptr)
+					{
+						i.second->m_BeamActor->VisibilityOn();
+						i.second->m_TrussActor->VisibilityOn();
+						i.second->Node_actor->VisibilityOn();
+					}
+				}
+
+				//设置界面数据变化
+				ui.tableWidget->setItem(Index, 0, new QTableWidgetItem((*it)->Get_name()));
+				//设置节点单元数量
+				ui.tableWidget->setItem(Index, 1, new QTableWidgetItem(QString::number(tw->m_Nodes.size())));
+				int E_num = tw->m_Elements_beams.size() + tw->m_Elements_Trusses.size();
+				ui.tableWidget->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
+				ui.tableWidget->setItem(Index, 3, new QTableWidgetItem("暂无"));
+				for (int j = 0; j < 4; j++)//表头;
+				{
+					ui.tableWidget->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+				}
+				m_InterFace->m_Renderer->ResetCamera();
 			}
-			m_InterFace->m_Renderer->ResetCamera();
 		}
+		else
+		{
+			QMessageBox::information(this, "Tips", "找不到界面指针！");
+		}
+
 	}
 }
 
@@ -137,7 +146,11 @@ void Manage_InsData::Delete_Data()
 			delete(childItem);
 			//需要删掉界面的指针
 			std::vector<Tower_Assembly*>::iterator it = m_InterFace->tower_assembles.begin();
-			it = m_InterFace->tower_assembles.begin() + Index;
+			if (it != m_InterFace->tower_assembles.end())
+			{
+				it = m_InterFace->tower_assembles.begin() + Index;
+				m_InterFace->tower_assembles.erase(it);
+			}
 			m_InterFace->tower_assembles.erase(it);
 		}
 	}

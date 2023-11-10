@@ -1,21 +1,21 @@
 #include "UI_Calculate.h"
 #include"TowerWireGroup.h"
-
+#include<QMessageBox.h>
 Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 	m_InterFace = InterFace;
 	Set_headertext();
-	connect(ui.btn_ok, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
-	connect(ui.btn_show, &QPushButton::clicked, this, &Instance_Calculate::visual);
+	connect(ui.btn_Wind, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
+	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
+	connect(ui.btn_InputWind, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 
-	connect(ui.ptn_import, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 
-	connect(ui.btn_caculateIce, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
-	connect(ui.btn_displayIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
-	connect(ui.btn_CaculateModelIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
+	connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
+	connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
+	connect(ui.btn_InputIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
 
 }
 
@@ -37,14 +37,17 @@ Instance_Calculate::~Instance_Calculate()
 
 void Instance_Calculate::on_btn_import_clicked()
 {
-	QString str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
-	if (str == nullptr)
+	m_InterFace->m_Renderer->RemoveAllViewProps();
+	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
+	if (m_str == nullptr)
 	{
 		std::cout << "open failed\n";
 		return;
 	}
-	qDebug() << str;
-
+	int lastSeparatorIndex = m_str.lastIndexOf('/');
+	if (lastSeparatorIndex == -1)	lastSeparatorIndex = m_str.lastIndexOf('\\');
+	// 提取文件名部分
+	m_fileName = m_str.mid(lastSeparatorIndex + 1);
 	//创建实例
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
@@ -52,7 +55,12 @@ void Instance_Calculate::on_btn_import_clicked()
 	m_ins = (Instance*)towerWireGroup;
 	if (m_ins->s) delete m_ins->s;//释放之前的对象
 	m_ins->s = GetStructure();//生成structure类对象
-	m_ins->s->Input_Standard(str);
+	m_ins->s->set_ID(m_ins->m_id);
+	m_ins->s->AddToStructures();
+
+	m_ins->s->Input_Standard(m_str);
+
+	m_ins->s->set_Name(m_ins->m_name);
 
 	//将点和线添加到界面
 	m_ins->s->transToNodeBase(m_Nodes);
@@ -67,26 +75,35 @@ void Instance_Calculate::on_btn_import_clicked()
 
 	m_ins->s->setElementType(S_InterFace::Beam_CR);
 
-	QString FilePath("./");//计算结果文件路径
-	//ins->s->set_outInfo(FilePath, towercaculate->IdNode);//这一步需要，更新范理的第二个参数
+	update();
+
 	clock_t start, end;//计时
 	start = clock();
 	m_ins->s->execute_Stepping();//计算
 	end = clock();
 	int Totalit = m_ins->s->getTotalIterations();
-	//qDebug() << "总迭代次数： " << Totalit;
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
-	update();
+	//update();
+
+	//算风--让关于冰的按钮点不起
+	ui.btn_Ice->setEnabled(false);
+	ui.btn_showIce->setEnabled(false);
+
 }
 void Instance_Calculate::btn_CaculateModelIce()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("选择输入文件"), "", tr("TXT(*.txt)"));
-	if (fileName.isEmpty())
+	m_InterFace->m_Renderer->RemoveAllViewProps();
+	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
+	if (m_str == nullptr)
 	{
-		qDebug() << "文件选择路径有误";
+		std::cout << "open failed\n";
 		return;
 	}
+	int lastSeparatorIndex = m_str.lastIndexOf('/');
+	if (lastSeparatorIndex == -1)	lastSeparatorIndex = m_str.lastIndexOf('\\');
+	// 提取文件名部分
+	m_fileName = m_str.mid(lastSeparatorIndex + 1);
 	//创建实例
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
@@ -94,9 +111,9 @@ void Instance_Calculate::btn_CaculateModelIce()
 	m_ins = (Instance*)towerWireGroup;
 	if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
 	m_ins->s_ice = GetStructure_ice();//生成structure类对象
-	m_ins->s_ice->Input_FemData(fileName);
-	////将点和线添加到界面
-	CreateActor_ice();
+	m_ins->s_ice->Input_FemData(m_str);
+	CreateActor_ice();////将点和线添加到界面
+	update();
 	clock_t start, end;//计时
 	start = clock();
 	m_ins->s_ice->Solve();//计算
@@ -104,26 +121,37 @@ void Instance_Calculate::btn_CaculateModelIce()
 	end = clock();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
-	update();
+	//update();
+	//算冰--让关于风的不显示
+	ui.btn_Wind->setEnabled(false);
+	ui.btn_showWind->setEnabled(false);
 }
+
 void Instance_Calculate::on_btk_ok_clicked()
 {
 	int index = ui.tableWidget->currentRow();
-	Instance* ins = nullptr;
-	ins = list_Instance[index];
-	if (!ins) return;
-	QString str = ins->m_name;
+	m_ins = list_Instance[index];
+	if (!m_ins) return;
+	QString str = m_ins->m_name;
 	if (str != nullptr)
 	{
 		qDebug() << str;
-		if (ins->s) delete ins->s;//释放之前的对象
-		ins->s = GetStructure();//生成structure类对象
-		ins->s->Input_Standard(str);
+		if (m_ins->s) delete m_ins->s;//释放之前的对象
+		m_ins->s = GetStructure();//生成structure类对象
+		m_ins->s->set_ID(m_ins->m_id);
+		m_ins->s->AddToStructures();
+
+		m_ins->s->Input_Standard(str);
+
+		m_ins->s->set_Name(m_ins->m_name);
+
 		//坐标系转换
-		ins->s->TransCoordinateSystem();
+		m_ins->s->TransCoordinateSystem();
+
 		//过滤无效数据
-		ins->s->DataFilter();
-		ins->s->setElementType(S_InterFace::Beam_CR);
+		m_ins->s->DataFilter();
+
+		m_ins->s->setElementType(S_InterFace::Beam_CR);
 	}
 	else
 	{
@@ -133,15 +161,17 @@ void Instance_Calculate::on_btk_ok_clicked()
 	QString FilePath("./");//计算结果文件路径
 	clock_t start, end;//计时
 	start = clock();
-	ins->s->execute_Stepping();//计算
+	m_ins->s->execute_Stepping();//计算
 	end = clock();
-	int Totalit = ins->s->getTotalIterations();
+	int Totalit = m_ins->s->getTotalIterations();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
 }
 
+
 void Instance_Calculate::on_btk_ok_clicked_ice()
 {
+	m_InterFace->m_Renderer->RemoveAllViewProps();
 	int index = ui.tableWidget->currentRow();
 	Instance* ins = nullptr;
 	ins = list_Instance[index];
@@ -171,45 +201,61 @@ void Instance_Calculate::on_btk_ok_clicked_ice()
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
 }
-
 void Instance_Calculate::visual()
 {
-	if (!display)
-	{
-		display = new resultVisualize(m_InterFace);
-	}
-	display->show();
 	int index = ui.tableWidget->currentRow();
-	Instance* ins = nullptr;
-	ins = list_Instance[index];
-	if (!ins) return;
-	vector<Node_Base*> ptr_nodes = ins->s->GetNodes();
-	std::list<std::vector<double>> nodes;
-
-	for (auto& i : ptr_nodes)
+	if (index < 0)
 	{
-		std::vector<double> coor(3);
-		coor = { i->m_x,i->m_y,i->m_z };
-		nodes.push_back(coor);
+		QMessageBox::information(this, "Tips", "请选择要显示的风计算！"); return;
 	}
-
-	display->addData(nodes, ins);
+	else
+	{
+		if (!display)
+		{
+			display = new resultVisualize(m_InterFace);
+		}
+		this->accept();//把原来的界面关闭
+		display->show();
+		Instance* ins = nullptr;
+		ins = list_Instance[index];
+		if (!ins) return;
+		vector<Node_Base*> ptr_nodes = ins->s->GetNodes();
+		std::list<std::vector<double>> nodes;
+		for (auto& i : ptr_nodes)
+		{
+			std::vector<double> coor(3);
+			coor = { i->m_x,i->m_y,i->m_z };
+			nodes.push_back(coor);
+		}
+		display->addData(nodes, ins);
+	}
 }
 
 void Instance_Calculate::visual_ice()
 {
-	if (!display)
-	{
-		display = new resultVisualize(m_InterFace);
-	}
-	display->show();
+
 	int index = ui.tableWidget->currentRow();
-	Instance* ins = nullptr;
-	ins = list_Instance[index];
-	if (!ins) return;
-	std::list<std::vector<double>> nodes= ins->s_ice->Get_node_ice();
-	display->addData_ice(nodes, ins);
+	if (index < 0)
+	{
+		QMessageBox::information(this, "Tips", "请选择要显示的冰计算！"); return;
+	}
+	else
+	{
+		if (!display)
+		{
+			display = new resultVisualize(m_InterFace);
+		}
+		this->accept();//把原来的界面关闭
+		display->show();
+		Instance* ins = nullptr;
+		ins = list_Instance[index];
+		if (!ins) return;
+		std::list<std::vector<double>> nodes = ins->s_ice->Get_node_ice();
+		display->addData_ice(nodes, ins);
+	}
+
 }
+
 
 void Instance_Calculate::update()
 {

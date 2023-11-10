@@ -6,7 +6,6 @@
 
 #include "dll_ansys_global.h"
 
-using namespace std;
 
 class DLL_ANSYS_EXPORT Node_Base : public EntityBase
 {
@@ -18,7 +17,6 @@ public:
 	{
 		m_id = id, m_x = x, m_y = y, m_z = z;
 	}
-
 
 	void Input(QDataStream& fin)
 	{
@@ -36,13 +34,8 @@ public:
 	}
 	void Disp()
 	{
-		cout << m_id << " " << m_x << " " << m_y << " " << m_z << "\n";
+		std::cout << m_id << " " << m_x << " " << m_y << " " << m_z << "\n";
 	}
-
-	virtual vector<double> Get_DisplaymentXData() { return vector<double>(0); }
-	virtual vector<double> Get_DisplaymentYData() { return vector<double>(0); }
-	virtual vector<double> Get_DisplaymentZData() { return vector<double>(0); }
-	virtual vector<double> Get_SigmaData() { return vector<double>(0); }
 
 	virtual enum Entity_Type My_EntityType() const
 	{

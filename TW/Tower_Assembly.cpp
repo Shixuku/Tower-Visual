@@ -26,25 +26,39 @@ Tower_Assembly::~Tower_Assembly()
 
 void Tower_Assembly::Create_combobox()
 {
-    int T_legs = m_InterFace->TP_leg.size();//塔腿数量
-    int T_bodys = m_InterFace->TP_body.size();//塔身数量
-    int T_heads = m_InterFace->TP_CrossArm.size();//塔头数量
+    //int T_legs = m_InterFace->TP_leg.size();//塔腿数量
+    //int T_bodys = m_InterFace->TP_body.size();//塔身数量
+    //int T_heads = m_InterFace->TP_CrossArm.size();//塔头数量
+    //for (int i = 0; i < T_legs; i++)
+    //{
+    //    QString name = m_InterFace->TP_leg.Find_Entity(i + 1)->m_Name;
+    //    ui.combo_foot->addItem(name);
+    //}
+    //
+    //for (int i = 0; i < T_bodys; i++)
+    //{
+    //    QString name = m_InterFace->TP_body.Find_Entity(i + 1)->m_Name;
+    //    ui.combo_body->addItem(name);
+    //}
+    //for (int i = 0; i < T_heads; i++)
+    //{
+    //    QString name = m_InterFace->TP_CrossArm.Find_Entity(i + 1)->m_Name;
+    //    ui.combo_head->addItem(name);
+    //}
 
-    for (int i = 0; i < T_legs; i++)
+    for (const auto& i : m_InterFace->TP_leg)
     {
-        QString name = m_InterFace->TP_leg.Find_Entity(i + 1)->m_Name;
+        QString name = i.second->m_Name;
         ui.combo_foot->addItem(name);
     }
-
-    for (int i = 0; i < T_bodys; i++)
+    for (const auto& i : m_InterFace->TP_body)
     {
-        QString name = m_InterFace->TP_body.Find_Entity(i + 1)->m_Name;
+        QString name = i.second->m_Name;
         ui.combo_body->addItem(name);
     }
-
-    for (int i = 0; i < T_heads; i++)
+    for (const auto& i : m_InterFace->TP_CrossArm)
     {
-        QString name = m_InterFace->TP_CrossArm.Find_Entity(i + 1)->m_Name;
+        QString name = i.second->m_Name;
         ui.combo_head->addItem(name);
     }
 
@@ -59,8 +73,11 @@ QString Tower_Assembly::Get_name()
 void Tower_Assembly::Get_PartData()
 {
     m_ArryLeg = ui.combo_foot->Get_idItems();
-    m_ArryHead = ui.combo_head->Get_idItems();
     m_ArryBody = ui.combo_body->Get_idItems();
+    m_ArryHead = ui.combo_head->Get_idItems();
+    m_ArryLegText = ui.combo_foot->Get_idItemsText();
+    m_ArryBodyText = ui.combo_body->Get_idItemsText();
+    m_ArryHeadText = ui.combo_head->Get_idItemsText();
 
     if (m_ArryLeg.size() == 0 && m_ArryHead.size() == 0 && m_ArryBody.size() == 0)
     {//避免生成一个部件都没有的空实例

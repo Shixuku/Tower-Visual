@@ -8,6 +8,12 @@
 #include <vtkIdFilter.h>
 #include<vtkDataSetSurfaceFilter.h>
 
+Instance::Instance()
+{
+	//默认添加重力
+	m_Gravitys.push_back(ParameterGravity(1, 1, 2, -9.8));
+}
+
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();
@@ -304,14 +310,10 @@ void Instance::CreateOutPut()
 		ConcentrationTxT();//集中力
 		GravityTxT();//重力
 		IceLoadTxT();//冰单元
-		//1（多项式函数数量）
-		//1 11  2  1 50  0  0  1.01(编号  受力作用的节点号 受力自由度方向   多项式次数（项数 = 次数 + 1）  多项式各项系数  力作用的时间区间)
-		//Stream << 0 << "\n";//多项式函数暂时为空
+
 		WindTxT();//风载荷
 		//边界条件
 		RestraintTxT();
-		//add冰单元类别
-
 		MaterialTxT();//材料
 		TrussSectionTxT();//桁架截面数据
 		BeamSectionTxT();//梁截面数据
@@ -344,7 +346,7 @@ void Instance::BeamTxT()
 	Stream << "*Element_Beam3D," << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
+		Stream << "  " << m_Elements_beams[i].m_idElement << "  "/*<<"T"<<"  " */<< m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
 	}
 }
 
@@ -354,7 +356,7 @@ void Instance::TrussTxT()
 	Stream <<"*Element_Truss3D," << TressSize << " \n";
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
-		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
+		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " /*<< "T" <<"  " */<< m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
 	}
 }
 

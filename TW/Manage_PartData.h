@@ -21,7 +21,14 @@ public:
 	~Manage_PartData();
 	void Set_headertext();
 	void Modify_Data();//修改数据
+	void ModifyDataLeg(int Index);//修改塔腿数据
+	void ModifyDataBody(int Index);//修改塔身数据
+	void ModifyDataHead(int Index);//修改塔头数据
+
 	void Delete_Data();//删除数据
+	void DeleteDataLeg(int Index);//删除塔腿数据
+	void DeleteDataBody(int Index);//删除塔身数据
+	void DeleteDataHead(int Index);//删除塔头数据
 
 private:
 	Ui::Manage_PartDataClass ui;

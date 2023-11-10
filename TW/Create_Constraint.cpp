@@ -9,12 +9,10 @@ Create_Constraint::Create_Constraint(Instance* instance, QWidget *parent)
 	Q_ASSERT(m_pInterFace != nullptr);
 	m_pInstance = instance;
 	//按钮响应事件
-	connect(ui.OK_Btn, &QPushButton::clicked, this, [=]()
-		{
-			Draw_Con1();
-			this->accept();
-		});
+	connect(ui.OK_Btn, &QPushButton::clicked, this, &Create_Constraint::Draw_Con1);
+	connect(ui.Cancel_Btn, &QPushButton::clicked, this, &Create_Constraint::close);
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Create_Constraint::Insert_Data);
+	this->setWindowTitle("创建约束");
 }
 
 Create_Constraint::~Create_Constraint()
@@ -69,6 +67,7 @@ void Create_Constraint::Draw_Con1()
 	}
 
 	m_pInterFace->Close_Point();
+	this->accept();
 }
 
 void Create_Constraint::Insert_Data()

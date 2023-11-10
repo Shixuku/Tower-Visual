@@ -249,7 +249,7 @@ void CreatWire::CreateStrain()
 	for (int i = 0; i < TempTruss.size(); i++)
 	{
 		TempTruss[i].ClassSectionID = WireSectionId;
-		TempTruss[i].AxialForce = 6000;
+		TempTruss[i].AxialForce = 20000;
 		TempTruss[i].MaterialID = 4;
 	}
 	m_Elements_beams.insert(m_Elements_beams.end(), TempTruss.begin(), TempTruss.end());

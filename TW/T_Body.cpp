@@ -19,21 +19,30 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 			else this->accept();
 		});
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &T_Body::reject);
-	connect(ui.btn_creat, &QPushButton::clicked, this, [=]() {
-		int Tier = ui.line_tier->text().toInt();
-		if (Tier == 7)
+	connect(ui.btn_creat, &QPushButton::clicked, this, [=]()
 		{
-			Set_body1();
-		}
-		else if (Tier == 12)
+		if (ui.line_tier->text().isEmpty())
 		{
-			Set_body2();
+			QMessageBox::information(this, "Tips", "ÇëÊäÈë²ãÊý£¡");
 		}
 		else
 		{
-			Set_table(Tier);
+			int Tier = ui.line_tier->text().toInt();
+			if (Tier == 7)
+			{
+				Set_body1();
+			}
+			else if (Tier == 12)
+			{
+				Set_body2();
+			}
+			else
+			{
+				Set_table(Tier);
+			}
 		}
-		});
+		}
+);
 
 	connect(ui.combo_b, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_body()));
 	connect(ui.combo_g, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_gem()));
@@ -247,15 +256,6 @@ void T_Body::Change_Picture_body()
 		break;
 	case 9:
 		img->load("./shen10.png");
-		break;
-	case 10:
-		img->load("./shen11.png");
-		break;
-	case 11:
-		img->load("./shen12.png");
-		break;
-	case 12:
-		img->load("./shen13.png");
 		break;
 	}
 	ui.label_b->resize(img->width(), img->height());

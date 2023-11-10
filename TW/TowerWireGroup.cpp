@@ -213,7 +213,6 @@ void TowerWireGroup::AddSuspensionNode(Tower* tower)
 void TowerWireGroup::addHangPoint(Tower* tower)
 {
 	size_t m_HangListSize = tower->m_HangList.size();
-	qDebug() << "m_HangListSize" << m_HangListSize << "\n";
 	for (int i = 0; i < m_HangListSize; i++)
 	{
 		this->m_HangList.push_back(tower->m_HangList[i]);

@@ -27,7 +27,7 @@ void Manage_PartData::Set_headertext()
 	ui.tableWidget->verticalHeader()->setVisible(false);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
-	LLI T_legs = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->childCount();//塔腿数量
+	LLI T_legs = m_InterFace->TP_leg.size();//塔腿数量
 	ui.tableWidget->setRowCount(T_legs);//塔腿行数
 
 	QVector<TowerPart_leg*> ve_leg;//!
@@ -116,21 +116,42 @@ void Manage_PartData::Modify_Data()
 	{
 	case 0://塔腿
 		Index = ui.tableWidget->currentRow();
-		if (ui.tableWidget->item(Index, 1) == nullptr || ui.tableWidget->item(Index, 1)->text().isEmpty())
+		ModifyDataLeg(Index);
+		break;
+	case 1://塔身
+		Index = ui.tableWidget_2->currentRow();
+		ModifyDataBody(Index);
+		break;
+	case 2://塔头
+		Index = ui.tableWidget_3->currentRow();
+		ModifyDataHead(Index);
+		break;
+	default:
+		break;
+	}
+	
+}
+
+void Manage_PartData::ModifyDataLeg(int Index)
+{
+	if (ui.tableWidget->item(Index, 1) == nullptr || ui.tableWidget->item(Index, 1)->text().isEmpty())
+	{
+		QMessageBox::information(this, "Tips", "请选择要修改的塔腿部件！");
+	}
+	else
+	{
+		std::vector<T_Foot*>::iterator it = m_InterFace->t_foots.begin();
+		if (it != m_InterFace->t_foots.end())
 		{
-			QMessageBox::information(this, "Tips", "请选择要修改的塔腿部件！");
-		}
-		else
-		{
-			T_Foot* T_foot = m_InterFace->t_foots[Index];
-			int ret = T_foot->exec();
+			it = m_InterFace->t_foots.begin() + Index;
+			int ret = (*it)->exec();
 			if (ret == QDialog::Accepted)
 			{
 				//新增
 				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0);
 				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(Index);
 				TowerPart_leg* t = new TowerPart_leg;
-				T_foot->Get_Data(*t);
+				(*it)->Get_Data(*t);
 				t->Create_Mesh();
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_Name);//命名
@@ -138,7 +159,7 @@ void Manage_PartData::Modify_Data()
 				t->Show_VTKnode(m_InterFace->m_Renderer);
 				t->Show_VTKtruss(m_InterFace->m_Renderer);
 				t->Show_VTKbeam(m_InterFace->m_Renderer);
-				
+
 				m_InterFace->TP_leg.Add_Entity(t);
 
 				//设置界面数据变化
@@ -155,24 +176,33 @@ void Manage_PartData::Modify_Data()
 				m_InterFace->m_Renderer->ResetCamera();
 			}
 		}
-		break;
-	case 1://塔身
-		Index = ui.tableWidget_2->currentRow();
-		if (ui.tableWidget_2->item(Index, 1) == nullptr || ui.tableWidget_2->item(Index, 1)->text().isEmpty())
-		{
-			QMessageBox::information(this, "Tips", "请选择要修改的塔身部件！");
-		}
 		else
 		{
-			T_Body* T_body = m_InterFace->t_bodys[Index];
-			int ret = T_body->exec();
-			if (ret == QDialog::Accepted )
+			QMessageBox::information(this, "Tips", "找不到界面指针！");
+		}
+	}
+}
+
+void Manage_PartData::ModifyDataBody(int Index)
+{
+	if (ui.tableWidget_2->item(Index, 1) == nullptr || ui.tableWidget_2->item(Index, 1)->text().isEmpty())
+	{
+		QMessageBox::information(this, "Tips", "请选择要修改的塔身部件！");
+	}
+	else
+	{
+		std::vector<T_Body*>::iterator it = m_InterFace->t_bodys.begin();
+		if (it != m_InterFace->t_bodys.end())
+		{
+			it = m_InterFace->t_bodys.begin() + Index;
+			int ret = (*it)->exec();
+			if (ret == QDialog::Accepted)
 			{
 				//新增
 				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1);
 				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
 				TowerPart_body* t = new TowerPart_body;
-				T_body->Get_Data(t);
+				(*it)->Get_Data(t);
 				t->Create_Mesh();
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_Name);//命名
@@ -196,24 +226,33 @@ void Manage_PartData::Modify_Data()
 				m_InterFace->m_Renderer->ResetCamera();
 			}
 		}
-		break;
-	case 2://塔头
-		Index = ui.tableWidget_3->currentRow();
-		if (ui.tableWidget_3->item(Index, 1) == nullptr || ui.tableWidget_3->item(Index, 1)->text().isEmpty())
-		{
-			QMessageBox::information(this, "Tips", "请选择要修改的塔头部件！");
-		}
 		else
 		{
-			T_CrossArm* T_crossArm = m_InterFace->t_crossarms[Index];
-			int ret = T_crossArm->exec();
+			QMessageBox::information(this, "Tips", "找不到界面指针！");
+		}
+	}
+}
+
+void Manage_PartData::ModifyDataHead(int Index)
+{
+	if (ui.tableWidget_3->item(Index, 1) == nullptr || ui.tableWidget_3->item(Index, 1)->text().isEmpty())
+	{
+		QMessageBox::information(this, "Tips", "请选择要修改的塔头部件！");
+	}
+	else
+	{
+		std::vector<T_CrossArm*>::iterator it = m_InterFace->t_crossarms.begin();
+		if (it != m_InterFace->t_crossarms.end())
+		{
+			it = m_InterFace->t_crossarms.begin() + Index;
+			int ret = (*it)->exec();
 			if (ret == QDialog::Accepted)
 			{
 				//新增
 				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2);
 				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
 				TowerPart_CrossArm* t = new TowerPart_CrossArm;
-				T_crossArm->Get_Data(*t);
+				(*it)->Get_Data(*t);
 				t->Create_Mesh();
 				t->m_id = Index + 1;
 				childItem->setText(0, t->m_Name);//命名
@@ -236,13 +275,13 @@ void Manage_PartData::Modify_Data()
 				}
 				m_InterFace->m_Renderer->ResetCamera();
 			}
-
 		}
-		break;
-	default:
-		break;
+		else
+		{
+			QMessageBox::information(this, "Tips", "找不到界面指针！");
+		}
+
 	}
-	
 }
 
 void Manage_PartData::Delete_Data()
@@ -253,87 +292,117 @@ void Manage_PartData::Delete_Data()
 	{
 	case 0://塔腿
 		Index = ui.tableWidget->currentRow();//获取表格所在行数--currentRow()从0开始
-		if (ui.tableWidget->item(Index, 1) == nullptr || ui.tableWidget->item(Index, 1)->text().isEmpty())
-		{
-			//提示
-			QMessageBox::information(this, "Tips", "请选择要删除的塔腿部件！");
-		}
-		else
-		{
-			QString name = ui.tableWidget->item(Index, 0)->text();
-			//确认是否删除
-			QMessageBox::StandardButton btn;
-			btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
-				QMessageBox::Yes | QMessageBox::No);
-			if (btn == QMessageBox::Yes && m_InterFace->TP_leg.Delete_Entity(Index + 1))
-			{
-				ui.tableWidget->removeRow(Index);//删掉表格中的那一行
-				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(Index);
-				delete(childItem);
-				//需要删掉界面的指针
-				std::vector<T_Foot*>::iterator it = m_InterFace->t_foots.begin();
-				it = m_InterFace->t_foots.begin() + Index;
-				m_InterFace->t_foots.erase(it);
-			}
-		}
+		DeleteDataLeg(Index);
 		break;
 	case 1://塔身
-		Index = ui.tableWidget_2->currentRow();//获取表格所在行数--currentRow()从0开始
-		if (ui.tableWidget_2->item(Index, 1) == nullptr || ui.tableWidget_2->item(Index, 1)->text().isEmpty())
-		{
-			//提示先创建截面
-			QMessageBox::information(this, "Tips", "请选择要删除的塔身部件！");
-		}
-		else
-		{
-			QString name = ui.tableWidget_2->item(Index, 0)->text();
-			//确认是否删除
-			QMessageBox::StandardButton btn;
-			btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
-				QMessageBox::Yes | QMessageBox::No);
-			if (btn == QMessageBox::Yes && m_InterFace->TP_body.Delete_Entity(Index + 1))
-			{
-				ui.tableWidget_2->removeRow(Index);//删掉表格中的那一行
-				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
-				delete(childItem);
-				//需要删掉界面的指针
-				std::vector<T_Body*>::iterator it = m_InterFace->t_bodys.begin();
-				it = m_InterFace->t_bodys.begin() + Index;
-				m_InterFace->t_bodys.erase(it);
-			}
-		}
+		Index = ui.tableWidget_2->currentRow();
+		DeleteDataBody(Index);
 		break;
 	case 2://塔头
-		Index = ui.tableWidget_3->currentRow();//获取表格所在行数--currentRow()从0开始
-		if (ui.tableWidget_3->item(Index, 1) == nullptr || ui.tableWidget_3->item(Index, 1)->text().isEmpty())
-		{
-			//提示先创建截面
-			QMessageBox::information(this, "Tips", "请选择要删除的塔头部件！");
-		}
-		else
-		{
-			QString name = ui.tableWidget_3->item(Index, 0)->text();
-			//确认是否删除
-			QMessageBox::StandardButton btn;
-			btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
-				QMessageBox::Yes | QMessageBox::No);
-			if (btn == QMessageBox::Yes && m_InterFace->TP_CrossArm.Delete_Entity(Index + 1))
-			{
-				ui.tableWidget_3->removeRow(Index);//删掉表格中的那一行
-				//删掉m_InterFace子节点
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
-				delete(childItem);
-				//需要删掉界面的指针
-				std::vector<T_CrossArm*>::iterator it = m_InterFace->t_crossarms.begin();
-				it = m_InterFace->t_crossarms.begin() + Index;
-				m_InterFace->t_crossarms.erase(it);
-			}
-		}
+		Index = ui.tableWidget_3->currentRow();
+		DeleteDataHead(Index);
 		break;
 	default:
 		break;
 	}
 
+}
+
+void Manage_PartData::DeleteDataLeg(int Index)
+{
+	if (ui.tableWidget->item(Index, 1) == nullptr || ui.tableWidget->item(Index, 1)->text().isEmpty())
+	{
+		//提示
+		QMessageBox::information(this, "Tips", "请选择要删除的塔腿部件！");
+	}
+	else
+	{
+		QString name = ui.tableWidget->item(Index, 0)->text();
+		//确认是否删除
+		QMessageBox::StandardButton btn;
+		btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
+			QMessageBox::Yes | QMessageBox::No);
+		if (btn == QMessageBox::Yes)
+		{
+			m_InterFace->TP_leg.Delete_Entity(Index + 1);
+			ui.tableWidget->removeRow(Index);//删掉表格中的那一行
+			//删掉m_InterFace子节点
+			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(0)->child(Index);
+			delete(childItem);
+			//需要删掉界面的指针
+			std::vector<T_Foot*>::iterator it = m_InterFace->t_foots.begin();
+			if (it != m_InterFace->t_foots.end())
+			{
+				it = m_InterFace->t_foots.begin() + Index;
+				m_InterFace->t_foots.erase(it);
+			}
+			m_InterFace->m_Renderer->RemoveAllViewProps();
+		}
+	}
+}
+
+void Manage_PartData::DeleteDataBody(int Index)
+{
+	if (ui.tableWidget_2->item(Index, 1) == nullptr || ui.tableWidget_2->item(Index, 1)->text().isEmpty())
+	{
+		//提示先创建截面
+		QMessageBox::information(this, "Tips", "请选择要删除的塔身部件！");
+	}
+	else
+	{
+		QString name = ui.tableWidget_2->item(Index, 0)->text();
+		//确认是否删除
+		QMessageBox::StandardButton btn;
+		btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
+			QMessageBox::Yes | QMessageBox::No);
+		if (btn == QMessageBox::Yes)
+		{
+			m_InterFace->TP_body.Delete_Entity(Index + 1);
+			ui.tableWidget_2->removeRow(Index);//删掉表格中的那一行
+			//删掉m_InterFace子节点
+			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
+			delete(childItem);
+			//需要删掉界面的指针
+			std::vector<T_Body*>::iterator it = m_InterFace->t_bodys.begin();
+			if (it != m_InterFace->t_bodys.end())
+			{
+				it = m_InterFace->t_bodys.begin() + Index;
+				m_InterFace->t_bodys.erase(it);
+			}
+			m_InterFace->m_Renderer->RemoveAllViewProps();
+		}
+	}
+}
+
+void Manage_PartData::DeleteDataHead(int Index)
+{
+	if (ui.tableWidget_3->item(Index, 1) == nullptr || ui.tableWidget_3->item(Index, 1)->text().isEmpty())
+	{
+		//提示先创建截面
+		QMessageBox::information(this, "Tips", "请选择要删除的塔头部件！");
+	}
+	else
+	{
+		QString name = ui.tableWidget_3->item(Index, 0)->text();
+		//确认是否删除
+		QMessageBox::StandardButton btn;
+		btn = QMessageBox::question(this, "提示", "确定要删除 " + name + " 的数据吗？",
+			QMessageBox::Yes | QMessageBox::No);
+		if (btn == QMessageBox::Yes)
+		{
+			m_InterFace->TP_CrossArm.Delete_Entity(Index + 1);
+			ui.tableWidget_3->removeRow(Index);//删掉表格中的那一行
+			//删掉m_InterFace子节点
+			QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
+			delete(childItem);
+			//需要删掉界面的指针
+			std::vector<T_CrossArm*>::iterator it = m_InterFace->t_crossarms.begin();
+			if (it != m_InterFace->t_crossarms.end())//判断不为空
+			{
+				it = m_InterFace->t_crossarms.begin() + Index;
+				m_InterFace->t_crossarms.erase(it);
+			}
+			m_InterFace->m_Renderer->RemoveAllViewProps();
+		}
+	}
 }

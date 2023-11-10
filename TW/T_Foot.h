@@ -16,7 +16,7 @@ public:
 	void btn_help();//帮助按钮
 
 	void Get_Data(TowerPart_leg& leg);//取界面的数据
-	void Initialize();//取界面的数据
+	void Initialize();
 
 private:
 	Ui::T_FootClass ui;

@@ -21,7 +21,7 @@
 class Instance :public Base
 {
 public:
-	Instance(){}
+	Instance();
 	virtual ~Instance() { 
 		if (s)
 		{

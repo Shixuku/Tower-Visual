@@ -106,7 +106,6 @@
     <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
-    <ClCompile Include="Calculate.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
@@ -128,7 +127,6 @@
     <ClCompile Include="Interphase_spacer.cpp" />
     <ClCompile Include="LineMaterial.cpp" />
     <ClCompile Include="LoadForce.cpp" />
-    <ClCompile Include="Manage_Loads.cpp" />
     <ClCompile Include="Manage_PartData.cpp" />
     <ClCompile Include="Manage_InsData.cpp" />
     <ClCompile Include="Manage_Section.cpp" />
@@ -171,6 +169,8 @@
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="ui_AnalysisStep.cpp" />
     <ClCompile Include="UI_Calculate.cpp" />
+    <ClCompile Include="ui_TowerLegParameter.cpp" />
+    <ClCompile Include="ui_TowerLegType.cpp" />
     <ClCompile Include="Wind.cpp" />
     <ClCompile Include="WindList.cpp" />
     <ClCompile Include="WireData.cpp" />
@@ -178,7 +178,6 @@
     <ClCompile Include="Wire_InterFace.cpp" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
-    <QtUic Include="Calculate.ui" />
     <QtUic Include="ConcentrateForce.ui" />
     <QtUic Include="Creat_Loads.ui" />
     <QtUic Include="Gravity.ui" />
@@ -186,7 +185,6 @@
     <QtUic Include="IceLoad.ui" />
     <QtUic Include="InterFace.ui" />
     <QtUic Include="Interphase_spacer.ui" />
-    <QtUic Include="Manage_Loads.ui" />
     <QtUic Include="Manage_PartData.ui" />
     <QtUic Include="Manage_InsData.ui" />
     <QtUic Include="Manage_Section.ui" />
@@ -213,6 +211,8 @@
     <QtUic Include="T_Foot.ui" />
     <QtUic Include="ui_AnalysisStep.ui" />
     <QtUic Include="UI_Calculate.ui" />
+    <QtUic Include="ui_TowerLegParameter.ui" />
+    <QtUic Include="ui_TowerLegType.ui" />
     <QtUic Include="Wind.ui" />
     <QtUic Include="WindList.ui" />
     <QtUic Include="Wire_InterFace.ui" />
@@ -225,8 +225,9 @@
     <ClInclude Include="LineMaterial.h" />
     <ClInclude Include="NominalHeight.h" />
     <ClInclude Include="TowerList.h" />
+    <QtMoc Include="ui_TowerLegParameter.h" />
+    <QtMoc Include="ui_TowerLegType.h" />
     <ClInclude Include="WireWiring.h" />
-    <QtMoc Include="Calculate.h" />
     <ClInclude Include="CreatWire.h" />
     <ClInclude Include="Ele_Location.h" />
     <ClInclude Include="InputMaterial.h" />
@@ -277,7 +278,6 @@
     <QtMoc Include="MultiSelectComboBox.h" />
     <QtMoc Include="Manage_InsData.h" />
     <QtMoc Include="Set_Section.h" />
-    <QtMoc Include="Manage_Loads.h" />
     <ClInclude Include="MouseInteractorHighLightActor.h" />
     <QtMoc Include="Polynomial.h" />
     <QtMoc Include="RandomWind.h" />

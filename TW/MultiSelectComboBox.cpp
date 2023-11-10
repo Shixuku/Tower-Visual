@@ -187,6 +187,23 @@ QVector<int> MultiSelectComboBox::Get_idItems()
 	
 }
 
+QVector<QString> MultiSelectComboBox::Get_idItemsText()
+{
+	QVector<QString> idItems;
+	int count = list_widget_->count();
+	for (int i = 1; i < count; i++)
+	{
+		QWidget* widget = list_widget_->itemWidget(list_widget_->item(i));
+		QCheckBox* check_box = static_cast<QCheckBox*>(widget);
+		if (check_box->isChecked())
+		{
+			QString name = check_box->text();
+			idItems.push_back(name);
+		}
+	}
+	return idItems;
+}
+
 bool MultiSelectComboBox::eventFilter(QObject* watched, QEvent* event)
 {
 	//设置点击输入框也可以弹出下拉框

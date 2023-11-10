@@ -122,7 +122,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -204,21 +204,6 @@
             <item>
              <property name="text">
               <string>类型10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>类型11</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>类型12</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>类型13</string>
              </property>
             </item>
            </widget>

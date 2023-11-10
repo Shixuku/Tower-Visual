@@ -29,6 +29,7 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			m_pInterFace->TWG.Add_Entity(towerWireGroup);
 			this->reject();
 		});
+	connect(ui.BtnCancle, &QPushButton::clicked, this, &TowerWireGroupAssembly::reject);
 }
 
 TowerWireGroupAssembly::~TowerWireGroupAssembly()

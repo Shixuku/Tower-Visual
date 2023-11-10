@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
+    <width>707</width>
     <height>559</height>
    </rect>
   </property>
@@ -170,22 +170,6 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label">
-     <property name="maximumSize">
-      <size>
-       <width>10000</width>
-       <height>200</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
     <widget class="QWidget" name="widget_5" native="true">
      <property name="maximumSize">
       <size>

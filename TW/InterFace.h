@@ -88,6 +88,7 @@ public:
      //Manage_Entity<LoadForce> ME_LoadForce;//集中力合集
      //vector<ParameterIceElement*> ME_ElementIce;//冰单元合集
      Manage_Entity<TowerWireGroup> TWG;
+     //Manage_Entity<TowerWireGroup> CalculationModel;
      Manage_Entity < Material> ME_Material;
      Manage_Entity < Section_L> ME_Section_L;
      Manage_Entity < Section_C> ME_Section_C;
@@ -136,6 +137,7 @@ public slots:
     void onTreeitemClicked(QTreeWidgetItem* item);
     void onTreeitemDoubleClicked(QTreeWidgetItem* item);
     void ui_Foot();
+    void ui_FootNew();
     void ui_Body();
     void ui_CrossArm();
     void ui_Tower();

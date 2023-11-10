@@ -51,8 +51,9 @@ void T_Foot::btn_help()
 {
 	QMessageBox help_pic;
 
-	help_pic.setIconPixmap(QPixmap("./ax2.png"));
+	help_pic.setIconPixmap(QPixmap("./towerLegFootHelp.png"));
 	QPushButton* agreeBut = help_pic.addButton("OK", QMessageBox::AcceptRole);
+	help_pic.setWindowTitle("ºıÕ»œÛœﬁ");
 	help_pic.exec();
 	if (help_pic.clickedButton() == (QAbstractButton*)agreeBut)
 	{

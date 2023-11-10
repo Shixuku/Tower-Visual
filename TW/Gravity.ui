@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>重力</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,0,2,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,0,2,0,1">
    <item>
     <widget class="QWidget" name="widget_3" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -115,6 +115,19 @@
           <widget class="QLineEdit" name="line_g"/>
          </item>
         </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_6" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>说明：重力已经默认添加</string>
+        </property>
        </widget>
       </item>
      </layout>

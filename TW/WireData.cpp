@@ -214,7 +214,7 @@ void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Beams, vector<int> i
 	}
 	for (int i = 0; i < m_Elements_Beams.size(); i++)
 	{
-		m_Elements_Beams[i].ClassSectionID = 3;
+		m_Elements_Beams[i].ClassSectionID = SpacerSectionId;
 		m_Elements_Beams[i].MaterialID = 6;
 
 	}

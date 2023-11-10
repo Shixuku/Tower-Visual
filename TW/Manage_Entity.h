@@ -51,7 +51,7 @@ public:
 	{//读取数据
 		LLI n = 0;
 		s >> n;//读出对象个数
-		qDebug() << n;
+		//qDebug() << n;
 		for (LLI i = 0; i < n; ++i)
 		{
 			enum Part_Type iType;

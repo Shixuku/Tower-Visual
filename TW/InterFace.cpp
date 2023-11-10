@@ -4,7 +4,6 @@
 #include<QMessageBox.h>
 #include"Manage_PartData.h"
 #include"Manage_InsData.h"
-#include"Manage_Loads.h"
 #include <vtkPointData.h>//->GetArray("Address")
 #include <vtkIdTypeArray.h>
 #include"MouseInteractorHighLightActor.h"//点选点
@@ -38,6 +37,8 @@
 #include"WireWiring.h"
 #include"InstanceWire.h"
 #include <vtkCamera.h>
+#include "ui_TowerLegType.h"
+#pragma execution_character_set("utf-8")
 InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -59,11 +60,11 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	SetupCentralWidget();
 	//左边窗口
 	TreeWidgetShow();
-	//打开软件自动运行
-	ReadMaterialTXT();
-	ReadSectionTXT();
-	ReadPartTXT();
-	ReadInstanceTXT();
+	////打开软件自动运行
+	//ReadMaterialTXT();
+	//ReadSectionTXT();
+	//ReadPartTXT();
+	//ReadInstanceTXT();
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
@@ -83,7 +84,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
 	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
 	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
-	connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
+	//connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
 
 	// 创建坐标轴部件
 	Axes = vtkAxesActor::New();
@@ -92,6 +93,11 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	widgetAxes->SetInteractor(m_renderWindow->GetInteractor());
 	widgetAxes->SetEnabled(1);
 	widgetAxes->SetInteractive(1);
+
+	//默认添加第一个静力分析步
+	ParameterAnalysisStep* parameterAnalysisStep = new ParameterAnalysisStep("分析步-1", 1, "Static", 1, 1, 1e-5, 16);
+	ME_AnalysisSteps.Add_Entity(parameterAnalysisStep);
+
 }
 
 void InterFace::SetupCentralWidget()
@@ -176,7 +182,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	//杆塔部件
 	if (item == ui.treeWidget->topLevelItem(0)->child(0))
 	{//塔腿部件
-		ui_Foot();
+		ui_FootNew();
 	}
 	else if (item == ui.treeWidget->topLevelItem(0)->child(1))
 	{//塔身部件
@@ -219,10 +225,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//输出txt文件
 		CreateOutPut(item);
 	}
-	else if (isChildOfTower(1,item, 3))
-	{//输出inp文件
-		//CreateInp(item);
-	}
+	//else if (isChildOfTower(1,item, 3))
+	//{//输出inp文件
+	//	//CreateInp(item);
+	//}
 	else if (isChildOfGroupTower(item))
 	{
 		ShowGroupTower(item);
@@ -372,6 +378,11 @@ void InterFace::ui_Foot()
 	}
 
 }
+void InterFace::ui_FootNew()
+{
+	ui_TowerLegType* TowerLegType = new ui_TowerLegType(this);
+	TowerLegType->show();
+}
 void InterFace::ui_Body()
 {
 	T_Body* T_body = new T_Body(this);//ui
@@ -444,7 +455,7 @@ void InterFace::ui_Tower()
 		{
 			tw->addPart(TP_leg.Find_Entity(i));
 		}
-		for (auto& i : T_As->m_ArryBody)//塔身段
+		 for (auto& i : T_As->m_ArryBody)//塔身段
 		{
 			tw->addPart(TP_body.Find_Entity(i));
 		}
@@ -452,6 +463,30 @@ void InterFace::ui_Tower()
 		{
 			tw->addPart(TP_CrossArm.Find_Entity(i));
 		}
+		//for (auto& i : T_As->m_ArryLegText)
+		//{
+		//	for (auto& j : TP_leg)
+		//	{
+		//		if (j.second->m_Name == i) { tw->addPart(j.second); }
+		//	}
+		//}
+		//for (auto& i : T_As->m_ArryBodyText)
+		//{
+		//	for (auto& j : TP_body)
+		//	{
+		//		if (j.second->m_Name == i) { tw->addPart(j.second); }
+		//	}
+		//}
+		//for (auto& i : T_As->m_ArryHeadText)
+		//{
+		//	for (auto& j : TP_CrossArm)
+		//	{
+		//		if (j.second->m_Name == i)
+		//		{
+		//			tw->addPart(j.second);
+		//		} 
+		//	}
+		//}
 
 		tw->Check_Beam();
 		m_Renderer->RemoveAllViewProps();
@@ -672,7 +707,6 @@ void InterFace::OpenFile()
 				TP_leg.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
 			}
-
 			for (int i = bodysize; i < TP_body.size(); i++)
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
@@ -828,10 +862,10 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
 {//生成一个截面就生成一个actor，为了计算不卡，暂时先注释，不显示截面
-	//for (auto& i : Part->PartNactor)
-	//{
-	//	m_Renderer->AddActor(i);
-	//}
+	for (auto& i : Part->PartNactor)
+	{
+		m_Renderer->AddActor(i);
+	}
 
 	m_renderWindow->Render();
 	m_Renderer->ResetCamera();
@@ -871,12 +905,12 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 		QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
 		QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
-		QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
+		//QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
 		
 		AddLoadForce->setText(0, QString("施加荷载"));
 		Constraint->setText(0, QString("添加约束"));
 		OutPut->setText(0, QString("输出计算文件"));
-		Inp->setText(0, QString("输出ABAQUS计算文件"));
+		//Inp->setText(0, QString("输出ABAQUS计算文件"));
 
 	}
 

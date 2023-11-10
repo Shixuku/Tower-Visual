@@ -17,9 +17,12 @@ RandomWind::RandomWind( Wind* m_wind, QWidget *parent)
 	Initialize();
 	//connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &RandomWind::InputPoints);
 
-	connect(ui.ok_btn, &QPushButton::clicked, [=]() {	if (ui.NodeV_com->count() > 0) {
+	connect(ui.ok_btn, &QPushButton::clicked, [=]() 
+		{	
+		if (ui.NodeV_com->count() > 0)
+		{
 		return; // 如果ComboBox已经包含项，则不再生成新的项
-	}
+		}
 	if (wd->alf == 0)
 	{
 		QMessageBox::warning(this, "提示", "请在上个界面选择地面粗糙程度！");
@@ -31,6 +34,7 @@ RandomWind::RandomWind( Wind* m_wind, QWidget *parent)
 	ui.pushButton_3->setToolTip("沿海区0.005 - 0.02；开阔场地0.03 - 0.1；建筑物不多的郊区0.2 - 0.4; 大城市中心2.0 - 3.0");
 
 	connect(ui.btn_fileName, &QPushButton::clicked, this, &RandomWind::setFileName);
+	connect(ui.btn_cancle, &QPushButton::clicked, this, &RandomWind::reject);
 }
 
 RandomWind::~RandomWind()

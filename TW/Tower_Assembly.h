@@ -21,6 +21,9 @@ public:
 	QVector<int> m_ArryLeg;//塔腿数组
 	QVector<int> m_ArryBody;//塔身段数组
 	QVector<int> m_ArryHead;//塔头数组
+	QVector<QString> m_ArryLegText;//塔腿数组
+	QVector<QString> m_ArryBodyText;//塔身段数组
+	QVector<QString> m_ArryHeadText;//塔头数组
 	
 private:
 	Ui::Tower_AssemblyClass ui;

@@ -9,7 +9,7 @@ ui_AnalysisStep::ui_AnalysisStep(InterFace* m_Interface, QWidget *parent)
 	m_pInterFace = m_Interface;
 	int size = m_pInterFace->ME_AnalysisSteps.size();
 	Initialization();
-	ui.line_name->setText("分析步 " + QString::number(size + 1));
+	ui.line_name->setText("分析步-" + QString::number(size + 1));
 	ui.line_zxrxz->setText("1e-5");
 	ui.line_zdddcs->setText("16");
 
@@ -31,7 +31,7 @@ void ui_AnalysisStep::Initialization()
 
 void ui_AnalysisStep::InitializationDynamic()
 {
-	ui.line_sjd->setText("10");
+	ui.line_sjd->setText("1");
 	ui.line_sjzl->setText("0.01");
 }
 
