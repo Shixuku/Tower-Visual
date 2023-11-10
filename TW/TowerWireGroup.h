@@ -41,6 +41,7 @@ public:
 	map<int, Node>NodeData;
 	//Ìí¼ÓËþ
 	void AddTowerToGroup(Tower* tower,int towerId, double dx, double dy, double dz,double dAngle);
+	void AddTowerRotation(Tower* tower, double dAngle);
 	void AddTowerNode(Tower* tower, int towerId, double dx, double dy, double dz);
 	void AddTowerElement(Tower* tower, int towerId);
 	void addRestraintNode(Tower* tower);
