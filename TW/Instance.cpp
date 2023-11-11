@@ -496,7 +496,7 @@ void Instance::MaterialTxT()
 	Stream << "*Material," << MaterialSize << "\n";
 	for (auto& i : pInterFace->ME_Material)
 	{
-		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal << "\n";
+		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal <<"  "<<i.second->UltimateStress << "\n";
 	}
 }
 
