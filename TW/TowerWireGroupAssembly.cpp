@@ -1,5 +1,6 @@
 #include "TowerWireGroupAssembly.h"
 #include"InterFace.h"
+//#include"UI_Calculate.h"
 TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGroup* TowerWireGroup, QWidget *parent)
 	: QDialog(parent)
 {
@@ -27,6 +28,7 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			towerWireGroup->VectorToMap();
 			m_pInterFace->m_Renderer->ResetCamera();
 			m_pInterFace->TWG.Add_Entity(towerWireGroup);
+			//m_pInterFace->ui_calculate->update();
 			this->reject();
 		});
 	connect(ui.BtnCancle, &QPushButton::clicked, this, &TowerWireGroupAssembly::reject);

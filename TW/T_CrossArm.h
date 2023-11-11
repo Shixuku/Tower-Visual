@@ -16,7 +16,7 @@ public:
 	void Set_zhijia();//设置支架
 	void Set_hengdan();//设置横担
 	
-	void Get_Data(TowerPart_CrossArm&);//取表格里面数据
+	void Get_Data();//取表格里面数据
 
 	InterFace* m_InterFace = nullptr;
 	void Set_combobox();

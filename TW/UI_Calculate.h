@@ -30,6 +30,10 @@ public:
 	void CreateActor_ice();
 	void on_btn_import_clicked();
 	void btn_CaculateModelIce();
+
+protected:
+	void showEvent(QShowEvent* event) override;
+
 signals:
 	void msg_CreateModel();
 

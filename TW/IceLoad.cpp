@@ -28,7 +28,7 @@ void IceLoad::Initialization()
 	ui.label_name->setText("名称：" + m_pCreat_loads->m_str);//显示父窗口的名称
 	//设置combobox
 	QStringList headertext;//表头
-	headertext << "覆冰分析步" << "脱冰分析步"<<"覆冰厚度(m)";
+	headertext << "覆冰分析步" << "脱冰分析步"<<"覆冰厚度(mm)";
 	ui.tableWidget->setColumnCount(headertext.count());//列
 	ui.tableWidget->setRowCount(1);//行
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
@@ -49,7 +49,8 @@ void IceLoad::Initialization()
 		AnalysisStep2->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
 	}
 	ui.tableWidget->setCellWidget(0, 1, (QWidget*)AnalysisStep2);
-	ui.tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(0.002)));//默认覆冰厚度
+	ui.tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(5)));//默认覆冰厚度
+	ui.tableWidget->item(0, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 }
@@ -66,7 +67,7 @@ void IceLoad::GetData()
 	double m_thickness = ui.tableWidget->item(0, 2)->text().toDouble();//覆冰厚度
 
 	int type_id = m_pInstance->m_IceTypeElement.size() + 1;
-	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id, addIce, reduceIce, m_thickness));
+	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id, addIce, reduceIce, m_thickness/1000.0));
 	this->accept();
 }
 

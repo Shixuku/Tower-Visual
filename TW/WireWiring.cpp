@@ -6,6 +6,7 @@
 #include"NominalHeight.h"
 #include"HangPoint.h"
 #include"TowerList.h"
+//#include"UI_Calculate.h"
 void WireWiring::GetAllPartTXT(string path, vector<string>& files)
 {
 	intptr_t hFile = 0;
@@ -92,6 +93,7 @@ void WireWiring::ReadWireWiring(InterFace* InterFace)
 							int id = m_pInterFace->TWG.size() + 1;
 							towerWire->m_id = id;
 							m_pInterFace->TWG.Add_Entity(towerWire);
+							//m_pInterFace->ui_calculate->update();
 						}
 						tower = new TowerList();
 						tower->m_Name = towerNumber;

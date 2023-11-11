@@ -68,16 +68,9 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
-	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_Foot);
-	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_Body);
-	connect(ui.actionCrossArm, &QAction::triggered, this, [=]() 
-		{
-			if (ui.treeWidget->topLevelItem(1)->childCount() == 0)
-			{
-				QMessageBox::information(this, "Tips", "请先创建塔身！");
-			}
-			else { ui_CrossArm(); }
-		});
+	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_FootNew);
+	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_BodyNew);
+	connect(ui.actionCrossArm, &QAction::triggered, this, &InterFace::ui_CrossArmNew);
 	
 	connect(ui.menuSave, &QAction::triggered, this, &InterFace::SaveFile);
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
@@ -186,15 +179,11 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (item == ui.treeWidget->topLevelItem(0)->child(1))
 	{//塔身部件
-		ui_Body();
+		ui_BodyNew();
 	}
 	else if (item == ui.treeWidget->topLevelItem(0)->child(2))
 	{//塔头部件
-		if (ui.treeWidget->topLevelItem(0)->child(1)->childCount() == 0)
-		{
-			QMessageBox::information(this, "Tips", "请先创建塔身！");
-		}
-		else { ui_CrossArm(); }
+		ui_CrossArmNew();
 	}
 	else if (isChildOfPartSetSpacer(item))
 	{//塔头下面绝缘子串
@@ -349,96 +338,28 @@ void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 	}
 }
 
-//生成塔腿
-void InterFace::ui_Foot()
-{
-	T_Foot* T_foot = new T_Foot(this);//ui
-	int ret = T_foot->exec();
-	if (ret == QDialog::Accepted)
-	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(0);
-		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-		AddPartFunction(item);
-		TowerPart_leg* t = new TowerPart_leg;
-		T_foot->Get_Data(*t);//取数据
-		item->setText(0, t->m_Name);//子节点名称为自己命名的名称
-		t->Item = item;
-		m_Renderer->RemoveAllViewProps();
-
-		t->Create_Mesh();
-		t->m_id = parent->childCount();//编号
-		t->Show_VTKnode(m_Renderer);
-		t->Show_VTKtruss(m_Renderer);
-		t->Show_VTKbeam(m_Renderer);
-
-		TP_leg.Add_Entity(t);
-		m_Renderer->ResetCamera();
-		t_foots.push_back(T_foot);
-		
-	}
-
-}
 void InterFace::ui_FootNew()
 {
 	ui_TowerLegType* TowerLegType = new ui_TowerLegType(this);
 	TowerLegType->show();
 }
-void InterFace::ui_Body()
+
+void InterFace::ui_BodyNew()
 {
 	T_Body* T_body = new T_Body(this);//ui
-	int ret = T_body->exec();
-	if (ret == QDialog::Accepted)
-	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(1);
-		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-		AddPartFunction(item);
-		TowerPart_body* t = new TowerPart_body;
-		T_body->Get_Data(t);
-		item->setText(0, t->m_Name);
-		m_Renderer->RemoveAllViewProps();
-		t->Item = item;
-
-		t->Create_Mesh();
-		t->m_id=parent->childCount();
-		t->Show_VTKnode(m_Renderer);
-		t->Show_VTKtruss(m_Renderer);
-		t->Show_VTKbeam(m_Renderer);
-	
-		TP_body.Add_Entity(t);
-		m_Renderer->ResetCamera();
-
-		t_bodys.push_back(T_body);
-	
-	}
+	T_body->show();
 }
-void InterFace::ui_CrossArm()
+
+void InterFace::ui_CrossArmNew()
 {
-	T_CrossArm* T_ca = new T_CrossArm(this);//ui
-	int ret = T_ca->exec();
-	if (ret == QDialog::Accepted)
+	if (TP_body.size() == 0)
 	{
-		QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(0)->child(2);
-		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-		AddPartFunction(item);
-		QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
-		spacer->setText(0, QString("添加绝缘子串"));
-		TowerPart_CrossArm* t = new TowerPart_CrossArm;
-		T_ca->Get_Data(*t);
-		m_Renderer->RemoveAllViewProps();
-		t->Item = item;
-		item->setText(0, t->m_Name);
-		
-		t->Create_Mesh();
-		t->m_id= parent->childCount();
-		t->Show_VTKnode(m_Renderer);
-		t->Show_VTKtruss(m_Renderer);
-		t->Show_VTKbeam(m_Renderer);
-		
-		TP_CrossArm.Add_Entity(t);//塔头
-		m_Renderer->ResetCamera();
-
-		t_crossarms.push_back(T_ca);//塔头对话框
-
+		QMessageBox::information(this, "Tips", "请先创建塔身！");
+	}
+	else
+	{
+		T_CrossArm* T_ca = new T_CrossArm(this);
+		T_ca->show();
 	}
 }
 void InterFace::ui_Tower()
@@ -501,6 +422,8 @@ void InterFace::ui_Tower()
 		tw->Show_VTKbeam(m_Renderer);
 
 		TP.Add_Entity(tw);
+
+		//ui_calculate->update();
 		
 		tw->m_BeamActor->VisibilityOn();
 		tw->m_TrussActor->VisibilityOn();
@@ -928,33 +851,6 @@ void InterFace::Caculate()
 		ui_calculate = new Instance_Calculate(this);
 		ui_calculate->show();
 	}
-}
-
-void InterFace::Display()
-{
-	/*HiddeAllTower();
-	if (!display)
-	{
-		display = new resultVisualize(this);
-	}
-	display->show();
-	vector<Node_Base*> ptr_nodes = s->GetNodes();
-	Instance* ins = nullptr;
-	for (auto& i : TP)
-	{
-		i.second->m_name != nullptr;
-		ins = i.second;
-		break;
-	}
-	for (auto& i : creatWire)
-	{
-		i.second->m_name != nullptr;
-		ins = i.second;
-		break;
-	}
-
-	display->addData(ptr_nodes, ins);*/
-
 }
 
 void InterFace::ShowGroupTower(QTreeWidgetItem* item)
@@ -1443,6 +1339,7 @@ void InterFace::ui_SingleWire()
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
 	TWG.Add_Entity(towerWireGroup);
+	ui_calculate->update();
 }
 
 InterFace::~InterFace()

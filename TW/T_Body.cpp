@@ -11,14 +11,7 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 	Set_No1_picture();//设置首张图片
 	m_InterFace = InterFace;
 
-	connect(ui.btn_ok, &QPushButton::clicked, this, [=]()
-		{
-			if (ui.tableWidget->rowCount() == 0)
-			{
-				QMessageBox::information(this, "Tips", "请先创建层数！");
-			}
-			else this->accept();
-		});
+	connect(ui.btn_ok, &QPushButton::clicked, this, &T_Body::Get_Data);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &T_Body::reject);
 	connect(ui.btn_creat, &QPushButton::clicked, this, [=]()
 		{
@@ -42,9 +35,7 @@ T_Body::T_Body(InterFace* InterFace, QWidget *parent)
 				Set_table(Tier);
 			}
 		}
-		}
-);
-
+		});
 	connect(ui.combo_b, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_body()));
 	connect(ui.combo_g, SIGNAL(currentIndexChanged(int)), this, SLOT(Change_Picture_gem()));
 	connect(ui.btn_look, &QPushButton::clicked, this, &T_Body::BtnLook);
@@ -110,6 +101,7 @@ void T_Body::Set_body1()
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//表格文字设置居中
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 }
 
@@ -139,6 +131,7 @@ void T_Body::Set_body2()
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//表格文字设置居中
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 
 
@@ -159,30 +152,54 @@ void T_Body::Set_table(int tier)
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//表格文字设置居中
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 
 }
 
-void T_Body::Get_Data(TowerPart_body* body)
+void T_Body::Get_Data()
 {
-	body->m_L0 = ui.line_L0->text().toDouble();//底部宽度
-	body->m_Z0 = ui.line_z0->text().toDouble();//底部z坐标
-	body->m_Ln = ui.line_Ln->text().toDouble();//顶部宽度
-	body->m_Tier = ui.line_tier->text().toInt();//总层数
-
-	int irow = ui.tableWidget->rowCount();//获得现在表格行数
-
-	for (int i = 0; i < irow; i++)
+	if (ui.tableWidget->rowCount() == 0)
 	{
-		TowerData_Layer layer;
-		layer.m_h = ui.tableWidget->item(i, 1)->text().toDouble();//层高;
-		layer.m_TypeFront = ui.tableWidget->item(i, 2)->text().toInt();//正面类型;
-		layer.m_TypeSide = ui.tableWidget->item(i, 3)->text().toInt();//侧面类型
-		layer.m_TypeSeptumUp = ui.tableWidget->item(i, 4)->text().toInt();//上部隔面类型
-		layer.m_TypeSeptumMiddle = ui.tableWidget->item(i, 5)->text().toInt();//上部隔面类型
-		body->m_layer.push_back(layer);
+		QMessageBox::information(this, "Tips", "请先创建层数！");
 	}
-	body->m_Name = ui.part_name->text();
+	else
+	{
+		QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1);
+		QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+		m_InterFace->AddPartFunction(item);
+
+		TowerPart_body* body = new TowerPart_body;
+		body->m_L0 = ui.line_L0->text().toDouble();//底部宽度
+		body->m_Z0 = ui.line_z0->text().toDouble();//底部z坐标
+		body->m_Ln = ui.line_Ln->text().toDouble();//顶部宽度
+		body->m_Tier = ui.line_tier->text().toInt();//总层数
+		int irow = ui.tableWidget->rowCount();//获得现在表格行数
+		for (int i = 0; i < irow; i++)
+		{
+			TowerData_Layer layer;
+			layer.m_h = ui.tableWidget->item(i, 1)->text().toDouble();//层高;
+			layer.m_TypeFront = ui.tableWidget->item(i, 2)->text().toInt();//正面类型;
+			layer.m_TypeSide = ui.tableWidget->item(i, 3)->text().toInt();//侧面类型
+			layer.m_TypeSeptumUp = ui.tableWidget->item(i, 4)->text().toInt();//上部隔面类型
+			layer.m_TypeSeptumMiddle = ui.tableWidget->item(i, 5)->text().toInt();//上部隔面类型
+			body->m_layer.push_back(layer);
+		}
+		body->m_Name = ui.part_name->text();
+		item->setText(0, body->m_Name);
+		m_InterFace->m_Renderer->RemoveAllViewProps();
+		body->Item = item;
+		body->Create_Mesh();
+		body->m_id = m_InterFace->TP_body.size() + 1;
+		body->Show_VTKnode(m_InterFace->m_Renderer);
+		body->Show_VTKtruss(m_InterFace->m_Renderer);
+		body->Show_VTKbeam(m_InterFace->m_Renderer);
+
+		m_InterFace->TP_body.Add_Entity(body);
+		m_InterFace->m_Renderer->ResetCamera();
+		m_InterFace->t_bodys.push_back(this);//界面指针
+		this->close();
+	}
 }
 
 QString T_Body::Get_line_Zn(int tier)

@@ -30,6 +30,7 @@ void ui_TowerHeadType::Initialize()
 	ui.label_g->resize(img_g->width(), img_g->height());
 	ui.label_g->setPixmap(QPixmap::fromImage(*img_g));
 }
+
 void ui_TowerHeadType::Change_Picture_BU()
 {
 	int Index = ui.combo_BU->currentIndex();

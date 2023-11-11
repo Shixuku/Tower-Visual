@@ -14,7 +14,7 @@ T_CrossArm::T_CrossArm(InterFace* interFace, QWidget *parent)
 	Set_combobox();
 	Initialize();
 
-	connect(ui.btn_ok, &QPushButton::clicked, this, &T_CrossArm::accept);
+	connect(ui.btn_ok, &QPushButton::clicked, this, &T_CrossArm::Get_Data);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &T_CrossArm::reject);
 	connect(ui.btn_look, &QPushButton::clicked, this, &T_CrossArm::BtnLook);
 	connect(ui.rdb_up, &QRadioButton::clicked, this, [=]() {ui.stackedWidget->setCurrentIndex(0);});
@@ -75,6 +75,7 @@ void T_CrossArm::Set_table(int count)
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 }
 
@@ -96,6 +97,7 @@ void T_CrossArm::Set_zhijia()
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 }
 
@@ -137,28 +139,34 @@ void T_CrossArm::Set_hengdan()
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			
 		}
+		ui.tableWidget->item(i, 0)->setFlags(ui.tableWidget->item(i, 0)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 	}
 }
 
-void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
+void T_CrossArm::Get_Data()
 {
+	QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2);
+	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+	m_InterFace->AddPartFunction(item);
+	QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
+	spacer->setText(0, QString("添加绝缘子串"));
+	TowerPart_CrossArm* tp_ca = new TowerPart_CrossArm;
 	int ret = ui.stackedWidget->currentIndex();//0--支架 1横担
 	//悬臂端参数
 	if (ret == 0)
 	{
-		tp_ca.m_c1W = ui.line_c1W0->text().toDouble();//支架
-		tp_ca.m_Type = 1;
+		tp_ca->m_c1W = ui.line_c1W0->text().toDouble();//支架
+		tp_ca->m_Type = 1;
 	}
 	else if (ret == 1)
 	{
-		tp_ca.m_c2Wb= ui.line_c2W0->text().toDouble();//横担
-		tp_ca.m_c2Wup= ui.line_c2Wn->text().toDouble();//横担
-		tp_ca.m_c2H= ui.line_c2H->text().toDouble();//横担
-		tp_ca.m_Type = 3;
+		tp_ca->m_c2Wb = ui.line_c2W0->text().toDouble();//横担
+		tp_ca->m_c2Wup = ui.line_c2Wn->text().toDouble();//横担
+		tp_ca->m_c2H = ui.line_c2H->text().toDouble();//横担
+		tp_ca->m_Type = 3;
 	}
-	tp_ca.m_count = ui.line_count->text().toInt();//几段
-	tp_ca.m_position = ui.combo_bodypos->currentIndex();//位置
-
+	tp_ca->m_count = ui.line_count->text().toInt();//几段
+	tp_ca->m_position = ui.combo_bodypos->currentIndex();//位置
 	int irow = ui.tableWidget->rowCount();//获得现在表格行数
 	for (int i = 0; i < irow; i++)
 	{
@@ -168,21 +176,30 @@ void T_CrossArm::Get_Data(TowerPart_CrossArm&tp_ca)
 		layer.m_TypeUp = ui.tableWidget->item(i, 3)->text().toInt();//顶面类型
 		layer.m_TypeSide = ui.tableWidget->item(i, 4)->text().toInt();//侧面类型
 		layer.m_TypeSeptum = ui.tableWidget->item(i, 5)->text().toInt();//隔面类型
-		tp_ca.m_layerArm.push_back(layer);
+		tp_ca->m_layerArm.push_back(layer);
 	}
-	tp_ca.m_Name = ui.part_name->text();//取名称
-
-	int duan= ui.combo_body->currentIndex() + 1;//哪个塔身段
+	tp_ca->m_Name = ui.part_name->text();//取名称
+	int duan = ui.combo_body->currentIndex() + 1;//哪个塔身段
 	int ceng = ui.combo_Tier->currentIndex() + 1;
-
 	TowerPart_body* body = m_InterFace->TP_body.Find_Entity(duan);
+	tp_ca->m_bodyButtomL = body->Get_LayerL(ceng - 1);
+	tp_ca->m_bodyUpL = body->Get_LayerL(ceng);
+	tp_ca->m_bodyButtomH = body->Get_LayerH(ceng - 1);
+	tp_ca->m_bodyUpH = body->Get_LayerH(ceng);
+	m_InterFace->m_Renderer->RemoveAllViewProps();
+	tp_ca->Item = item;
+	item->setText(0, tp_ca->m_Name);
 
-	tp_ca.m_bodyButtomL = body->Get_LayerL(ceng-1);
-	tp_ca.m_bodyUpL = body->Get_LayerL(ceng);
+	tp_ca->Create_Mesh();
+	tp_ca->m_id = m_InterFace->TP_CrossArm.size();
+	tp_ca->Show_VTKnode(m_InterFace->m_Renderer);
+	tp_ca->Show_VTKtruss(m_InterFace->m_Renderer);
+	tp_ca->Show_VTKbeam(m_InterFace->m_Renderer);
 
-	tp_ca.m_bodyButtomH = body->Get_LayerH(ceng-1);
-	tp_ca.m_bodyUpH = body->Get_LayerH(ceng);
-
+	m_InterFace->TP_CrossArm.Add_Entity(tp_ca);//塔头
+	m_InterFace->m_Renderer->ResetCamera();
+	m_InterFace->t_crossarms.push_back(this);//塔头对话框
+	this->close();
 }
 
 void T_CrossArm::Set_combobox()

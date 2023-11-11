@@ -20,7 +20,7 @@ public:
 	void Set_body2();//设置塔身段1
 
 	void Set_table(int tier);//设置表格
-	void Get_Data(TowerPart_body* body);
+	void Get_Data();//取界面的数据
 	QString Get_line_Zn(int tier);
 private:
 	Ui::T_BodyClass ui;

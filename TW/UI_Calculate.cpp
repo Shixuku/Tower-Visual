@@ -10,7 +10,6 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	connect(ui.btn_Wind, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
 	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
 	connect(ui.btn_InputWind, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
-
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 
 	connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
@@ -29,7 +28,6 @@ void Instance_Calculate::Set_headertext()
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 
-	update();
 }
 
 Instance_Calculate::~Instance_Calculate()
@@ -125,6 +123,14 @@ void Instance_Calculate::btn_CaculateModelIce()
 	//算冰--让关于风的不显示
 	ui.btn_Wind->setEnabled(false);
 	ui.btn_showWind->setEnabled(false);
+}
+
+void Instance_Calculate::showEvent(QShowEvent* event)
+{
+	update();
+
+	QWidget::showEvent(event);
+
 }
 
 void Instance_Calculate::on_btk_ok_clicked()
@@ -260,7 +266,7 @@ void Instance_Calculate::visual_ice()
 void Instance_Calculate::update()
 {
 	int T_tower = m_InterFace->TP.size();//塔实例数量
-	int T_wire = m_InterFace->TWG.size();//线实例数量
+	int T_wire = m_InterFace->TWG.size();//线+塔线实例数量
 
 	ui.tableWidget->setRowCount(T_tower + T_wire);//设置行数
 
@@ -269,7 +275,6 @@ void Instance_Calculate::update()
 
 	QVector<TowerWireGroup*> ve_wire;//!
 	m_InterFace->TWG.Get_Array(ve_wire, true);//!
-
 	for (int i = 0; i < T_tower; i++)
 	{
 		Tower* tower = ve_tower[i];//!
@@ -277,8 +282,8 @@ void Instance_Calculate::update()
 
 		//设置名称
 		QString name = tower->m_name;
-		ui.tableWidget->setItem(i, 0, new QTableWidgetItem("InstanceTower"));
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(name));
+		ui.tableWidget->setItem(i, 0, new QTableWidgetItem("InstanceTower"));//名称
+		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(name));//计算文件
 		for (int j = 0; j < 2; j++)//表头;
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -292,8 +297,8 @@ void Instance_Calculate::update()
 
 		//设置名称
 		QString name = wire->m_name;
-		ui.tableWidget->setItem(T_tower + i, 0, new QTableWidgetItem("InstanceWire"));
-		ui.tableWidget->setItem(T_tower + i, 1, new QTableWidgetItem(name));
+		ui.tableWidget->setItem(T_tower + i, 0, new QTableWidgetItem("InstanceWire"));//名称
+		ui.tableWidget->setItem(T_tower + i, 1, new QTableWidgetItem(name));//计算文件
 		for (int j = 0; j < 2; j++)//表头;
 		{
 			ui.tableWidget->item(T_tower + i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);

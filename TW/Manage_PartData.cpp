@@ -196,35 +196,34 @@ void Manage_PartData::ModifyDataBody(int Index)
 		{
 			it = m_InterFace->t_bodys.begin() + Index;
 			int ret = (*it)->exec();
-			if (ret == QDialog::Accepted)
-			{
-				//新增
-				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1);
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
-				TowerPart_body* t = new TowerPart_body;
-				(*it)->Get_Data(t);
-				t->Create_Mesh();
-				t->m_id = Index + 1;
-				childItem->setText(0, t->m_Name);//命名
-				t->Item = childItem;
-				t->Show_VTKtruss(m_InterFace->m_Renderer);
-				t->Show_VTKbeam(m_InterFace->m_Renderer);
-				t->Show_VTKnode(m_InterFace->m_Renderer);
-				m_InterFace->TP_body.Add_Entity(t);
-
-				//设置界面数据变化
-				ui.tableWidget_2->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
-				//设置节点单元数量
-				ui.tableWidget_2->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
-				int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();
-				ui.tableWidget_2->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
-				ui.tableWidget_2->setItem(Index, 3, new QTableWidgetItem("暂无"));
-				for (int j = 0; j < 4; j++)//表头;
-				{
-					ui.tableWidget_2->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-				}
-				m_InterFace->m_Renderer->ResetCamera();
-			}
+			//if (ret == QDialog::Accepted)
+			//{
+			//	//新增
+			//	QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1);
+			//	QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(1)->child(Index);
+			//	TowerPart_body* t = new TowerPart_body;
+			//	(*it)->Get_Data(t);
+			//	t->Create_Mesh();
+			//	t->m_id = Index + 1;
+			//	childItem->setText(0, t->m_Name);//命名
+			//	t->Item = childItem;
+			//	t->Show_VTKtruss(m_InterFace->m_Renderer);
+			//	t->Show_VTKbeam(m_InterFace->m_Renderer);
+			//	t->Show_VTKnode(m_InterFace->m_Renderer);
+			//	m_InterFace->TP_body.Add_Entity(t);
+			//	//设置界面数据变化
+			//	ui.tableWidget_2->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
+			//	//设置节点单元数量
+			//	ui.tableWidget_2->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
+			//	int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();
+			//	ui.tableWidget_2->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
+			//	ui.tableWidget_2->setItem(Index, 3, new QTableWidgetItem("暂无"));
+			//	for (int j = 0; j < 4; j++)//表头;
+			//	{
+			//		ui.tableWidget_2->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			//	}
+			//	m_InterFace->m_Renderer->ResetCamera();
+			//}
 		}
 		else
 		{
@@ -246,35 +245,34 @@ void Manage_PartData::ModifyDataHead(int Index)
 		{
 			it = m_InterFace->t_crossarms.begin() + Index;
 			int ret = (*it)->exec();
-			if (ret == QDialog::Accepted)
-			{
-				//新增
-				QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2);
-				QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
-				TowerPart_CrossArm* t = new TowerPart_CrossArm;
-				(*it)->Get_Data(*t);
-				t->Create_Mesh();
-				t->m_id = Index + 1;
-				childItem->setText(0, t->m_Name);//命名
-				t->Item = childItem;
-				t->Show_VTKtruss(m_InterFace->m_Renderer);
-				t->Show_VTKbeam(m_InterFace->m_Renderer);
-				t->Show_VTKnode(m_InterFace->m_Renderer);
-				m_InterFace->TP_CrossArm.Add_Entity(t);
-
-				//设置界面数据变化
-				ui.tableWidget_3->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
-				//设置节点单元数量
-				ui.tableWidget_3->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
-				int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();
-				ui.tableWidget_3->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
-				ui.tableWidget_3->setItem(Index, 3, new QTableWidgetItem("暂无"));
-				for (int j = 0; j < 4; j++)//表头;
-				{
-					ui.tableWidget_3->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-				}
-				m_InterFace->m_Renderer->ResetCamera();
-			}
+			//if (ret == QDialog::Accepted)
+			//{
+			//	//新增
+			//	QTreeWidgetItem* parent = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2);
+			//	QTreeWidgetItem* childItem = m_InterFace->ui.treeWidget->topLevelItem(0)->child(2)->child(Index);
+			//	TowerPart_CrossArm* t = new TowerPart_CrossArm;
+			//	(*it)->Get_Data(*t);
+			//	t->Create_Mesh();
+			//	t->m_id = Index + 1;
+			//	childItem->setText(0, t->m_Name);//命名
+			//	t->Item = childItem;
+			//	t->Show_VTKtruss(m_InterFace->m_Renderer);
+			//	t->Show_VTKbeam(m_InterFace->m_Renderer);
+			//	t->Show_VTKnode(m_InterFace->m_Renderer);
+			//	m_InterFace->TP_CrossArm.Add_Entity(t);
+			//	//设置界面数据变化
+			//	ui.tableWidget_3->setItem(Index, 0, new QTableWidgetItem(t->m_Name));
+			//	//设置节点单元数量
+			//	ui.tableWidget_3->setItem(Index, 1, new QTableWidgetItem(QString::number(t->m_Nodes.size())));
+			//	int E_num = t->m_Elements_beams.size() + t->m_Elements_Trusses.size();
+			//	ui.tableWidget_3->setItem(Index, 2, new QTableWidgetItem(QString::number(E_num)));
+			//	ui.tableWidget_3->setItem(Index, 3, new QTableWidgetItem("暂无"));
+			//	for (int j = 0; j < 4; j++)//表头;
+			//	{
+			//		ui.tableWidget_3->item(Index, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			//	}
+			//	m_InterFace->m_Renderer->ResetCamera();
+			//}
 		}
 		else
 		{

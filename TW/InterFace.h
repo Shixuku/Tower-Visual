@@ -99,7 +99,6 @@ public:
      vector<T_CrossArm*> t_crossarms;
      vector<Tower_Assembly*> tower_assembles;
      void Caculate();
-     void Display();
 
      std::vector<QStringList> Scetion_lists;
      //显示塔线实例下的单塔
@@ -128,6 +127,7 @@ public:
      //try  要改
      vtkNew<InteractorStyle> style;
      vtkNew<vtkAppendPolyData> appendFilter;
+     Instance_Calculate* ui_calculate = nullptr;
 signals://信号
     void Msg_Select_Nodes();//选择了节点--导线部分
     void Msg_CreateModel();
@@ -136,10 +136,9 @@ signals://信号
 public slots:
     void onTreeitemClicked(QTreeWidgetItem* item);
     void onTreeitemDoubleClicked(QTreeWidgetItem* item);
-    void ui_Foot();
     void ui_FootNew();
-    void ui_Body();
-    void ui_CrossArm();
+    void ui_BodyNew();
+    void ui_CrossArmNew();
     void ui_Tower();
     void ui_Management_PartData();
     void ui_Management_InsData();
@@ -185,5 +184,5 @@ private:
     vtkOrientationMarkerWidget* widgetAxes;
     bool isAxesCreated = false;
    
-    Instance_Calculate* ui_calculate = nullptr;
+    
 };
