@@ -48,7 +48,7 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 
 	m_TrussActor = vtkSmartPointer<vtkActor>::New();
 	m_TrussActor->SetMapper(mapper);
-	m_TrussActor->GetProperty()->SetColor(0, 0, 0);
+	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
 	renderer->AddActor(m_TrussActor);
 }
 
@@ -74,7 +74,7 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 	mapper->SetInputData(linesPolyData);
 	m_BeamActor = vtkSmartPointer<vtkActor>::New();
 	m_BeamActor->SetMapper(mapper);
-	m_BeamActor->GetProperty()->SetColor(0, 0, 0);
+	m_BeamActor->GetProperty()->SetColor(0, 1, 0);
 	renderer->AddActor(m_BeamActor);
 }
 
@@ -112,7 +112,7 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
-	Node_actor->GetProperty()->SetColor(0, 0, 0);
+	Node_actor->GetProperty()->SetColor(255, 255, 0);
 	Node_actor->GetProperty()->SetPointSize(3);
 	renderer->AddActor(Node_actor);
 }
