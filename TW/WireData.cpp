@@ -348,30 +348,12 @@ void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Beams, int SectionId
 	{
 		int id2 = ids[i];
 		double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-		m_Elements_Beams.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection));//总的单元
+		m_Elements_Beams.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection,"S"));//总的单元
 		id1 = id2;
 		idelement++;
 	}
 }
 
-void WireData::CreatTestSpacer(vector<Element_Truss>& m_Elements_Beams, vector<int> ids)
-{
-	if (ids.size() < 4)return;
-	ids.push_back(ids[0]);
-
-	int id1 = ids[0];
-	int idelement = m_Elements_Beams.size();
-	size_t size = ids.size();
-	for (int i = 1; i < size; i++)
-	{
-		int id2 = ids[i];
-		//m_Eleme.push_back(Element_Beam(idelement + 1, id1, id2, 0, iDirection));//总的单元
-		m_Elements_Trusses.push_back(Element_Truss(idelement + 1, id1, id2, 6, 20000));
-		id1 = id2;
-		idelement++;
-	}
-
-}
 
 void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, double y, double z, vector<int> ids,int ClassId)
 {
@@ -385,7 +367,7 @@ void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, doub
 		if (id != id2)
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection));//材料和轴力后续需要改
+			Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection,"N"));//材料和轴力后续需要改
 			idelement++;
 		}
 		

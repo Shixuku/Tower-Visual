@@ -228,8 +228,6 @@ void CreateStrainWire::CreateRealSus()
 			z2 = EndPoint[key][i * 2 + 1].z;
 			CreatSpacer(m_Elements_beams, S_Id,start_ids);
 			CreatSpacer(m_Elements_beams, S_Id, end_ids);
-			//CreatTestSpacer(m_Elements_Trusses, start_ids);
-			//CreatTestSpacer(m_Elements_Trusses, end_ids);
 			CreateStrainLine(m_Elements_beams, x1, y1, z1, start_ids, O_Id);
 			CreateStrainLine(m_Elements_beams, x2, y2, z2, end_ids, O_Id);
 		}
@@ -264,6 +262,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 				int n = 100;
 				int N = 100;
 				int num = vectorData.size() / (wireNumberOfLine)-1;
+				LengthId += num;
+				Length.push_back(LengthId);
 				double angle = 0;
 				angle = m_Angle[key - 1];
 				/*int max = vectorData.size() - 1;
@@ -341,6 +341,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
 								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
 							}
+
+
 						}
 						else if (fenlie == 6)
 						{
@@ -373,66 +375,85 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 
 					if (fenlie == 1)
 					{
-						std::vector<int> nodeIds;
-						for (int i = 0; i < num * (N + 1); i++)
+						for (int m = 0; m < num; m++)
 						{
-							nodeIds.push_back(node[i]);
+							std::vector<int> nodeIds1;
+				
+							for (int i = 0; i < (N + 1); i++)
+							{
+								nodeIds1.push_back(node[i + m * (N + 1)]);
+							}
+							if (key == 1)
+							{
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1));
+							}
+							else
+							{
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 2]));
+							}
+							
 						}
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds, pro[i].MaId);
-					}
-					else if (fenlie == 2)
-					{
-						std::vector<int> nodeIds1;
-						std::vector<int> nodeIds2;
-						for (int i = 0; i < num * (N + 1); i++)
-						{
-							nodeIds1.push_back(node[i]);
-							nodeIds2.push_back(node[num * (N + 1) + i]);
-						}
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId);
 					}
 					else if (fenlie == 4)
 					{
-						std::vector<int> nodeIds1;
-						std::vector<int> nodeIds2;
-						std::vector<int> nodeIds3;
-						std::vector<int> nodeIds4;
-						for (int i = 0; i < num * (N + 1); i++)
+						for (int m = 0; m < num; m++)
 						{
-							nodeIds1.push_back(node[i]);
-							nodeIds2.push_back(node[num * (N + 1) + i]);
-							nodeIds3.push_back(node[2 * num * (N + 1) + i]);
-							nodeIds4.push_back(node[3 * num * (N + 1) + i]);
+							std::vector<int> nodeIds1;
+							std::vector<int> nodeIds2;
+							std::vector<int> nodeIds3;
+							std::vector<int> nodeIds4;
+							for (int i = 0; i <  (N + 1); i++)
+							{
+								nodeIds1.push_back(node[i + m * (N + 1)]);
+								nodeIds2.push_back(node[num * (N + 1) + i + m * (N + 1)]);
+								nodeIds3.push_back(node[2 * num * (N + 1) + i + m * (N + 1)]);
+								nodeIds4.push_back(node[3 * num * (N + 1) + i + m * (N + 1)]);
+							}
+							if (key == 1)
+							{
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1));
+							}
+							else
+							{
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
+							}
+							
 						}
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId);
+						
 					}
 					else if (fenlie == 6)
 					{
-						std::vector<int> nodeIds1;
-						std::vector<int> nodeIds2;
-						std::vector<int> nodeIds3;
-						std::vector<int> nodeIds4;
-						std::vector<int> nodeIds5;
-						std::vector<int> nodeIds6;
-						for (int i = 0; i < num * (N + 1); i++)
+						for (int m = 0; m < num; m++)
 						{
-							nodeIds1.push_back(node[i]);
-							nodeIds2.push_back(node[num * (N + 1) + i]);
-							nodeIds3.push_back(node[2 * num * (N + 1) + i]);
-							nodeIds4.push_back(node[3 * num * (N + 1) + i]);
-							nodeIds5.push_back(node[4 * num * (N + 1) + i]);
-							nodeIds6.push_back(node[5 * num * (N + 1) + i]);
+							std::vector<int> nodeIds1;
+							std::vector<int> nodeIds2;
+							std::vector<int> nodeIds3;
+							std::vector<int> nodeIds4;
+							std::vector<int> nodeIds5;
+							std::vector<int> nodeIds6;
+							for (int i = 0; i < (N + 1); i++)
+							{
+								nodeIds1.push_back(node[i + m * (N + 1)]);
+								nodeIds2.push_back(node[num * (N + 1) + i + m * (N + 1)]);
+								nodeIds3.push_back(node[2 * num * (N + 1) + i + m * (N + 1)]);
+								nodeIds4.push_back(node[3 * num * (N + 1) + i + m * (N + 1)]);
+								nodeIds5.push_back(node[4 * num * (N + 1) + i + m * (N + 1)]);
+								nodeIds6.push_back(node[5 * num * (N + 1) + i + m * (N + 1)]);
+							}
+
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds5, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds6, pro[i].MaId, "L-" + QString::number(m + 1));
 						}
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds5, pro[i].MaId);
-						CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds6, pro[i].MaId);
 					}
 					delete[]node;
 					delete[]ap_node;
@@ -519,6 +540,7 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 		double unitMass = 0;
 		int n = 100;
 		int num = m_TempNodes.size() / 2 - 1;
+	
 		for (int j = 0; j < 2; j++)
 		{
 			for (int i = 0; i < pro.size(); i++)
@@ -561,12 +583,23 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 							node[(i - m_TempNodes.size() / 2 * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
 						}
 					}
-					std::vector<int> nodeIds;
-					for (int i = 0; i < num * (n + 1); i++)
+					for (int m = 0; m < num; m++)
 					{
-						nodeIds.push_back(node[i]);
+						std::vector<int> nodeIds1;
+
+						for (int i = 0; i < (N + 1); i++)
+						{
+							nodeIds1.push_back(node[i + m * (N + 1)]);
+						}
+						if (key == 0)
+						{
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1));
+						}
+						else
+						{
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 1]));
+						}
 					}
-					CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds, pro[i].MaId);
 					break;
 				}
 				

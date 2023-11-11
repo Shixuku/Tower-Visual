@@ -48,7 +48,7 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 
 	m_TrussActor = vtkSmartPointer<vtkActor>::New();
 	m_TrussActor->SetMapper(mapper);
-	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
+	m_TrussActor->GetProperty()->SetColor(0, 0, 0);
 	renderer->AddActor(m_TrussActor);
 }
 
@@ -74,7 +74,7 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 	mapper->SetInputData(linesPolyData);
 	m_BeamActor = vtkSmartPointer<vtkActor>::New();
 	m_BeamActor->SetMapper(mapper);
-	m_BeamActor->GetProperty()->SetColor(0, 1, 0);
+	m_BeamActor->GetProperty()->SetColor(0, 0, 0);
 	renderer->AddActor(m_BeamActor);
 }
 
@@ -112,7 +112,7 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
-	Node_actor->GetProperty()->SetColor(255, 255, 0);
+	Node_actor->GetProperty()->SetColor(0, 0, 0);
 	Node_actor->GetProperty()->SetPointSize(3);
 	renderer->AddActor(Node_actor);
 }
@@ -153,7 +153,7 @@ void Instance::SaveSus(vector<int> ids)
 	realSuspoint.push_back(ids[0]);
 }
 
-void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid)
+void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type)
 {
 	if (ids.size() == 0)return;
 	size_t size = ids.size();
@@ -167,7 +167,7 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<i
 		}
 		else
 		{
-			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 10000));
+			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 10000, Type));
 			id++;
 			node1 = node2;
 		}
@@ -189,7 +189,7 @@ void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, ve
 		else
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection));
+			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
 			id++;
 			node1 = node2;
 		}
@@ -609,70 +609,62 @@ void Instance::Suspensioncombined()
 
 void Instance::RestraintTxT()
 {
-	//int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
-	//int m_ConstraintSize = m_Constraint.size();//增加的约束
-	//int totalRestraint = RestraintNodesize + m_ConstraintSize;
-
-	//Stream <<"*Constraint," << totalRestraint << "\n";
-	//int m_id=1;
-	//for (int i = 0; i < RestraintNode.size(); i++)
-	//{
-	//	for (int j = 0; j < 6; j++)
-	//	{
-	//		Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
-	//		m_id++;
-	//	}	
-	//}
-
 	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	int m_ConstraintSize = m_Constraint.size();//增加的约束
-	// 首先对容器进行排序
-	std::sort(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
-	// 使用std::unique函数去除相邻的重复元素
-	auto newEnd = std::unique(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
-	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
-	StrainAllRestraintNode.resize(std::distance(StrainAllRestraintNode.begin(), newEnd));
+	int totalRestraint = RestraintNodesize + m_ConstraintSize;
 
-	// 首先对容器进行排序
-	std::sort(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
-	// 使用std::unique函数去除相邻的重复元素
-	auto End = std::unique(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
-	// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
-	StrainJointRestraintNode.resize(std::distance(StrainJointRestraintNode.begin(), End));
-
-	int WireAllStrainSize = StrainAllRestraintNode.size() * 6;
-	int WireJointStrainSize = StrainJointRestraintNode.size() * 3;
-	int totalRestraint = RestraintNodesize + m_ConstraintSize + WireAllStrainSize + WireJointStrainSize;
-
-	Stream << "*Constraint," << totalRestraint << "\n";
-	int m_id = 1;
+	Stream <<"*Constraint," << totalRestraint << "\n";
+	int m_id=1;
 	for (int i = 0; i < RestraintNode.size(); i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
 			Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
 			m_id++;
-		}
-	}
-	int m_allId = 1;
-	for (int i = 0; i < StrainAllRestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			Stream << "  " << m_allId << "  " << StrainAllRestraintNode[i] << "  " << j << "  " << 0 << "\n";
-			m_allId++;
-		}
+		}	
 	}
 
-	int m_jointId = 1;
-	for (int i = 0; i < StrainJointRestraintNode.size(); i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			Stream << "  " << m_jointId << "  " << StrainJointRestraintNode[i] << "  " << j << "  " << 0 << "\n";
-			m_jointId++;
-		}
-	}
+	//int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
+	//int m_ConstraintSize = m_Constraint.size();//增加的约束
+	//// 首先对容器进行排序
+	//std::sort(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	//// 使用std::unique函数去除相邻的重复元素
+	//auto newEnd = std::unique(StrainAllRestraintNode.begin(), StrainAllRestraintNode.end());
+	//// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	//StrainAllRestraintNode.resize(std::distance(StrainAllRestraintNode.begin(), newEnd));
+
+	//// 首先对容器进行排序
+	//std::sort(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	//// 使用std::unique函数去除相邻的重复元素
+	//auto End = std::unique(StrainJointRestraintNode.begin(), StrainJointRestraintNode.end());
+	//// 删除重复元素之后，需要调整容器的大小，使其与新的尾部对齐
+	//StrainJointRestraintNode.resize(std::distance(StrainJointRestraintNode.begin(), End));
+
+	//int WireAllStrainSize = StrainAllRestraintNode.size() * 6;
+	//int WireJointStrainSize = StrainJointRestraintNode.size() * 3;
+	//int totalRestraint = RestraintNodesize + m_ConstraintSize + WireAllStrainSize + WireJointStrainSize;
+
+	//Stream << "*Constraint," << totalRestraint << "\n";
+	//int m_id = 1;
+	//for (int i = 0; i < RestraintNode.size(); i++)
+	//{
+	//	for (int j = 0; j < 6; j++)
+	//	{
+	//		Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+	//		m_id++;
+	//	}
+	//}
+	//int m_allId = 1;
+	//for (int i = 0; i < StrainAllRestraintNode.size(); i++)
+	//{
+	//	for (int j = 0; j < 6; j++)
+	//	{
+	//		Stream << "  " << m_allId << "  " << StrainAllRestraintNode[i] << "  " << j << "  " << 0 << "\n";
+	//		m_allId++;
+	//	}
+	//}
+
+	
 
 }
 

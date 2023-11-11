@@ -19,6 +19,18 @@ Element_Beam::Element_Beam(int id, int idNode1, int idNode2, int idsection,doubl
 	direction[2] = iDirection[2];
 }
 
+Element_Beam::Element_Beam(int id, int idNode1, int idNode2, int idsection, double iDirection[3], QString iType)
+{
+	m_idElement = id;
+	m_idNode[0] = idNode1;
+	m_idNode[1] = idNode2;
+	ClassSectionID = idsection;
+	direction[0] = iDirection[0];
+	direction[1] = iDirection[1];
+	direction[2] = iDirection[2];
+	Type = iType;
+}
+
 Element_Beam::Element_Beam(int id, int idNode1, int idNode2, int idsection, double iDirection[3], int a)
 {
 	m_idElement = id;

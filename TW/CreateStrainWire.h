@@ -33,6 +33,8 @@ public:
 	int H_Id = 0;
 	int V_Id = 0;
 	int S_Id = 0;
+	int LengthId = 0;
+	vector<int>Length;
 	int FindGroupIdNode(int idNode) const;
 	virtual enum Part_Type My_PartType()const
 	{
