@@ -546,7 +546,7 @@ void Instance::Section_Assign()
 	//考虑冰单元
 	if (m_IceTypeElement.size() > 0)
 	{
-		TotalElementSize *= 2;
+		TotalElementSize += m_Elements_Trusses.size();
 	}
 	Stream << "*Section_Assign," << TotalElementSize << " \n";
 	
@@ -569,9 +569,10 @@ void Instance::Section_Assign()
 	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
 	if (m_IceTypeElement.size() > 0)
 	{
-		for (int i = 1; i < m_Elements_Trusses.size() + m_Elements_beams.size() + 1; i++)
+		for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
 		{//冰单元编号，单元编号，冰单元类型
-			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << i << "  " << "1" << "\n";
+			int TrussesID = m_Elements_Trusses[i - 1].m_idElement;
+			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << TrussesID << "  " << "1" << "\n";
 		}
 	}
 }
