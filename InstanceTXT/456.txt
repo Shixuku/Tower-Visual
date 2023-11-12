@@ -215,7 +215,7 @@
 *Body,2
 *Leg,25,25,25,25
 *TowerPosition,-1281.568403,	3574.13934,	-38.8
-*Angle,23.35
+*Angle,-23.35
 *String, 8
 1,1,0.69,String_H,D100
 2,2,0.69,String_H,D100

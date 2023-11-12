@@ -172,6 +172,7 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
 		this->m_Elements_Trusses[totalT].groupTowerId = towerId;
+		this->m_Elements_Trusses[totalT].Type = "T-" + QString::number(towerId + 1);
 		if (size != SusElementClass)
 		{
 			for (int j = 0; j < SusElement; j++)
@@ -204,6 +205,7 @@ void TowerWireGroup::AddTowerElement(Tower* tower, int towerId)
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
 		this->m_Elements_beams[totalT].groupTowerId = towerId;
+		this->m_Elements_beams[totalT].Type = "T-" + QString::number(towerId + 1);
 	}
 	for (int i = 0; i < tower->SuspensionElementClass.size(); i++)
 	{
@@ -628,7 +630,7 @@ void TowerWireGroup::AddWireElement(CreateStrainWire* wire)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
-		this->m_Elements_Trusses[totalT].Type = "L";
+		this->m_Elements_Trusses[totalT].Type = pE->Type;
 	}
 	for (size_t i = 0; i < bpart; ++i)
 	{
@@ -649,7 +651,7 @@ void TowerWireGroup::AddWireElement(CreateStrainWire* wire)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
-		this->m_Elements_beams[totalT].Type = "L";
+		this->m_Elements_beams[totalT].Type = pE->Type;
 	}
 
 	

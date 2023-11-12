@@ -107,14 +107,6 @@ void InterFace::SetupCentralWidget()
 	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
 	m_Renderer->SetGradientBackground(1);    
 
-	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
-	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer->SetGradientBackground(1);
-
-	m_Renderer->SetBackground(1.0, 1.0, 1.0);              // 底部颜色值
-	m_Renderer->SetBackground2(0.629, 0.8078, 0.92157);    // 顶部颜色值
-	m_Renderer->SetGradientBackground(1);                  // 开启渐变色背景设置
-
 }
 void InterFace::TreeWidgetShow()
 {
