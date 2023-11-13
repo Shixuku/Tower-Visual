@@ -26,8 +26,4 @@ private:
 	void BtnLook();
 public slots:
 	void Change_combo_Tier();//第二种方法，用选择的方式
-
-	void Change_Picture_BU();
-	void Change_Picture_S();
-	void Change_Picture_gemian();
 };

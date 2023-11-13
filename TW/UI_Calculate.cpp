@@ -21,7 +21,7 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 void Instance_Calculate::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "名称" << "计算文件" << "说明";
+	headertext << "名称" << "计算文件" ;
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);
@@ -279,7 +279,7 @@ void Instance_Calculate::update()
 	{
 		Tower* tower = ve_tower[i];//!
 		list_Instance.push_back(tower);
-
+		
 		//设置名称
 		QString name = tower->m_name;
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem("InstanceTower"));//名称
@@ -289,7 +289,7 @@ void Instance_Calculate::update()
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 		}
 	}
-
+		
 	for (int i = 0; i < T_wire; i++)
 	{
 		TowerWireGroup* wire = ve_wire[i];//!

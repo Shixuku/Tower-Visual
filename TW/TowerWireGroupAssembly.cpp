@@ -21,6 +21,7 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 		});
 	connect(ui.BtnOk, &QPushButton::clicked, this, [=]()
 		{
+			towerWireGroup->m_name = ui.lineEdit->text();
 			towerWireGroup->Show_VTKnode(m_pInterFace->m_Renderer);
 			towerWireGroup->Show_VTKbeam(m_pInterFace->m_Renderer);
 			towerWireGroup->Show_VTKtruss(m_pInterFace->m_Renderer);
@@ -41,6 +42,7 @@ TowerWireGroupAssembly::~TowerWireGroupAssembly()
 
 void TowerWireGroupAssembly::CreateComBox()
 {
+	ui.lineEdit->setText("หþฯ฿ื้ " + QString::number(m_pInterFace->TWG.size() + 1));
 	int towerSize = m_pInterFace->TP.size();
 	for (int i = 0; i < towerSize; i++)
 	{

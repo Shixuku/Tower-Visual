@@ -14,6 +14,7 @@ ui_TowerHeadType::~ui_TowerHeadType()
 
 void ui_TowerHeadType::Initialize()
 {
+	ui.tabWidget->setCurrentIndex(0);//设置默认page
 	//BU类型图
 	QImage* img_BU = new QImage;
 	img_BU->load("./headBU1.png");

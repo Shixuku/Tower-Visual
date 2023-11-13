@@ -384,30 +384,6 @@ void InterFace::ui_Tower()
 		{
 			tw->addPart(TP_CrossArm.Find_Entity(i));
 		}
-		//for (auto& i : T_As->m_ArryLegText)
-		//{
-		//	for (auto& j : TP_leg)
-		//	{
-		//		if (j.second->m_Name == i) { tw->addPart(j.second); }
-		//	}
-		//}
-		//for (auto& i : T_As->m_ArryBodyText)
-		//{
-		//	for (auto& j : TP_body)
-		//	{
-		//		if (j.second->m_Name == i) { tw->addPart(j.second); }
-		//	}
-		//}
-		//for (auto& i : T_As->m_ArryHeadText)
-		//{
-		//	for (auto& j : TP_CrossArm)
-		//	{
-		//		if (j.second->m_Name == i)
-		//		{
-		//			tw->addPart(j.second);
-		//		} 
-		//	}
-		//}
 
 		tw->Check_Beam();
 		m_Renderer->RemoveAllViewProps();
@@ -1324,7 +1300,7 @@ void InterFace::ui_SingleWire()
 {
 	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
 	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-	item->setText(0, "导线");
+	item->setText(0, "导线 " + QString::number(TWG.size() + 1));
 	QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
 	spacer->setText(0, "添加绝缘子串");
 	QTreeWidgetItem* creareWire = new QTreeWidgetItem(item);
@@ -1338,6 +1314,7 @@ void InterFace::ui_SingleWire()
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
+	towerWireGroup->m_name = item->text(0);
 	TWG.Add_Entity(towerWireGroup);
 	ui_calculate->update();
 }

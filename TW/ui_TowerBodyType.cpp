@@ -13,6 +13,7 @@ ui_TowerBodyType::~ui_TowerBodyType()
 
 void ui_TowerBodyType::Set_No1_picture()
 {
+	ui.tabWidget->setCurrentIndex(0);//ÉèÖÃÄ¬ÈÏpage
 	QImage* img = new QImage;
 	img->load("./shen1.png");
 	ui.label_b->resize(img->width(), img->height());
