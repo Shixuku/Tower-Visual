@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1293</width>
-    <height>830</height>
+    <width>954</width>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
+    <item row="0" column="1" rowspan="3">
      <widget class="QTreeWidget" name="treeWidget">
       <property name="enabled">
        <bool>true</bool>
@@ -33,53 +33,18 @@
       </column>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QWidget" name="widget_3" native="true">
+    <item row="0" column="2" rowspan="2">
+     <widget class="QWidget" name="widget" native="true"/>
+    </item>
+    <item row="2" column="2">
+     <widget class="QTextEdit" name="textEdit">
       <property name="maximumSize">
        <size>
-        <width>300</width>
-        <height>100</height>
+        <width>16777215</width>
+        <height>50</height>
        </size>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QWidget" name="widget_4" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QPushButton" name="btn_part">
-            <property name="text">
-             <string>管理部件数据</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_ins">
-            <property name="text">
-             <string>管理实例数据</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widget_5" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="btn_caculate">
-            <property name="text">
-             <string>计算</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
      </widget>
-    </item>
-    <item row="0" column="3" rowspan="2">
-     <widget class="QWidget" name="widget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -88,7 +53,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1293</width>
+     <width>954</width>
      <height>26</height>
     </rect>
    </property>
@@ -99,46 +64,31 @@
     <addaction name="menuSave"/>
     <addaction name="actionRead"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>编辑(Edit)</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
-     <string>视图(View)</string>
+     <string>管理(Manage）</string>
     </property>
-   </widget>
-   <widget class="QMenu" name="menu_Set">
-    <property name="title">
-     <string>设置(Set)</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_Widget">
-    <property name="title">
-     <string>窗口(Widget)</string>
-    </property>
+    <addaction name="actionMpart"/>
+    <addaction name="actionMinstance"/>
    </widget>
    <widget class="QMenu" name="menu_Create">
     <property name="title">
      <string>新建（Create）</string>
     </property>
-    <widget class="QMenu" name="menuPart">
-     <property name="title">
-      <string>Part</string>
-     </property>
-     <addaction name="actionLeg"/>
-     <addaction name="actionBody"/>
-     <addaction name="actionCrossArm"/>
-    </widget>
-    <addaction name="menuPart"/>
+    <addaction name="actionLeg_3"/>
+    <addaction name="actionBody_2"/>
+    <addaction name="actionHead"/>
+   </widget>
+   <widget class="QMenu" name="menu_Caculate">
+    <property name="title">
+     <string>计算(Caculate)</string>
+    </property>
+    <addaction name="actionCaculate"/>
    </widget>
    <addaction name="menu_Create"/>
    <addaction name="menu"/>
-   <addaction name="menu_2"/>
    <addaction name="menu_View"/>
-   <addaction name="menu_Set"/>
-   <addaction name="menu_Widget"/>
+   <addaction name="menu_Caculate"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -231,6 +181,46 @@
    </property>
    <property name="toolTip">
     <string>XOZ</string>
+   </property>
+  </action>
+  <action name="actionMpart">
+   <property name="text">
+    <string>塔部件</string>
+   </property>
+  </action>
+  <action name="actionMinstance">
+   <property name="text">
+    <string>塔实例</string>
+   </property>
+  </action>
+  <action name="actionLeg_2">
+   <property name="text">
+    <string>Leg</string>
+   </property>
+  </action>
+  <action name="actionBody_2">
+   <property name="text">
+    <string>Body</string>
+   </property>
+  </action>
+  <action name="actionHead">
+   <property name="text">
+    <string>Head</string>
+   </property>
+  </action>
+  <action name="actionLeg_3">
+   <property name="text">
+    <string>Leg</string>
+   </property>
+  </action>
+  <action name="actionCaculate">
+   <property name="text">
+    <string>计算</string>
+   </property>
+  </action>
+  <action name="actionExist">
+   <property name="text">
+    <string>现有模型</string>
    </property>
   </action>
  </widget>

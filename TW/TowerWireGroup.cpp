@@ -298,6 +298,8 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 		this->m_Elements_Trusses[totalT].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses[totalT].ClassSectionID = pE->ClassSectionID;
 		this->m_Elements_Trusses[totalT].MaterialID = pE->MaterialID;
+		this->m_Elements_Trusses[totalT].Type = "L";
+
 	}
 	for (size_t i = 0; i < bpart; ++i)
 	{
@@ -318,7 +320,7 @@ void TowerWireGroup::AddWireElement(CreatWire* wire)
 		this->m_Elements_beams[totalT].direction[0] = pE->direction[0];
 		this->m_Elements_beams[totalT].direction[1] = pE->direction[1];
 		this->m_Elements_beams[totalT].direction[2] = pE->direction[2];
-		
+		this->m_Elements_beams[totalT].Type = "L";
 	}
 }
 

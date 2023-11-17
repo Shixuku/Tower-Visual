@@ -15,6 +15,7 @@ public:
 	int MaterialID = 0;//获得的截面的编号
     double AxialForce = 0;//轴力
 	int groupTowerId = 0;
+	QString Type = "T";
 	void show()const;
 	void showid()const;
 

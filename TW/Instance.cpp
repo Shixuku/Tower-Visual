@@ -299,7 +299,7 @@ void Instance::CreateOutPut()
 			cout << "文件打开失败！\n";
 			return;
 		}
-		this->m_name = filename;
+		this->m_filename = filename;
 		NodeTxT();//节点
 		TrussTxT();//桁架单元
 		BeamTxT();//梁单元
@@ -346,7 +346,16 @@ void Instance::BeamTxT()
 	Stream << "*Element_Beam3D," << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		Stream << "  " << m_Elements_beams[i].m_idElement << "  "<<"T"<<"  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
+		if (m_IceTypeElement.size() > 0)
+		{
+			//覆冰没有type
+			Stream << "  " << m_Elements_beams[i].m_idElement << "  " << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
+		}
+		else
+		{
+			//算风有type
+			Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].Type << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
+		}
 	}
 }
 
@@ -356,7 +365,17 @@ void Instance::TrussTxT()
 	Stream <<"*Element_Truss3D," << TressSize << " \n";
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
-		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << "T" <<"  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
+		if (m_IceTypeElement.size() > 0)
+		{
+			//覆冰没有type
+			Stream << "  " << m_Elements_Trusses[i].m_idElement << "  "<< m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "  " << "\n";
+		}
+		else
+		{
+			//算风有type
+			Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "  " << "\n";
+		}
+	//	Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
 	}
 }
 
@@ -394,7 +413,17 @@ void Instance::GravityTxT()
 	Stream << "*Force_Gravity," << GravitySize << "\n";//重力
 	for (int i = 0; i < GravitySize; i++)
 	{	//1 0 - 9.8(编号 方向012-xyz 大小)
-		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
+		if (m_IceTypeElement.size() > 0)
+		{
+			//覆冰
+			Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g * (-1) << "  " << "\n";
+		}
+		else
+		{
+			//算风
+			Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
+		}
+		
 	}
 }
 

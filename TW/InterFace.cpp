@@ -68,16 +68,16 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
-	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_FootNew);
-	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_BodyNew);
-	connect(ui.actionCrossArm, &QAction::triggered, this, &InterFace::ui_CrossArmNew);
+	connect(ui.actionLeg_3, &QAction::triggered, this, &InterFace::ui_FootNew);
+	connect(ui.actionBody_2, &QAction::triggered, this, &InterFace::ui_BodyNew);
+	connect(ui.actionHead, &QAction::triggered, this, &InterFace::ui_CrossArmNew);
 	
 	connect(ui.menuSave, &QAction::triggered, this, &InterFace::SaveFile);
 	connect(ui.actionRead, &QAction::triggered, this, &InterFace::OpenFile);
-	connect(ui.btn_part, &QPushButton::clicked, this, &InterFace::ui_Management_PartData);
-	connect(ui.btn_ins, &QPushButton::clicked, this, &InterFace::ui_Management_InsData);
-	connect(ui.btn_caculate, &QPushButton::clicked, this, &InterFace::Caculate);
-	//connect(ui.btn_display, &QPushButton::clicked, this, &InterFace::Display);
+	connect(ui.actionMpart, &QAction::triggered, this, &InterFace::ui_Management_PartData);
+	connect(ui.actionMinstance, &QAction::triggered, this, &InterFace::ui_Management_InsData);
+	connect(ui.actionCaculate, &QAction::triggered, this, &InterFace::Caculate);
+
 
 	// 创建坐标轴部件
 	Axes = vtkAxesActor::New();
@@ -90,6 +90,8 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//默认添加第一个静力分析步
 	ParameterAnalysisStep* parameterAnalysisStep = new ParameterAnalysisStep("分析步-1", 1, "Static", 1, 1, 1e-5, 16);
 	ME_AnalysisSteps.Add_Entity(parameterAnalysisStep);
+	ui.textEdit->setFont(QFont("宋体", 12));
+	ui.textEdit->setReadOnly(true);//设置只读
 
 }
 
@@ -1316,7 +1318,7 @@ void InterFace::ui_SingleWire()
 	towerWireGroup->m_id = TWG.size() + 1;
 	towerWireGroup->m_name = item->text(0);
 	TWG.Add_Entity(towerWireGroup);
-	ui_calculate->update();
+	//ui_calculate->update();
 }
 
 InterFace::~InterFace()

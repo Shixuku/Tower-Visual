@@ -15,7 +15,7 @@ Tower_Assembly::Tower_Assembly(InterFace* InterFace, QWidget* parent)
 
     //初始化
     int T_towers = m_InterFace->TP.size() + 1;;//塔腿数量
-    QString str("杆塔实例-");
+    QString str("杆塔实例 ");
     str += QString::number(T_towers);     //str转字符
     ui.line_name->setText(str);//设置初始值
 

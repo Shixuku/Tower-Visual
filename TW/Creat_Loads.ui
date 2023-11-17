@@ -60,7 +60,12 @@
         </item>
         <item>
          <property name="text">
-          <string>风荷载</string>
+          <string>风偏</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>舞动</string>
          </property>
         </item>
        </widget>

@@ -31,6 +31,7 @@ public:
 
 	}
 	QString m_name = nullptr;
+	QString m_filename = "No File!";
 	vector<Node> m_Nodes;//节点合集
 	vector<Element> m_Elements;//单元合集
 	vector<Element_Beam> m_Elements_beams;//梁单元合集

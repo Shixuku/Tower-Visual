@@ -35,7 +35,7 @@ void Creat_Loads::btn_continue_clicked()
 	}
 	else
 	{
-		int index = ui.listWidget->currentRow();//取选的载荷
+		index = ui.listWidget->currentRow();//取选的载荷
 		m_str = ui.line_name->text();
 
 		if (index == 0)
@@ -62,6 +62,14 @@ void Creat_Loads::btn_continue_clicked()
 		{
 			//风载荷
 			Wind* wd = new Wind(this);
+			wd->show();
+		}
+		else if (index == 5)
+		{
+			//舞动--修改风向角
+			Wind* wd = new Wind(this);
+			wd->ui.label_6->setVisible(false);
+			wd->ui.comboBox_2->setVisible(false);
 			wd->show();
 		}
 		this->accept();

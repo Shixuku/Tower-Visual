@@ -45,7 +45,6 @@ void Wind::Initialize()
 {
 	ui.ice_edi->setText("5");
 	ui.wind_edi->setText("10");
-	ui.direction_edi->setText("0");
 	ui.StepSize_edi->setText("0.3");
 	ui.Step_edi->setText("100");
 	//分析步的combobox
@@ -90,6 +89,7 @@ void Wind::ShowObject()
 
 void Wind::ui_Speed()
 {
+	this->close();
 	Get_ui_Data();
 	if (ui.wind_com->currentIndex() == 0)
 	{
@@ -213,8 +213,9 @@ void Wind::Get_ui_Data()
 	//分析步
 	 AnalysisStep = ui.comboBox->currentIndex() + 1;
 	 v = ui.wind_edi->text().toDouble();
-	 angle = ui.direction_edi->text().toInt();
-	
+	 angle = ui.comboBox_2->currentIndex();
+	 if (m_pCreat_loads->index == 5)	angle = 2;//如果是舞动调用，就改成2
+
 	//cout << "xxxx" << "  " << ui.stackedWidget_2->currentIndex() << "\n";
 	if (ui.stackedWidget_2->currentIndex() == 0)
 	{
