@@ -29,21 +29,21 @@
          <item>
           <widget class="QPushButton" name="btn_InputWind">
            <property name="text">
-            <string>算风</string>
+            <string>计算风偏</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_InputIce">
            <property name="text">
-            <string>算冰</string>
+            <string>计算脱冰</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_InputWuDong">
            <property name="text">
-            <string>舞动</string>
+            <string>计算舞动</string>
            </property>
           </widget>
          </item>
@@ -59,7 +59,7 @@
       <item>
        <widget class="QPushButton" name="btn_Wind">
         <property name="text">
-         <string>算风</string>
+         <string>计算风偏</string>
         </property>
        </widget>
       </item>
@@ -79,7 +79,7 @@
       <item>
        <widget class="QPushButton" name="btn_showWind">
         <property name="text">
-         <string>显示风</string>
+         <string>显示风偏</string>
         </property>
        </widget>
       </item>
@@ -99,7 +99,7 @@
       <item>
        <widget class="QPushButton" name="btn_Ice">
         <property name="text">
-         <string>算冰</string>
+         <string>计算脱冰</string>
         </property>
        </widget>
       </item>
@@ -119,7 +119,7 @@
       <item>
        <widget class="QPushButton" name="btn_showIce">
         <property name="text">
-         <string>显示冰</string>
+         <string>显示脱冰</string>
         </property>
        </widget>
       </item>
@@ -139,7 +139,7 @@
       <item>
        <widget class="QPushButton" name="btn_WuDong">
         <property name="text">
-         <string>舞动</string>
+         <string>计算舞动</string>
         </property>
        </widget>
       </item>

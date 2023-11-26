@@ -50,6 +50,9 @@ public:
 	virtual bool Input_FemData(const QString& FileName) = 0;
 
 	virtual void Solve() = 0;
+	virtual void set_id(int id) = 0;
+	virtual void set_Name(QString name)=0;
+	virtual void AddToStructures() =0;
 	////读取标准txt文件
 	//virtual void Input_Standard(QString& filename) = 0;
 	////坐标系转换

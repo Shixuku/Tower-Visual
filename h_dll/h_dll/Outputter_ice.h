@@ -5,13 +5,25 @@
 #include <QTextStream>
 #include <QFile>
 #include <QDebug>
+#include <Qstring>
 #include "dll.h"
 class Node;
+class Element_Truss;
 
 enum class DataType_ice :int {
 	U1, U2, U3, UR1, UR2, UR3, N, M2, M3
 };
+struct exchangeType_ice
+{
+	exchangeType_ice(const Element_Truss& element_truss);
 
+	//交换的数据
+	double Force_Ln = 0;
+	double exchange_X = 0;
+	double exchange_Y = 0;
+	double exchange_Z = 0;
+	
+};
 struct NodeData_ice
 {
 	NodeData_ice(const Node& node);
@@ -35,11 +47,13 @@ struct NodeData_ice
 struct DataFrame_ice
 {
 	double currentTime = 0;
-
 	//每一帧节点数据
 	std::map<int, NodeData_ice> nodeDatas;//int 为节点的编号 dataSet 为对应节点的数据
+	std::map<int, exchangeType_ice> exchangeType_Datas;//int 为节点的编号 dataSet 为对应节点的数据
 
 	double getNodeData(int idNode, DataType_ice iType);
+	double getMaxNodeData(DataType_ice iType);
+	double get_max_id(DataType_ice iType);
 };
 
 
@@ -54,7 +68,7 @@ public:
 	std::vector<DataFrame_ice*> dataSet; //数据集合
 
 
-	void SaveNodesData(double time, const std::vector<Node>& nodes);
+	void SaveNodesData(double time, const std::vector<Node>& nodes,const std::vector<Element_Truss>& element_truss);
 	void FindBoundary();
 
 	inline void FindBoundary_Type(std::vector<double>& boundary, const double min, const double max)
@@ -70,7 +84,8 @@ public:
 	}
 
 	void outputNodeData(int idNode, std::vector<int>& iTypes);
-
+	void outputNodeData_time(double  idTime, std::vector<int>& iTypes);
+	void output_Exchange(int idNode, int idelement, QString filename);
 
 	void seFileName(const QString& fileName) {
 		m_FileName = fileName;

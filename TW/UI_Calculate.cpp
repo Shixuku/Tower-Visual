@@ -8,8 +8,11 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	m_InterFace = InterFace;
 	Set_headertext();
 	connect(ui.btn_Wind, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
+	connect(ui.btn_WuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
 	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
+	connect(ui.btn_showWuDong, &QPushButton::clicked, this, &Instance_Calculate::visual);
 	connect(ui.btn_InputWind, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
+	connect(ui.btn_InputWuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 
 	connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
@@ -49,6 +52,9 @@ void Instance_Calculate::on_btn_import_clicked()
 	//创建实例
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
+	//加入名称
+	towerWireGroup->m_name = "导入模型 " + QString::number(m_InterFace->TWG.size() + 1);
+	towerWireGroup->m_filename = m_str;//文件名
 	m_InterFace->TWG.Add_Entity(towerWireGroup);
 	m_ins = (Instance*)towerWireGroup;
 	if (m_ins->s) delete m_ins->s;//释放之前的对象
@@ -82,6 +88,7 @@ void Instance_Calculate::on_btn_import_clicked()
 	int Totalit = m_ins->s->getTotalIterations();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	m_InterFace->ui.textEdit->setText("计算结束！");
 	//update();
 
 	//算风--让关于冰的按钮点不起
@@ -89,7 +96,8 @@ void Instance_Calculate::on_btn_import_clicked()
 	ui.btn_showIce->setEnabled(false);
 
 }
-void Instance_Calculate::btn_CaculateModelIce()
+
+void Instance_Calculate::btn_CaculateModelIce()//更新的鲁佳帛的动态链接库
 {
 	m_InterFace->m_Renderer->RemoveAllViewProps();
 	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
@@ -105,12 +113,21 @@ void Instance_Calculate::btn_CaculateModelIce()
 	//创建实例
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
+	//加入名称
+	towerWireGroup->m_name = "导入模型 " + QString::number(m_InterFace->TWG.size() + 1);
+	towerWireGroup->m_filename = m_str;//文件名
 	m_InterFace->TWG.Add_Entity(towerWireGroup);
 	m_ins = (Instance*)towerWireGroup;
 	if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
 	m_ins->s_ice = GetStructure_ice();//生成structure类对象
+
+	m_ins->s_ice->set_id(m_ins->m_id);
+	m_ins->s_ice->AddToStructures();
+
 	m_ins->s_ice->Input_FemData(m_str);
+	m_ins->s_ice->set_Name(m_ins->m_name);
 	CreateActor_ice();////将点和线添加到界面
+
 	update();
 	clock_t start, end;//计时
 	start = clock();
@@ -119,11 +136,13 @@ void Instance_Calculate::btn_CaculateModelIce()
 	end = clock();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	m_InterFace->ui.textEdit->setText("计算结束！");
 	//update();
 	//算冰--让关于风的不显示
 	ui.btn_Wind->setEnabled(false);
 	ui.btn_showWind->setEnabled(false);
 }
+
 
 void Instance_Calculate::showEvent(QShowEvent* event)
 {
@@ -138,7 +157,7 @@ void Instance_Calculate::on_btk_ok_clicked()
 	int index = ui.tableWidget->currentRow();
 	m_ins = list_Instance[index];
 	if (!m_ins) return;
-	QString str = m_ins->m_name;
+	QString str = m_ins->m_filename;
 	if (str != nullptr)
 	{
 		qDebug() << str;
@@ -172,25 +191,27 @@ void Instance_Calculate::on_btk_ok_clicked()
 	int Totalit = m_ins->s->getTotalIterations();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	//计算结束的提醒
+	m_InterFace->ui.textEdit->setText("计算结束！");
 }
 
 
 void Instance_Calculate::on_btk_ok_clicked_ice()
 {
-	m_InterFace->m_Renderer->RemoveAllViewProps();
 	int index = ui.tableWidget->currentRow();
-	Instance* ins = nullptr;
-	ins = list_Instance[index];
-	if (!ins) return;
-	QString str = ins->m_name;
-	QString FilePath("./");//计算结果文件路径
+	m_ins = list_Instance[index];
+	if (!m_ins) return;
+	QString str = m_ins->m_filename;
 	if (str != nullptr)
 	{
 		qDebug() << str;
-		if (ins->s_ice) delete ins->s_ice;//释放之前的对象
+		if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
+		m_ins->s_ice = GetStructure_ice();//生成structure类对象
+		m_ins->s_ice->set_id(m_ins->m_id);
+		m_ins->s_ice->AddToStructures();
+		m_ins->s_ice->Input_FemData(str);
+		m_ins->s_ice->set_Name(m_ins->m_name);
 
-		ins->s_ice = GetStructure_ice();//生成structure类对象
-		ins->s_ice->Input_FemData(str);
 	}
 	else
 	{
@@ -200,16 +221,19 @@ void Instance_Calculate::on_btk_ok_clicked_ice()
 
 	clock_t start, end;//计时
 	start = clock();
-	ins->s_ice->Solve();//计算
+	m_ins->s_ice->Solve();//计算
 
 	//获得数据
 	end = clock();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	m_InterFace->ui.textEdit->setText("计算结束！");
 }
+
 void Instance_Calculate::visual()
 {
 	int index = ui.tableWidget->currentRow();
+	m_InterFace->ui.textEdit->clear();
 	if (index < 0)
 	{
 		QMessageBox::information(this, "Tips", "请选择要显示的风计算！"); return;
@@ -239,8 +263,8 @@ void Instance_Calculate::visual()
 
 void Instance_Calculate::visual_ice()
 {
-
 	int index = ui.tableWidget->currentRow();
+	m_InterFace->ui.textEdit->clear();
 	if (index < 0)
 	{
 		QMessageBox::information(this, "Tips", "请选择要显示的冰计算！"); return;
@@ -270,20 +294,17 @@ void Instance_Calculate::update()
 
 	ui.tableWidget->setRowCount(T_tower + T_wire);//设置行数
 
-	QVector<Tower*> ve_tower;//!
-	m_InterFace->TP.Get_Array(ve_tower, true);//!
+	QVector<Tower*> ve_tower;
+	m_InterFace->TP.Get_Array(ve_tower, true);
+	QVector<TowerWireGroup*> ve_wire;
+	m_InterFace->TWG.Get_Array(ve_wire, true);
 
-	QVector<TowerWireGroup*> ve_wire;//!
-	m_InterFace->TWG.Get_Array(ve_wire, true);//!
 	for (int i = 0; i < T_tower; i++)
 	{
-		Tower* tower = ve_tower[i];//!
+		Tower* tower = ve_tower[i];
 		list_Instance.push_back(tower);
-		
-		//设置名称
-		QString name = tower->m_name;
-		ui.tableWidget->setItem(i, 0, new QTableWidgetItem("InstanceTower"));//名称
-		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(name));//计算文件
+		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(tower->m_name));//名称
+		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(tower->m_filename));//计算文件
 		for (int j = 0; j < 2; j++)//表头;
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -294,11 +315,8 @@ void Instance_Calculate::update()
 	{
 		TowerWireGroup* wire = ve_wire[i];//!
 		list_Instance.push_back(wire);
-
-		//设置名称
-		QString name = wire->m_name;
-		ui.tableWidget->setItem(T_tower + i, 0, new QTableWidgetItem("InstanceWire"));//名称
-		ui.tableWidget->setItem(T_tower + i, 1, new QTableWidgetItem(name));//计算文件
+		ui.tableWidget->setItem(T_tower + i, 0, new QTableWidgetItem(wire->m_name));//名称
+		ui.tableWidget->setItem(T_tower + i, 1, new QTableWidgetItem(wire->m_filename));//计算文件
 		for (int j = 0; j < 2; j++)//表头;
 		{
 			ui.tableWidget->item(T_tower + i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -370,7 +388,7 @@ void Instance_Calculate::CreateActor_ice()
 {
 	vtkSmartPointer<vtkPolyData> PolyData = vtkSmartPointer<vtkPolyData>::New();
 	m_ins->m_pts = vtkSmartPointer<vtkPoints>::New();
-	std::list<std::vector<double>> nodes = m_ins->s_ice->Get_node_ice1();
+	std::list<std::vector<double>> nodes = m_ins->s_ice->Get_node_ice1(); 
 
 	for (auto& i : nodes)
 	{

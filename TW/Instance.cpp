@@ -346,16 +346,7 @@ void Instance::BeamTxT()
 	Stream << "*Element_Beam3D," << BeamSize << " \n";
 	for (int i = 0; i < m_Elements_beams.size(); i++)
 	{
-		if (m_IceTypeElement.size() > 0)
-		{
-			//覆冰没有type
-			Stream << "  " << m_Elements_beams[i].m_idElement << "  " << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
-		}
-		else
-		{
-			//算风有type
-			Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].Type << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
-		}
+		Stream << "  " << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].Type << "  " << m_Elements_beams[i].m_idNode[0] << "  " << m_Elements_beams[i].m_idNode[1] << "  " << "\n";
 	}
 }
 
@@ -365,17 +356,7 @@ void Instance::TrussTxT()
 	Stream <<"*Element_Truss3D," << TressSize << " \n";
 	for (int i = 0; i < m_Elements_Trusses.size(); i++)
 	{
-		if (m_IceTypeElement.size() > 0)
-		{
-			//覆冰没有type
-			Stream << "  " << m_Elements_Trusses[i].m_idElement << "  "<< m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "  " << "\n";
-		}
-		else
-		{
-			//算风有type
-			Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "  " << "\n";
-		}
-	//	Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
+		Stream << "  " << m_Elements_Trusses[i].m_idElement << "  " << m_Elements_Trusses[i].Type << "  " << m_Elements_Trusses[i].m_idNode[0] << "  " << m_Elements_Trusses[i].m_idNode[1] << "\n";
 	}
 }
 
@@ -413,17 +394,7 @@ void Instance::GravityTxT()
 	Stream << "*Force_Gravity," << GravitySize << "\n";//重力
 	for (int i = 0; i < GravitySize; i++)
 	{	//1 0 - 9.8(编号 方向012-xyz 大小)
-		if (m_IceTypeElement.size() > 0)
-		{
-			//覆冰
-			Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g * (-1) << "  " << "\n";
-		}
-		else
-		{
-			//算风
-			Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
-		}
-		
+		Stream << "  " << m_Gravitys[i].m_id << "  " << m_Gravitys[i].m_AnalysisStep << "  " << m_Gravitys[i].m_Direction << "  " << m_Gravitys[i].m_g << "  " << "\n";
 	}
 }
 
@@ -465,11 +436,11 @@ void Instance::MaterialTxT()
 	for (int i = 0; i < 3; i++)
 	{
 		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
-		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "\n";
+		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "  " << 0 << "\n";
 	}
-	Stream << "   " << 4 << "  " << 6.3e10<< "  " << 0.3 << "  " <<3080 << "  " << 0 << "\n";
-	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "\n";
-	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "\n";
+	Stream << "   " << 4 << "  " << 6.3e10 << "  " << 0.3 << "  " << 3080 << "  " << 0 << "  " << 0 << "\n";
+	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "  " << 0 << "\n";
+	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "  " << 0 << "\n";
 }
 
 void Instance::BeamSectionTxT()
@@ -518,7 +489,7 @@ void Instance::Section_Assign()
 	//考虑冰单元
 	if (m_IceTypeElement.size() > 0)
 	{
-		TotalElementSize *= 2;
+		TotalElementSize += m_Elements_Trusses.size();
 	}
 	Stream << "*Section_Assign," << TotalElementSize << " \n";
 	
@@ -537,9 +508,9 @@ void Instance::Section_Assign()
 	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
 	if (m_IceTypeElement.size() > 0)
 	{
-		for (int i = 1; i < m_Elements_Trusses.size() + m_Elements_beams.size() + 1; i++)
+		for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
 		{//冰单元编号，单元编号，冰单元类型
-			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << i << "  " << "1" << "\n";
+			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << m_Elements_Trusses[i - 1].m_idElement << "  " << "1" << "\n";
 		}
 	}
 }

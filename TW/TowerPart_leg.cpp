@@ -73,7 +73,6 @@ void TowerPart_leg::Type1(int iQuadrant)
 	Creat_Trusses(m_Elements_Trusses, { node[9],node[7],node[11] });//一圈桁架单元
 	Creat_Trusses(m_Elements_Trusses, { node[9],node[11] });//一圈桁架单元
 	Creat_Trusses1(m_Elements_Trusses, { node[9],node[4],node[5],node[11] });//一圈桁架单元
-	//Creat_Trusses(m_Elements_Trusses, { node[5],node[11] });//一圈桁架单元
 	Creat_Trusses(m_Elements_Trusses, { node[4],node[7],node[5] });//一串桁架单元
 
 }
