@@ -607,6 +607,9 @@ void InstanceWire::CreatTowerWierGroupItem(QString lineName)
 
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(towerWierGroupItem);
 	Loads->setText(0, QString("施加荷载"));
+
+	QTreeWidgetItem* out = new QTreeWidgetItem(towerWierGroupItem);
+	out->setText(0, QString("关键信息"));
 }
 
 void InstanceWire::WriteHangList()

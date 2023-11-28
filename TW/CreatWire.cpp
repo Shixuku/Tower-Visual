@@ -146,7 +146,7 @@ void CreatWire::CreateWire()
 			{
 				nodeIds.push_back(node[i]);
 			}
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID,nodeIds,1,"L");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds, 1, "L", "F");
 		}
 		else if (fenlie == 2)
 		{
@@ -157,8 +157,8 @@ void CreatWire::CreateWire()
 				nodeIds1.push_back(node[i]);
 				nodeIds2.push_back(node[num * (N + 1) + i]);
 			}
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1,1, "L");
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2,1, "L");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1,1, "L", "F");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2,1, "L", "F");
 		}
 		else if (fenlie == 4)
 		{
@@ -173,10 +173,10 @@ void CreatWire::CreateWire()
 				nodeIds3.push_back(node[2 * num * (N + 1) + i]);
 				nodeIds4.push_back(node[3 * num * (N + 1) + i]);
 			}
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1,1, "L");
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2,1, "L");
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3,1, "L");
-			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4,1, "L");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1,1, "L", "F");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2,1, "L", "F");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3,1, "L", "F");
+			CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4,1, "L", "F");
 		}
 		delete[]node;
 	}

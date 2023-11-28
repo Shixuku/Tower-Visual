@@ -25,6 +25,7 @@ public:
 	vector<int >endpoinType1 ;//线路端点一的类型（0为挂绝缘子上，1为耐张-挂塔上）
 	vector<int> endpoinType2 ;//线路端点二的类型（0为挂绝缘子上，1为耐张-挂塔上）
 	int Creat_Node(double x, double y, double z, double f,int Type);
+	int GetMidId(double x, double y, double z);
 	void CreatRealNode();//创建真实悬挂点
 	void CreateTempWireNode(int wireLogo, int choose, vector<Node>& sus);//由列表悬挂点创建为分裂的基础节点
 	void CreateTempRealWireNode(int wireLogo,  vector<Node>& sus);//由真实悬挂点创建未分裂的基础节点用于后续确定间隔棒的安装位置
@@ -39,6 +40,7 @@ public:
 	std::vector<int>SpacerNum;//存储间隔棒个数
 
 	map<int, vector<Node>>m_Str_realSus;
+	map<int, vector<Node>>OneWireLine;
 	void CreateStrainTempWireNode(int wireLogo, int choose, int n,double k, vector<Node>& sus, vector<WireProperties> pro);
 	void FindStrainRealSus(int wireLogo, int num, int n, vector<Node>m_Nodes);
 	void CreateStrainTempRealWireNode(int nz, int wireLogo,double k, int SectionId, vector<Node>& sus);

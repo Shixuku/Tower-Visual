@@ -74,7 +74,7 @@ public:
 	QTreeWidgetItem* Item = nullptr;
     int Creat_Node(double x, double y, double z);//生成点
     void SaveSus(vector<int>ids);//保存悬挂点的id
-    void CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type);
+    void CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type, QString True);
 	void CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid);
 	void CreateXuanChuiInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
 	void SaveApSus(vector<int>ids);
@@ -109,6 +109,7 @@ public:
 	void TrussSectionTxT();//杆截面信息
 	void WindEleTxT();
 	void Suspensioncombined();//悬挂点排序
+	void CreateMidIdAndEle();
 	vector<std::pair<int, int>> combined;
 	//画约束
 	void Draw_fixed_Constrained(double x, double y, double z, vtkRenderer* renderer);
@@ -141,5 +142,8 @@ public:
 
 	vector<int>StrainAllRestraintNode;//完全约束
 	vector<int>StrainJointRestraintNode;//铰接
+
+	vector<int>EleId;
+	vector<int>MidId;
 };
 

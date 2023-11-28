@@ -579,6 +579,7 @@ void TowerWireGroup::AddStrainWireToGroup(CreateStrainWire* wire)
 	AddWireElement(wire);
 	AddAxialForceToInsulator(wire);
 	AddRestraintId(wire);
+	AddWireMidId(wire);
 }
 
 void TowerWireGroup::AddStrainWireNode(CreateStrainWire* wire)
@@ -624,6 +625,13 @@ void TowerWireGroup::AddWireElement(CreateStrainWire* wire)
 		this->m_Elements[total].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
 		this->m_Elements[total].m_idNode[1] = wire->FindGroupIdNode(pE->m_idNode[1]);
 		this->m_Elements_Trusses.push_back(wire->m_Elements_Trusses[i]);
+		for (int j = 0; j < wire->EleId.size(); j++)
+		{
+			if (wire->m_Elements_Trusses[i].m_idElement == wire->EleId[j])
+			{
+				this->EleId.push_back(total + 1);
+			}
+		}
 		size_t totalT = this->m_Elements_Trusses.size() - 1;
 		this->m_Elements_Trusses[totalT].m_idElement = total + 1;//放入实例的杆单元
 		this->m_Elements_Trusses[totalT].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
@@ -683,4 +691,12 @@ void TowerWireGroup::AddRestraintId(CreateStrainWire* wire)
 {
 	this->StrainAllRestraintNode = wire->StrainAllRestraintNode;
 	this->StrainJointRestraintNode = wire->StrainJointRestraintNode;
+}
+
+void TowerWireGroup::AddWireMidId(CreateStrainWire* wire)
+{
+	for (auto& i : wire->MidId)
+	{
+		this->MidId.push_back(wire->FindGroupIdNode(i));
+	}
 }
