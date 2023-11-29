@@ -423,24 +423,28 @@ void Instance::WindTxT()
 void Instance::IceLoadTxT()
 {
 	//新改的
-	Stream << "*Element_ice, " << m_IceTypeElement.size() << "\n";
-	for (int i = 0; i < m_IceTypeElement.size(); i++)
+	if (m_IceTypeElement.size() > 0)
 	{
-		Stream << "   " << m_IceTypeElement[i].m_id << "  "<< m_IceTypeElement[i].m_StartAnalysisStep<< "  " << m_IceTypeElement[i].m_EndAnalysisStep << "  " << m_IceTypeElement[i].m_Thickness << "\n";
+		Stream << "*Force_Ice, " << 2 << "\n";
+		//for (int i = 0; i < m_IceTypeElement.size(); i++)
+		//{
+		//	Stream << "   " << m_IceTypeElement[i].m_id << "  "<< m_IceTypeElement[i].m_StartAnalysisStep<< "  " << m_IceTypeElement[i].m_EndAnalysisStep << "  " << m_IceTypeElement[i].m_Thickness << "\n";
+		//}
+		Stream << "   " << 1 << "  " << m_IceTypeElement[0].m_StartAnalysisStep << "  " << m_IceTypeElement[0].m_Thickness << "\n";
+		Stream << "   " << 2 << "  " << m_IceTypeElement[0].m_EndAnalysisStep << "  " << 0 << "\n";
 	}
 }
 
 void Instance::MaterialTxT()
 {
 	Stream <<"*Material," << 6 << "\n";
-	for (int i = 0; i < 3; i++)
-	{
-		//**编号，弹性模量，泊松比，质量密度，热膨胀系数，没有时用0占位
-		Stream << "   " << i + 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 <<"  " << 0 << "  " << 0 << "\n";
-	}
-	Stream << "   " << 4 << "  " << 6.3e10 << "  " << 0.3 << "  " << 3080 << "  " << 0 << "  " << 0 << "\n";
-	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 9.8e3 << "  " << 0 << "  " << 0 << "\n";
-	Stream << "   " << 6 << "  " << 4.79e11 << "  " << 0.3 << "  " << 980 << "  " << 0 << "  " << 0 << "\n";
+	//**编号，弹性模量，泊松比，质量密度，热膨胀系数，极限应力，没有时用0占位
+	Stream << "   " << 1 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 << "  " << 0 << "  " << 235e6 << "\n";
+	Stream << "   " << 2 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 << "  " << 0 << "  " << 345e6 << "\n";
+	Stream << "   " << 3 << "  " << 2.1e11 << "  " << 0.3 << "  " << 7850 << "  " << 0 << "  " << 425e6 << "\n";
+	Stream << "   " << 4 << "  " << 7300e6 << "  " << 0.3 << "  " << 3342 << "  " << 0 << "  " << 258e6 << "\n";//线
+	Stream << "   " << 5 << "  " << 2.00e11 << "  " << 0.3 << "  " << 1910.8 << "  " << 0 << "  " << 254.8e6 << "\n";//绝缘子
+	Stream << "   " << 6 << "  " << 200000e7 << "  " << 0.3 << "  " << 2000 << "  " << 0 << "  " << 254.8e6 << "\n";//间隔棒
 }
 
 void Instance::BeamSectionTxT()
@@ -486,11 +490,11 @@ void Instance::WindEleTxT()
 void Instance::Section_Assign()
 {
 	int TotalElementSize = m_Elements_Trusses.size() + m_Elements_beams.size();
-	//考虑冰单元
-	if (m_IceTypeElement.size() > 0)
-	{
-		TotalElementSize += m_Elements_Trusses.size();
-	}
+	////考虑冰单元
+	//if (m_IceTypeElement.size() > 0)
+	//{
+	//	TotalElementSize += m_Elements_Trusses.size();
+	//}
 	Stream << "*Section_Assign," << TotalElementSize << " \n";
 	
 	//先杆
@@ -505,14 +509,14 @@ void Instance::Section_Assign()
 		Stream << "  "<<m_Elements_beams[i].m_idElement<< "  " << m_Elements_beams[i].ClassSectionID << "  " << m_Elements_beams[i].direction[0] << "  " <<m_Elements_beams[i].direction[1] << "  " 
 			<<m_Elements_beams[i].direction[2] << "  " << "\n";
 	}
-	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
-	if (m_IceTypeElement.size() > 0)
-	{
-		for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
-		{//冰单元编号，单元编号，冰单元类型
-			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << m_Elements_Trusses[i - 1].m_idElement << "  " << "1" << "\n";
-		}
-	}
+	////冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
+	//if (m_IceTypeElement.size() > 0)
+	//{
+	//	for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
+	//	{//冰单元编号，单元编号，冰单元类型
+	//		Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << m_Elements_Trusses[i - 1].m_idElement << "  " << "1" << "\n";
+	//	}
+	//}
 }
 
 void Instance::Axial_force()

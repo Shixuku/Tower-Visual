@@ -86,9 +86,6 @@
     <ClCompile Include="Manage_InsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Manage_Loads.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Manage_PartData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -194,9 +191,6 @@
     <ClCompile Include="ParameterConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Calculate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UI_Calculate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -267,6 +261,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_TowerBodyType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_TowerHeadType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_TowerLegParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_TowerLegType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -453,9 +459,6 @@
     <QtMoc Include="Manage_InsData.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Manage_Loads.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="Manage_PartData.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -507,9 +510,6 @@
     <QtMoc Include="TowerCaculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Calculate.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="UI_Calculate.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -523,6 +523,18 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Manage_Section.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui_TowerLegParameter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui_TowerLegType.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui_TowerBodyType.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui_TowerHeadType.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -552,9 +564,6 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Manage_InsData.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="Manage_Loads.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Manage_PartData.ui">
@@ -608,9 +617,6 @@
     <QtUic Include="Calculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="Calculate.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="UI_Calculate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -623,9 +629,24 @@
     <QtUic Include="Manage_Section.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="ui_TowerBodyType.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ui_TowerHeadType.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ui_TowerLegParameter.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ui_TowerLegType.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="TW.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtRcc Include="tubiao.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
   </ItemGroup>

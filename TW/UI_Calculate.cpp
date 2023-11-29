@@ -8,16 +8,16 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	m_InterFace = InterFace;
 	Set_headertext();
 	connect(ui.btn_Wind, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
-	connect(ui.btn_WuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
+	//connect(ui.btn_WuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
 	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
-	connect(ui.btn_showWuDong, &QPushButton::clicked, this, &Instance_Calculate::visual);
+	//connect(ui.btn_showWuDong, &QPushButton::clicked, this, &Instance_Calculate::visual);
 	connect(ui.btn_InputWind, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
-	connect(ui.btn_InputWuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
+	//connect(ui.btn_InputWuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 
-	connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
-	connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
-	connect(ui.btn_InputIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
+	//connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
+	//connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
+	//connect(ui.btn_InputIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
 
 }
 
@@ -91,9 +91,9 @@ void Instance_Calculate::on_btn_import_clicked()
 	m_InterFace->ui.textEdit->setText("计算结束！");
 	//update();
 
-	//算风--让关于冰的按钮点不起
-	ui.btn_Ice->setEnabled(false);
-	ui.btn_showIce->setEnabled(false);
+	////算风--让关于冰的按钮点不起
+	//ui.btn_Ice->setEnabled(false);
+	//ui.btn_showIce->setEnabled(false);
 
 }
 
@@ -138,9 +138,9 @@ void Instance_Calculate::btn_CaculateModelIce()//更新的鲁佳帛的动态链接库
 	qDebug() << "计算总耗时： " << rtime << " ms";
 	m_InterFace->ui.textEdit->setText("计算结束！");
 	//update();
-	//算冰--让关于风的不显示
-	ui.btn_Wind->setEnabled(false);
-	ui.btn_showWind->setEnabled(false);
+	////算冰--让关于风的不显示
+	//ui.btn_Wind->setEnabled(false);
+	//ui.btn_showWind->setEnabled(false);
 }
 
 

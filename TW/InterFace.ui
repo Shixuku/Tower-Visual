@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>954</width>
+    <width>1030</width>
     <height>820</height>
    </rect>
   </property>
@@ -53,7 +53,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>954</width>
+     <width>1030</width>
      <height>26</height>
     </rect>
    </property>
@@ -75,8 +75,8 @@
     <property name="title">
      <string>新建（Create）</string>
     </property>
-    <addaction name="actionLeg_3"/>
-    <addaction name="actionBody_2"/>
+    <addaction name="actionLeg"/>
+    <addaction name="actionBody"/>
     <addaction name="actionHead"/>
    </widget>
    <widget class="QMenu" name="menu_Caculate">
@@ -97,68 +97,36 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actioninit"/>
-   <addaction name="actionYoZ"/>
-   <addaction name="actionXoZ"/>
+   <addaction name="action_FrontView"/>
+   <addaction name="action_BackView"/>
+   <addaction name="action_LeftView"/>
+   <addaction name="action_RightView"/>
+   <addaction name="action_TopView"/>
+   <addaction name="action_BottomView"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actioninit">
+  <action name="action_FrontView">
    <property name="icon">
-    <iconset>
-     <normaloff>:/TW/init.png</normaloff>:/TW/init.png</iconset>
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/前.png</normaloff>:/前.png</iconset>
    </property>
    <property name="text">
-    <string>New</string>
+    <string>正视图</string>
    </property>
    <property name="toolTip">
-    <string>新建</string>
+    <string>正视图</string>
    </property>
   </action>
-  <action name="actionYoZ">
+  <action name="action_LeftView">
    <property name="icon">
-    <iconset>
-     <normaloff>:/TW/YOZ.png</normaloff>:/TW/YOZ.png</iconset>
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/左.png</normaloff>:/左.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>左视图</string>
    </property>
    <property name="toolTip">
-    <string>YOZ</string>
-   </property>
-  </action>
-  <action name="actionLeg">
-   <property name="text">
-    <string>Leg</string>
-   </property>
-  </action>
-  <action name="actionBody">
-   <property name="text">
-    <string>Body</string>
-   </property>
-  </action>
-  <action name="actionCrossArm">
-   <property name="text">
-    <string>Head</string>
-   </property>
-  </action>
-  <action name="actionSavePartLeg">
-   <property name="text">
-    <string>SavePartLeg</string>
-   </property>
-  </action>
-  <action name="actionSavePartBody">
-   <property name="text">
-    <string>SavePartBody</string>
-   </property>
-  </action>
-  <action name="actionSavePartHead">
-   <property name="text">
-    <string>SavePartHead</string>
-   </property>
-  </action>
-  <action name="actionSaveTower">
-   <property name="text">
-    <string>SaveTower</string>
+    <string>左视图</string>
    </property>
   </action>
   <action name="menuSave">
@@ -171,16 +139,16 @@
     <string>读取</string>
    </property>
   </action>
-  <action name="actionXoZ">
+  <action name="action_RightView">
    <property name="icon">
-    <iconset>
-     <normaloff>:/TW/XOZ.png</normaloff>:/TW/XOZ.png</iconset>
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/右.png</normaloff>:/右.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>右视图</string>
    </property>
    <property name="toolTip">
-    <string>XOZ</string>
+    <string>右视图</string>
    </property>
   </action>
   <action name="actionMpart">
@@ -193,24 +161,28 @@
     <string>塔实例</string>
    </property>
   </action>
-  <action name="actionLeg_2">
+  <action name="actionBody">
    <property name="text">
-    <string>Leg</string>
+    <string>塔身</string>
    </property>
-  </action>
-  <action name="actionBody_2">
-   <property name="text">
-    <string>Body</string>
+   <property name="toolTip">
+    <string>塔身</string>
    </property>
   </action>
   <action name="actionHead">
    <property name="text">
-    <string>Head</string>
+    <string>塔头</string>
+   </property>
+   <property name="toolTip">
+    <string>塔头</string>
    </property>
   </action>
-  <action name="actionLeg_3">
+  <action name="actionLeg">
    <property name="text">
-    <string>Leg</string>
+    <string>塔腿</string>
+   </property>
+   <property name="toolTip">
+    <string>塔腿</string>
    </property>
   </action>
   <action name="actionCaculate">
@@ -218,15 +190,50 @@
     <string>计算</string>
    </property>
   </action>
-  <action name="actionExist">
+  <action name="action_BackView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/后.png</normaloff>:/后.png</iconset>
+   </property>
    <property name="text">
-    <string>现有模型</string>
+    <string>后视图</string>
+   </property>
+   <property name="toolTip">
+    <string>后视图</string>
+   </property>
+  </action>
+  <action name="action_TopView">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/上.png</normaloff>:/上.png</iconset>
+   </property>
+   <property name="text">
+    <string>仰视图</string>
+   </property>
+   <property name="toolTip">
+    <string>仰视图</string>
+   </property>
+  </action>
+  <action name="action_BottomView">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/俯.png</normaloff>:/俯.png</iconset>
+   </property>
+   <property name="text">
+    <string>俯视图</string>
+   </property>
+   <property name="toolTip">
+    <string>俯视图</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="TW.qrc"/>
+  <include location="tubiao.qrc"/>
  </resources>
  <connections/>
 </ui>

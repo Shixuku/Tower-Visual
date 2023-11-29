@@ -178,6 +178,7 @@
     <ClCompile Include="WireData.cpp" />
     <ClCompile Include="WireWiring.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
+    <QtRcc Include="tubiao.qrc" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
     <QtUic Include="ConcentrateForce.ui" />

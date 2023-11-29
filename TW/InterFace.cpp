@@ -60,16 +60,11 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	SetupCentralWidget();
 	//左边窗口
 	TreeWidgetShow();
-	////打开软件自动运行
-	//ReadMaterialTXT();
-	//ReadSectionTXT();
-	//ReadPartTXT();
-	//ReadInstanceTXT();
 	//默认打开的是part的vtk窗口
 	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
-	connect(ui.actionLeg_3, &QAction::triggered, this, &InterFace::ui_FootNew);
-	connect(ui.actionBody_2, &QAction::triggered, this, &InterFace::ui_BodyNew);
+	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_FootNew);
+	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_BodyNew);
 	connect(ui.actionHead, &QAction::triggered, this, &InterFace::ui_CrossArmNew);
 	
 	connect(ui.menuSave, &QAction::triggered, this, &InterFace::SaveFile);
@@ -77,6 +72,14 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	connect(ui.actionMpart, &QAction::triggered, this, &InterFace::ui_Management_PartData);
 	connect(ui.actionMinstance, &QAction::triggered, this, &InterFace::ui_Management_InsData);
 	connect(ui.actionCaculate, &QAction::triggered, this, &InterFace::Caculate);
+
+	//视图设置
+	connect(ui.action_FrontView, &QAction::triggered, this, &InterFace::SetFrontView);
+	connect(ui.action_LeftView, &QAction::triggered, this, &InterFace::SetLeftView);
+	connect(ui.action_RightView, &QAction::triggered, this, &InterFace::SetRightView);
+	connect(ui.action_BackView, &QAction::triggered, this, &InterFace::SetBackView);
+	connect(ui.action_BottomView, &QAction::triggered, this, &InterFace::SetBottomView);
+	connect(ui.action_TopView, &QAction::triggered, this, &InterFace::SetTopView);
 
 
 	// 创建坐标轴部件
@@ -759,6 +762,117 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 		++it;
 	}
 	return nullptr;
+}
+
+void InterFace::SetFrontView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0], center[1], center[2] + cam_height };
+	double viewUp[3] = { 0.0, 1.0, 0.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::SetLeftView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1], bounds[3] - bounds[2], bounds[5] - bounds[4] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0] - cam_height, center[1], center[2] };
+	double viewUp[3] = { 0.0, 0.0, 1.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::SetRightView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1], bounds[3] - bounds[2], bounds[5] - bounds[4] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0] + cam_height, center[1], center[2] };
+	double viewUp[3] = { 0.0, 0.0, 1.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::SetBackView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0], center[1], center[2] - cam_height };
+	double viewUp[3] = { 0.0, 1.0, 0.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::SetBottomView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1] - bounds[0], bounds[3], bounds[5] - bounds[4] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0], center[1] + cam_height, center[2] };
+	double viewUp[3] = { 0.0, 0.0, 1.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::SetTopView()
+{
+	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
+	if (actor == nullptr) return;
+	vtkSmartPointer<vtkPolyData> polydata = vtkPolyData::SafeDownCast(actor->GetMapper()->GetInput());
+	double center[3];
+	polydata->GetCenter(center);
+	double bounds[6];
+	polydata->GetBounds(bounds);
+	double max_range = std::max({ bounds[1] - bounds[0], bounds[3], bounds[5] - bounds[4] });
+	double cam_distance = max_range / tan(45.0 * vtkMath::Pi() / 360.0);
+	double cam_height = cam_distance * tan(vtkMath::Pi() / 4.0);
+	double position[3] = { center[0], center[1] - cam_height, center[2] };
+	double viewUp[3] = { 0.0, 0.0, 1.0 };
+	updateCameraView(center, position, viewUp);
+}
+
+void InterFace::updateCameraView(double focalPoint[3], double position[3], double viewUp[3])
+{
+	vtkSmartPointer<vtkCamera> camera = m_Renderer->GetActiveCamera();
+	camera->SetFocalPoint(focalPoint); //焦点位置
+	camera->SetPosition(position); //相机位置
+	camera->SetViewUp(viewUp); //相机朝上方向
+	m_renderWindow->Render();
 }
 
 void InterFace::ShowSubstaceActor(Part_Base* Part)
