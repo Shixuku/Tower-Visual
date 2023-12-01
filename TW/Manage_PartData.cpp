@@ -9,8 +9,8 @@ Manage_PartData::Manage_PartData(InterFace* InterFace, QWidget *parent)
 	Set_headertext();
 	connect(ui.btn_ok, &QPushButton::clicked, this, &Manage_PartData::accept);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Manage_PartData::reject);
-	connect(ui.btn_modify, &QPushButton::clicked, this, &Manage_PartData::Modify_Data);
-	connect(ui.btn_delete, &QPushButton::clicked, this, &Manage_PartData::Delete_Data);
+	//connect(ui.btn_modify, &QPushButton::clicked, this, &Manage_PartData::Modify_Data);
+	//connect(ui.btn_delete, &QPushButton::clicked, this, &Manage_PartData::Delete_Data);
 
 }
 
@@ -20,7 +20,7 @@ Manage_PartData::~Manage_PartData()
 void Manage_PartData::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "名称" << "节点数量" << "单元数量" << "说明";
+	headertext << "名称" << "节点数量" << "单元数量";
 	//塔腿
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
@@ -43,10 +43,11 @@ void Manage_PartData::Set_headertext()
 		ui.tableWidget->setItem(i, 0, new QTableWidgetItem(name));
 		ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(leg->m_Nodes.size())));
 		ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(E_num)));
-		ui.tableWidget->setItem(i, 3, new QTableWidgetItem("暂无"));
-		for (int j = 0; j < 4; j++)//表头;
+		//ui.tableWidget->setItem(i, 3, new QTableWidgetItem("暂无"));
+		for (int j = 0; j < 3; j++)//表头;
 		{
 			ui.tableWidget->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			ui.tableWidget->item(i, j)->setFlags(ui.tableWidget->item(i, j)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 		}
 	}
 
@@ -71,10 +72,11 @@ void Manage_PartData::Set_headertext()
 		ui.tableWidget_2->setItem(i, 0, new QTableWidgetItem(name));
 		ui.tableWidget_2->setItem(i, 1, new QTableWidgetItem(QString::number(body->m_Nodes.size())));
 		ui.tableWidget_2->setItem(i, 2, new QTableWidgetItem(QString::number(E_num)));
-		ui.tableWidget_2->setItem(i, 3, new QTableWidgetItem("暂无"));
-		for (int j = 0; j < 4; j++)//表头;
+		//ui.tableWidget_2->setItem(i, 3, new QTableWidgetItem("暂无"));
+		for (int j = 0; j < 3; j++)//表头;
 		{
 			ui.tableWidget_2->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			ui.tableWidget_2->item(i, j)->setFlags(ui.tableWidget_2->item(i, j)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 		}
 	}
 
@@ -100,10 +102,11 @@ void Manage_PartData::Set_headertext()
 		ui.tableWidget_3->setItem(i, 0, new QTableWidgetItem(name));
 		ui.tableWidget_3->setItem(i, 1, new QTableWidgetItem(QString::number(arm->m_Nodes.size())));
 		ui.tableWidget_3->setItem(i, 2, new QTableWidgetItem(QString::number(E_num)));
-		ui.tableWidget_3->setItem(i, 3, new QTableWidgetItem("暂无"));
-		for (int j = 0; j < 4; j++)//表头;
+		//ui.tableWidget_3->setItem(i, 3, new QTableWidgetItem("暂无"));
+		for (int j = 0; j < 3; j++)//表头;
 		{
 			ui.tableWidget_3->item(i, j)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			ui.tableWidget_3->item(i, j)->setFlags(ui.tableWidget_3->item(i, j)->flags() & (~Qt::ItemIsEditable));  // 设置只读属性
 		}
 	}
 }

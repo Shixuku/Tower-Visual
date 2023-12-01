@@ -183,12 +183,12 @@ private:
     vtkAxesActor* Axes;
     vtkOrientationMarkerWidget* widgetAxes;
     bool isAxesCreated = false;
-    void SetFrontView();
+    void SetBottomView();
     void SetLeftView();
     void SetRightView();
-    void SetBackView();
-    void SetBottomView();
     void SetTopView();
+    void SetFrontView();
+    void SetBackView();
     void updateCameraView(double focalPoint[3], double position[3], double viewUp[3]);
     
 };

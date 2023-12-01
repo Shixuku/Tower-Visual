@@ -20,26 +20,6 @@
       <item>
        <widget class="QTableWidget" name="tableWidget"/>
       </item>
-      <item>
-       <widget class="QWidget" name="widget_3" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QPushButton" name="btn_modify">
-           <property name="text">
-            <string>修改</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_delete">
-           <property name="text">
-            <string>删除</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

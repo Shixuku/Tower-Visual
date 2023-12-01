@@ -66,7 +66,7 @@
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
-     <string>管理(Manage）</string>
+     <string>查看(Look）</string>
     </property>
     <addaction name="actionMpart"/>
     <addaction name="actionMinstance"/>

@@ -1,3 +1,5 @@
+#include"D:\towervisual\VTK\Use_VTK.h"
+
 #include "InterFace.h"
 #include <vtkPropCollection.h>
 #include <vtkProperty.h>
@@ -46,6 +48,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 
 	layout = new QHBoxLayout(ui.widget);//生成布局,widget专门放生成的塔
 	m_VtkWidget = new QVTKOpenGLNativeWidget();//生成控件
+//	layout->addWidget(m_VtkWidget);//布局中加入控件
 
 	m_renderWindow = vtkGenericOpenGLRenderWindow::New();
 	m_VtkWidget->setRenderWindow(m_renderWindow);
@@ -61,7 +64,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//左边窗口
 	TreeWidgetShow();
 	//默认打开的是part的vtk窗口
-	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
+/*	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
 	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_FootNew);
 	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_BodyNew);
@@ -95,7 +98,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	ME_AnalysisSteps.Add_Entity(parameterAnalysisStep);
 	ui.textEdit->setFont(QFont("宋体", 12));
 	ui.textEdit->setReadOnly(true);//设置只读
-
+	*/
 }
 
 void InterFace::SetupCentralWidget()
@@ -116,42 +119,41 @@ void InterFace::SetupCentralWidget()
 }
 void InterFace::TreeWidgetShow()
 {
-	layout->addWidget(m_VtkWidget);//布局中加入控件
-	ui.treeWidget->header()->setVisible(false);//设置表头不可见
+	//ui.treeWidget->header()->setVisible(false);//设置表头不可见
 
-	QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_part->setText(0, QString("杆塔部件"));
+	//QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
+	//creat_tower_part->setText(0, QString("杆塔部件"));
 
-	QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
-	part_leg->setText(0, QString("塔腿部件"));
+	//QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
+	//part_leg->setText(0, QString("塔腿部件"));
 
-	QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
-	part_body->setText(0, QString("塔身部件"));
+	//QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
+	//part_body->setText(0, QString("塔身部件"));
 
-	QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
-	part_head->setText(0, QString("塔头部件"));
+	//QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
+	//part_head->setText(0, QString("塔头部件"));
 
-	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_tower_instance->setText(0, QString("杆塔实例"));
+	//QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
+	//creat_tower_instance->setText(0, QString("杆塔实例"));
 
-	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
-	CreatWire->setText(0, QString("单导实例"));
+	//QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
+	//CreatWire->setText(0, QString("单导实例"));
 
-	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
-	creat_towerwire_instance->setText(0, QString("塔线组实例"));
+	//creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	//creat_towerwire_instance->setText(0, QString("塔线组实例"));
 
-	QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
-	AnalysisStep->setText(0, QString("分析步"));
+	//QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
+	//AnalysisStep->setText(0, QString("分析步"));
 
-	QTreeWidgetItem* sectionMaterial = new QTreeWidgetItem(ui.treeWidget);
-	sectionMaterial->setText(0, QString("截面材料"));
+	//QTreeWidgetItem* sectionMaterial = new QTreeWidgetItem(ui.treeWidget);
+	//sectionMaterial->setText(0, QString("截面材料"));
 
-	QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
-	manageSection->setText(0, QString("管理"));
-	QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
-	saveSection->setText(0, QString("保存"));
-	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
-	openSection->setText(0, QString("读取"));
+	//QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
+	//manageSection->setText(0, QString("管理"));
+	//QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
+	//saveSection->setText(0, QString("保存"));
+	//QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
+	//openSection->setText(0, QString("读取"));
 
 }
 void InterFace::ReadMaterialTXT()
@@ -566,6 +568,7 @@ void InterFace::SaveFile()
 			TP_body.Save(Stream);
 			TP_CrossArm.Save(Stream);
 			TP.Save(Stream);
+			//TWG.Save(Stream);
 			Ms.Save(Stream);//保存截面数据
 
 		}
@@ -595,12 +598,14 @@ void InterFace::OpenFile()
 			int bodysize = TP_body.size();//塔身
 			int crossArmSize = TP_CrossArm.size();//塔头
 			int towerSize = TP.size();//杆塔实例
+			//int TWGSize = TWG.size();//塔线组实例
 			int MsSize = Ms.size();//截面
 
 			TP_leg.Read(Stream1, legSize);
 			TP_body.Read(Stream1, bodysize);
 			TP_CrossArm.Read(Stream1, crossArmSize);
 			TP.Read(Stream1, towerSize);
+			//TWG.Read(Stream1, TWGSize);
 			Ms.Read(Stream1, MsSize);
 
 			for (int i = legSize; i < TP_leg.size(); i++)
@@ -633,11 +638,18 @@ void InterFace::OpenFile()
 			{
 				QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(1);
 				QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-				QString str = QString::number(parent->childCount());     //str转字符
 				item->setText(0, TP.Find_Entity(i + 1)->m_name);
 				TP.Find_Entity(i + 1)->Item = item;
 				AddPartFunction(item);
 			}
+			//for (int i = TWGSize; i < TWG.size(); i++)
+			//{
+			//	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(3);
+			//	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+			//	item->setText(0, TWG.Find_Entity(i + 1)->m_name);
+			//	TWG.Find_Entity(i + 1)->Item = item;
+			//	//AddPartFunction(item);
+			//}
 		}
 	}
 	Qf1.close();
@@ -764,7 +776,7 @@ TowerWireGroup* InterFace::OnFindGroup(const QTreeWidgetItem* Item)
 	return nullptr;
 }
 
-void InterFace::SetFrontView()
+void InterFace::SetBottomView()
 {
 	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
 	if (actor == nullptr) return;
@@ -815,7 +827,7 @@ void InterFace::SetRightView()
 	updateCameraView(center, position, viewUp);
 }
 
-void InterFace::SetBackView()
+void InterFace::SetTopView()
 {
 	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
 	if (actor == nullptr) return;
@@ -832,7 +844,7 @@ void InterFace::SetBackView()
 	updateCameraView(center, position, viewUp);
 }
 
-void InterFace::SetBottomView()
+void InterFace::SetFrontView()
 {
 	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
 	if (actor == nullptr) return;
@@ -849,7 +861,7 @@ void InterFace::SetBottomView()
 	updateCameraView(center, position, viewUp);
 }
 
-void InterFace::SetTopView()
+void InterFace::SetBackView()
 {
 	vtkSmartPointer<vtkActor> actor = m_Renderer->GetActors()->GetLastActor();
 	if (actor == nullptr) return;
@@ -893,15 +905,15 @@ void InterFace::initMenu()
 	QAction* pAc1 = new QAction("点选P");
 	QAction* pAc2 = new QAction("框选P");
 	QAction* pAc3 = new QAction("取消");
-	QAction* pAc4 = new QAction("框选E");
+	//QAction* pAc4 = new QAction("框选E");
 	m_pMenu->addAction(pAc1);
 	m_pMenu->addAction(pAc2);
 	m_pMenu->addAction(pAc3);
-	m_pMenu->addAction(pAc4);
+	//m_pMenu->addAction(pAc4);
 	connect(pAc1, &QAction::triggered, [=] {Point_Inqure(); });
 	connect(pAc2, &QAction::triggered, [=] {Area_Inqure(); });
 	connect(pAc3, &QAction::triggered, [=] {Close_Point(); });
-	connect(pAc4, &QAction::triggered, [=] {AreaElement_Inqure(); });
+	//connect(pAc4, &QAction::triggered, [=] {AreaElement_Inqure(); });
 }
 
 void InterFace::AddPartFunction(QTreeWidgetItem* item)

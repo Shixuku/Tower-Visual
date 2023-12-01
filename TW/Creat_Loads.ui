@@ -55,11 +55,6 @@
         </item>
         <item>
          <property name="text">
-          <string>多项式函数</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>风偏</string>
          </property>
         </item>

@@ -42,15 +42,14 @@ TowerWireGroupAssembly::~TowerWireGroupAssembly()
 
 void TowerWireGroupAssembly::CreateComBox()
 {
-	ui.lineEdit->setText("塔线组 " + QString::number(m_pInterFace->TWG.size() + 1));
-	int towerSize = m_pInterFace->TP.size();
-	for (int i = 0; i < towerSize; i++)
+	ui.lineEdit->setText("塔线组 " + QString::number(m_pInterFace->TWG.size() + 1));//名字
+	for (auto& i : m_pInterFace->TP)
 	{
-		ui.comboBox->addItem("杆塔实例" + QString::number(i + 1));
+		ui.comboBox->addItem(i.second->m_name);
 	}
 	ui.comboBox->setCurrentIndex(0);
 
-	selectedItemName = ui.comboBox->itemText(0);
+	selectedItemName = ui.comboBox->currentText();
 
 	emit ui.comboBox->currentIndexChanged(0);//将第一个item设为默认
 }
@@ -63,6 +62,7 @@ void TowerWireGroupAssembly::TableTowerLists()
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 }
 
 void TowerWireGroupAssembly::GetTowerSetData()//将数据放进表里
@@ -96,7 +96,7 @@ void TowerWireGroupAssembly::CreatTowerWierGroupItem()
 {
 	QTreeWidgetItem* towerWierGroupItem = new QTreeWidgetItem(m_pInterFace->creat_towerwire_instance);
 	QString str = QString::number(m_pInterFace->creat_towerwire_instance->childCount());     //塔线组的item
-	towerWierGroupItem->setText(0, QString("塔线实例" + str));
+	towerWierGroupItem->setText(0, ui.lineEdit->text());
 	//放入每个杆塔
 	QTreeWidgetItem* GroupTower = new QTreeWidgetItem(towerWierGroupItem);
 	GroupTower->setText(0, QString("杆塔"));
@@ -118,5 +118,5 @@ void TowerWireGroupAssembly::CreatTowerWierGroupItem()
 }
 void TowerWireGroupAssembly::onComboBoxIndexChanged(int index)
 {
-	selectedItemName = ui.comboBox->itemText(index);
+	selectedItemName = ui.comboBox->currentText();
 }

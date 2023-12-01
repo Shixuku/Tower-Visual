@@ -53,18 +53,18 @@ void Creat_Loads::btn_continue_clicked()
 			IceLoad* iceLoad = new IceLoad(this);
 			iceLoad->show();
 		}
+		//else if (index == 3)
+		//{//多项式函数
+		//	Polynomial* polynomial = new Polynomial;
+		//	polynomial->show();
+		//}
 		else if (index == 3)
-		{//多项式函数
-			Polynomial* polynomial = new Polynomial;
-			polynomial->show();
-		}
-		else if (index == 4)
 		{
 			//风载荷
 			Wind* wd = new Wind(this);
 			wd->show();
 		}
-		else if (index == 5)
+		else if (index == 4)
 		{
 			//舞动--修改风向角
 			Wind* wd = new Wind(this);

@@ -38,7 +38,7 @@ public:
 	void Save(QDataStream& s) const
 	{//存储数据
 		LLI n = this->size();
-		qDebug() << "n = " << n;//个数
+		//qDebug() << "n = " << n;//个数
 		s << n;//存入对象个数
 		for (const auto& i : *this)
 		{
@@ -67,6 +67,8 @@ public:
 				Read_Stream<TowerPart_CrossArm>(s, size); break;
 			case Part_Type::ET_Tower:
 				Read_Stream<Tower>(s, size); break;
+			//case Part_Type::ET_TowerWireGroup:
+			//	Read_Stream<TowerWireGroup>(s, size); break;
 			case Part_Type::ET_Section:
 				Read_Stream<Section>(s, size); break;
 

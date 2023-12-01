@@ -393,8 +393,7 @@ void Part_Base::SaveTo(QDataStream& fin) const//写
 	{
 		fin << SuspensionNode[i];
 	}
-	fin << m_Name;
-	//约束点--暂时没有用
+	fin << m_Name;//读名字
 	int nRestraintNode = RestraintNode.size();
 	cout << nRestraintNode << "\n";
 	fin << nRestraintNode;
