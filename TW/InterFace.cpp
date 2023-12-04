@@ -46,14 +46,14 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	ui.setupUi(this);
 	Base::set_InterFace(this);
 
-	layout = new QHBoxLayout(ui.widget);//生成布局,widget专门放生成的塔
-	m_VtkWidget = new QVTKOpenGLNativeWidget();//生成控件
+//	layout = new QHBoxLayout(ui.widget);//生成布局,widget专门放生成的塔
+//	m_VtkWidget = new QVTKOpenGLNativeWidget();//生成控件
 //	layout->addWidget(m_VtkWidget);//布局中加入控件
 
-	m_renderWindow = vtkGenericOpenGLRenderWindow::New();
-	m_VtkWidget->setRenderWindow(m_renderWindow);
+	m_renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+	ui.openGLWidget->setRenderWindow(m_renderWindow);
 
-	m_Renderer = vtkRenderer::New();
+	m_Renderer = vtkSmartPointer<vtkRenderer>::New();
 	m_renderWindow->AddRenderer(m_Renderer);//添加放部件的vtk
 
 	this->setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -64,7 +64,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	//左边窗口
 	TreeWidgetShow();
 	//默认打开的是part的vtk窗口
-/*	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
+	connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &InterFace::onTreeitemClicked);
 	connect(ui.treeWidget, &QTreeWidget::itemDoubleClicked, this, &InterFace::onTreeitemDoubleClicked);
 	connect(ui.actionLeg, &QAction::triggered, this, &InterFace::ui_FootNew);
 	connect(ui.actionBody, &QAction::triggered, this, &InterFace::ui_BodyNew);
@@ -98,7 +98,7 @@ InterFace::InterFace(QWidget* parent) : QMainWindow(parent)
 	ME_AnalysisSteps.Add_Entity(parameterAnalysisStep);
 	ui.textEdit->setFont(QFont("宋体", 12));
 	ui.textEdit->setReadOnly(true);//设置只读
-	*/
+	
 }
 
 void InterFace::SetupCentralWidget()
@@ -119,41 +119,41 @@ void InterFace::SetupCentralWidget()
 }
 void InterFace::TreeWidgetShow()
 {
-	//ui.treeWidget->header()->setVisible(false);//设置表头不可见
+	ui.treeWidget->header()->setVisible(false);//设置表头不可见
 
-	//QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
-	//creat_tower_part->setText(0, QString("杆塔部件"));
+	QTreeWidgetItem* creat_tower_part = new QTreeWidgetItem(ui.treeWidget);
+	creat_tower_part->setText(0, QString("杆塔部件"));
 
-	//QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
-	//part_leg->setText(0, QString("塔腿部件"));
+	QTreeWidgetItem* part_leg = new QTreeWidgetItem(creat_tower_part);
+	part_leg->setText(0, QString("塔腿部件"));
 
-	//QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
-	//part_body->setText(0, QString("塔身部件"));
+	QTreeWidgetItem* part_body = new QTreeWidgetItem(creat_tower_part);
+	part_body->setText(0, QString("塔身部件"));
 
-	//QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
-	//part_head->setText(0, QString("塔头部件"));
+	QTreeWidgetItem* part_head = new QTreeWidgetItem(creat_tower_part);
+	part_head->setText(0, QString("塔头部件"));
 
-	//QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
-	//creat_tower_instance->setText(0, QString("杆塔实例"));
+	QTreeWidgetItem* creat_tower_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_tower_instance->setText(0, QString("杆塔实例"));
 
-	//QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
-	//CreatWire->setText(0, QString("单导实例"));
+	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
+	CreatWire->setText(0, QString("单导实例"));
 
-	//creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
-	//creat_towerwire_instance->setText(0, QString("塔线组实例"));
+	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
+	creat_towerwire_instance->setText(0, QString("塔线组实例"));
 
-	//QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
-	//AnalysisStep->setText(0, QString("分析步"));
+	QTreeWidgetItem* AnalysisStep = new QTreeWidgetItem(ui.treeWidget);
+	AnalysisStep->setText(0, QString("分析步"));
 
-	//QTreeWidgetItem* sectionMaterial = new QTreeWidgetItem(ui.treeWidget);
-	//sectionMaterial->setText(0, QString("截面材料"));
+	QTreeWidgetItem* sectionMaterial = new QTreeWidgetItem(ui.treeWidget);
+	sectionMaterial->setText(0, QString("截面材料"));
 
-	//QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
-	//manageSection->setText(0, QString("管理"));
-	//QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
-	//saveSection->setText(0, QString("保存"));
-	//QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
-	//openSection->setText(0, QString("读取"));
+	QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
+	manageSection->setText(0, QString("管理"));
+	QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
+	saveSection->setText(0, QString("保存"));
+	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
+	openSection->setText(0, QString("读取"));
 
 }
 void InterFace::ReadMaterialTXT()

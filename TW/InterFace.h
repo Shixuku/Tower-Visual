@@ -63,14 +63,14 @@ public:
     void SetupCentralWidget();//右窗口
     void TreeWidgetShow();//左窗口
 
-    vtkRenderer* m_Renderer;//放部件的vtk窗口
+    vtkSmartPointer<vtkRenderer> m_Renderer;//放部件的vtk窗口
    //打开自动运行读取线路文件
     void ReadMaterialTXT();
     void ReadSectionTXT();
     void ReadPartTXT();
     void ReadInstanceTXT();
 
-    vtkGenericOpenGLRenderWindow* m_renderWindow;
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> m_renderWindow;
     QTreeWidgetItem* creat_towerwire_instance;//将塔线组的item作为成员变量，在组装塔线组的时候方便调用
    
     void ShowSubstaceActor(Part_Base* Part);
@@ -167,8 +167,8 @@ public slots:
 private:
     Outputter* m_Outputter=nullptr;
     resultVisualize* display=nullptr;
-    QHBoxLayout* layout;
-    QVTKOpenGLNativeWidget* m_VtkWidget;
+   // QHBoxLayout* layout;
+ //   QVTKOpenGLNativeWidget* m_VtkWidget;
     // 菜单事件
     void contextMenuEvent(QContextMenuEvent* event) override;
     QMenu* m_pMenu = nullptr;
