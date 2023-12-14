@@ -153,7 +153,7 @@ void Instance::SaveSus(vector<int> ids)
 	realSuspoint.push_back(ids[0]);
 }
 
-void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type)
+void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type, QString True)
 {
 	if (ids.size() == 0)return;
 	size_t size = ids.size();
@@ -170,6 +170,17 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<i
 			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 10000, Type));
 			id++;
 			node1 = node2;
+		}
+		if (True == "T")
+		{
+			if (i == 1)
+			{
+				EleId.push_back(id);
+			}
+			else if (i == size - 1)
+			{
+				EleId.push_back(id);
+			}
 		}
 	}
 }
@@ -496,11 +507,13 @@ void Instance::MaterialTxT()
 	Stream << "*Material," << MaterialSize << "\n";
 	for (auto& i : pInterFace->ME_Material)
 	{
-		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal <<"  "<<i.second->UltimateStress << "\n";
+		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal <</*"  "<<i.second->UltimateStress <<*/ "\n";
 	}
 }
 
-void Instance::BeamSectionTxT()
+void Instance::BeamSectionTxT
+
+()
 {
 	InterFace* pInterFace = Base::Get_InterFace();
 	int SectionSize = pInterFace->Ms.size();
@@ -608,6 +621,37 @@ void Instance::Suspensioncombined()
 		});
 }
 
+void Instance::CreateMidIdAndEle()
+{
+	InterFace* pInterFace = Get_InterFace();
+	QString filename = QFileDialog::getSaveFileName(pInterFace, "保存", "/", "datafile(*.txt);;All file(*.*)");
+	if (filename == nullptr)
+	{
+		return;
+	}
+	else
+	{
+		qDebug() << filename;
+		Qf.setFileName(filename);
+		Qf.open(QIODevice::WriteOnly);
+		Stream.setDevice(&Qf);
+		if (!Qf.isOpen())
+		{
+			cout << "文件打开失败\n";
+			return;
+		}
+		this->m_name = filename;
+		int GearSize = MidId.size();
+		for (int i = 0; i < GearSize; i++)
+		{
+			Stream << "Line-" << i + 1 << "\n";
+			Stream << "MiddlePoint: " << MidId[i] << "\n";
+			Stream << "endElements: " << EleId[2 * i] << " " << EleId[2 * i + 1] << "\n";
+		}
+		Qf.close();
+	}
+}
+
 void Instance::RestraintTxT()
 {
 	int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
@@ -647,11 +691,11 @@ void Instance::RestraintTxT()
 
 	//Stream << "*Constraint," << totalRestraint << "\n";
 	//int m_id = 1;
-	//for (int i = 0; i < RestraintNode.size(); i++)
+	//for (int i = 0; i < StrainJointRestraintNode.size(); i++)
 	//{
-	//	for (int j = 0; j < 6; j++)
+	//	for (int j = 0; j < 3; j++)
 	//	{
-	//		Stream << "  " << m_id << "  " << RestraintNode[i] << "  " << j << "  " << 0 << "\n";
+	//		Stream << "  " << m_id << "  " << StrainJointRestraintNode[i] << "  " << j << "  " << 0 << "\n";
 	//		m_id++;
 	//	}
 	//}
@@ -664,8 +708,6 @@ void Instance::RestraintTxT()
 	//		m_allId++;
 	//	}
 	//}
-
-	
 
 }
 

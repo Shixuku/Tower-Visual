@@ -25,7 +25,7 @@ RandomWind::RandomWind( Wind* m_wind, QWidget *parent)
 		QMessageBox::warning(this, "提示", "请在上个界面选择地面粗糙程度！");
 		return;
 	}
-	ComputeEleCoordinate(); CreatEleGather(); SimulateWind(); CreatCombobox();   });
+	ComputeEleCoordinate(); CreatEleGather(); CreatSegment(); SimulateWind(); CreatCombobox();   });
 	void (QComboBox:: * activated)(int) = &QComboBox::activated;
 	connect(ui.NodeV_com, activated, this, &RandomWind::ShowPic);
 	ui.pushButton_3->setToolTip("沿海区0.005 - 0.02；开阔场地0.03 - 0.1；建筑物不多的郊区0.2 - 0.4; 大城市中心2.0 - 3.0");
@@ -75,21 +75,6 @@ void RandomWind::SimulateWind()
 	w_up = ui.CutOff_edi->text().toDouble();
 	T = ui.Time_edi->text().toDouble();
 
-	//for (auto pNode : pointsSelected)
-	//{
-	//	Node_Base n(pNode->m_idNode, pNode->x, pNode->y, pNode->z);
-	//	//Node_Base n(1, 10, 10, 10);
-	//	points.push_back(n);
-	//}
-	CreatSegment();
-	//
-	//if (fw) delete fw;  //防止内存泄露
-	////fw = new Force_Wind;
-	//
-	//fw = new Force_Wind(1.29, wd->alf, z0, v10, N, M, w_up, T);
-	//fw->set_FilePath(QString("D:/"));
-	//fw->input_node(points);
-	//fw->simulate();
 	
 	
 	if (fw) delete fw;  //防止内存泄露
@@ -186,9 +171,8 @@ void RandomWind::CreatSegment()
 
 void RandomWind::ShowPic(int index)
 {
-
-	/*QLineSeries* qline = fw->getQLineSeries(index);
-	Plot(qline);*/
+	QLineSeries* qline = fw->getQLineSeries(index);
+	Plot(qline);
 }
 
 void RandomWind::initChart()

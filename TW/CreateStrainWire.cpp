@@ -1,4 +1,4 @@
-#include "CreateStrainWire.h"
+ï»¿#include "CreateStrainWire.h"
 #include <QFileDialog>
 #include "InterFace.h"
 #include"Section_L.h"
@@ -13,18 +13,18 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 	for (const auto& sus : SusInfor)
 	{
 		int a = sus.first;
-		const std::vector<Insulator_Base>& vectorData = sus.second;  // »ñÈ¡¶ÔÓ¦µÄ vector
+		const std::vector<Insulator_Base>& vectorData = sus.second;  // è·å–å¯¹åº”çš„ vector
 		NumberOfLine = std::numeric_limits<int>::min();
 		for (const auto& a : vectorData)
 		{
 			if (a.m_line > NumberOfLine)
 			{
-				NumberOfLine = a.m_line;//ÏßÂ·ÊıÁ¿
+				NumberOfLine = a.m_line;//çº¿è·¯æ•°é‡
 			}
 		}
-		wireNumberOfLine = NumberOfLine - 2;//ÏßÂ·ÊıÁ¿
+		wireNumberOfLine = NumberOfLine - 2;//çº¿è·¯æ•°é‡
 		wireQty = wireNumberOfLine;
-		//È·¶¨ÏòÁ¿
+		//ç¡®å®šå‘é‡
 		double angle = 0;
 		double x = vectorData[1].m_x - vectorData[0].m_x;
 		double y = vectorData[1].m_y - vectorData[0].m_y;
@@ -35,9 +35,9 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 		}
 		angle = vtkMath::RadiansFromDegrees(angle);
 		m_Angle.push_back(angle);
-		row = vectorData.size() / NumberOfLine;//Ò»¸öÄÍÕÅ¶ÎÒ»ÌõÏßÂ·µÄ¹Òµã¸öÊı
+		row = vectorData.size() / NumberOfLine;//ä¸€ä¸ªè€å¼ æ®µä¸€æ¡çº¿è·¯çš„æŒ‚ç‚¹ä¸ªæ•°
 
-		for (int j = 0; j < NumberOfLine; j++)//¶ÔÏßÂ·ÊıÁ¿½øĞĞÑ­»·
+		for (int j = 0; j < NumberOfLine; j++)//å¯¹çº¿è·¯æ•°é‡è¿›è¡Œå¾ªç¯
 		{
 			for (int i = 0; i < row; i++)
 			{
@@ -46,43 +46,43 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 				vector<int> V_2_Ids;
 				vector<int> spacerIds;
 				int index = j * row + i;
-				if (vectorData[index].m_type != "G")//·ÇµØÏß
+				if (vectorData[index].m_type != "G")//éåœ°çº¿
 				{
-					if (vectorData[index].H == 0 && vectorData[index].angle_1 == 0)//ÄÍÕÅµã
+					if (vectorData[index].H == 0 && vectorData[index].angle_1 == 0)//è€å¼ ç‚¹
 					{
 						Type_WO(index, a, vectorData, RealSus);
 					}
-					else//Ğü´¹µã´øÏÂÃæµÄ¼ä¸ô°ô
+					else//æ‚¬å‚ç‚¹å¸¦ä¸‹é¢çš„é—´éš”æ£’
 					{
-						if (vectorData[index].angle_1 == 0)//Ğü´¹
+						if (vectorData[index].angle_1 == 0)//æ‚¬å‚
 						{
-							if (fenlie == 1)//µ¥µ¼Ïß
+							if (fenlie == 1)//å•å¯¼çº¿
 							{
 								Type_WH_1(index, a, vectorData, nodeIds, RealSus);
 							}
-							else if (fenlie == 4)//ËÄ·ÖÁÑ
+							else if (fenlie == 4)//å››åˆ†è£‚
 							{
 								Type_WH_4(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
 							}
-							else if (fenlie == 6)//ËÄ·ÖÁÑ
+							else if (fenlie == 6)//å››åˆ†è£‚
 							{
 								Type_WH_6(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
 							}
 						}
-						else//VĞÍ
+						else//Vå‹
 						{
 							if (fenlie == 1)
 							{
 								Type_WV_1(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
 							}
-							else if (fenlie == 4)//µ¥µ¼Ïß
+							else if (fenlie == 4)//å•å¯¼çº¿
 							{
 								Type_WV_4(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
 							}
 						}
 					}
 				}
-				else//µØÏß
+				else//åœ°çº¿
 				{
 					if (vectorData[index].H == 0)
 					{	
@@ -119,8 +119,8 @@ void CreateStrainWire::CreateRealSus()
 	int* ap_node = nullptr;
 	for (const auto& entry : RealSus)
 	{
-		int key = entry.first;  // »ñÈ¡ int ¼ü
-		const std::vector<Insulator_Base>& vectorData = entry.second;  // »ñÈ¡¶ÔÓ¦µÄ vector
+		int key = entry.first;  // è·å– int é”®
+		const std::vector<Insulator_Base>& vectorData = entry.second;  // è·å–å¯¹åº”çš„ vector
 		vector<Node>m_TempNodes;
 		for (int i = 0; i < vectorData.size(); i++)
 		{
@@ -145,7 +145,7 @@ void CreateStrainWire::CreateRealSus()
 		}
 		
 
-		//È·¶¨ÏòÁ¿ 
+		//ç¡®å®šå‘é‡ 
 		double angle = 0;
 		int num = vectorData.size();
 		/*double x = vectorData[num - 1].m_x - vectorData[num - 2].m_x;
@@ -156,7 +156,7 @@ void CreateStrainWire::CreateRealSus()
 		int susnum = num * fenlie;//
 		node = new int[susnum];
 		//ap_node = new int[num];
-		int index = 0; // ½ÚµãË÷Òı
+		int index = 0; // èŠ‚ç‚¹ç´¢å¼•
 		//int ap_index = 0;
 		double offsetX = 0; double offsetY = 0; double offsetZ = 0;
 		for (int i = 0; i < num; i++)//
@@ -185,17 +185,17 @@ void CreateStrainWire::CreateRealSus()
 					offsetY = offsets[j][1];
 					offsetZ = offsets[j][2];
 				}
-				// ´´½¨½Úµã
+				// åˆ›å»ºèŠ‚ç‚¹
 				if (index < susnum)
 				{
 					node[index] = Creat_Node(m_Str_realSus[key - 1][i].x + offsetX, m_Str_realSus[key - 1][i].y + offsetY, m_Str_realSus[key - 1][i].z + offsetZ, 0, 2);
-					SaveSus({ node[index] }); // ·ÅÈëĞü¹Òµã
-					//Éú³ÉÄÍÕÅ¶Î
+					SaveSus({ node[index] }); // æ”¾å…¥æ‚¬æŒ‚ç‚¹
+					//ç”Ÿæˆè€å¼ æ®µ
 				}
 				else
 				{
-					// ´¦ÀíË÷Òı³¬³ö·¶Î§µÄÇé¿ö£¬ÀıÈçÅ×³öÒì³£»ò´òÓ¡´íÎóĞÅÏ¢
-					// ²¢È·±£²»»á¼ÌĞøĞ´Èë³¬³ö·¶Î§µÄ½Úµã
+					// å¤„ç†ç´¢å¼•è¶…å‡ºèŒƒå›´çš„æƒ…å†µï¼Œä¾‹å¦‚æŠ›å‡ºå¼‚å¸¸æˆ–æ‰“å°é”™è¯¯ä¿¡æ¯
+					// å¹¶ç¡®ä¿ä¸ä¼šç»§ç»­å†™å…¥è¶…å‡ºèŒƒå›´çš„èŠ‚ç‚¹
 					break;
 				}
 
@@ -203,9 +203,9 @@ void CreateStrainWire::CreateRealSus()
 			}
 
 		}
-		//Éú³ÉÄÍÕÅ¶Î
-		int NzSize = m_Str_realSus[key - 1].size();//Ò»¸öÄÍÕÅ¶ÎµÄĞü¹Òµã¸öÊı
-		int OneSusSize = NzSize / wireNumberOfLine;//Ò»ÌõÏßÂ·µÄµÄĞü¹Òµã¸öÊı
+		//ç”Ÿæˆè€å¼ æ®µ
+		int NzSize = m_Str_realSus[key - 1].size();//ä¸€ä¸ªè€å¼ æ®µçš„æ‚¬æŒ‚ç‚¹ä¸ªæ•°
+		int OneSusSize = NzSize / wireNumberOfLine;//ä¸€æ¡çº¿è·¯çš„çš„æ‚¬æŒ‚ç‚¹ä¸ªæ•°
 		vector<Element_Beam>TempTruss;
 		double x1 = 0; double y1 = 0; double z1 = 0;
 		double x2 = 0; double y2 = 0; double z2 = 0;
@@ -232,7 +232,7 @@ void CreateStrainWire::CreateRealSus()
 			CreateStrainLine(m_Elements_beams, x2, y2, z2, end_ids, O_Id);
 		}
 
-		 //ÔÚÊ¹ÓÃÍêºó±ğÍüÁËÊÍ·ÅÄÚ´æ
+		 //åœ¨ä½¿ç”¨å®Œååˆ«å¿˜äº†é‡Šæ”¾å†…å­˜
 		delete[] node;
 	
 	}
@@ -242,8 +242,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 {
 	for (const auto& entry : m_Str_realSus)
 	{
-		const std::vector<Node>& vectorData = entry.second;  // »ñÈ¡¶ÔÓ¦µÄ vector
-		int key = entry.first + 1;  // »ñÈ¡ int ¼ü
+		const std::vector<Node>& vectorData = entry.second;  // è·å–å¯¹åº”çš„ vector
+		int key = entry.first + 1;  // è·å– int é”®
 		double rou = 0;
 		double stress=0;
 		double k =0;
@@ -277,20 +277,20 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 					int* ap_node = new int[num * (n + 1)];
 					for (int i = 0 + vectorData.size() / (wireNumberOfLine)*j; i < vectorData.size() / (wireNumberOfLine) * (j + 1) - 1; i++)
 					{
-						double lxi = sqrt((vectorData[i].x - vectorData[i + 1].x) * (vectorData[i].x - vectorData[i + 1].x) + (vectorData[i].y - vectorData[i + 1].y) * (vectorData[i].y - vectorData[i + 1].y));//µµ¾à
+						double lxi = sqrt((vectorData[i].x - vectorData[i + 1].x) * (vectorData[i].x - vectorData[i + 1].x) + (vectorData[i].y - vectorData[i + 1].y) * (vectorData[i].y - vectorData[i + 1].y));//æ¡£è·
 						double wireL = sqrt((vectorData[i].x - vectorData[i + 1].x) * (vectorData[i].x - vectorData[i + 1].x) +
 							(vectorData[i].y - vectorData[i + 1].y) * (vectorData[i].y - vectorData[i + 1].y) +
-							(vectorData[i].z - vectorData[i + 1].z) * (vectorData[i].z - vectorData[i + 1].z));//µµ¾à
-						double  hi = vectorData[i + 1].z - vectorData[i].z;//¸ß²î
-						double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-						double li = vectorData[i + 1].x - vectorData[i].x; //Á½µãxÖ®²î
-						double mi = vectorData[i + 1].y - vectorData[i].y; //Á½µãyÖ®²î
-						double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+							(vectorData[i].z - vectorData[i + 1].z) * (vectorData[i].z - vectorData[i + 1].z));//æ¡£è·
+						double  hi = vectorData[i + 1].z - vectorData[i].z;//é«˜å·®
+						double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+						double li = vectorData[i + 1].x - vectorData[i].x; //ä¸¤ç‚¹xä¹‹å·®
+						double mi = vectorData[i + 1].y - vectorData[i].y; //ä¸¤ç‚¹yä¹‹å·®
+						double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 						double dxi = li / N;
 						double dyi = mi / N;
 						double dzi = nni / N;
 						double y0i = vectorData[i].z + 1 / k * ((1 - cosh((k) * (nni / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
-						double force = 0;//Ã¿¸öµã¶ÔÓ¦µÄÖáÁ¦
+						double force = 0;//æ¯ä¸ªç‚¹å¯¹åº”çš„è½´åŠ›
 						double wireGravity = wireL * unitMass * 9.8 * fenlie;
 						WireGravity.push_back(wireGravity);
 						if (fenlie == 1)
@@ -385,11 +385,11 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 							}
 							if (key == 1)
 							{
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1), "T");
 							}
 							else
 							{
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 2]));
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 2]), "T");
 							}
 							
 						}
@@ -411,17 +411,31 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 							}
 							if (key == 1)
 							{
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1));
+								if (j == 0)
+								{
+									CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1), "T");
+								}
+								else
+								{
+									CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+								}
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1), "F");
 							}
 							else
 							{
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
-								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]));
+								if (j == 0)
+								{
+									CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]), "T");
+								}
+								else
+								{
+									CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]), "F");
+								}
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]), "F");
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]), "F");
+								CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1 + Length[key - 2]), "F");
 							}
 							
 						}
@@ -447,12 +461,12 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 								nodeIds6.push_back(node[5 * num * (N + 1) + i + m * (N + 1)]);
 							}
 
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1));
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1));
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1));
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1));
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds5, pro[i].MaId, "L-" + QString::number(m + 1));
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds6, pro[i].MaId, "L-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "L-" + QString::number(m + 1), "T");
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds2, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds3, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds4, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds5, pro[i].MaId, "L-" + QString::number(m + 1), "F");
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds6, pro[i].MaId, "L-" + QString::number(m + 1), "F");
 						}
 					}
 					delete[]node;
@@ -473,16 +487,16 @@ void CreateStrainWire::CreateStrainString(int id)
 {
 
 
-	//int NumofNz = Test_a.size();//ÄÍÕÅ¶ÎµÄ¸öÊı
+	//int NumofNz = Test_a.size();//è€å¼ æ®µçš„ä¸ªæ•°
 	//vector<int> ids;
 	//vector<Element_Beam>TempTruss;
 	//vector<Element_Beam>ApTempTruss;
 	//double x1 = 0; double y1 = 0; double z1 = 0;
 	//double x2 = 0; double y2 = 0; double z2 = 0;
-	//int SusSize = row;//Ò»¸öÄÍÕÅ¶ÎÒ»ÌõÏßÂ·µÄ¹Òµã¸öÊı
-	//for (int m = 0; m < NumofNz; m++)//¶ÔÄÍÕÅ¶Î½øĞĞÑ­»·
+	//int SusSize = row;//ä¸€ä¸ªè€å¼ æ®µä¸€æ¡çº¿è·¯çš„æŒ‚ç‚¹ä¸ªæ•°
+	//for (int m = 0; m < NumofNz; m++)//å¯¹è€å¼ æ®µè¿›è¡Œå¾ªç¯
 	//{
-	//	for (int j = 0; j < (wireNumberOfLine); j++)//¶ÔÏßÂ·Ñ­»·
+	//	for (int j = 0; j < (wireNumberOfLine); j++)//å¯¹çº¿è·¯å¾ªç¯
 	//	{
 	//		vector<int> start_ids;
 	//		vector<int> end_ids;
@@ -526,8 +540,8 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 	if (G_RealSus.size() == 0)return;
 	for (const auto& entry : G_RealSus)
 	{
-		int key = entry.first - 1;  // »ñÈ¡ int ¼ü
-		const std::vector<Insulator_Base>& vectorData = entry.second;  // »ñÈ¡¶ÔÓ¦µÄ vector
+		int key = entry.first - 1;  // è·å– int é”®
+		const std::vector<Insulator_Base>& vectorData = entry.second;  // è·å–å¯¹åº”çš„ vector
 		vector<Node>m_TempNodes;
 		for (int i = 0; i < vectorData.size(); i++)
 		{
@@ -555,21 +569,21 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 					int* node = new int[num * (n + 1)];
 					for (int i = 0 + m_TempNodes.size() / 2 * j; i < m_TempNodes.size() / 2 * (j + 1) - 1; i++)
 					{
-						double lxi = sqrt((m_TempNodes[i].x - m_TempNodes[i + 1].x) * (m_TempNodes[i].x - m_TempNodes[i + 1].x) + (m_TempNodes[i].y - m_TempNodes[i + 1].y) * (m_TempNodes[i].y - m_TempNodes[i + 1].y));//µµ¾à
+						double lxi = sqrt((m_TempNodes[i].x - m_TempNodes[i + 1].x) * (m_TempNodes[i].x - m_TempNodes[i + 1].x) + (m_TempNodes[i].y - m_TempNodes[i + 1].y) * (m_TempNodes[i].y - m_TempNodes[i + 1].y));//æ¡£è·
 						double wireL = sqrt((m_TempNodes[i].x - m_TempNodes[i + 1].x) * (m_TempNodes[i].x - m_TempNodes[i + 1].x) +
 							(m_TempNodes[i].y - m_TempNodes[i + 1].y) * (m_TempNodes[i].y - m_TempNodes[i + 1].y) +
-							(m_TempNodes[i].z - m_TempNodes[i + 1].z) * (m_TempNodes[i].z - m_TempNodes[i + 1].z));//µµ¾à
-						double  hi = m_TempNodes[i + 1].z - m_TempNodes[i].z;//¸ß²î
+							(m_TempNodes[i].z - m_TempNodes[i + 1].z) * (m_TempNodes[i].z - m_TempNodes[i + 1].z));//æ¡£è·
+						double  hi = m_TempNodes[i + 1].z - m_TempNodes[i].z;//é«˜å·®
 						//double k = rou / stress;
-						double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-						double li = m_TempNodes[i + 1].x - m_TempNodes[i].x; //Á½µãxÖ®²î
-						double mi = m_TempNodes[i + 1].y - m_TempNodes[i].y; //Á½µãyÖ®²î
-						double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+						double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+						double li = m_TempNodes[i + 1].x - m_TempNodes[i].x; //ä¸¤ç‚¹xä¹‹å·®
+						double mi = m_TempNodes[i + 1].y - m_TempNodes[i].y; //ä¸¤ç‚¹yä¹‹å·®
+						double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 						double dxi = li / n;
 						double dyi = mi / n;
 						double dzi = nni / n;
 						double y0i = m_TempNodes[i].z + 1 / k * ((1 - cosh((k) * (nni / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
-						double force = 0;//Ã¿¸öµã¶ÔÓ¦µÄÖáÁ¦
+						double force = 0;//æ¯ä¸ªç‚¹å¯¹åº”çš„è½´åŠ›
 						double wireGravity = wireL * unitMass * 9.8;
 						WireGravity.push_back(wireGravity);
 						for (int m = 0; m < n + 1; m++)
@@ -593,11 +607,11 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 						}
 						if (key == 0)
 						{
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1), "F");
 						}
 						else
 						{
-							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 1]));
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 1]), "F");
 						}
 					}
 					break;
@@ -619,46 +633,22 @@ void CreateStrainWire::Create_Mesh()
 	CreateRealSus();
 	CreateStrainWireInfor(Property);
 	CreateGWire(Property);
-
-	
-	//StrainSpacerNum[1] = { 10,10,10,10,10,10,10,10,10,10,10,10,10 };
-	//StrainSpacerNum[2] = { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10 };
-	//StrainSpacerNum[3] = { 10,10,10 };
-
-	//for (auto& sus : m_Str_realSus)
-	//{
-	//	int key = sus.first + 1;
-	//	std::vector<Node>& vectorData = sus.second;  // »ñÈ¡¶ÔÓ¦µÄ vector
-	//	double k = 0;
-	//	for (int i = 0; i < Property.size(); i++)
-	//	{
-	//		if (Property[i].idTension == key && Property[i].isGround == false)
-	//		{
-	//			double rou = Property[i].w_rou * 9.8 / (Property[i].w_area * 1000000);
-	//			double stress = Property[i].w_f * 1000 / (Property[i].w_area * 1000000);
-	//			k = rou / stress;
-	//			for (int i = 0; i < wireQty; i++)
-	//			{
-	//				CreateStrainTempRealWireNode(key, i + 1, k, vectorData);
-	//			}
-	//		}
-
-	//	}
-	//}
+	GetMidPoint(Property);
+	//CreateSpacer();
 }
 
 void CreateStrainWire::Type_WO(int i, int StrainId, const vector<Insulator_Base>&  data, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
 	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);
-	SaveSus({ node1 }); // ·ÅÈëĞü¹Òµã
+	SaveSus({ node1 }); // æ”¾å…¥æ‚¬æŒ‚ç‚¹
 	StrainAllRestraintNode.push_back(node1);
-	RealSusInfor[StrainId].push_back(Insulator_Base("O", data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1ÊÇÏßÂ·Ä¬ÈÏµÄ ºóÃæµÄ¸Ä
+	RealSusInfor[StrainId].push_back(Insulator_Base("O", data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1æ˜¯çº¿è·¯é»˜è®¤çš„ åé¢çš„æ”¹
 	EndPoint[StrainId].push_back(Node(1, data[i].m_x, data[i].m_y, data[i].m_z, 0, 1));
 }
 
 void CreateStrainWire::Type_WH_1(int i, int StrainId, const vector<Insulator_Base>& data, vector<int>& Id, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//ËşÉÏĞü¹Òµã
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 
 	Id.push_back(node1);
@@ -672,7 +662,7 @@ void CreateStrainWire::Type_WH_1(int i, int StrainId, const vector<Insulator_Bas
 
 void CreateStrainWire::Type_WH_4(int i, int StrainId, double Angle, const vector<Insulator_Base>& data, vector<int>& Id, vector<int>& SpacerId, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//ËşÉÏĞü¹Òµã
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 	int node_1 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
 	int node_2 = Creat_Node(data[i].m_x + 0.225 * cos(Angle), data[i].m_y - 0.225 * sin(Angle), data[i].m_z - data[i].H - 0.45, 0, 2);
@@ -698,7 +688,7 @@ void CreateStrainWire::Type_WH_4(int i, int StrainId, double Angle, const vector
 
 void CreateStrainWire::Type_WH_6(int i, int StrainId, double Angle, const vector<Insulator_Base>& data, vector<int>& Id, vector<int>& SpacerId, map<int, vector<Insulator_Base>>& RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//ËşÉÏĞü¹Òµã
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 	int node_1 = Creat_Node(data[i].m_x + 0.2 * cos(Angle), data[i].m_y - 0.2 * sin(Angle), data[i].m_z - data[i].H, 0, 2);
 	int node_2 = Creat_Node(data[i].m_x + 0.4 * cos(Angle), data[i].m_y - 0.4 * sin(Angle), data[i].m_z - data[i].H - 0.35, 0, 2);
@@ -737,15 +727,15 @@ void CreateStrainWire::Type_WV_1(int i, int StrainId, double Angle, const vector
 
 	angle_1 = vtkMath::RadiansFromDegrees(angle_1);
 	angle_2 = vtkMath::RadiansFromDegrees(angle_2);
-	//È·¶¨×ª½Ç
+	//ç¡®å®šè½¬è§’
 	double V_angle = 0;
 	double x = (x2 - x1);
 	double y = (y2 - y1);
 	V_angle = ((atan2(y, x) * 180) / 3.1415926);
 	V_angle = vtkMath::RadiansFromDegrees(V_angle);
 	double test = cos(V_angle);
-	//ËşÉÏV´®µÄÁ½¸öĞü¹Òµã
-	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//ËşÉÏĞü¹Òµã
+	//å¡”ä¸ŠVä¸²çš„ä¸¤ä¸ªæ‚¬æŒ‚ç‚¹
+	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node_T2 = Creat_Node(x2, y2, z2, 0, 1);
 	double zc_part = (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) - (z2 - z1) * tan(angle_2)) / (tan(angle_1) + tan(angle_2));
 	double xc_part = abs(zc_part) * tan(angle_1);
@@ -775,20 +765,20 @@ void CreateStrainWire::Type_WV_4(int i, int StrainId, double Angle, const vector
 
 	angle_1 = vtkMath::RadiansFromDegrees(angle_1);
 	angle_2 = vtkMath::RadiansFromDegrees(angle_2);
-	//È·¶¨×ª½Ç
+	//ç¡®å®šè½¬è§’
 	double V_angle = 0;
 	double x = (x2 - x1);
 	double y = (y2 - y1);
 	V_angle = ((atan2(y, x) * 180) / 3.1415926);
 	V_angle = vtkMath::RadiansFromDegrees(V_angle);
 	double test = cos(V_angle);
-	//ËşÉÏV´®µÄÁ½¸öĞü¹Òµã
-	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//ËşÉÏĞü¹Òµã
+	//å¡”ä¸ŠVä¸²çš„ä¸¤ä¸ªæ‚¬æŒ‚ç‚¹
+	int node_T1 = Creat_Node(x1, y1, z1, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node_T2 = Creat_Node(x2, y2, z2, 0, 1);
 	double zc_part = (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) - (z2 - z1) * tan(angle_2)) / (tan(angle_1) + tan(angle_2));
 	double xc_part = abs(zc_part) * tan(angle_1);
 	double x_c = x1 + abs(xc_part) * cos(V_angle);
-	double y_c = y1 - abs(xc_part) * sin(V_angle);
+	double y_c = y1 + abs(xc_part) * sin(V_angle);
 	double z_c = z1 - abs(zc_part);
 	int node_V = Creat_Node(x_c, y_c, z_c, 0, 2);
 	int node_1 = Creat_Node(x_c + 0.225 * cos(Angle), y_c - 0.225 * sin(Angle), z_c - data[i].H, 0, 2);
@@ -820,14 +810,14 @@ void CreateStrainWire::Type_WV_4(int i, int StrainId, double Angle, const vector
 void CreateStrainWire::Type_GO(int i, int StrainId, const vector<Insulator_Base>& data, map<int, vector<Insulator_Base>>& G_RealSusInfor)
 {
 	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);
-	SaveSus({ node1 }); // ·ÅÈëĞü¹Òµã
+	SaveSus({ node1 }); // æ”¾å…¥æ‚¬æŒ‚ç‚¹
 	StrainJointRestraintNode.push_back(node1);
-	G_RealSusInfor[StrainId].push_back(Insulator_Base("G",data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1ÊÇÏßÂ·Ä¬ÈÏµÄ ºóÃæµÄ¸Ä
+	G_RealSusInfor[StrainId].push_back(Insulator_Base("G",data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1æ˜¯çº¿è·¯é»˜è®¤çš„ åé¢çš„æ”¹
 }
 
 void CreateStrainWire::Type_G(int i, int StrainId, const vector<Insulator_Base>& data, vector<int>& Id, map<int, vector<Insulator_Base>>& G_RealSusInfor)
 {
-	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//ËşÉÏĞü¹Òµã
+	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);//å¡”ä¸Šæ‚¬æŒ‚ç‚¹
 	int node2 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z - data[i].H, 0, 2);
 
 	Id.push_back(node1);
@@ -902,5 +892,121 @@ int CreateStrainWire::GetSectionId(QString MaterialName, QString SectionName)
 	return id;;
 }
 
+void CreateStrainWire::GetMidPoint(vector<WireProperties> pro)
+{
+	for (const auto& entry : OneWireLine)
+	{
+		const std::vector<Node>& vectorData = entry.second;  
+		int key = entry.first + 1;  
+		double rou = 0;
+		double stress = 0;
+		double k = 0;
+		double area = 0;
+		double unitMass = 0;
+		for (int i = 0; i < pro.size(); i++)
+		{
+			if (pro[i].idTension == key && pro[i].isGround == false)
+			{
+				rou = pro[i].w_rou * 9.8 / (pro[i].w_area * 1000000);
+				stress = pro[i].w_f * 1000 / (pro[i].w_area * 1000000);
+				area = pro[i].w_area * 1000000;
+				unitMass = pro[i].w_rou;
+				k = rou / stress;
+				int n = 100;
+				int N = 100;
+				int num = vectorData.size() / (wireNumberOfLine)-1;
+				double angle = 0;
+				angle = m_Angle[key - 1];
+				for (int i = 0; i < vectorData.size() - 1; i++)
+				{
+					double lxi = sqrt((vectorData[i].x - vectorData[i + 1].x) * (vectorData[i].x - vectorData[i + 1].x) + (vectorData[i].y - vectorData[i + 1].y) * (vectorData[i].y - vectorData[i + 1].y));//ï¿½ï¿½ï¿½ï¿½
+					double wireL = sqrt((vectorData[i].x - vectorData[i + 1].x) * (vectorData[i].x - vectorData[i + 1].x) +
+						(vectorData[i].y - vectorData[i + 1].y) * (vectorData[i].y - vectorData[i + 1].y) +
+						(vectorData[i].z - vectorData[i + 1].z) * (vectorData[i].z - vectorData[i + 1].z));
+					double  hi = vectorData[i + 1].z - vectorData[i].z;
+					double Li = (2 / k) * sinh(k * lxi / 2);
+					double li = vectorData[i + 1].x - vectorData[i].x;
+					double mi = vectorData[i + 1].y - vectorData[i].y;
+					double nni = sqrt(li * li + mi * mi);
+					double dxi = li / N;
+					double dyi = mi / N;
+					double dzi = nni / N;
+					double y0i = vectorData[i].z + 1 / k * ((1 - cosh((k) * (nni / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
+					if (fenlie == 1)
+					{
+						int mid = (N + 1) / 2;
+						double Zi = mid * dzi;
+						double x = mid * dxi + vectorData[i].x;
+						double y = mid * dyi + vectorData[i].y;
+						double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+							sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						MidId.push_back(GetMidId(x, y, z));
+					}
+					else if (fenlie == 4)
+					{
+						int mid = (N + 1) / 2;
+						double Zi = mid * dzi;
+						double x = mid * dxi + vectorData[i].x - 0.225 * cos(angle);
+						double y = mid * dyi + vectorData[i].y + 0.225 * sin(angle);
+						double zz = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+							sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						double z = zz - 0.225;
+						MidId.push_back(GetMidId(x, y, z));
+					}
+					else if (fenlie == 6)
+					{
+						for (int m = 0; m < N + 1; m++)
+						{
+							double Zi = m * dzi;
+							double x1 = m * dxi + vectorData[i].x + 0.2 * cos(angle);
+							double x2 = m * dxi + vectorData[i].x - 0.2 * cos(angle);
+							double x3 = m * dxi + vectorData[i].x + 0.4 * cos(angle);
+							double x4 = m * dxi + vectorData[i].x - 0.4 * cos(angle);
+							double y1 = m * dyi + vectorData[i].y + 0.2 * sin(angle);
+							double y2 = m * dyi + vectorData[i].y - 0.2 * sin(angle);
+							double y3 = m * dyi + vectorData[i].y + 0.4 * sin(angle);
+							double y4 = m * dyi + vectorData[i].y - 0.4 * sin(angle);
+							double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+								sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+							double z1 = z + 0.35;
+							double z2 = z - 0.35;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+	
+void CreateStrainWire::CreateSpacer()
+{
+	for (auto& sus : m_Str_realSus)
+	{
+		std::vector<Node>& vectorData = sus.second;  // ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ vector
+		int StrainId = sus.first + 1;
+		int OneStrainFilesSize = (vectorData.size() / wireQty) - 1;
+		StrainSpacerNum[StrainId].assign(OneStrainFilesSize, 10);
 
+	}
+	for (auto& sus : m_Str_realSus)
+	{
+		int key = sus.first + 1;
+		std::vector<Node>& vectorData = sus.second;  // ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ vector
+		double k = 0;
+		for (int i = 0; i < Property.size(); i++)
+		{
+			if (Property[i].idTension == key && Property[i].isGround == false)
+			{
+				double rou = Property[i].w_rou * 9.8 / (Property[i].w_area * 1000000);
+				double stress = Property[i].w_f * 1000 / (Property[i].w_area * 1000000);
+				k = rou / stress;
+				for (int i = 0; i < wireQty; i++)
+				{
+					CreateStrainTempRealWireNode(key, i + 1, k, S_Id, vectorData);
+				}
+			}
+
+		}
+	}
+}
 

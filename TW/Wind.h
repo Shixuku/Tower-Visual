@@ -55,14 +55,8 @@ public:
 	RandomWind* ran = nullptr;
 	Creat_Loads* m_pCreat_loads = nullptr;
 	Instance* m_pInstance = nullptr;
-
-	//Test
-	//double WindSpeedInterpolation(int pointIndex, double time);//ÕÒÇø¼ä
 private:
 	Ui::WindClass ui;
-	//QVBoxLayout* layout;
-	//vtkSmartPointer<vtkRenderWindow> renderWindow;
-	//QVTKOpenGLNativeWidget* m_VtkWidget;
-	//vtkSmartPointer<vtkRenderer> m_Renderer;
+	
 
 };

@@ -246,8 +246,6 @@ void Wind::Get_ui_Data()
 		B = 1.1;
 	}
 	WindCoefficient = miusc * B;
-	//m_pInstance->WindCoefficient = WindCoefficient;
-	//this->accept();
 }
 
 double Wind::CountUz(double h)
@@ -320,6 +318,7 @@ void Wind::CountElePara()
 		Uz_ele.push_back(uz_ele);
 	}
 }
+
 
 std::vector<double> Wind::CountWindForce()
 {

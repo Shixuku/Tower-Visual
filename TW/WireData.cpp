@@ -1,4 +1,4 @@
-#include "WireData.h"
+ï»¿#include "WireData.h"
 
 int WireData::Creat_Node(double x, double y, double z, double f, int Type)
 {
@@ -12,7 +12,7 @@ int WireData::Creat_Node(double x, double y, double z, double f, int Type)
 			((abs(NodeData[realSuspoint[i]].z - z)) < 1e-1))
 		{
 			m_Nodes[realSuspoint[i] - 1].F = f;
-			return NodeData[realSuspoint[i]].m_idNode; //ÖØ½Úµã
+			return NodeData[realSuspoint[i]].m_idNode; //é‡èŠ‚ç‚¹
 		}
 		else
 		{
@@ -32,28 +32,54 @@ int WireData::Creat_Node(double x, double y, double z, double f, int Type)
 	return 0;
 }
 
+int WireData::GetMidId(double x, double y, double z)
+{
+	int SIZE = m_Nodes.size();
+	int judg = 0;
+	for (int i = 0; i < SIZE; ++i)
+	{
+		if (((abs(m_Nodes[i].x - x) < 1e-1)) &&
+			((abs(m_Nodes[i].y - y)) < 1e-1) &&
+			((abs(m_Nodes[i].z - z)) < 1e-1))
+		{
+			return m_Nodes[i].m_idNode; //ï¿½Ø½Úµï¿½
+			break;
+		}
+		else
+		{
+			judg++;
+
+		}
+	}
+	if (judg == SIZE)
+	{
+		qDebug() << "XXXX";
+	}
+	return 0;
+}
+
 void WireData::CreatRealNode()
 {
-	//È·¶¨ÏòÁ¿£¨you£©
+	//ç¡®å®šå‘é‡ï¼ˆyouï¼‰
 	double x = WireListSus[1].x - WireListSus[0].x;
 	double y = WireListSus[1].y - WireListSus[0].y;
 	angle = ((atan2(x, y) * 180) / 3.1415926);
 	angle = vtkMath::RadiansFromDegrees(angle);
 	for (int i = 1; i < wireQty + 1; i++)
 	{
-		if (endpoinType1[i-1] == 0 && endpoinType2[i-1] == 0)//Á½¶Ë¾ùÎªĞü´¹¶Ëµã
+		if (endpoinType1[i-1] == 0 && endpoinType2[i-1] == 0)//ä¸¤ç«¯å‡ä¸ºæ‚¬å‚ç«¯ç‚¹
 		{
 			WireRealSus.assign(WireListSus.begin(), WireListSus.end());
 		}
-		else if (endpoinType1[i-1] == 1 && endpoinType2[i-1] == 0)//¶ËµãÒ»ÄÍÕÅ ¶Ëµã¶şĞü´¹
+		else if (endpoinType1[i-1] == 1 && endpoinType2[i-1] == 0)//ç«¯ç‚¹ä¸€è€å¼  ç«¯ç‚¹äºŒæ‚¬å‚
 		{
 			CreateTempWireNode(i, 0, WireListSus);
 		}
-		else if (endpoinType1[i-1] == 0 && endpoinType2[i-1] == 1)//¶Ëµã¶şÄÍÕÅ ¶ËµãÒ»Ğü´¹
+		else if (endpoinType1[i-1] == 0 && endpoinType2[i-1] == 1)//ç«¯ç‚¹äºŒè€å¼  ç«¯ç‚¹ä¸€æ‚¬å‚
 		{
 			CreateTempWireNode(i, 1, WireListSus);
 		}
-		else if (endpoinType1[i-1] == 1 && endpoinType2[i-1] == 1)//¶Ëµã¾ùÎªÄÍÕÅ
+		else if (endpoinType1[i-1] == 1 && endpoinType2[i-1] == 1)//ç«¯ç‚¹å‡ä¸ºè€å¼ 
 		{
 			CreateTempWireNode(i, 2, WireListSus);
 		}
@@ -65,23 +91,23 @@ void WireData::CreatRealNode()
 void WireData::CreateTempWireNode(int wireLogo, int choose, vector<Node>& sus)
 {
 	vector<Node>TempListNodes;
-	int oneWireLogoNum = sus.size() / wireQty; //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
-	rou = unitMass * 9.8 / area;//±ÈÔØ N/mm^2*m
+	int oneWireLogoNum = sus.size() / wireQty; //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
+	rou = unitMass * 9.8 / area;//æ¯”è½½ N/mm^2*m
 	for (int i = (wireLogo - 1) * oneWireLogoNum; i < wireLogo * oneWireLogoNum-1; i++)
 	{
-		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//µµ¾à
-		double  hi = sus[i + 1].z - sus[i].z;//¸ß²î
+		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//æ¡£è·
+		double  hi = sus[i + 1].z - sus[i].z;//é«˜å·®
 		double k = rou / stress;
-		double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-		double li = sus[i + 1].x - sus[i].x; //Á½µãxÖ®²î
-		double mi = sus[i + 1].y - sus[i].y; //Á½µãyÖ®²î
-		double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+		double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+		double li = sus[i + 1].x - sus[i].x; //ä¸¤ç‚¹xä¹‹å·®
+		double mi = sus[i + 1].y - sus[i].y; //ä¸¤ç‚¹yä¹‹å·®
+		double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 		double dxi = li / N;
 		double dyi = mi / N;
 		double dzi = nni / N;
 		double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 
-		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //É¾³ıÖØ½Úµã
+		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //åˆ é™¤é‡èŠ‚ç‚¹
 		for (int j = 0; j < N + 1; j++)
 		{
 			double Zi = j * dzi;
@@ -99,11 +125,11 @@ void WireData::CreateTempWireNode(int wireLogo, int choose, vector<Node>& sus)
 void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 {
 	std::vector<Node> tempWireRealSus;
-	int oneWireLogoNum = (WireListSus.size() / wireQty) ; //Ò»ÌõÏßÂ·µ²Î»µÄĞü¹Òµã¸öÊı
+	int oneWireLogoNum = (WireListSus.size() / wireQty) ; //ä¸€æ¡çº¿è·¯æŒ¡ä½çš„æ‚¬æŒ‚ç‚¹ä¸ªæ•°
 	
 	for (const auto& node : m_Nodes)
 	{
-		if (choose == 0) // ×óÄÍÕÅ
+		if (choose == 0) // å·¦è€å¼ 
 		{
 			double error = 0.499 * sqrt(pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].x - WireListSus[(wireLogo - 1) * oneWireLogoNum].x), 2) + pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].y - WireListSus[(wireLogo - 1) * oneWireLogoNum].y), 2) + pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].z - WireListSus[(wireLogo - 1) * oneWireLogoNum].z), 2)) / N;
 			double Li = sqrt(pow((node.x - WireListSus[(wireLogo - 1) * oneWireLogoNum].x), 2) + pow((node.y - WireListSus[(wireLogo - 1) * oneWireLogoNum].y), 2) + pow((node.z - WireListSus[(wireLogo - 1) * oneWireLogoNum].z), 2));
@@ -115,10 +141,10 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 				{
 					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0, 0));
 				}
-				break; // ½áÊøÑ­»·£¬Ö»Ìí¼ÓÒ»¸ö½Úµã
+				break; // ç»“æŸå¾ªç¯ï¼Œåªæ·»åŠ ä¸€ä¸ªèŠ‚ç‚¹
 			}
 		}
-		else if (choose == 1) // ÓÒÄÍÕÅ
+		else if (choose == 1) // å³è€å¼ 
 		{
 			int size = wireLogo * oneWireLogoNum - 1;
 			double error = 0.499 * sqrt(pow((WireListSus[size].x - WireListSus[size - 1].x), 2) + pow((WireListSus[size].y - WireListSus[size - 1].y), 2) + pow((WireListSus[size].z - WireListSus[size - 1].z), 2)) / N;
@@ -131,10 +157,10 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 					tempWireRealSus.push_back(Node(1, WireListSus[j].x, WireListSus[j].y, WireListSus[j].z, 0, 0));
 				}
 				tempWireRealSus.push_back(Node(1, node.x, node.y, node.z, 0, 0));
-				break; // ½áÊøÑ­»·£¬Ö»Ìí¼ÓÒ»¸ö½Úµã
+				break; // ç»“æŸå¾ªç¯ï¼Œåªæ·»åŠ ä¸€ä¸ªèŠ‚ç‚¹
 			}
 		}
-		else if (choose == 2) // Á½±ßÄÍÕÅ
+		else if (choose == 2) // ä¸¤è¾¹è€å¼ 
 		{
 			double error1 = 0.499 * sqrt(pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].x - WireListSus[(wireLogo - 1) * oneWireLogoNum].x), 2) + pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].y - WireListSus[(wireLogo - 1) * oneWireLogoNum].y), 2) + pow((WireListSus[(wireLogo - 1) * oneWireLogoNum + 1].z - WireListSus[(wireLogo - 1) * oneWireLogoNum].z), 2)) / N;
 			int size = wireLogo * oneWireLogoNum - 1;
@@ -157,30 +183,30 @@ void WireData::FindRealSus(int wireLogo, int choose, vector<Node>m_Nodes)
 		}
 	}
 
-	// ½«ÁÙÊ±½á¹ûÒ»´ÎĞÔÌí¼Óµ½ WireRealSus ÖĞ
-	WireRealSus.insert(WireRealSus.end(), tempWireRealSus.begin(), tempWireRealSus.end());//·ÅÈëÁËËùÓĞÏßÂ·µÄÕæÊµĞü¹Òµã
+	// å°†ä¸´æ—¶ç»“æœä¸€æ¬¡æ€§æ·»åŠ åˆ° WireRealSus ä¸­
+	WireRealSus.insert(WireRealSus.end(), tempWireRealSus.begin(), tempWireRealSus.end());//æ”¾å…¥äº†æ‰€æœ‰çº¿è·¯çš„çœŸå®æ‚¬æŒ‚ç‚¹
 }
 
 void WireData::CreateTempRealWireNode(int wireLogo, vector<Node>& sus)
 {
 	vector<Node>TempRealNodes;
-	int oneWireLogoNum = sus.size() / wireQty; //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
-	rou = unitMass * 9.8 / area;//±ÈÔØ N/mm^2*m
+	int oneWireLogoNum = sus.size() / wireQty; //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
+	rou = unitMass * 9.8 / area;//æ¯”è½½ N/mm^2*m
 	for (int i = (wireLogo - 1) * oneWireLogoNum; i < wireLogo * oneWireLogoNum - 1; i++)
 	{
-		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//µµ¾à
-		double  hi = sus[i + 1].z - sus[i].z;//¸ß²î
+		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//æ¡£è·
+		double  hi = sus[i + 1].z - sus[i].z;//é«˜å·®
 		double k = rou / stress;
-		double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-		double li = sus[i + 1].x - sus[i].x; //Á½µãxÖ®²î
-		double mi = sus[i + 1].y - sus[i].y; //Á½µãyÖ®²î
-		double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+		double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+		double li = sus[i + 1].x - sus[i].x; //ä¸¤ç‚¹xä¹‹å·®
+		double mi = sus[i + 1].y - sus[i].y; //ä¸¤ç‚¹yä¹‹å·®
+		double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 		double dxi = li / N;
 		double dyi = mi / N;
 		double dzi = nni / N;
 		double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 
-		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //É¾³ıÖØ½Úµã
+		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //åˆ é™¤é‡èŠ‚ç‚¹
 		for (int j = 0; j < N + 1; j++)
 		{
 			double Zi = j * dzi;
@@ -199,22 +225,22 @@ void WireData::CreateTempRealWireNode(int wireLogo, vector<Node>& sus)
 void WireData::CreateStrainTempRealWireNode(int nz, int wireLogo,double k, int SectionId, vector<Node>& sus)
 {
 	vector<Node>TempRealNodes;
-	int oneWireLogoNum = sus.size() / wireQty; //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
+	int oneWireLogoNum = sus.size() / wireQty; //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
 	for (int i = (wireLogo - 1) * oneWireLogoNum; i < wireLogo * oneWireLogoNum - 1; i++)
 	{
-		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//µµ¾à
+		double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//æ¡£è·
 
-		double  hi = sus[i + 1].z - sus[i].z;//¸ß²î
-		double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-		double li = sus[i + 1].x - sus[i].x; //Á½µãxÖ®²î
-		double mi = sus[i + 1].y - sus[i].y; //Á½µãyÖ®²î
-		double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+		double  hi = sus[i + 1].z - sus[i].z;//é«˜å·®
+		double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+		double li = sus[i + 1].x - sus[i].x; //ä¸¤ç‚¹xä¹‹å·®
+		double mi = sus[i + 1].y - sus[i].y; //ä¸¤ç‚¹yä¹‹å·®
+		double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 		double dxi = li / N;
 		double dyi = mi / N;
 		double dzi = nni / N;
 		double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 
-		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //É¾³ıÖØ½Úµã
+		//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //åˆ é™¤é‡èŠ‚ç‚¹
 		for (int j = 0; j < N + 1; j++)
 		{
 			double Zi = j * dzi;
@@ -232,17 +258,17 @@ void WireData::CreateStrainSpacerDistance(int nz, vector<Node> m_TempNodes, vect
 {
 	if (fenlie < 4)return;
 	//if (SpacerNum.size() == 0)return;
-	std::vector<int>SpacerL;//¼ä¸ô°ôÀë×ó±ß¶ËµãµÄ¾àÀë 
-	std::vector<int>SpacerD;//¼ä¸ô°ôËùÔÚµÄµµÎ»
+	std::vector<int>SpacerL;//é—´éš”æ£’ç¦»å·¦è¾¹ç«¯ç‚¹çš„è·ç¦» 
+	std::vector<int>SpacerD;//é—´éš”æ£’æ‰€åœ¨çš„æ¡£ä½
 	int s = 0;
 	int L = 0;
 	int d = 0;
-	int oneWireLogoNum = sus.size() / wireQty; //Ò»ÌõÏßÂ·µ²Î»µÄ¸öÊı
-	if (ChooseWay == 0)//µÈ¼ä¾à
+	int oneWireLogoNum = sus.size() / wireQty; //ä¸€æ¡çº¿è·¯æŒ¡ä½çš„ä¸ªæ•°
+	if (ChooseWay == 0)//ç­‰é—´è·
 	{
 		for (int i = (wireLogo - 1) * oneWireLogoNum; i < wireLogo * oneWireLogoNum - 1; i++)
 		{
-			double l = sqrt(pow(sus[i + 1].x - sus[i].x, 2) + pow(sus[i + 1].y - sus[i].y, 2));//µµ¾à
+			double l = sqrt(pow(sus[i + 1].x - sus[i].x, 2) + pow(sus[i + 1].y - sus[i].y, 2));//æ¡£è·
 			s = l / (StrainSpacerNum[nz][i - oneWireLogoNum * (wireLogo - 1)] + 1);
 			for (int j = 1; j < StrainSpacerNum[nz][i - oneWireLogoNum * (wireLogo - 1)] + 1; j++)
 			{
@@ -270,7 +296,7 @@ void WireData::CreateStrainSpacerDistance(int nz, vector<Node> m_TempNodes, vect
 vector<int> WireData::FindSpacerSpacerL(vector<Node> m_TempNodes, vector<Node> sus, int d, int L, int wireLogo)
 {
 	vector<int> idnodes;
-	int oneWireLogoNum = sus.size() / wireQty; //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
+	int oneWireLogoNum = sus.size() / wireQty; //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
 	int num = (wireLogo - 1) * oneWireLogoNum;
 	double xx = sus[1].x - sus[0].x;
 	double yy = sus[1].y - sus[0].y;
@@ -301,10 +327,10 @@ vector<int> WireData::FindSpacerSpacerL(vector<Node> m_TempNodes, vector<Node> s
 				double minDistance = std::numeric_limits<double>::max();
 				int closestNodeId = -1;
 
-				// ±éÀúËùÓĞ½ÚµãÒÔÕÒµ½×î½Ó½üµÄ½Úµã
+				// éå†æ‰€æœ‰èŠ‚ç‚¹ä»¥æ‰¾åˆ°æœ€æ¥è¿‘çš„èŠ‚ç‚¹
 				for (const Node& node : m_Nodes)
 				{
-					// ¼ÆËãµ±Ç°½Úµãµ½µã (x, y, z) µÄ¾àÀë
+					// è®¡ç®—å½“å‰èŠ‚ç‚¹åˆ°ç‚¹ (x, y, z) çš„è·ç¦»
 					double distance = std::sqrt
 					(
 						std::pow(node.x - x, 2) +
@@ -312,7 +338,7 @@ vector<int> WireData::FindSpacerSpacerL(vector<Node> m_TempNodes, vector<Node> s
 						std::pow(node.z - z, 2)
 					);
 
-					// ¼ì²é´Ë½ÚµãÊÇ·ñ±ÈÏÈÇ°×î½Ó½üµÄ½Úµã¸ü½ü
+					// æ£€æŸ¥æ­¤èŠ‚ç‚¹æ˜¯å¦æ¯”å…ˆå‰æœ€æ¥è¿‘çš„èŠ‚ç‚¹æ›´è¿‘
 					if (distance < minDistance)
 					{
 						minDistance = distance;
@@ -320,8 +346,8 @@ vector<int> WireData::FindSpacerSpacerL(vector<Node> m_TempNodes, vector<Node> s
 					}
 					else if (distance == minDistance)
 					{
-						// Èç¹û¾àÀëÏàÍ¬£¬Äú¿ÉÒÔÑ¡Ôñ²»¸²¸Ç closestNodeId£¬ÒÔÈ·±£Ö»Ñ¡ÔñÒ»¸ö
-						// »òÕß¿ÉÒÔÑ¡ÔñÖ´ĞĞÆäËûÂß¼­ÒÔ´¦Àí¾àÀëÏàÍ¬µÄÇé¿ö
+						// å¦‚æœè·ç¦»ç›¸åŒï¼Œæ‚¨å¯ä»¥é€‰æ‹©ä¸è¦†ç›– closestNodeIdï¼Œä»¥ç¡®ä¿åªé€‰æ‹©ä¸€ä¸ª
+						// æˆ–è€…å¯ä»¥é€‰æ‹©æ‰§è¡Œå…¶ä»–é€»è¾‘ä»¥å¤„ç†è·ç¦»ç›¸åŒçš„æƒ…å†µ
 					}
 				}
 				for (int k = 0; k < fenlie; ++k)
@@ -348,7 +374,7 @@ void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Beams, int SectionId
 	{
 		int id2 = ids[i];
 		double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-		m_Elements_Beams.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection,"S"));//×ÜµÄµ¥Ôª
+		m_Elements_Beams.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection,"S"));//æ€»çš„å•å…ƒ
 		id1 = id2;
 		idelement++;
 	}
@@ -367,7 +393,7 @@ void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, doub
 		if (id != id2)
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection,"N"));//²ÄÁÏºÍÖáÁ¦ºóĞøĞèÒª¸Ä
+			Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection,"N"));//ææ–™å’Œè½´åŠ›åç»­éœ€è¦æ”¹
 			idelement++;
 		}
 		
@@ -380,17 +406,17 @@ void WireData::CreateSpacerDistance(vector<Node>m_TempNodes, int wireLogo)
 {
 	if (fenlie < 4)return;
 	if (SpacerNum.size() == 0)return;
-	std::vector<int>SpacerL;//¼ä¸ô°ôÀë×ó±ß¶ËµãµÄ¾àÀë 
-	std::vector<int>SpacerD;//¼ä¸ô°ôËùÔÚµÄµµÎ»
+	std::vector<int>SpacerL;//é—´éš”æ£’ç¦»å·¦è¾¹ç«¯ç‚¹çš„è·ç¦» 
+	std::vector<int>SpacerD;//é—´éš”æ£’æ‰€åœ¨çš„æ¡£ä½
 	int s = 0;
 	int L = 0;
 	int d = 0;
-	int oneWireLogoNum = WireRealSus.size() / wireQty; //Ò»ÌõÏßÂ·µ²Î»µÄ¸öÊı
-	if (ChooseWay == 0)//µÈ¼ä¾à
+	int oneWireLogoNum = WireRealSus.size() / wireQty; //ä¸€æ¡çº¿è·¯æŒ¡ä½çš„ä¸ªæ•°
+	if (ChooseWay == 0)//ç­‰é—´è·
 	{
 		for (int i = (wireLogo - 1) * oneWireLogoNum; i < wireLogo * oneWireLogoNum - 1; i++)
 		{
-			double l = sqrt(pow(WireRealSus[i + 1].x - WireRealSus[i].x, 2) + pow(WireRealSus[i + 1].y - WireRealSus[i].y, 2));//µµ¾à
+			double l = sqrt(pow(WireRealSus[i + 1].x - WireRealSus[i].x, 2) + pow(WireRealSus[i + 1].y - WireRealSus[i].y, 2));//æ¡£è·
 			s = l / (SpacerNum[i - oneWireLogoNum * (wireLogo - 1)] + 1);
 			for (int j = 1; j < SpacerNum[i - oneWireLogoNum * (wireLogo - 1)] + 1; j++)
 			{
@@ -418,7 +444,7 @@ void WireData::CreateSpacerDistance(vector<Node>m_TempNodes, int wireLogo)
 vector<int> WireData::FindSpacerL(vector<Node>m_TempNodes, int d, int L, int wireLogo)
 {
 	vector<int> idnodes;
-	int oneWireLogoNum = WireRealSus.size() / wireQty; //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
+	int oneWireLogoNum = WireRealSus.size() / wireQty; //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
 	int num = (wireLogo - 1) * oneWireLogoNum;
 	for (auto& i : m_TempNodes)
 	{
@@ -456,7 +482,7 @@ vector<int> WireData::FindSpacerL(vector<Node>m_TempNodes, int d, int L, int wir
 void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double k,vector<Node>& sus, vector<WireProperties> pro)
 {
 	vector<Node>TempListNodes;
-	int oneWireLogoNum = sus.size() / (wireQty); //Ò»ÌõÏßÂ·Ğü¹ÒµãµÄ¸öÊı
+	int oneWireLogoNum = sus.size() / (wireQty); //ä¸€æ¡çº¿è·¯æ‚¬æŒ‚ç‚¹çš„ä¸ªæ•°
 	rou = pro[wireLogo-1].w_rou * 9.8 / (pro[wireLogo-1].w_area * 1000000);
 	double stress = pro[wireLogo-1].w_f * 1000 / (pro[wireLogo-1].w_area * 1000000);
 	int N_nz = 0;
@@ -464,19 +490,19 @@ void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double 
 	{
 		for (int i = 0; i < sus.size()-1; i++)
 		{
-			double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//µµ¾à
-			double  hi = sus[i + 1].z - sus[i].z;//¸ß²î
+			double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//æ¡£è·
+			double  hi = sus[i + 1].z - sus[i].z;//é«˜å·®
 			N_nz = lxi;
-			double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-			double li = sus[i + 1].x - sus[i].x; //Á½µãxÖ®²î
-			double mi = sus[i + 1].y - sus[i].y; //Á½µãyÖ®²î
-			double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+			double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+			double li = sus[i + 1].x - sus[i].x; //ä¸¤ç‚¹xä¹‹å·®
+			double mi = sus[i + 1].y - sus[i].y; //ä¸¤ç‚¹yä¹‹å·®
+			double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 			double dxi = li / N_nz;
 			double dyi = mi / N_nz;
 			double dzi = nni / N_nz;
 			double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 
-			//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //É¾³ıÖØ½Úµã
+			//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //åˆ é™¤é‡èŠ‚ç‚¹
 			for (int j = 0; j < N_nz + 1; j++)
 			{
 				double Zi = j * dzi;
@@ -493,19 +519,19 @@ void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double 
 	{
 		for (int i = (n - 1) * oneWireLogoNum; i < n * oneWireLogoNum - 1; i++)
 		{
-			double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//µµ¾à
-			double  hi = sus[i + 1].z - sus[i].z;//¸ß²î
+			double lxi = sqrt((sus[i].x - sus[i + 1].x) * (sus[i].x - sus[i + 1].x) + (sus[i].y - sus[i + 1].y) * (sus[i].y - sus[i + 1].y));//æ¡£è·
+			double  hi = sus[i + 1].z - sus[i].z;//é«˜å·®
 			N_nz = lxi;
-			double Li = (2 / k) * sinh(k * lxi / 2); //Ïß³¤
-			double li = sus[i + 1].x - sus[i].x; //Á½µãxÖ®²î
-			double mi = sus[i + 1].y - sus[i].y; //Á½µãyÖ®²î
-			double nni = sqrt(li * li + mi * mi); //¶şÎ¬ÖĞÁ½µãÖ®²î
+			double Li = (2 / k) * sinh(k * lxi / 2); //çº¿é•¿
+			double li = sus[i + 1].x - sus[i].x; //ä¸¤ç‚¹xä¹‹å·®
+			double mi = sus[i + 1].y - sus[i].y; //ä¸¤ç‚¹yä¹‹å·®
+			double nni = sqrt(li * li + mi * mi); //äºŒç»´ä¸­ä¸¤ç‚¹ä¹‹å·®
 			double dxi = li / N_nz;
 			double dyi = mi / N_nz;
 			double dzi = nni / N_nz;
 			double y0i = k * ((1 - cosh((1 / k) * (li / 2)) * sqrt(1 + (hi / Li) * (hi / Li)))) + hi / 2;
 
-			//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //É¾³ıÖØ½Úµã
+			//if (i > 0 && i < sus.size())TempListNodes.pop_back(); //åˆ é™¤é‡èŠ‚ç‚¹
 			for (int j = 0; j < N_nz + 1; j++)
 			{
 				double Zi = j * dzi;
@@ -524,7 +550,7 @@ void WireData::CreateStrainTempWireNode(int wireLogo, int choose, int n, double 
 
 void WireData::FindStrainRealSus(int wireLogo, int num, int n, vector<Node> m_Nodes)
 {
-	int oneWireLogoNum = num; //Ò»ÌõÏßÂ·µ²Î»µÄĞü¹Òµã¸öÊı
+	int oneWireLogoNum = num; //ä¸€æ¡çº¿è·¯æŒ¡ä½çš„æ‚¬æŒ‚ç‚¹ä¸ªæ•°
 	double closestL1Distance = std::numeric_limits<double>::max(); // Initialize to a large value
 	double closestL2Distance = std::numeric_limits<double>::max(); // Initialize to a large value
 	double closestL1X = 0.0, closestL1Y = 0.0, closestL1Z = 0.0;
@@ -555,6 +581,15 @@ void WireData::FindStrainRealSus(int wireLogo, int num, int n, vector<Node> m_No
 		m_Str_realSus[wireLogo - 1].push_back(Node(1, RealSus[wireLogo][j].m_x, RealSus[wireLogo][j].m_y, RealSus[wireLogo][j].m_z, 0, 0));
 	}
 	m_Str_realSus[wireLogo - 1].push_back(Node(1, closestL2X, closestL2Y, closestL2Z, 0, 0));
+	if (n == 1)
+	{
+		OneWireLine[wireLogo - 1].push_back(Node(1, closestL1X, closestL1Y, closestL1Z, 0, 0));
+		for (int j = (n - 1) * oneWireLogoNum + 1; j < n * oneWireLogoNum - 1; j++)
+		{
+			OneWireLine[wireLogo - 1].push_back(Node(1, RealSus[wireLogo][j].m_x, RealSus[wireLogo][j].m_y, RealSus[wireLogo][j].m_z, 0, 0));
+		}
+		OneWireLine[wireLogo - 1].push_back(Node(1, closestL2X, closestL2Y, closestL2Z, 0, 0));
+	}
 }
 
 

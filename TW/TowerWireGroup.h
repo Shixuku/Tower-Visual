@@ -73,6 +73,7 @@ public:
 	void AddWireElement(CreateStrainWire* wire);
 	void AddAxialForceToInsulator(CreateStrainWire* wire);//给绝缘子施加轴力
 	void AddRestraintId(CreateStrainWire* wire);
+	void AddWireMidId(CreateStrainWire* wire);
 public:
 	//界面
 	QTreeWidgetItem* Item = nullptr;//保存Item，用于查找

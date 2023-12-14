@@ -157,6 +157,8 @@ public slots:
     void ui_Constraint(QTreeWidgetItem* item);//点击创建边界条件弹出界面下放确认
     void CreateTowerInp(QTreeWidgetItem* item);
     void CreateGroupInp(QTreeWidgetItem* item);
+    void CreateMidIdAndEleInfor(QTreeWidgetItem* item);
+ 
 
     void ui_SingleWire();
     void ui_TowerWireGroup();

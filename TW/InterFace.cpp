@@ -229,6 +229,10 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//施加约束
 		ui_Constraint(item);
 	}
+	else if (isChildOfGroup(item, 4))
+	{
+		CreateMidIdAndEleInfor(item);
+	}
 	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,4))
 	{//输出txt文件
 		CreateOutPut(item);
@@ -1379,6 +1383,14 @@ void InterFace::CreateGroupInp(QTreeWidgetItem* item)
 	CreateAbaqusInp Inp;
 	Inp.CreateInp(group);
 }
+
+void InterFace::CreateMidIdAndEleInfor(QTreeWidgetItem* item)
+{
+	Instance* instance = OnFindInstance(item->parent());
+	instance->CreateMidIdAndEle();
+}
+
+
 
 void InterFace::Show_Part(Part_Base* part)
 {

@@ -8,7 +8,9 @@ public:
 	void CreateStrainWireInfor(vector<WireProperties>pro);//生成耐张端的导线节点和单元信息
 	void CreateStrainString(int id);//生成耐张串
 	void CreateGWire(vector<WireProperties>pro);
+	void GetMidPoint(vector<WireProperties>pro);
 	void  Create_Mesh();
+	void CreateSpacer();
 	void Type_WO(int i,int StrainId, const vector<Insulator_Base>&  data, map<int, vector<Insulator_Base>>& RealSusInfor);
 	void Type_WH_1(int i, int StrainId, const vector<Insulator_Base>& data, vector<int>&Id, map<int, vector<Insulator_Base>>& RealSusInfor);
 	void Type_WH_4(int i, int StrainId,double Angle, const vector<Insulator_Base>& data, vector<int>& Id, vector<int>& SpacerId, map<int, vector<Insulator_Base>>& RealSusInfor);
