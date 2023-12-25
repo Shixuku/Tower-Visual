@@ -482,7 +482,7 @@ void Instance::IceLoadTxT()
 	std::list<ParameterIceType>::iterator it;
 	for (it = m_IceTypeElement.begin(); it != m_IceTypeElement.end(); ++it) 
 	{
-		Stream << "   " << it->m_id << "  " << it->m_StartAnalysisStep << "  " << it->m_EndAnalysisStep << "  " << it->m_Thickness << "\n";
+		Stream << "   " << it->m_id << "  " << it->m_StartAnalysisStep << "  " << it->m_WireType << "  " << it->m_Thickness << "\n";
 	}
 	//for (int i = 0; i < m_IceTypeElement.size(); i++)
 	//{
@@ -579,15 +579,15 @@ void Instance::Section_Assign()
 			qDebug() << m_Elements_beams[i].m_idElement << "  " << m_Elements_beams[i].ClassSectionID << "\n";
 		}
 	}
-	//冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
-	if (m_IceTypeElement.size() > 0)
-	{
-		for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
-		{//冰单元编号，单元编号，冰单元类型
-			int TrussesID = m_Elements_Trusses[i - 1].m_idElement;
-			Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << TrussesID << "  " << "1" << "\n";
-		}
-	}
+	////冰单元的指派，通过m_IceTypeElement.size()来判断，如果>0；就输出，没有就不输出
+	//if (m_IceTypeElement.size() > 0)
+	//{
+	//	for (int i = 1; i < m_Elements_Trusses.size() + 1; i++)
+	//	{//冰单元编号，单元编号，冰单元类型
+	//		int TrussesID = m_Elements_Trusses[i - 1].m_idElement;
+	//		Stream << "  " << m_Elements_Trusses.size() + m_Elements_beams.size() + i << "  " << TrussesID << "  " << "1" << "\n";
+	//	}
+	//}
 }
 
 void Instance::Axial_force()

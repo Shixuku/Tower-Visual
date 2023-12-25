@@ -27,12 +27,17 @@ void IceLoad::Initialization()
 {
 	ui.label_name->setText("名称：" + m_pCreat_loads->m_str);//显示父窗口的名称
 	//设置combobox
-	QStringList headertext;//表头
-	headertext << "覆冰分析步" << "脱冰分析步"<<"覆冰厚度(m)";
+	QStringList headertext/*, liebiaototu*/;//表头
+	headertext << " " << "覆冰分析步" << "覆冰厚度(m)";
+	//liebiaototu << " " << "导线" << "地线";
 	ui.tableWidget->setColumnCount(headertext.count());//列
-	ui.tableWidget->setRowCount(1);//行
+	ui.tableWidget->setRowCount(2);//行
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
+	//ui.tableWidget->setVerticalHeaderLabels(liebiaototu);
 	ui.tableWidget->verticalHeader()->setVisible(false);
+
+	ui.tableWidget->setItem(0, 0, new QTableWidgetItem("导线"));
+	ui.tableWidget->setItem(1, 0, new QTableWidgetItem("地线"));
 
 	QComboBox *AnalysisStep1 = new QComboBox;
 	int size1 = m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.size();
@@ -40,7 +45,7 @@ void IceLoad::Initialization()
 	{
 		AnalysisStep1->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
 	}
-	ui.tableWidget->setCellWidget(0, 0, (QWidget*)AnalysisStep1);
+	ui.tableWidget->setCellWidget(0, 1, (QWidget*)AnalysisStep1);
 
 	QComboBox*AnalysisStep2 = new QComboBox;
 	int size2 = m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.size();
@@ -48,25 +53,33 @@ void IceLoad::Initialization()
 	{
 		AnalysisStep2->addItem(m_pCreat_loads->m_pInterFace->ME_AnalysisSteps.Find_Entity(i)->m_Name);
 	}
-	ui.tableWidget->setCellWidget(0, 1, (QWidget*)AnalysisStep2);
-	ui.tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(0.002)));//默认覆冰厚度
+	ui.tableWidget->setCellWidget(1, 1, (QWidget*)AnalysisStep2);
+
+	ui.tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(0.002)));//默认导线覆冰厚度
+	ui.tableWidget->setItem(1, 2, new QTableWidgetItem(QString::number(0.002)));//默认地线覆冰厚度
+
 	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
 }
 
 void IceLoad::GetData()
 {
-	int size = m_pInstance->m_Elements_beams.size() + m_pInstance->m_Elements_Trusses.size();//124
-	QWidget* widget_Start = ui.tableWidget->cellWidget(0, 0);
-	QWidget* widget_End = ui.tableWidget->cellWidget(0, 1);
-	QComboBox* combox1 = (QComboBox*)widget_Start;
-	QComboBox* combox2 = (QComboBox*)widget_End;
-	int addIce = combox1->currentIndex() + 1;//覆冰分析步
-	int reduceIce = combox2->currentIndex() + 1;//脱冰分析步
-	double m_thickness = ui.tableWidget->item(0, 2)->text().toDouble();//覆冰厚度
+	//int size = m_pInstance->m_Elements_beams.size() + m_pInstance->m_Elements_Trusses.size();//124
+	QWidget* widget_daoxian = ui.tableWidget->cellWidget(0, 1);
+	QWidget* widget_dixian = ui.tableWidget->cellWidget(1, 1);
+	QComboBox* combox1 = (QComboBox*)widget_daoxian;
+	QComboBox* combox2 = (QComboBox*)widget_dixian;
+	int daoxianIce = combox1->currentIndex() + 1;//导线覆冰分析步
+	int dixianIce = combox2->currentIndex() + 1;//地线覆冰分析步
+
+	double daoxianThickness = ui.tableWidget->item(0, 2)->text().toDouble();//导线覆冰厚度
+	double dixianThickness = ui.tableWidget->item(1, 2)->text().toDouble();//地线覆冰厚度
 
 	int type_id = m_pInstance->m_IceTypeElement.size() + 1;
-	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id, addIce, reduceIce, m_thickness));
+
+	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id, daoxianIce, daoxianThickness, "L"));
+	m_pInstance->m_IceTypeElement.push_back(ParameterIceType(type_id + 1, dixianIce, dixianThickness, "G"));
+
 	this->accept();
 }
 
