@@ -84,6 +84,7 @@ void Instance_Calculate::on_btn_import_clicked()
 	int Totalit = m_ins->s->getTotalIterations();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	qDebug() << "总迭代次数： " << Totalit;
 	//update();
 
 	//算风--让关于冰的按钮点不起
@@ -167,6 +168,7 @@ void Instance_Calculate::on_btk_ok_clicked()
 	int Totalit = ins->s->getTotalIterations();
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
+	qDebug() << "总迭代次数： " << Totalit;
 }
 
 void Instance_Calculate::on_btk_ok_clicked_ice()

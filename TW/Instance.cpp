@@ -153,7 +153,7 @@ void Instance::SaveSus(vector<int> ids)
 	realSuspoint.push_back(ids[0]);
 }
 
-void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type, QString True)
+void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type, QString True, vector<int>&Ele)
 {
 	if (ids.size() == 0)return;
 	size_t size = ids.size();
@@ -175,11 +175,11 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<i
 		{
 			if (i == 1)
 			{
-				EleId.push_back(id);
+				Ele.push_back(id);
 			}
 			else if (i == size - 1)
 			{
-				EleId.push_back(id);
+				Ele.push_back(id);
 			}
 		}
 	}
@@ -201,6 +201,7 @@ void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, ve
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
 			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
+			//m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 0, "I"));
 			id++;
 			node1 = node2;
 		}
@@ -377,6 +378,7 @@ void Instance::CreateOutPut()
 		{
 			WindEleTxT();//风区单元集
 		}
+		MidPointInfor();
 		// 关闭文件
 		Qf.close();
 	}
@@ -507,13 +509,11 @@ void Instance::MaterialTxT()
 	Stream << "*Material," << MaterialSize << "\n";
 	for (auto& i : pInterFace->ME_Material)
 	{
-		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal <</*"  "<<i.second->UltimateStress <<*/ "\n";
+		Stream << "   " << i.second->m_id << "  " << i.second->E << "  " << i.second->Poisson << "  " << i.second->Density << "  " << i.second->Thermal <<"  "<<i.second->UltimateStress << "\n";
 	}
 }
 
-void Instance::BeamSectionTxT
-
-()
+void Instance::BeamSectionTxT()
 {
 	InterFace* pInterFace = Base::Get_InterFace();
 	int SectionSize = pInterFace->Ms.size();
@@ -621,36 +621,77 @@ void Instance::Suspensioncombined()
 		});
 }
 
-void Instance::CreateMidIdAndEle()
+void Instance::MidPointInfor()
 {
-	InterFace* pInterFace = Get_InterFace();
-	QString filename = QFileDialog::getSaveFileName(pInterFace, "保存", "/", "datafile(*.txt);;All file(*.*)");
-	if (filename == nullptr)
+	int WireOfNum = 0;
+	int GearSize = 0;
+	for (auto& i : WireMidId)
 	{
-		return;
+		WireOfNum= i.first + 3;
+		const std::vector<int>& vectorData = i.second;  // 获取对应的 vector
+		GearSize = vectorData.size();
 	}
-	else
+
+	Stream << "*Key_Info," << WireOfNum * GearSize /*+ EleId.size() + GroundEleId.size()*/ << " \n";
+	int id = 1;
+	for (auto& i : GroundMidId)
 	{
-		qDebug() << filename;
-		Qf.setFileName(filename);
-		Qf.open(QIODevice::WriteOnly);
-		Stream.setDevice(&Qf);
-		if (!Qf.isOpen())
+		int a = i.first + 1;
+		const std::vector<int>& vectorData = i.second;  // 获取对应的 vector
+		for (int j = 0; j < vectorData.size(); j++)
 		{
-			cout << "文件打开失败\n";
-			return;
+			Stream << id << " " << "M" << " " << j + 1 << " " << a <<" " << vectorData[j] << "\n";
+			id++;
 		}
-		this->m_name = filename;
-		int GearSize = MidId.size();
-		for (int i = 0; i < GearSize; i++)
-		{
-			Stream << "Line-" << i + 1 << "\n";
-			Stream << "MiddlePoint: " << MidId[i] << "\n";
-			Stream << "endElements: " << EleId[2 * i] << " " << EleId[2 * i + 1] << "\n";
-		}
-		Qf.close();
 	}
+	for (auto& i : WireMidId)
+	{
+		int a = i.first + 1;
+		const std::vector<int>& vectorData = i.second;  // 获取对应的 vector
+		QString Type;
+		if (a == 1)
+		{
+			Type = "1A";
+		}
+		else if (a == 2)
+		{
+			Type = "1B";
+		}
+		else if (a == 3)
+		{
+			Type = "1C";
+		}
+		else if (a == 4)
+		{
+			Type = "2A";
+		}
+		else if (a == 5)
+		{
+			Type = "2B";
+		}
+		else if (a == 6)
+		{
+			Type = "2C";
+		}
+		for (int j = 0; j < vectorData.size(); j++)
+		{
+			Stream << id << " " << "M" << " " << j + 1 << " " << Type << " " << vectorData[j] << "\n";
+			id++;
+		}
+	}
+	//for (int i = 0; i < EleId.size(); i++)
+	//{
+	//	Stream << id << " " << "E" << "  " << EleId[2 * i] << "  " << EleId[2 * i + 1] << "\n";
+	//	id++;
+	//}
+	//for (int i = 0; i < GroundEleId.size(); i++)
+	//{
+	//	Stream << id << " " << "E" <<"  " << GroundEleId[2 * i] << " " << GroundEleId[2 * i + 1] << "\n";
+	//	id++;
+	//}
 }
+
+
 
 void Instance::RestraintTxT()
 {
@@ -668,6 +709,12 @@ void Instance::RestraintTxT()
 			m_id++;
 		}	
 	}
+	for (auto& i : m_Constraint)
+	{
+		Stream << "  " << m_id << "  " << i.m_idNode << "  " << i.m_Direction << "  " << 0 << "\n";
+		m_id++;
+	}
+	
 
 	//int RestraintNodesize = RestraintNode.size() * 6;//塔脚的4个完全约束
 	//int m_ConstraintSize = m_Constraint.size();//增加的约束

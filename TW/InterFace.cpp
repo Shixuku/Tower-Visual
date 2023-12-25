@@ -1387,7 +1387,6 @@ void InterFace::CreateGroupInp(QTreeWidgetItem* item)
 void InterFace::CreateMidIdAndEleInfor(QTreeWidgetItem* item)
 {
 	Instance* instance = OnFindInstance(item->parent());
-	instance->CreateMidIdAndEle();
 }
 
 
