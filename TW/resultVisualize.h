@@ -46,6 +46,7 @@ public:
 
 	vtkSmartPointer<vtkDoubleArray> scalars;//设置云图颜色
 	vtkSmartPointer<vtkScalarBarActor> scalarBar;//云图块actor
+	vtkSmartPointer<vtkLookupTable> lookupTable;
 
 	int m_speed = 0;//播放速度(帧/s)
 	int m_frames = 0;//帧

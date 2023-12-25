@@ -1,6 +1,7 @@
 #include "resultVisualize.h"
 #include"InterFace.h"
 #include <vtkTextProperty.h>
+#include <vtkLookupTable.h>
 
 resultVisualize::resultVisualize(QWidget *parent)
 	: QDialog(parent)
@@ -48,6 +49,11 @@ resultVisualize::resultVisualize(QWidget *parent)
 	connect(ui.comboBox_nephogram, MycurrentIndexChanged, this, &resultVisualize::setNephogramType);
 
 	connect(ui.comboBox_step, MycurrentIndexChanged, this, &resultVisualize::setCurrentStep);
+
+	lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+	lookupTable->SetHueRange(0.667,0);
+	lookupTable->SetNumberOfColors(16);
+	lookupTable->Build();
 }
 
 resultVisualize::~resultVisualize()
@@ -380,7 +386,7 @@ void resultVisualize::addActorData()
 	m_vtklines->GetProperty()->SetColor(0, 0, 0);
 
 	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-	scalarBar->SetLookupTable(linesmapper->GetLookupTable());
+	scalarBar->SetLookupTable(lookupTable);
 	//scalarBar->SetTitle("U1");
 	scalarBar->SetNumberOfLabels(16);
 	scalarBar->SetMaximumNumberOfColors(8);
@@ -504,6 +510,9 @@ void resultVisualize::setNephogramType(int iTpye)
 		}
 		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 	}
+	lookupTable->SetRange(boundary[0], boundary[1]);
+	lookupTable->Build();
+
 	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 }
 
