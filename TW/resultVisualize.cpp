@@ -32,7 +32,7 @@ resultVisualize::resultVisualize(QWidget *parent)
 	m_speed = 30;
 	connect(ui.speed_Slider, &QSlider::valueChanged, this, &resultVisualize::set_fps);
 	//显示原始actor
-	ui.checkBox_showOriginal->setChecked(true);
+	ui.checkBox_showOriginal->setChecked(false);
 	connect(ui.checkBox_showOriginal, &QCheckBox::clicked, this, &resultVisualize::showOriginalActor);
 	//循环播放
 	ui.checkBox_loop->setChecked(true);
@@ -43,7 +43,7 @@ resultVisualize::resultVisualize(QWidget *parent)
 
 	//云图combox
 	QStringList qstrlist;
-	qstrlist << "U1" << "U2" << "U3" << "UR1" << "UR2" << "UR3" << "N" << "M2" << "M3" << "Mises";
+	qstrlist << "U1" << "U2" << "U3"<< "U" << "UR1" << "UR2" << "UR3" << "N" << "M2" << "M3" << "Mises";
 	ui.comboBox_nephogram->addItems(qstrlist);
 	void (QComboBox:: * MycurrentIndexChanged)(int) = &QComboBox::currentIndexChanged;
 	connect(ui.comboBox_nephogram, MycurrentIndexChanged, this, &resultVisualize::setNephogramType);
@@ -128,6 +128,9 @@ void resultVisualize::update()
 				break;
 			case DataType::U3:
 				scalars->SetValue(pointIndex, node.displaymentY);
+				break;
+			case DataType::MagnitudeU:
+				scalars->SetValue(pointIndex, node.displayment);
 				break;
 			case DataType::UR1:
 				scalars->SetValue(pointIndex, node.rotationZ);
@@ -301,14 +304,21 @@ void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* i
 
 	}
 
-	if (stepnum == ui.comboBox_step->count()) return;
-
-	getBoundary();
-	//分析步combox
-	for (int i = 1; i <= stepnum; ++i)
+	if (stepnum != ui.comboBox_step->count())
 	{
-		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
+		getBoundary();
+		//分析步combox
+		for (int i = 1; i <= stepnum; ++i)
+		{
+			ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
+		}
 	}
+
+	vector<double> boundary(2);
+	boundary = m_Outputter->getBoundaryDisplaymentZ();
+	lookupTable->SetRange(boundary[0], boundary[1]);
+	lookupTable->Build();
+	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 
 	pCAE->m_Renderer->ResetCamera();
 }
@@ -365,10 +375,6 @@ void resultVisualize::addActorData()
 	scalars = vtkSmartPointer<vtkDoubleArray>::New();
 	scalars->SetNumberOfComponents(1);
 	scalars->SetNumberOfValues(numPts);
-	for (int i = 0; i < numPts; ++i)
-	{
-		scalars->SetValue(i, 0);
-	}
 
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_points);
@@ -389,11 +395,15 @@ void resultVisualize::addActorData()
 	scalarBar->SetLookupTable(lookupTable);
 	//scalarBar->SetTitle("U1");
 	scalarBar->SetNumberOfLabels(16);
-	scalarBar->SetMaximumNumberOfColors(8);
 
 	pCAE->m_Renderer->AddActor(m_vtkNodes);
 	pCAE->m_Renderer->AddActor(m_vtklines);
 	pCAE->m_Renderer->AddActor(scalarBar);
+
+	if (m_ins->Node_actor) m_ins->Node_actor->SetVisibility(false);
+	if (m_ins->m_BeamActor) m_ins->m_BeamActor->SetVisibility(false);
+	if (m_ins->m_TrussActor)m_ins->m_TrussActor->SetVisibility(false);
+
 	pCAE->m_renderWindow->Render();
 }
 
@@ -428,33 +438,37 @@ void resultVisualize::setNephogramType(int iTpye)
 			boundary = m_Outputter->getBoundaryDisplaymentY();
 			//scalarBar->SetTitle("U3");
 			break;
+		case DataType::MagnitudeU:
+			boundary = m_Outputter->getBoundaryDisplayment();
+			//scalarBar->SetTitle("U3");
+			break;
 		case DataType::UR1:
 			boundary = m_Outputter->getBoundaryRotationZ();
-			scalarBar->SetTitle("UR1");
+			//scalarBar->SetTitle("UR1");
 			break;
 		case DataType::UR2:
 			boundary = m_Outputter->getBoundaryRotationX();
-			scalarBar->SetTitle("UR2");
+			//scalarBar->SetTitle("UR2");
 			break;
 		case DataType::UR3:
 			boundary = m_Outputter->getBoundaryRotationY();
-			scalarBar->SetTitle("UR3");
+			//scalarBar->SetTitle("UR3");
 			break;
 		case DataType::N:
 			boundary = m_Outputter->getBoundaryStressN();
-			scalarBar->SetTitle("StressN");
+			//scalarBar->SetTitle("StressN");
 			break;
 		case DataType::M2:
 			boundary = m_Outputter->getBoundaryStressM2();
-			scalarBar->SetTitle("StressM2");
+			//scalarBar->SetTitle("StressM2");
 			break;
 		case DataType::M3:
 			boundary = m_Outputter->getBoundaryStressM3();
-			scalarBar->SetTitle("StressM3");
+			//scalarBar->SetTitle("StressM3");
 			break;
 		case DataType::Mises:
 			boundary = m_Outputter->getBoundaryMises();
-			scalarBar->SetTitle("Mises");
+			//scalarBar->SetTitle("Mises");
 			break;
 		default:
 			qDebug() << "未知云图类型！";

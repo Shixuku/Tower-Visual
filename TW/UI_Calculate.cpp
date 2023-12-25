@@ -231,6 +231,7 @@ void Instance_Calculate::visual()
 			nodes.push_back(coor);
 		}
 		display->addData(nodes, ins);
+		display->start();
 	}
 }
 
