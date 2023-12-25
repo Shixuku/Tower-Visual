@@ -38,7 +38,7 @@ struct NodeData
 
 struct ElementData
 {
-	ElementData(const Fem_Element_Base& ele);
+	ElementData(Fem_Element_Base& ele);
 
 	//内力
 	double stress_n = 0; //轴向应力

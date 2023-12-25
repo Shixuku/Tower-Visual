@@ -632,6 +632,13 @@ void TowerWireGroup::AddWireElement(CreateStrainWire* wire)
 				this->EleId.push_back(total + 1);
 			}
 		}
+		for (int j = 0; j < wire->GroundEleId.size(); j++)
+		{
+			if (wire->m_Elements_Trusses[i].m_idElement == wire->GroundEleId[j])
+			{
+				this->GroundEleId.push_back(total + 1);
+			}
+		}
 		size_t totalT = this->m_Elements_Trusses.size() - 1;
 		this->m_Elements_Trusses[totalT].m_idElement = total + 1;//放入实例的杆单元
 		this->m_Elements_Trusses[totalT].m_idNode[0] = wire->FindGroupIdNode(pE->m_idNode[0]);
@@ -698,5 +705,23 @@ void TowerWireGroup::AddWireMidId(CreateStrainWire* wire)
 	for (auto& i : wire->MidId)
 	{
 		this->MidId.push_back(wire->FindGroupIdNode(i));
+	}
+	for (auto& i : wire->WireMidId)
+	{
+		int a = i.first;
+		const std::vector<int>& vectorData = i.second;  // 获取对应的 vector
+		for (int j = 0; j < vectorData.size(); j++)
+		{
+			this->WireMidId[a].push_back(wire->FindGroupIdNode(vectorData[j]));
+		}
+	}
+	for (auto& i : wire->GroundMidId)
+	{
+		int a = i.first;
+		const std::vector<int>& vectorData = i.second;  // 获取对应的 vector
+		for (int j = 0; j < vectorData.size(); j++)
+		{
+			this->GroundMidId[a].push_back(wire->FindGroupIdNode(vectorData[j]));
+		}
 	}
 }

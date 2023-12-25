@@ -12,6 +12,7 @@ public:
 	int idStep; //分析步号
 	int m_direction;
 	bool overTime = false; //是否随时间变化
+	bool isInherit = true; //是否传递
 
 	virtual void Input(QDataStream& fin) = 0;
 	virtual void Input(QTextStream& fin) = 0;

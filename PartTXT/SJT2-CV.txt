@@ -3506,3 +3506,20 @@
 1,      28.5
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 17 18 19 20 21 22 23 
+*HangPoint, 16
+1,OB,1,Part-1,2
+2,OS,1,Part-1,5
+3,OS,2,Part-2,4
+4,OB,2,Part-2,3
+5,OS,1A,Part-3,12
+6,OB,1A,Part-3,7
+7,OS,2A,Part-4,10
+8,OB,2A,Part-4,7
+9,OS,1B,Part-5,12
+10,OB,1B,Part-5,7
+11,OS,2B,Part-6,12
+12,OB,2B,Part-6,7
+13,OS,1C,Part-7,13
+14,OB,1C,Part-7,8
+15,OS,2C,Part-8,10
+16,OB,2C,Part-8,7

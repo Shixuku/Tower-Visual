@@ -5029,7 +5029,7 @@
 
 *HangPoint,8
 1,H,1,Part-1,100
-2,H,1,Part-1,99
+2,H,2,Part-1,99
 3,H,1A,Part-1,102
 4,H,2A,Part-1,101
 5,H,1B,Part-2,66

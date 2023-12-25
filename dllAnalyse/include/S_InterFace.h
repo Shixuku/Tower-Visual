@@ -31,6 +31,8 @@ public:
 	virtual void InitMySQLTable(QString db_name, QString db_ip, QString user_name, QString password) = 0;
 	//添加到模型库
 	virtual void AddToStructures() = 0;
+	//关键点信息的导入和导出 0=导出 1=导入
+	virtual void io_keyInfo(QString fileName, int methord) = 0;
 
 	//以文件形式导入计算模型
 	virtual void Input(QString& FileName) = 0;

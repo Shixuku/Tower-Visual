@@ -6,7 +6,6 @@ public:
 	void CreateInsulatorSus(int fenlie, map<int, vector<Insulator_Base>>& SusInfor);
 	void CreateRealSus();//生成真实悬挂点带分裂导线的
 	void CreateStrainWireInfor(vector<WireProperties>pro);//生成耐张端的导线节点和单元信息
-	void CreateStrainString(int id);//生成耐张串
 	void CreateGWire(vector<WireProperties>pro);
 	void GetMidPoint(vector<WireProperties>pro);
 	void  Create_Mesh();
@@ -22,6 +21,7 @@ public:
 	vector<int>wireToGroup;
 	int NumberOfLine = 0;//总线路数量
 	int wireNumberOfLine = 0;//导线数量
+	QString WireType="False";//判断读取的文件中是否有地线
 	int row = 0;//一个耐张段一条线路的挂点个数
 	vector<int>xuanchui;
 	vector<int>G_xuanchui;
