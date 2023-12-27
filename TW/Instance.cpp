@@ -478,7 +478,7 @@ void Instance::WindTxT()
 
 void Instance::IceLoadTxT()
 {
-	Stream << "*Element_ice, " << m_IceTypeElement.size() << "\n";
+	Stream << "*Force_Ice, " << m_IceTypeElement.size() << "\n";
 
 	// 使用迭代器遍历访问 list 中的数据
 	std::list<ParameterIceType>::iterator it;
@@ -556,11 +556,11 @@ void Instance::WindEleTxT()
 void Instance::Section_Assign()
 {
 	int TotalElementSize = m_Elements_Trusses.size() + m_Elements_beams.size();
-	//考虑冰单元
-	if (m_IceTypeElement.size() > 0)
-	{
-		TotalElementSize += m_Elements_Trusses.size();
-	}
+	////考虑冰单元
+	//if (m_IceTypeElement.size() > 0)
+	//{
+	//	TotalElementSize += m_Elements_Trusses.size();
+	//}
 	Stream << "*Section_Assign," << TotalElementSize << " \n";
 	
 	//先杆
