@@ -47,7 +47,7 @@ public:
 
 	vtkSmartPointer<vtkDoubleArray> scalars;//设置云图颜色
 	vtkSmartPointer<vtkScalarBarActor> scalarBar;//云图块actor
-
+	vtkSmartPointer<vtkLookupTable> lookupTable;
 	int m_speed = 0;//播放速度(帧/s)
 	int m_frames = 0;//帧
 	bool loopPlay = false;
@@ -61,7 +61,7 @@ public:
 	void autoFactor(bool flag);
 
 	void addData(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
-	void addData_ice(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
+	//void addData_ice(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
 	void addActorData();//添加界面的actor
 	void removeActor();
 
@@ -77,7 +77,7 @@ private:
 	Ui::resultVisualizeClass ui;
 
 	Outputter* m_Outputter = nullptr;
-	Outputter_ice* m_Outputter_ice = nullptr;
+	//Outputter_ice* m_Outputter_ice = nullptr;
 
 	void getBoundary();
 	double boundary = 0; //模型边界大小

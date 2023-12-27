@@ -8,16 +8,9 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	m_InterFace = InterFace;
 	Set_headertext();
 	connect(ui.btn_Wind, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
-	//connect(ui.btn_WuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
 	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
-	//connect(ui.btn_showWuDong, &QPushButton::clicked, this, &Instance_Calculate::visual);
 	connect(ui.btn_InputWind, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
-	//connect(ui.btn_InputWuDong, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
-
-	//connect(ui.btn_Ice, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
-	//connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
-	//connect(ui.btn_InputIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
 
 }
 
@@ -89,60 +82,50 @@ void Instance_Calculate::on_btn_import_clicked()
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
 	m_InterFace->ui.textEdit->setText("计算结束！");
-	//update();
-
-	////算风--让关于冰的按钮点不起
-	//ui.btn_Ice->setEnabled(false);
-	//ui.btn_showIce->setEnabled(false);
 
 }
 
-void Instance_Calculate::btn_CaculateModelIce()//更新的鲁佳帛的动态链接库
-{
-	m_InterFace->m_Renderer->RemoveAllViewProps();
-	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
-	if (m_str == nullptr)
-	{
-		std::cout << "open failed\n";
-		return;
-	}
-	int lastSeparatorIndex = m_str.lastIndexOf('/');
-	if (lastSeparatorIndex == -1)	lastSeparatorIndex = m_str.lastIndexOf('\\');
-	// 提取文件名部分
-	m_fileName = m_str.mid(lastSeparatorIndex + 1);
-	//创建实例
-	TowerWireGroup* towerWireGroup = new TowerWireGroup;
-	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
-	//加入名称
-	towerWireGroup->m_name = "导入模型 " + QString::number(m_InterFace->TWG.size() + 1);
-	towerWireGroup->m_filename = m_str;//文件名
-	m_InterFace->TWG.Add_Entity(towerWireGroup);
-	m_ins = (Instance*)towerWireGroup;
-	if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
-	m_ins->s_ice = GetStructure_ice();//生成structure类对象
-
-	m_ins->s_ice->set_id(m_ins->m_id);
-	m_ins->s_ice->AddToStructures();
-
-	m_ins->s_ice->Input_FemData(m_str);
-	m_ins->s_ice->set_Name(m_ins->m_name);
-	CreateActor_ice();////将点和线添加到界面
-
-	update();
-	clock_t start, end;//计时
-	start = clock();
-	m_ins->s_ice->Solve();//计算
-	//获得数据
-	end = clock();
-	double rtime = (end - start);
-	qDebug() << "计算总耗时： " << rtime << " ms";
-	m_InterFace->ui.textEdit->setText("计算结束！");
-	//update();
-	////算冰--让关于风的不显示
-	//ui.btn_Wind->setEnabled(false);
-	//ui.btn_showWind->setEnabled(false);
-}
-
+//void Instance_Calculate::btn_CaculateModelIce()//更新的鲁佳帛的动态链接库
+//{
+//	m_InterFace->m_Renderer->RemoveAllViewProps();
+//	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
+//	if (m_str == nullptr)
+//	{
+//		std::cout << "open failed\n";
+//		return;
+//	}
+//	int lastSeparatorIndex = m_str.lastIndexOf('/');
+//	if (lastSeparatorIndex == -1)	lastSeparatorIndex = m_str.lastIndexOf('\\');
+//	// 提取文件名部分
+//	m_fileName = m_str.mid(lastSeparatorIndex + 1);
+//	//创建实例
+//	TowerWireGroup* towerWireGroup = new TowerWireGroup;
+//	towerWireGroup->m_id = m_InterFace->TWG.size() + 1;
+//	//加入名称
+//	towerWireGroup->m_name = "导入模型 " + QString::number(m_InterFace->TWG.size() + 1);
+//	towerWireGroup->m_filename = m_str;//文件名
+//	m_InterFace->TWG.Add_Entity(towerWireGroup);
+//	m_ins = (Instance*)towerWireGroup;
+//	if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
+//	m_ins->s_ice = GetStructure_ice();//生成structure类对象
+//
+//	m_ins->s_ice->set_id(m_ins->m_id);
+//	m_ins->s_ice->AddToStructures();
+//
+//	m_ins->s_ice->Input_FemData(m_str);
+//	m_ins->s_ice->set_Name(m_ins->m_name);
+//	//CreateActor_ice();////将点和线添加到界面
+//
+//	update();
+//	clock_t start, end;//计时
+//	start = clock();
+//	m_ins->s_ice->Solve();//计算
+//	//获得数据
+//	end = clock();
+//	double rtime = (end - start);
+//	qDebug() << "计算总耗时： " << rtime << " ms";
+//	m_InterFace->ui.textEdit->setText("计算结束！");
+//}
 
 void Instance_Calculate::showEvent(QShowEvent* event)
 {
@@ -195,41 +178,6 @@ void Instance_Calculate::on_btk_ok_clicked()
 	m_InterFace->ui.textEdit->setText("计算结束！");
 }
 
-
-void Instance_Calculate::on_btk_ok_clicked_ice()
-{
-	int index = ui.tableWidget->currentRow();
-	m_ins = list_Instance[index];
-	if (!m_ins) return;
-	QString str = m_ins->m_filename;
-	if (str != nullptr)
-	{
-		qDebug() << str;
-		if (m_ins->s_ice) delete m_ins->s_ice;//释放之前的对象
-		m_ins->s_ice = GetStructure_ice();//生成structure类对象
-		m_ins->s_ice->set_id(m_ins->m_id);
-		m_ins->s_ice->AddToStructures();
-		m_ins->s_ice->Input_FemData(str);
-		m_ins->s_ice->set_Name(m_ins->m_name);
-
-	}
-	else
-	{
-		cout << "str = nullptr!" << "\n";
-		return;
-	}
-
-	clock_t start, end;//计时
-	start = clock();
-	m_ins->s_ice->Solve();//计算
-
-	//获得数据
-	end = clock();
-	double rtime = (end - start);
-	qDebug() << "计算总耗时： " << rtime << " ms";
-	m_InterFace->ui.textEdit->setText("计算结束！");
-}
-
 void Instance_Calculate::visual()
 {
 	int index = ui.tableWidget->currentRow();
@@ -258,34 +206,9 @@ void Instance_Calculate::visual()
 			nodes.push_back(coor);
 		}
 		display->addData(nodes, ins);
+		display->start();
 	}
 }
-
-void Instance_Calculate::visual_ice()
-{
-	int index = ui.tableWidget->currentRow();
-	m_InterFace->ui.textEdit->clear();
-	if (index < 0)
-	{
-		QMessageBox::information(this, "Tips", "请选择要显示的冰计算！"); return;
-	}
-	else
-	{
-		if (!display)
-		{
-			display = new resultVisualize(m_InterFace);
-		}
-		this->accept();//把原来的界面关闭
-		display->show();
-		Instance* ins = nullptr;
-		ins = list_Instance[index];
-		if (!ins) return;
-		std::list<std::vector<double>> nodes = ins->s_ice->Get_node_ice();
-		display->addData_ice(nodes, ins);
-	}
-
-}
-
 
 void Instance_Calculate::update()
 {
@@ -384,82 +307,3 @@ void Instance_Calculate::CreateActor()
 	m_InterFace->m_renderWindow->Render();
 }
 
-void Instance_Calculate::CreateActor_ice()
-{
-	vtkSmartPointer<vtkPolyData> PolyData = vtkSmartPointer<vtkPolyData>::New();
-	m_ins->m_pts = vtkSmartPointer<vtkPoints>::New();
-	std::list<std::vector<double>> nodes = m_ins->s_ice->Get_node_ice1(); 
-
-	for (auto& i : nodes)
-	{
-		m_nodes.push_back(Node(i[0], i[1], i[2], i[3], 0.));
-	}
-	for (const auto& i : m_nodes)
-	{
-		double x = i.x;
-		double y = i.y;
-		double z = i.z;
-		vtkIdType pid = i.m_idNode;
-		m_ins->m_pts->InsertPoint(pid - 1, x, y, z);
-	}
-
-	PolyData->SetPoints(m_ins->m_pts);
-
-	vtkNew<vtkVertexGlyphFilter> VertexFilter;
-	VertexFilter->SetInputData(PolyData);
-	VertexFilter->Update();
-
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(VertexFilter->GetOutputPort());
-	m_ins->Node_actor = vtkSmartPointer<vtkActor>::New();
-	m_ins->Node_actor->SetMapper(mapper);
-	m_ins->Node_actor->GetProperty()->SetColor(0, 0, 0);
-	m_ins->Node_actor->GetProperty()->SetPointSize(3);
-	m_InterFace->m_Renderer->AddActor(m_ins->Node_actor);
-	m_InterFace->m_renderWindow->Render();
-
-	// 线
-	m_ins->m_lines = vtkSmartPointer<vtkCellArray>::New();
-	std::list<std::vector<int>> truss = m_ins->s_ice->Get_truss_ice();
-
-	for (auto& i : truss)
-	{
-		m_truss.push_back(Element_Truss(0., i[0], i[1], 0, 0.));
-	}
-	for (const auto& i : m_truss)
-	{
-		vtkIdType id1 = i.m_idNode[0] - 1;
-		vtkIdType id2 = i.m_idNode[1] - 1;
-		vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
-		line->GetPointIds()->SetId(0, id1);
-		line->GetPointIds()->SetId(1, id2);
-		m_ins->m_lines->InsertNextCell(line);
-	}
-	std::list<std::vector<int>> beam = m_ins->s_ice->Get_beam_ice();
-
-	for (auto& i : beam)
-	{
-		m_beam.push_back(Element_Truss(0., i[0], i[1], 0, 0.));
-	}
-	for (const auto& i : m_beam)
-	{
-		vtkIdType id1 = i.m_idNode[0] - 1;
-		vtkIdType id2 = i.m_idNode[1] - 1;
-
-		vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
-		line->GetPointIds()->SetId(0, id1);
-		line->GetPointIds()->SetId(1, id2);
-		m_ins->m_lines->InsertNextCell(line);
-	}
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	linesPolyData->SetPoints(m_ins->m_pts);
-	linesPolyData->SetLines(m_ins->m_lines);
-	vtkSmartPointer<vtkPolyDataMapper> linesmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	linesmapper->SetInputData(linesPolyData);
-	m_ins->m_TrussActor = vtkSmartPointer<vtkActor>::New();
-	m_ins->m_TrussActor->SetMapper(linesmapper);
-	m_ins->m_TrussActor->GetProperty()->SetColor(0, 0, 0);
-	m_InterFace->m_Renderer->AddActor(m_ins->m_TrussActor);
-	m_InterFace->m_Renderer->ResetCamera();
-	m_InterFace->m_renderWindow->Render();
-}

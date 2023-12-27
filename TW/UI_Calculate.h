@@ -20,16 +20,11 @@ public:
 	~Instance_Calculate();
 
 	void on_btk_ok_clicked();
-	void on_btk_ok_clicked_ice();
 	void visual();
-	void visual_ice();
-
 	void update();
-
 	void CreateActor();
-	void CreateActor_ice();
 	void on_btn_import_clicked();
-	void btn_CaculateModelIce();
+	//void btn_CaculateModelIce();
 	
 protected:
 	void showEvent(QShowEvent* event) override;
@@ -40,7 +35,6 @@ signals:
 private:
 	Ui::UI_CalculateClass ui;
 	InterFace* m_InterFace = nullptr;
-	TowerCaculate* towercaculate = nullptr;
 	resultVisualize* display = nullptr;
 
 	std::vector<Instance*> list_Instance;

@@ -22,14 +22,13 @@ class Instance :public Base
 {
 public:
 	Instance();
-	virtual ~Instance() { 
-		if (s)
-		{
-			delete s;
-			qDebug() << "删除计算实例！";
-		}
-
-	}
+	//virtual ~Instance() { 
+	//	if (s)
+	//	{
+	//		delete s;
+	//		qDebug() << "删除计算实例！";
+	//	}
+	//}
 	QString m_name = nullptr;
 	QString m_filename = "No File!";
 	vector<Node> m_Nodes;//节点合集

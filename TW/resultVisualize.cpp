@@ -1,7 +1,7 @@
 #include "resultVisualize.h"
 #include"InterFace.h"
 #include <vtkTextProperty.h>
-
+#include<vtkLookupTable.h>
 resultVisualize::resultVisualize(QWidget *parent)
 	: QDialog(parent)
 {
@@ -31,7 +31,7 @@ resultVisualize::resultVisualize(QWidget *parent)
 	m_speed = 30;
 	connect(ui.speed_Slider, &QSlider::valueChanged, this, &resultVisualize::set_fps);
 	//显示原始actor
-	ui.checkBox_showOriginal->setChecked(true);
+	ui.checkBox_showOriginal->setChecked(false);
 	connect(ui.checkBox_showOriginal, &QCheckBox::clicked, this, &resultVisualize::showOriginalActor);
 	//循环播放
 	ui.checkBox_loop->setChecked(true);
@@ -42,12 +42,17 @@ resultVisualize::resultVisualize(QWidget *parent)
 
 	//云图combox
 	QStringList qstrlist;
-	qstrlist << "Ux" << "Uy" << "Uz" << "UR1" << "UR2" << "UR3" << "N" << "M2" << "M3" << "Mises";
-	ui.comboBox_nephogram->addItems(qstrlist);
+	qstrlist << "Ux" << "Uy" << "Uz" << "U" << "UR1" << "UR2" << "UR3" << "N";
+	ui.comboBox_nephogram->addItems(qstrlist);//nephogram--"云图"
 	void (QComboBox:: * MycurrentIndexChanged)(int) = &QComboBox::currentIndexChanged;
 	connect(ui.comboBox_nephogram, MycurrentIndexChanged, this, &resultVisualize::setNephogramType);
 
 	connect(ui.comboBox_step, MycurrentIndexChanged, this, &resultVisualize::setCurrentStep);
+
+	lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+	lookupTable->SetHueRange(0.667, 0);
+	lookupTable->SetNumberOfColors(16);
+	lookupTable->Build();
 }
 
 resultVisualize::~resultVisualize()
@@ -123,6 +128,9 @@ void resultVisualize::update()
 			case DataType::U3:
 				scalars->SetValue(pointIndex, node.displaymentY);
 				break;
+			case DataType::MagnitudeU:
+				scalars->SetValue(pointIndex, node.displayment);
+				break;
 			case DataType::UR1:
 				scalars->SetValue(pointIndex, node.rotationZ);
 				break;
@@ -147,62 +155,62 @@ void resultVisualize::update()
 
 		}
 	}
-	if (m_Outputter_ice != nullptr)
-	{
-		if (m_frames >= m_Outputter_ice->dataSet.size())
-		{
-			if (loopPlay) emit animationFinished();
-			return;
-		}
-		double ampFactor = ui.lineEdit->text().toDouble();//放大因子
+	//if (m_Outputter_ice != nullptr)
+	//{
+	//	if (m_frames >= m_Outputter_ice->dataSet.size())
+	//	{
+	//		if (loopPlay) emit animationFinished();
+	//		return;
+	//	}
+	//	double ampFactor = ui.lineEdit->text().toDouble();//放大因子
 
-		vtkIdType pointsNum = m_nodes.size();
+	//	vtkIdType pointsNum = m_nodes.size();
 
-		DataFrame_ice* iframe = m_Outputter_ice->dataSet[m_frames];
-		//修改点的坐标
-		for (auto& i : iframe->nodeDatas)
-		{
-			int pointIndex = i.first - 1;
-			NodeData_ice& node = i.second;
-			double* p = m_originalPoints->GetPoint(pointIndex);
-			m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
+	//	DataFrame_ice* iframe = m_Outputter_ice->dataSet[m_frames];
+	//	//修改点的坐标
+	//	for (auto& i : iframe->nodeDatas)
+	//	{
+	//		int pointIndex = i.first - 1;
+	//		NodeData_ice& node = i.second;
+	//		double* p = m_originalPoints->GetPoint(pointIndex);
+	//		m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
 
-			//添加云图数据
-			switch (currentType_ice)
-			{
-			case DataType_ice::U1:
-				scalars->SetValue(pointIndex, node.displaymentZ);
-				break;
-			case DataType_ice::U2:
-				scalars->SetValue(pointIndex, node.displaymentX);
-				break;
-			case DataType_ice::U3:
-				scalars->SetValue(pointIndex, node.displaymentY);
-				break;
-			case DataType_ice::UR1:
-				scalars->SetValue(pointIndex, node.rotationZ);
-				break;
-			case DataType_ice::UR2:
-				scalars->SetValue(pointIndex, node.rotationX);
-				break;
-			case DataType_ice::UR3:
-				scalars->SetValue(pointIndex, node.rotationY);
-				break;
-			case DataType_ice::N:
-				scalars->SetValue(pointIndex, node.stressN);
-				break;
-			case DataType_ice::M2:
-				scalars->SetValue(pointIndex, node.stressM2);
-				break;
-			case DataType_ice::M3:
-				scalars->SetValue(pointIndex, node.stressM3);
-				break;
-			default:
-				break;
-			}
+	//		//添加云图数据
+	//		switch (currentType_ice)
+	//		{
+	//		case DataType_ice::U1:
+	//			scalars->SetValue(pointIndex, node.displaymentZ);
+	//			break;
+	//		case DataType_ice::U2:
+	//			scalars->SetValue(pointIndex, node.displaymentX);
+	//			break;
+	//		case DataType_ice::U3:
+	//			scalars->SetValue(pointIndex, node.displaymentY);
+	//			break;
+	//		case DataType_ice::UR1:
+	//			scalars->SetValue(pointIndex, node.rotationZ);
+	//			break;
+	//		case DataType_ice::UR2:
+	//			scalars->SetValue(pointIndex, node.rotationX);
+	//			break;
+	//		case DataType_ice::UR3:
+	//			scalars->SetValue(pointIndex, node.rotationY);
+	//			break;
+	//		case DataType_ice::N:
+	//			scalars->SetValue(pointIndex, node.stressN);
+	//			break;
+	//		case DataType_ice::M2:
+	//			scalars->SetValue(pointIndex, node.stressM2);
+	//			break;
+	//		case DataType_ice::M3:
+	//			scalars->SetValue(pointIndex, node.stressM3);
+	//			break;
+	//		default:
+	//			break;
+	//		}
 
-		}
-	}
+	//	}
+	//}
 	m_frames++;//帧++
 	ui.label_frame->setText(QString::number(m_frames));//帧
 	m_points->Modified();
@@ -259,7 +267,7 @@ void resultVisualize::autoFactor(bool flag)
 		double ampFator = boundary / max_disp / 10;
 		ui.lineEdit->setText(QString::number(ampFator));
 	}
-	if (m_Outputter_ice != nullptr)
+	/*if (m_Outputter_ice != nullptr)
 	{
 		if (!flag) return;
 
@@ -276,7 +284,7 @@ void resultVisualize::autoFactor(bool flag)
 
 		double ampFator = boundary / max_disp / 10;
 		ui.lineEdit->setText(QString::number(ampFator));
-	}
+	}*/
 
 }
 
@@ -300,35 +308,42 @@ void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* i
 		ins->s->get_outputter(i).FindBoundary();
 
 	}
-
-	if (stepnum == ui.comboBox_step->count()) return;
-
-	getBoundary();
-	//分析步combox
-	for (int i = 1; i <= stepnum; ++i)
+	if (stepnum != ui.comboBox_step->count())
 	{
-		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
+		getBoundary();
+		//分析步combox
+		for (int i = 1; i <= stepnum; ++i)
+		{
+			ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
+		}
 	}
+
+	vector<double> boundary(2);
+	boundary = m_Outputter->getBoundaryDisplaymentZ();
+	lookupTable->SetRange(boundary[0], boundary[1]);
+	lookupTable->Build();
+	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+
 	pCAE->m_Renderer->ResetCamera();
 }
 
-void resultVisualize::addData_ice(std::list<std::vector<double>>& nodes, Instance* ins)
-{//刷新数据（主界面数据变化后）
-	m_ins = ins;
-	assert(m_ins);
-
-	for (auto& i : nodes)
-	{
-		m_nodes.push_back(Node(0., i[0], i[1], i[2], 0.));
-	}
-	addActorData();//添加主界面数据(copy)
-
-	getBoundary();
-	//分析步boundary
-	m_Outputter_ice = &m_ins->s_ice->get_outputter(1);
-	m_ins->s_ice->get_outputter(1).FindBoundary();
-	pCAE->m_Renderer->ResetCamera();
-}
+//void resultVisualize::addData_ice(std::list<std::vector<double>>& nodes, Instance* ins)
+//{//刷新数据（主界面数据变化后）
+//	m_ins = ins;
+//	assert(m_ins);
+//
+//	for (auto& i : nodes)
+//	{
+//		m_nodes.push_back(Node(0., i[0], i[1], i[2], 0.));
+//	}
+//	addActorData();//添加主界面数据(copy)
+//
+//	getBoundary();
+//	//分析步boundary
+//	m_Outputter_ice = &m_ins->s_ice->get_outputter(1);
+//	m_ins->s_ice->get_outputter(1).FindBoundary();
+//	pCAE->m_Renderer->ResetCamera();
+//}
 
 void resultVisualize::addActorData()
 {
@@ -357,17 +372,17 @@ void resultVisualize::addActorData()
 	m_vtkNodes = vtkSmartPointer<vtkActor>::New();
 	m_vtkNodes->SetMapper(mapper);
 	m_vtkNodes->GetProperty()->SetColor(0, 0, 0);
-	m_vtkNodes->GetProperty()->SetPointSize(3);
+	m_vtkNodes->GetProperty()->SetPointSize(2);
 
 	//应力渲染
 	int numPts = points->GetNumberOfPoints();
 	scalars = vtkSmartPointer<vtkDoubleArray>::New();
 	scalars->SetNumberOfComponents(1);
 	scalars->SetNumberOfValues(numPts);
-	for (int i = 0; i < numPts; ++i)
-	{
-		scalars->SetValue(i, 0);
-	}
+	//for (int i = 0; i < numPts; ++i)
+	//{
+	//	scalars->SetValue(i, 0);
+	//}
 
 	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
 	linesPolyData->SetPoints(m_points);
@@ -385,14 +400,18 @@ void resultVisualize::addActorData()
 	m_vtklines->GetProperty()->SetColor(0, 0, 0);
 
 	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-	scalarBar->SetLookupTable(linesmapper->GetLookupTable());
+	scalarBar->SetLookupTable(lookupTable);
 	//scalarBar->SetTitle("U1");
 	scalarBar->SetNumberOfLabels(16);
-	scalarBar->SetMaximumNumberOfColors(8);
 
 	pCAE->m_Renderer->AddActor(m_vtkNodes);
 	pCAE->m_Renderer->AddActor(m_vtklines);
 	pCAE->m_Renderer->AddActor(scalarBar);
+
+	if (m_ins->Node_actor) m_ins->Node_actor->SetVisibility(false);
+	if (m_ins->m_BeamActor) m_ins->m_BeamActor->SetVisibility(false);
+	if (m_ins->m_TrussActor)m_ins->m_TrussActor->SetVisibility(false);
+
 	pCAE->m_renderWindow->Render();
 }
 
@@ -421,95 +440,66 @@ void resultVisualize::setNephogramType(int iTpye)
 			break;
 		case DataType::U2:
 			boundary = m_Outputter->getBoundaryDisplaymentX();
-			//scalarBar->SetTitle("U2");
 			break;
 		case DataType::U3:
 			boundary = m_Outputter->getBoundaryDisplaymentY();
-			//scalarBar->SetTitle("U3");
+			break;
+		case DataType::MagnitudeU:
+			boundary = m_Outputter->getBoundaryDisplayment();
 			break;
 		case DataType::UR1:
 			boundary = m_Outputter->getBoundaryRotationZ();
-			//scalarBar->SetTitle("UR1");
 			break;
 		case DataType::UR2:
 			boundary = m_Outputter->getBoundaryRotationX();
-			//scalarBar->SetTitle("UR2");
 			break;
 		case DataType::UR3:
 			boundary = m_Outputter->getBoundaryRotationY();
-			//scalarBar->SetTitle("UR3");
 			break;
 		case DataType::N:
 			boundary = m_Outputter->getBoundaryStressN();
-			//scalarBar->SetTitle("StressN");
-			break;
-		case DataType::M2:
-			boundary = m_Outputter->getBoundaryStressM2();
-			//scalarBar->SetTitle("StressM2");
-			break;
-		case DataType::M3:
-			boundary = m_Outputter->getBoundaryStressM3();
-			//scalarBar->SetTitle("StressM3");
-			break;
-		case DataType::Mises:
-			boundary = m_Outputter->getBoundaryMises();
-			//scalarBar->SetTitle("Mises");
 			break;
 		default:
 			qDebug() << "未知云图类型！";
 			break;
 		}
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
 	}
-	if (m_Outputter_ice != nullptr)
-	{
-		currentType_ice = static_cast<DataType_ice>(iTpye);
-
-		switch (currentType_ice)
-		{
-		case DataType_ice::U1:
-			boundary = m_Outputter_ice->getBoundaryDisplaymentZ();
-			//scalarBar->SetTitle("U1");
-			break;
-		case DataType_ice::U2:
-			boundary = m_Outputter_ice->getBoundaryDisplaymentX();
-			//scalarBar->SetTitle("U2");
-			break;
-		case DataType_ice::U3:
-			boundary = m_Outputter_ice->getBoundaryDisplaymentY();
-			//scalarBar->SetTitle("U3");
-			break;
-		case DataType_ice::UR1:
-			boundary = m_Outputter_ice->getBoundaryRotationZ();
-			//scalarBar->SetTitle("UR1");
-			break;
-		case DataType_ice::UR2:
-			boundary = m_Outputter_ice->getBoundaryRotationX();
-			//scalarBar->SetTitle("UR2");
-			break;
-		case DataType_ice::UR3:
-			boundary = m_Outputter_ice->getBoundaryRotationY();
-			//->SetTitle("UR3");
-			break;
-		case DataType_ice::N:
-			boundary = m_Outputter_ice->getBoundaryStressN();
-			//scalarBar->SetTitle("StressN");
-			break;
-		case DataType_ice::M2:
-			boundary = m_Outputter_ice->getBoundaryStressM2();
-			//scalarBar->SetTitle("StressM2");
-			break;
-		case DataType_ice::M3:
-			boundary = m_Outputter_ice->getBoundaryStressM3();
-			//scalarBar->SetTitle("StressM3");
-			break;
-		default:
-			qDebug() << "未知云图类型！";
-			break;
-		}
-		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
-	}
+	//if (m_Outputter_ice != nullptr)
+	//{
+	//	currentType_ice = static_cast<DataType_ice>(iTpye);
+	//	switch (currentType_ice)
+	//	{
+	//	case DataType_ice::U1:
+	//		boundary = m_Outputter_ice->getBoundaryDisplaymentZ();
+	//		break;
+	//	case DataType_ice::U2:
+	//		boundary = m_Outputter_ice->getBoundaryDisplaymentX();
+	//		break;
+	//	case DataType_ice::U3:
+	//		boundary = m_Outputter_ice->getBoundaryDisplaymentY();
+	//		break;
+	//	case DataType_ice::UR1:
+	//		boundary = m_Outputter_ice->getBoundaryRotationZ();
+	//		break;
+	//	case DataType_ice::UR2:
+	//		boundary = m_Outputter_ice->getBoundaryRotationX();
+	//		break;
+	//	case DataType_ice::UR3:
+	//		boundary = m_Outputter_ice->getBoundaryRotationY();
+	//		break;
+	//	case DataType_ice::N:
+	//		boundary = m_Outputter_ice->getBoundaryStressN();
+	//		break;
+	//	default:
+	//		qDebug() << "未知云图类型！";
+	//		break;
+	//	}
+	//	//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	//}
+	lookupTable->SetRange(boundary[0], boundary[1]);
+	lookupTable->Build();
 	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+
 }
 
 void resultVisualize::setCurrentStep(int idStep)
@@ -526,14 +516,14 @@ void resultVisualize::setCurrentStep(int idStep)
 
 		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 	}
-	if (m_ins->s_ice != nullptr)
-	{
-		m_Outputter_ice = &(m_ins->s_ice->get_outputter(idStep));
-		qDebug() << "current step:" << m_Outputter_ice->m_idStep;
-		ui.comboBox_nephogram->setCurrentIndex(0);
-		vector<double>boundary = m_Outputter_ice->getBoundaryDisplaymentX();
-		//scalarBar->SetTitle("U1");
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
-		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
-	}	
+	//if (m_ins->s_ice != nullptr)
+	//{
+	//	m_Outputter_ice = &(m_ins->s_ice->get_outputter(idStep));
+	//	qDebug() << "current step:" << m_Outputter_ice->m_idStep;
+	//	ui.comboBox_nephogram->setCurrentIndex(0);
+	//	vector<double>boundary = m_Outputter_ice->getBoundaryDisplaymentX();
+	//	//scalarBar->SetTitle("U1");
+	//	qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	//	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+	//}	
 }
