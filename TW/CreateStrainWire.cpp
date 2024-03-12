@@ -109,15 +109,15 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 				}
 				if (nodeIds.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, nodeIds, H_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					//CreateXuanChuiInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					InsulatorId.push_back(Truss_elementsID);
 				}
 				if (V_1_Ids.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_1_Ids, V_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_1_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_2_Ids, V_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_2_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
 				}
 				CreatSpacer(m_Elements_Trusses, S_Id, spacerIds);
@@ -169,9 +169,7 @@ void CreateStrainWire::CreateRealSus()
 		angle = m_Angle[key-1];
 		int susnum = num * fenlie;//
 		node = new int[susnum];
-		//ap_node = new int[num];
 		int index = 0; // 节点索引
-		//int ap_index = 0;
 		double offsetX = 0; double offsetY = 0; double offsetZ = 0;
 		for (int i = 0; i < num; i++)//
 		{
@@ -225,14 +223,14 @@ void CreateStrainWire::CreateRealSus()
 		double x2 = 0; double y2 = 0; double z2 = 0;
 		for (int i = 0; i < wireNumberOfLine; i++)
 		{
-			node[1] = Creat_Node(m_Str_realSus[key - 1][i* OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0, 2);
-			node[2] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1 ].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0, 2);
+			node[0] = Creat_Node(m_Str_realSus[key - 1][i* OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0, 2);
+			node[1] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1 ].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0, 2);
 			vector<int> start_ids;
 			vector<int> end_ids;
 			for (int i = 0; i < fenlie; i++)
 			{
-				start_ids.push_back(node[1] + i - fenlie + 1);
-				end_ids.push_back(node[2] + i - fenlie + 1);
+				start_ids.push_back(node[0] + i - fenlie + 1);
+				end_ids.push_back(node[1] + i - fenlie + 1);
 			}
 			x1 = EndPoint[key][i * 2].x;
 			y1 = EndPoint[key][i * 2].y;
@@ -247,7 +245,7 @@ void CreateStrainWire::CreateRealSus()
 		}
 
 		 //在使用完后别忘了释放内存
-		delete[] node;
+ 		delete[] node;
 	
 	}
 }
@@ -269,7 +267,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 			{
 				rou = pro[i].w_rou * 9.8 / (pro[i].w_area * 1000000);
 				stress = pro[i].w_f * 1000 / (pro[i].w_area * 1000000);
-				area = pro[i].w_area * 1000000;
+				area = pro[i].w_area * 2000000;
 				unitMass = pro[i].w_rou;
 				k = rou / stress;
 				int n = 100;

@@ -48,7 +48,7 @@ void Instance::Show_VTKtruss(vtkRenderer* renderer)
 
 	m_TrussActor = vtkSmartPointer<vtkActor>::New();
 	m_TrussActor->SetMapper(mapper);
-	m_TrussActor->GetProperty()->SetColor(0, 1, 0);
+	m_TrussActor->GetProperty()->SetColor(0, 0, 0);
 	renderer->AddActor(m_TrussActor);
 }
 
@@ -74,7 +74,7 @@ void Instance::Show_VTKbeam(vtkRenderer* renderer)
 	mapper->SetInputData(linesPolyData);
 	m_BeamActor = vtkSmartPointer<vtkActor>::New();
 	m_BeamActor->SetMapper(mapper);
-	m_BeamActor->GetProperty()->SetColor(0, 1, 0);
+	m_BeamActor->GetProperty()->SetColor(0, 0, 0);
 	renderer->AddActor(m_BeamActor);
 }
 
@@ -112,7 +112,7 @@ void Instance::Show_VTKnode(vtkRenderer* renderer)
 
 	Node_actor = vtkSmartPointer<vtkActor>::New();
 	Node_actor->SetMapper(Node_mapper);
-	Node_actor->GetProperty()->SetColor(255, 255, 0);
+	Node_actor->GetProperty()->SetColor(0, 0, 0);
 	Node_actor->GetProperty()->SetPointSize(3);
 	renderer->AddActor(Node_actor);
 }
@@ -185,7 +185,7 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<i
 	}
 }
 
-void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid)
+void Instance::CreateWireInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid)
 {
 	if (ids.size() == 0)return;
 	size_t size = ids.size();
@@ -200,8 +200,8 @@ void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, ve
 		else
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
-			//m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 0, "I"));
+			//m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
+			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 0, "I"));
 			id++;
 			node1 = node2;
 		}
