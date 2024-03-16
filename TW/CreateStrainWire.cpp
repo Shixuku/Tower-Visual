@@ -109,15 +109,15 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 				}
 				if (nodeIds.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
+					CreateWireInsulator(m_Elements_beams, Truss_elementsID, nodeIds, H_Id);
 					//CreateXuanChuiInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					InsulatorId.push_back(Truss_elementsID);
 				}
 				if (V_1_Ids.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_1_Ids, V_Id);
+					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_1_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
-					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_2_Ids, V_Id);
+					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_2_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
 				}
 				CreatSpacer(m_Elements_Trusses, S_Id, spacerIds);
@@ -267,7 +267,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 			{
 				rou = pro[i].w_rou * 9.8 / (pro[i].w_area * 1000000);
 				stress = pro[i].w_f * 1000 / (pro[i].w_area * 1000000);
-				area = pro[i].w_area * 2000000;
+				area = pro[i].w_area * 1000000;
 				unitMass = pro[i].w_rou;
 				k = rou / stress;
 				int n = 100;

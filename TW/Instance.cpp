@@ -185,7 +185,7 @@ void Instance::CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<i
 	}
 }
 
-void Instance::CreateWireInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid)
+void Instance::CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid)
 {
 	if (ids.size() == 0)return;
 	size_t size = ids.size();
@@ -200,8 +200,8 @@ void Instance::CreateWireInsulator(vector<Element_Truss>& m_Elements, int& id, v
 		else
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			//m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
-			m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 0, "I"));
+			m_Elements.push_back(Element_Beam(id + 1, node1, node2, Secid, iDirection,"I"));
+			//m_Elements.push_back(Element_Truss(id + 1, node1, node2, Secid, 0, "I"));
 			id++;
 			node1 = node2;
 		}
