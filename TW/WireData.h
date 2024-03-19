@@ -10,7 +10,7 @@ public:
 	int N = 100; //导线分段数
 	double rou = 0;//bizai
 	double stress = 0;//yingli
-	double strainLength = 1;//耐张串长度
+	double strainLength = 0;//耐张串长度
 	double sag = 0;//弧垂
 	double angle;
 	vector<Node>WireListSus;//列表悬挂点容器

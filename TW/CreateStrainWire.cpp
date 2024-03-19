@@ -270,8 +270,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 				area = pro[i].w_area * 1000000;
 				unitMass = pro[i].w_rou;
 				k = rou / stress;
-				int n = 100;
-				int N = 100;
+				int n = 260;
+				int N = 260;
 				int num = vectorData.size() / (wireNumberOfLine)-1;
 				double angle = 0;
 				angle = m_Angle[key - 1];
