@@ -75,7 +75,7 @@ public:
     int Creat_Node(double x, double y, double z);//生成点
     void SaveSus(vector<int>ids);//保存悬挂点的id
     void CreatWireEle(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid, QString Type, QString True,vector<int>&Ele);
-	void CreateWireInsulator(vector<Element_Beam>& m_Elements, int& id, vector<int> ids, int Secid);
+	void CreateWireInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
 	void CreateXuanChuiInsulator(vector<Element_Truss>& m_Elements, int& id, vector<int> ids, int Secid);
 	void SaveApSus(vector<int>ids);
 	virtual void SaveTo(QDataStream& fin)const;

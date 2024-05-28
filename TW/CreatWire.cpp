@@ -210,7 +210,7 @@ void CreatWire::CreateStrain()
 			double y = WireListSus[0 + SusSize / wireQty * j].y;
 			double z = WireListSus[0 + SusSize / wireQty * j].z;
 			//CreateStrainLine(TempTruss, x, y, z, ids);
-			CreatSpacer(m_Elements_Trusses,3,ids);
+			CreatSpacer(m_Elements_beams,3,ids);
 		}
 		else if (endpoinType1[j] == 0 && endpoinType2[j] == 1)//端点一悬垂 端点二耐张
 		{
@@ -223,7 +223,7 @@ void CreatWire::CreateStrain()
 			double y = WireListSus[SusSize / wireQty * (j + 1) - 1].y;
 			double z = WireListSus[SusSize / wireQty * (j + 1) - 1].z;
 			//CreateStrainLine(TempTruss, x, y, z, ids);
-			CreatSpacer(m_Elements_Trusses,3, ids);
+			CreatSpacer(m_Elements_beams,3, ids);
 		}
 		else if (endpoinType1[j] == 1 && endpoinType2[j] == 1)//端点一耐张 端点二耐张
 		{
@@ -242,8 +242,8 @@ void CreatWire::CreateStrain()
 			double y2 = WireListSus[SusSize / wireQty * (j + 1) - 1].y;
 			double z2 = WireListSus[SusSize / wireQty * (j + 1) - 1].z;
 			//CreateStrainLine(TempTruss, x2, y2, z2, end_ids);
-			CreatSpacer(m_Elements_Trusses,3,start_ids);
-			CreatSpacer(m_Elements_Trusses,3,end_ids);
+			CreatSpacer(m_Elements_beams,3,start_ids);
+			CreatSpacer(m_Elements_beams,3,end_ids);
 		}
 	}
 	for (int i = 0; i < TempTruss.size(); i++)

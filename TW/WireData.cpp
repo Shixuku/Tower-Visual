@@ -286,7 +286,7 @@ void WireData::CreateStrainSpacerDistance(int nz, vector<Node> m_TempNodes, vect
 		{
 			vector<int> ids;
 			ids = FindSpacerSpacerL(m_TempNodes, sus, SpacerD[i], SpacerL[i], wireLogo);
-			CreatSpacer(m_Elements_Trusses, SectionId, ids);
+			CreatSpacer(m_Elements_beams, SectionId, ids);
 		}
 		a1 += StrainSpacerNum[nz][j];
 		a2 += StrainSpacerNum[nz][j];
@@ -362,7 +362,7 @@ vector<int> WireData::FindSpacerSpacerL(vector<Node> m_TempNodes, vector<Node> s
 	return idnodes;
 }
 
-void WireData::CreatSpacer(vector<Element_Truss>& m_Elements_Truss, int SectionId, vector<int> ids)
+void WireData::CreatSpacer(vector<Element_Beam>& m_Elements_Truss, int SectionId, vector<int> ids)
 {
 	if (ids.size() < 4)return;
 	ids.push_back(ids[0]);
@@ -371,57 +371,57 @@ void WireData::CreatSpacer(vector<Element_Truss>& m_Elements_Truss, int SectionI
 	int idelement = m_Elements_Truss.size();
 	size_t size = ids.size();
 	double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-	if (size == 5)//四分裂未带绝缘子
+	if (size == 6)//四分裂未带绝缘子
 	{
 		for (int i = 1; i < size; i++)
 		{
 			int id2 = ids[i];
 			
-			m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
-			//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
+			//m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
+			m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
 			id1 = id2;
 			idelement++;
 		}
-		for (int i = 0; i < 2; i++)
-		{
-			int id1 = ids[i];
-			int id2 = ids[i + 2];
-			m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
-			//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
-			idelement++;
-		}
+		//for (int i = 0; i < 2; i++)
+		//{
+		//	int id1 = ids[i];
+		//	int id2 = ids[i + 2];
+		//	m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
+		//	//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
+		//	idelement++;
+		//}
 	}
-	else if (size == 6)//四分裂带绝缘子
+	else if (size == 5)//四分裂带绝缘子
 	{
 		for (int i = 1; i < size; i++)
 		{
 			int id2 = ids[i];
-			m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
-			//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
+			//m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
+			m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
 			id1 = id2;
 			idelement++;
 		}
-		for (int i = 0; i < 2; i++)
-		{
-			int id1 = ids[i];
-			int id2 = ids[i + 2];
-			m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
-			//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
-			idelement++;
-		}
-		for (int i = 0; i < 2; i++)
-		{
-			int id1 = ids[i+1];
-			int id2 = ids[4];
-			m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
-			//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
-			idelement++;
-		}
+		//for (int i = 0; i < 2; i++)
+		//{
+		//	int id1 = ids[i];
+		//	int id2 = ids[i + 2];
+		//	m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
+		//	//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
+		//	idelement++;
+		//}
+		//for (int i = 0; i < 2; i++)
+		//{
+		//	int id1 = ids[i+1];
+		//	int id2 = ids[4];
+		//	m_Elements_Truss.push_back(Element_Truss(idelement + 1, id1, id2, SectionId, 0, "S"));//总的单元
+		//	//m_Elements_Truss.push_back(Element_Beam(idelement + 1, id1, id2, SectionId, iDirection, "S"));//材料和轴力后续需要改
+		//	idelement++;
+		//}
 	}
 }
 
 
-void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, double y, double z, vector<int> ids,int ClassId)
+void WireData::CreateStrainLine(vector<Element_Truss>& Temp_Truss, double x, double y, double z, vector<int> ids,int ClassId)
 {
 	//if (ids.size() < 4)return;
 	int id = Creat_Node(x, y, z, 0, 1);
@@ -433,7 +433,8 @@ void WireData::CreateStrainLine(vector<Element_Beam>& Temp_Truss, double x, doub
 		if (id != id2)
 		{
 			double iDirection[3] = { 3.141595, 1.75691, 0.84178 };
-			Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection,"N"));//材料和轴力后续需要改
+			//Temp_Truss.push_back(Element_Beam(idelement + 1, id, id2, ClassId, iDirection,"N"));//材料和轴力后续需要改
+			Temp_Truss.push_back(Element_Truss(idelement + 1, id, id2, ClassId,0, "N"));//材料和轴力后续需要改
 			idelement++;
 		}
 		
@@ -474,7 +475,7 @@ void WireData::CreateSpacerDistance(vector<Node>m_TempNodes, int wireLogo)
 		{
 			vector<int> ids;
 			ids = FindSpacerL(m_TempNodes, SpacerD[i], SpacerL[i], wireLogo);
-			CreatSpacer(m_Elements_Trusses,3, ids);
+			CreatSpacer(m_Elements_beams,3, ids);
 		}
 		a1 += SpacerNum[j];
 		a2 += SpacerNum[j];

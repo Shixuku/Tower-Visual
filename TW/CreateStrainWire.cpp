@@ -109,18 +109,18 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 				}
 				if (nodeIds.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, nodeIds, H_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					//CreateXuanChuiInsulator(m_Elements_Trusses, Truss_elementsID, nodeIds, H_Id);
 					InsulatorId.push_back(Truss_elementsID);
 				}
 				if (V_1_Ids.size() != 0)
 				{
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_1_Ids, V_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_1_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
-					CreateWireInsulator(m_Elements_beams, Truss_elementsID, V_2_Ids, V_Id);
+					CreateWireInsulator(m_Elements_Trusses, Truss_elementsID, V_2_Ids, V_Id);
 					V_InsulatorId.push_back(Truss_elementsID);
 				}
-				CreatSpacer(m_Elements_Trusses, S_Id, spacerIds);
+				CreatSpacer(m_Elements_beams, S_Id, spacerIds);
 			}
 
 		}
@@ -238,10 +238,10 @@ void CreateStrainWire::CreateRealSus()
 			x2 = EndPoint[key][i * 2 + 1].x;
 			y2 = EndPoint[key][i * 2 + 1].y;
 			z2 = EndPoint[key][i * 2 + 1].z;
-			CreatSpacer(m_Elements_Trusses, S_Id,start_ids);
-			CreatSpacer(m_Elements_Trusses, S_Id, end_ids);
-			CreateStrainLine(m_Elements_beams, x1, y1, z1, start_ids, O_Id);
-			CreateStrainLine(m_Elements_beams, x2, y2, z2, end_ids, O_Id);
+			CreatSpacer(m_Elements_beams, S_Id,start_ids);
+			CreatSpacer(m_Elements_beams, S_Id, end_ids);
+			CreateStrainLine(m_Elements_Trusses, x1, y1, z1, start_ids, O_Id);
+			CreateStrainLine(m_Elements_Trusses, x2, y2, z2, end_ids, O_Id);
 		}
 
 		 //在使用完后别忘了释放内存
@@ -270,8 +270,8 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 				area = pro[i].w_area * 1000000;
 				unitMass = pro[i].w_rou;
 				k = rou / stress;
-				int n = 260;
-				int N = 260;
+				int n = 100;
+				int N = 100;
 				int num = vectorData.size() / (wireNumberOfLine)-1;
 				double angle = 0;
 				angle = m_Angle[key - 1];
@@ -535,7 +535,7 @@ void CreateStrainWire::CreateGWire(vector<WireProperties> pro)
 					rou = pro[i].w_rou * 9.8 / (pro[i].w_area * 1000000);
 					stress = pro[i].w_f * 1000 / (pro[i].w_area * 1000000);
 					k = rou / stress;
-					area = pro[i].w_area * 1000000;
+					area = pro[i].w_area * 4000000;
 					unitMass = pro[i].w_rou;
 					int* node = new int[num * (n + 1)];
 					for (int i = 0 + m_TempNodes.size() / 2 * j; i < m_TempNodes.size() / 2 * (j + 1) - 1; i++)
@@ -627,7 +627,7 @@ void CreateStrainWire::Create_Mesh()
 	CreateRealSus();
 	CreateGWire(Property);
 	CreateStrainWireInfor(Property);
-	//CreateSpacer();
+	CreateSpacer();
 	for (int i = 0; i < InsulatorId.size(); i++)
 	{
 		m_Elements_Trusses[InsulatorId[i] - 1].AxialForce = 50000;
@@ -642,7 +642,8 @@ void CreateStrainWire::Type_WO(int i, int StrainId, const vector<Insulator_Base>
 {
 	int node1 = Creat_Node(data[i].m_x, data[i].m_y, data[i].m_z, 0, 1);
 	SaveSus({ node1 }); // 放入悬挂点
-	StrainAllRestraintNode.push_back(node1);
+	//StrainAllRestraintNode.push_back(node1);
+	StrainJointRestraintNode.push_back(node1);
 	RealSusInfor[StrainId].push_back(Insulator_Base("O", data[i].m_x, data[i].m_y, data[i].m_z, 0, data[i].m_line));//1是线路默认的 后面的改
 	EndPoint[StrainId].push_back(Node(1, data[i].m_x, data[i].m_y, data[i].m_z, 0, 1));
 }
@@ -988,7 +989,7 @@ void CreateStrainWire::CreateSpacer()
 		std::vector<Node>& vectorData = sus.second;  // ��ȡ��Ӧ�� vector
 		int StrainId = sus.first + 1;
 		int OneStrainFilesSize = (vectorData.size() / wireQty) - 1;
-		StrainSpacerNum[StrainId].assign(OneStrainFilesSize, 10);
+		StrainSpacerNum[StrainId].assign(OneStrainFilesSize, 5);
 
 	}
 	for (auto& sus : m_Str_realSus)
