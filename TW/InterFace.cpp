@@ -874,19 +874,23 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 	InputWireInfor aa;
 	aa.ReadWireInfor(this);
 	aa.towerWire = OnFindGroup(item->parent());
-	aa.towerWire->Suspensioncombined();
-	aa.towerWire->VectorToMap();
-	m_Renderer->RemoveAllViewProps();
-	CreateStrainWire* c = new CreateStrainWire();
-	c->fenlie = aa.wd->fenlie;
-	c->Test_a = aa.wd->Test_a;
-	c->Property = aa.wd->Property;
-	c->Create_Mesh();
-	aa.towerWire->AddStrainWireToGroup(c);
-	aa.towerWire->Show_VTKnode(m_Renderer);
-	aa.towerWire->Show_VTKbeam(m_Renderer);
-	aa.towerWire->Show_VTKtruss(m_Renderer);
-	m_Renderer->ResetCamera();
+	if (aa.wd != nullptr)
+	{
+		aa.towerWire->Suspensioncombined();
+		aa.towerWire->VectorToMap();
+		m_Renderer->RemoveAllViewProps();
+		CreateStrainWire* c = new CreateStrainWire();
+		c->fenlie = aa.wd->fenlie;
+		c->Test_a = aa.wd->Test_a;
+		c->Property = aa.wd->Property;
+		c->Create_Mesh();
+		aa.towerWire->AddStrainWireToGroup(c);
+		aa.towerWire->Show_VTKnode(m_Renderer);
+		aa.towerWire->Show_VTKbeam(m_Renderer);
+		aa.towerWire->Show_VTKtruss(m_Renderer);
+		m_Renderer->ResetCamera();
+	}
+	
 }
 
 
