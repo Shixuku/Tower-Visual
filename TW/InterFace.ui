@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>InterFaceClass</class>
  <widget class="QMainWindow" name="InterFaceClass">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -147,8 +150,15 @@
     </widget>
     <addaction name="menuPart"/>
    </widget>
+   <widget class="QMenu" name="menu_Read">
+    <property name="title">
+     <string>读取(Read)</string>
+    </property>
+    <addaction name="actionduqudaoxian"/>
+   </widget>
    <addaction name="menu_Create"/>
    <addaction name="menu"/>
+   <addaction name="menu_Read"/>
    <addaction name="menu_2"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Set"/>
@@ -232,7 +242,7 @@
   </action>
   <action name="actionRead">
    <property name="text">
-    <string>读取</string>
+    <string>读取杆塔</string>
    </property>
   </action>
   <action name="actionXoZ">
@@ -245,6 +255,21 @@
    </property>
    <property name="toolTip">
     <string>XOZ</string>
+   </property>
+  </action>
+  <action name="actioncv">
+   <property name="text">
+    <string>读取导线</string>
+   </property>
+  </action>
+  <action name="actionDaoxian">
+   <property name="text">
+    <string>du</string>
+   </property>
+  </action>
+  <action name="actionduqudaoxian">
+   <property name="text">
+    <string>读取导线</string>
    </property>
   </action>
  </widget>

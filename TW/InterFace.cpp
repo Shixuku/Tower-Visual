@@ -129,7 +129,7 @@ void InterFace::TreeWidgetShow()
 	creat_tower_instance->setText(0, QString("杆塔实例"));
 
 	QTreeWidgetItem* CreatWire = new QTreeWidgetItem(ui.treeWidget);
-	CreatWire->setText(0, QString("单导实例"));
+	CreatWire->setText(0, QString("创建单导实例"));
 
 	creat_towerwire_instance = new QTreeWidgetItem(ui.treeWidget);
 	creat_towerwire_instance->setText(0, QString("塔线组实例"));
@@ -146,6 +146,9 @@ void InterFace::TreeWidgetShow()
 	saveSection->setText(0, QString("保存"));
 	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
 	openSection->setText(0, QString("读取"));
+
+	QTreeWidgetItem* readWire = new QTreeWidgetItem(ui.treeWidget);
+	readWire->setText(0, QString("读取单导实例"));
 
 }
 void InterFace::ReadMaterialTXT()
@@ -221,7 +224,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Tower();
 	}
-	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 3)||isChildOfGroup(item, 3))
+	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 3)||isChildOfGroup(item, 3)|| isChildOfSingleWire1(item, 2))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
@@ -233,7 +236,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateMidIdAndEleInfor(item);
 	}
-	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,4))
+	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,4)|| isChildOfSingleWire1(item, 3))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -254,7 +257,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{//创建绝缘子串
 		ui_SingleWireSpacer(item);
 	}
-	else if (isChildOfSingleWire(item, 2))
+	else if (isChildOfSingleWire(item, 2)||isChildOfSingleWire1(item,1))
 	{//施加约束
 		ui_Constraint(item);
 	}
@@ -265,9 +268,9 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	}
 	else if (isChildOfGroup(item, 1) || isChildOfSingleWire(item, 1))
 	{//导线建模
-		//ui_Wire_InterFace(item);
+		ui_Wire_InterFace(item);
 		//ReadWireInforTxT();
-		CreateStrain(item);
+		//CreateStrain(item);
 		
 	}
 	else if (isChildOfGroup(item,2))
@@ -339,7 +342,28 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 		Qf1.close();
 		emit Msg_CreateModel();
 	}
-
+	//单导实例
+	else if (item == ui.treeWidget->topLevelItem(6))
+	{
+		QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget->topLevelItem(6));
+		item->setText(0, "读取导线");//名称
+		QTreeWidgetItem* creareWire = new QTreeWidgetItem(item);
+		creareWire->setText(0, "读取导线");//读取导线的作用
+		QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);
+		Constraint->setText(0, "添加约束");
+		QTreeWidgetItem* Loads = new QTreeWidgetItem(item);
+		Loads->setText(0, "施加荷载");
+		QTreeWidgetItem* inp = new QTreeWidgetItem(item);
+		inp->setText(0, "计算文件");
+		TowerWireGroup* towerWireGroup = new TowerWireGroup;
+		towerWireGroup->Item = item;
+		towerWireGroup->m_id = TWG.size() + 1;
+		TWG.Add_Entity(towerWireGroup);
+	}
+	else if (isChildOfSingleWire1(item, 0))
+	{
+		CreateStrain(item);
+	}
 }
 void InterFace::onTreeitemClicked(QTreeWidgetItem* item)
 {
@@ -874,19 +898,24 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 	InputWireInfor aa;
 	aa.ReadWireInfor(this);
 	aa.towerWire = OnFindGroup(item->parent());
-	aa.towerWire->Suspensioncombined();
-	aa.towerWire->VectorToMap();
-	m_Renderer->RemoveAllViewProps();
-	CreateStrainWire* c = new CreateStrainWire();
-	c->fenlie = aa.wd->fenlie;
-	c->Test_a = aa.wd->Test_a;
-	c->Property = aa.wd->Property;
-	c->Create_Mesh();
-	aa.towerWire->AddStrainWireToGroup(c);
-	aa.towerWire->Show_VTKnode(m_Renderer);
-	aa.towerWire->Show_VTKbeam(m_Renderer);
-	aa.towerWire->Show_VTKtruss(m_Renderer);
-	m_Renderer->ResetCamera();
+	if (aa.wd != nullptr)
+	{
+		aa.towerWire->Suspensioncombined();
+		aa.towerWire->VectorToMap();
+		m_Renderer->RemoveAllViewProps();
+		CreateStrainWire* c = new CreateStrainWire();
+		c->fenlie = aa.wd->fenlie;
+		c->Test_a = aa.wd->Test_a;
+		c->Property = aa.wd->Property;
+		c->Create_Mesh();
+		aa.towerWire->AddStrainWireToGroup(c);
+		aa.towerWire->Show_VTKnode(m_Renderer);
+		aa.towerWire->Show_VTKbeam(m_Renderer);
+		aa.towerWire->Show_VTKtruss(m_Renderer);
+		m_Renderer->ResetCamera();
+	}
+
+
 }
 
 
@@ -944,6 +973,13 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 		Inp->setText(0, QString("输出ABAQUS计算文件"));
 
 	}
+	//if (item->parent() == ui.treeWidget->topLevelItem(6))
+	//{
+	//	QTreeWidgetItem* AddLoadForce = new QTreeWidgetItem(item);//施加载荷按钮
+	//	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);//施加载荷按钮
+	//	QTreeWidgetItem* OutPut = new QTreeWidgetItem(item);//施加载荷按钮
+	//	QTreeWidgetItem* Inp = new QTreeWidgetItem(item);//施加载荷按钮
+	//}
 
 
 }
@@ -1313,6 +1349,21 @@ bool InterFace::isChildOfPartSetSpacer(QTreeWidgetItem* item)
 bool InterFace::isChildOfSingleWire(QTreeWidgetItem* item, int childNumber)
 {
 	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(2);
+	int singleWireChildCount = towerWireGroup->childCount();//取得有几个单线组循环
+	for (int i = 0; i < singleWireChildCount; i++)
+	{
+		QTreeWidgetItem* childItem = towerWireGroup->child(i);
+		if (item == childItem->child(childNumber))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool InterFace::isChildOfSingleWire1(QTreeWidgetItem* item, int childNumber)
+{
+	QTreeWidgetItem* towerWireGroup = ui.treeWidget->topLevelItem(6);
 	int singleWireChildCount = towerWireGroup->childCount();//取得有几个单线组循环
 	for (int i = 0; i < singleWireChildCount; i++)
 	{

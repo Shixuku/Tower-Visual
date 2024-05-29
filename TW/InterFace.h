@@ -120,6 +120,7 @@ public:
      void Area_Inqure();//¿òÑ¡point
      void AreaElement_Inqure();//¿òÑ¡Element
      bool isChildOfSingleWire(QTreeWidgetItem* item, int childNumber);
+     bool isChildOfSingleWire1(QTreeWidgetItem* item, int childNumber);
      bool isChildOfGroupTower(QTreeWidgetItem* item);
      void Close_Point();
      //·ç
