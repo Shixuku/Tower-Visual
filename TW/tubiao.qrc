@@ -1,8 +1,11 @@
 <RCC>
   <qresource prefix="/">
 
- <file>baocun.png</file>
- <file>YOZ.png</file>
- <file>init.png</file>
+ <file>俯.png</file>
+ <file>后.png</file>
+ <file>前.png</file>
+ <file>上.png</file>
+ <file>右.png</file>
+ <file>左.png</file>
   </qresource>
 </RCC>

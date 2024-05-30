@@ -135,7 +135,7 @@ signals://пе╨е
 public slots:
     void onTreeitemClicked(QTreeWidgetItem* item);
     void onTreeitemDoubleClicked(QTreeWidgetItem* item);
-    void ui_Foot();
+    void ui_FootNew();
     void ui_Body();
     void ui_CrossArm();
     void ui_Tower();
@@ -181,12 +181,17 @@ private:
     Tower* OnFindTower(const QTreeWidgetItem* Item);
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
-    vtkAxesActor* Axes;
-    vtkOrientationMarkerWidget* widgetAxes;
-    bool isAxesCreated = false;
    
     Instance_Calculate* ui_calculate = nullptr;
     void ReadWireInforTxT();
     void CreateStrain(QTreeWidgetItem* item);
+
+    void SetBottomView();
+    void SetLeftView();
+    void SetRightView();
+    void SetTopView();
+    void SetFrontView();
+    void SetBackView();
+    void updateCameraView(double focalPoint[3], double position[3], double viewUp[3]);
  
 };

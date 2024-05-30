@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1293</width>
+    <width>1306</width>
     <height>830</height>
    </rect>
   </property>
@@ -25,43 +25,17 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QWidget" name="widget_4" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QPushButton" name="btn_part">
-            <property name="text">
-             <string>管理部件数据</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_ins">
-            <property name="text">
-             <string>管理实例数据</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <widget class="QPushButton" name="btn_singleTower">
+         <property name="text">
+          <string>组装单塔</string>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widget_5" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="btn_caculate">
-            <property name="text">
-             <string>计算</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_display">
-            <property name="text">
-             <string>显示结果</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <widget class="QPushButton" name="btn_caculate">
+         <property name="text">
+          <string>计算</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -88,13 +62,6 @@
       </column>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="btn_singleTower">
-      <property name="text">
-       <string>组装单塔</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -102,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1293</width>
+     <width>1306</width>
      <height>26</height>
     </rect>
    </property>
@@ -161,35 +128,14 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actioninit"/>
-   <addaction name="actionYoZ"/>
-   <addaction name="actionXoZ"/>
+   <addaction name="action2"/>
+   <addaction name="action1"/>
+   <addaction name="action3"/>
+   <addaction name="action4"/>
+   <addaction name="action5"/>
+   <addaction name="action6"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actioninit">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/TW/init.png</normaloff>:/TW/init.png</iconset>
-   </property>
-   <property name="text">
-    <string>New</string>
-   </property>
-   <property name="toolTip">
-    <string>新建</string>
-   </property>
-  </action>
-  <action name="actionYoZ">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/TW/YOZ.png</normaloff>:/TW/YOZ.png</iconset>
-   </property>
-   <property name="text">
-    <string>Open</string>
-   </property>
-   <property name="toolTip">
-    <string>YOZ</string>
-   </property>
-  </action>
   <action name="actionLeg">
    <property name="text">
     <string>Leg</string>
@@ -235,22 +181,65 @@
     <string>读取</string>
    </property>
   </action>
-  <action name="actionXoZ">
+  <action name="action1">
    <property name="icon">
-    <iconset>
-     <normaloff>:/TW/XOZ.png</normaloff>:/TW/XOZ.png</iconset>
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/上.png</normaloff>:/上.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>俯视</string>
    </property>
-   <property name="toolTip">
-    <string>XOZ</string>
+  </action>
+  <action name="action2">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/俯.png</normaloff>:/俯.png</iconset>
+   </property>
+   <property name="text">
+    <string>仰视</string>
+   </property>
+  </action>
+  <action name="action3">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/前.png</normaloff>:/前.png</iconset>
+   </property>
+   <property name="text">
+    <string>前视</string>
+   </property>
+  </action>
+  <action name="action4">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/后.png</normaloff>:/后.png</iconset>
+   </property>
+   <property name="text">
+    <string>后视</string>
+   </property>
+  </action>
+  <action name="action5">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/左.png</normaloff>:/左.png</iconset>
+   </property>
+   <property name="text">
+    <string>左视</string>
+   </property>
+  </action>
+  <action name="action6">
+   <property name="icon">
+    <iconset resource="tubiao.qrc">
+     <normaloff>:/右.png</normaloff>:/右.png</iconset>
+   </property>
+   <property name="text">
+    <string>右视</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="TW.qrc"/>
+  <include location="tubiao.qrc"/>
  </resources>
  <connections/>
 </ui>
