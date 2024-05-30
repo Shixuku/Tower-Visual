@@ -281,6 +281,12 @@
     <ClCompile Include="CreateSingleTower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui_TowerLegType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_TowerLegParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -549,6 +555,12 @@
     <QtMoc Include="CreateSingleTower.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ui_TowerLegType.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui_TowerLegParameter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -644,9 +656,18 @@
     <QtUic Include="CreateSingleTower.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="ui_TowerLegType.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ui_TowerLegParameter.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="TW.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtRcc Include="tubiao.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
   </ItemGroup>

@@ -9,6 +9,11 @@
 #include<vtkDataSetSurfaceFilter.h>
 #include"Material.h"
 #include"Section_L.h"
+Instance::Instance()
+{
+	//默认给重力
+	m_Gravitys.push_back(ParameterGravity(1, 1, 2, -9.8));
+}
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
 	if (!m_lines) m_lines = vtkSmartPointer<vtkCellArray>::New();

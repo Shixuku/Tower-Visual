@@ -13,9 +13,9 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	connect(ui.btn_import, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 
-	connect(ui.btn_caculateIce, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
-	connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
-	connect(ui.btn_CaculateModelIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
+	//connect(ui.btn_caculateIce, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked_ice);
+	//connect(ui.btn_showIce, &QPushButton::clicked, this, &Instance_Calculate::visual_ice);
+	//connect(ui.btn_CaculateModelIce, &QPushButton::clicked, this, &Instance_Calculate::btn_CaculateModelIce);
 
 }
 
@@ -87,9 +87,9 @@ void Instance_Calculate::on_btn_import_clicked()
 	qDebug() << "总迭代次数： " << Totalit;
 	//update();
 
-	//算风--让关于冰的按钮点不起
-	ui.btn_caculateIce->setEnabled(false);
-	ui.btn_showIce->setEnabled(false);
+	////算风--让关于冰的按钮点不起
+	//ui.btn_caculateIce->setEnabled(false);
+	//ui.btn_showIce->setEnabled(false);
 
 }
 void Instance_Calculate::btn_CaculateModelIce()

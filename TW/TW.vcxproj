@@ -178,12 +178,15 @@
     <ClCompile Include="T_Foot.cpp" />
     <ClCompile Include="ui_AnalysisStep.cpp" />
     <ClCompile Include="UI_Calculate.cpp" />
+    <ClCompile Include="ui_TowerLegParameter.cpp" />
+    <ClCompile Include="ui_TowerLegType.cpp" />
     <ClCompile Include="Wind.cpp" />
     <ClCompile Include="WindList.cpp" />
     <ClCompile Include="WireData.cpp" />
     <ClCompile Include="WireProperties.cpp" />
     <ClCompile Include="WireWiring.cpp" />
     <ClCompile Include="Wire_InterFace.cpp" />
+    <QtRcc Include="tubiao.qrc" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
     <QtUic Include="ConcentrateForce.ui" />
@@ -221,6 +224,8 @@
     <QtUic Include="T_Foot.ui" />
     <QtUic Include="ui_AnalysisStep.ui" />
     <QtUic Include="UI_Calculate.ui" />
+    <QtUic Include="ui_TowerLegParameter.ui" />
+    <QtUic Include="ui_TowerLegType.ui" />
     <QtUic Include="Wind.ui" />
     <QtUic Include="WindList.ui" />
     <QtUic Include="Wire_InterFace.ui" />
@@ -238,6 +243,8 @@
     <ClInclude Include="NominalHeight.h" />
     <ClInclude Include="StrainInfor.h" />
     <ClInclude Include="TowerList.h" />
+    <QtMoc Include="ui_TowerLegType.h" />
+    <QtMoc Include="ui_TowerLegParameter.h" />
     <ClInclude Include="WireProperties.h" />
     <ClInclude Include="WireWiring.h" />
     <ClInclude Include="CreatWire.h" />
