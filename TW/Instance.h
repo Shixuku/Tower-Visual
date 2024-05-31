@@ -67,6 +67,7 @@ public:
 	int Truss_elementsID = 0;
 	int TypeWind = 0;//风的类型
 	int Splits= 0;//导线分裂数
+	int WireSectionID = 0;//导线截面型号，方便将分裂导线作为等效导线
 	double WindCoefficient = 0;//风荷载系数
 	double areaWire = 0;
 	vector<int>ap_realSuspoint;
