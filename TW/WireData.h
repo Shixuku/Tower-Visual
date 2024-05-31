@@ -10,9 +10,10 @@ public:
 	int N = 100; //导线分段数
 	double rou = 0;//bizai
 	double stress = 0;//yingli
-	double strainLength = 1;//耐张串长度
+	double strainLength = 0;//耐张串长度
 	double sag = 0;//弧垂
 	double angle;
+	int WireID = 0;//导线截面型号
 	vector<Node>WireListSus;//列表悬挂点容器
 	vector<Node>WireRealSus;//真实悬挂点容器
 	vector<Node>allSus;//真实悬挂点加上列表中首位两个点

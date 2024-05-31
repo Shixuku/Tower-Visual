@@ -70,29 +70,31 @@ void CreateStrainWire::CreateInsulatorSus(int fenlie, map<int, vector<Insulator_
 					{
 						if (vectorData[index].angle_1 == 0)//悬垂
 						{
-							if (fenlie == 1)//单导线
-							{
-								Type_WH_1(index, a, vectorData, nodeIds, RealSus);
-							}
-							else if (fenlie == 4)//四分裂
-							{
-								Type_WH_4(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
-							}
-							else if (fenlie == 6)//四分裂
-							{
-								Type_WH_6(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
-							}
+							Type_WH_1(index, a, vectorData, nodeIds, RealSus);
+							//if (fenlie == 1)//单导线
+							//{
+							//	Type_WH_1(index, a, vectorData, nodeIds, RealSus);
+							//}
+							//else if (fenlie == 4)//四分裂
+							//{
+							//	Type_WH_4(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
+							//}
+							//else if (fenlie == 6)//四分裂
+							//{
+							//	Type_WH_6(index, a, angle, vectorData, nodeIds, spacerIds, RealSus);
+							//}
 						}
 						else//V型
 						{
-							if (fenlie == 1)
-							{
-								Type_WV_1(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
-							}
-							else if (fenlie == 4)//单导线
-							{
-								Type_WV_4(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
-							}
+							Type_WV_1(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
+							//if (fenlie == 1)
+							//{
+							//	Type_WV_1(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
+							//}
+							//else if (fenlie == 4)//单导线
+							//{
+							//	Type_WV_4(index, a, angle, vectorData, V_1_Ids, V_2_Ids, spacerIds, RealSus);
+							//}
 						}
 					}
 				}
@@ -175,7 +177,9 @@ void CreateStrainWire::CreateRealSus()
 		{
 			for (int j = 0; j < fenlie; j++)
 			{
-				if (fenlie == 1)
+				offsetX = 0.0;
+				offsetZ = 0.0;
+				/*if (fenlie == 1)
 				{
 					offsetX = 0.0;
 					offsetZ = 0.0;
@@ -196,7 +200,7 @@ void CreateStrainWire::CreateRealSus()
 					offsetX = offsets[j][0];
 					offsetY = offsets[j][1];
 					offsetZ = offsets[j][2];
-				}
+				}*/
 				// 创建节点
 				if (index < susnum)
 				{
@@ -215,33 +219,36 @@ void CreateStrainWire::CreateRealSus()
 			}
 
 		}
-		//生成耐张段
-		int NzSize = m_Str_realSus[key - 1].size();//一个耐张段的悬挂点个数
-		int OneSusSize = NzSize / wireNumberOfLine;//一条线路的的悬挂点个数
-		vector<Element_Beam>TempTruss;
-		double x1 = 0; double y1 = 0; double z1 = 0;
-		double x2 = 0; double y2 = 0; double z2 = 0;
-		for (int i = 0; i < wireNumberOfLine; i++)
+		if (strainLength != 0)
 		{
-			node[0] = Creat_Node(m_Str_realSus[key - 1][i* OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0, 2);
-			node[1] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1 ].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0, 2);
-			vector<int> start_ids;
-			vector<int> end_ids;
-			for (int i = 0; i < fenlie; i++)
+			//生成耐张段
+			int NzSize = m_Str_realSus[key - 1].size();//一个耐张段的悬挂点个数
+			int OneSusSize = NzSize / wireNumberOfLine;//一条线路的的悬挂点个数
+			vector<Element_Beam>TempTruss;
+			double x1 = 0; double y1 = 0; double z1 = 0;
+			double x2 = 0; double y2 = 0; double z2 = 0;
+			for (int i = 0; i < wireNumberOfLine; i++)
 			{
-				start_ids.push_back(node[0] + i - fenlie + 1);
-				end_ids.push_back(node[1] + i - fenlie + 1);
-			}
-			x1 = EndPoint[key][i * 2].x;
-			y1 = EndPoint[key][i * 2].y;
-			z1 = EndPoint[key][i * 2].z;
-			x2 = EndPoint[key][i * 2 + 1].x;
-			y2 = EndPoint[key][i * 2 + 1].y;
-			z2 = EndPoint[key][i * 2 + 1].z;
-			CreatSpacer(m_Elements_beams, S_Id,start_ids);
-			CreatSpacer(m_Elements_beams, S_Id, end_ids);
-			CreateStrainLine(m_Elements_Trusses, x1, y1, z1, start_ids, O_Id);
-			CreateStrainLine(m_Elements_Trusses, x2, y2, z2, end_ids, O_Id);
+				node[0] = Creat_Node(m_Str_realSus[key - 1][i * OneSusSize].x + offsetX, m_Str_realSus[key - 1][i * OneSusSize].y + offsetY, m_Str_realSus[key - 1][i * OneSusSize].z + offsetZ, 0, 2);
+				node[1] = Creat_Node(m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].x + offsetX, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].y + offsetY, m_Str_realSus[key - 1][(i + 1) * OneSusSize - 1].z + offsetZ, 0, 2);
+				vector<int> start_ids;
+				vector<int> end_ids;
+				for (int i = 0; i < fenlie; i++)
+				{
+					start_ids.push_back(node[0] + i - fenlie + 1);
+					end_ids.push_back(node[1] + i - fenlie + 1);
+				}
+				x1 = EndPoint[key][i * 2].x;
+				y1 = EndPoint[key][i * 2].y;
+				z1 = EndPoint[key][i * 2].z;
+				x2 = EndPoint[key][i * 2 + 1].x;
+				y2 = EndPoint[key][i * 2 + 1].y;
+				z2 = EndPoint[key][i * 2 + 1].z;
+				CreatSpacer(m_Elements_beams, S_Id, start_ids);
+				CreatSpacer(m_Elements_beams, S_Id, end_ids);
+				CreateStrainLine(m_Elements_Trusses, x1, y1, z1, start_ids, O_Id);
+				CreateStrainLine(m_Elements_Trusses, x2, y2, z2, end_ids, O_Id);
+		}
 		}
 
 		 //在使用完后别忘了释放内存
@@ -267,7 +274,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 			{
 				rou = pro[i].w_rou * 9.8 / (pro[i].w_area * 1000000);
 				stress = pro[i].w_f * 1000 / (pro[i].w_area * 1000000);
-				area = pro[i].w_area * 1000000;
+				area = pro[i].w_area * 1000000 * fenlie;
 				unitMass = pro[i].w_rou;
 				k = rou / stress;
 				int n = 100;
@@ -275,6 +282,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 				int num = vectorData.size() / (wireNumberOfLine)-1;
 				double angle = 0;
 				angle = m_Angle[key - 1];
+				WireID = pro[i].MaId;
 				for (int j = 0; j < wireNumberOfLine; j++)
 				{
 					int* node = new int[num * (n + 1) * fenlie];
@@ -297,18 +305,16 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 						double force = 0;//每个点对应的轴力
 						double wireGravity = wireL * unitMass * 9.8 * fenlie;
 						WireGravity.push_back(wireGravity);
-						if (fenlie == 1)
+						for (int m = 0; m < N + 1; m++)
 						{
-							for (int m = 0; m < N + 1; m++)
-							{
-								double Zi = m * dzi;
-								double x = m * dxi + vectorData[i].x;
-								double y = m * dyi + vectorData[i].y;
-								double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
-									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
-								force = area * (stress + rou * (z - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
-							}
+							double Zi = m * dzi;
+							double x = m * dxi + vectorData[i].x;
+							double y = m * dyi + vectorData[i].y;
+							double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+								sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+							force = area * (stress + rou * (z - y0i));
+							node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
+						}
 							//中点坐标
 							int mid = (N + 1) / 2;
 							double mid_Zi = mid * dzi;
@@ -317,84 +323,121 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 							double mid_z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * mid_Zi - lxi) / 2)) - ((2 / k) * sinh(k * mid_Zi / 2) *
 								sinh(k * (lxi - mid_Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
 							WireMidId[j].push_back(GetMidId(mid_x, mid_y, mid_z));
-							
-						}
-						else if (fenlie == 2)
-						{
-							for (int m = 0; m < N + 1; m++)
-							{
-								double Zi = m * dzi;
-								double x1 = m * dxi + vectorData[i].x + 0.225;
-								double x2 = m * dxi + vectorData[i].x - 0.225;
-								double y = m * dyi + vectorData[i].y;
-								double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
-									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
-								force = area * (stress + rou * (z - y0i));
-								force = area * (stress + rou * (z - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force, 2);
-							}
-						}
-						else if (fenlie == 4)
-						{
-							for (int m = 0; m < N + 1; m++)
-							{
-								double Zi = m * dzi;
-								double x1 = m * dxi + vectorData[i].x + 0.225 * cos(angle);
-								double x2 = m * dxi + vectorData[i].x - 0.225 * cos(angle);
-								double y1 = m * dyi + vectorData[i].y + 0.225 * sin(angle);
-								double y2 = m * dyi + vectorData[i].y - 0.225 * sin(angle);
-								double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
-									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
-								double z1 = z + 0.225;
-								double z2 = z - 0.225;
-								force = area * (stress + rou * (z1 - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
-							}
-							//中点坐标
-							int mid = (N + 1) / 2;
-							double mid_Zi = mid * dzi;
-							double mid_x = mid * dxi + vectorData[i].x - 0.225 * cos(angle);
-							double mid_y = mid * dyi + vectorData[i].y + 0.225 * sin(angle);
-							double mid_zz = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * mid_Zi - lxi) / 2)) - ((2 / k) * sinh(k * mid_Zi / 2) *
-								sinh(k * (lxi - mid_Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
-							double mid_z = mid_zz - 0.225;
-							WireMidId[j].push_back(GetMidId(mid_x, mid_y, mid_z));
+						//if (fenlie == 1)
+						//{
+						//	for (int m = 0; m < N + 1; m++)
+						//	{
+						//		double Zi = m * dzi;
+						//		double x = m * dxi + vectorData[i].x;
+						//		double y = m * dyi + vectorData[i].y;
+						//		double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+						//			sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//		force = area * (stress + rou * (z - y0i));
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x, y, z, force, 2);
+						//	}
+						//	//中点坐标
+						//	int mid = (N + 1) / 2;
+						//	double mid_Zi = mid * dzi;
+						//	double mid_x = mid * dxi + vectorData[i].x;
+						//	double mid_y = mid * dyi + vectorData[i].y;
+						//	double mid_z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * mid_Zi - lxi) / 2)) - ((2 / k) * sinh(k * mid_Zi / 2) *
+						//		sinh(k * (lxi - mid_Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//	WireMidId[j].push_back(GetMidId(mid_x, mid_y, mid_z));
+						//	
+						//}
+						//else if (fenlie == 2)
+						//{
+						//	for (int m = 0; m < N + 1; m++)
+						//	{
+						//		double Zi = m * dzi;
+						//		double x1 = m * dxi + vectorData[i].x + 0.225;
+						//		double x2 = m * dxi + vectorData[i].x - 0.225;
+						//		double y = m * dyi + vectorData[i].y;
+						//		double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+						//			sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//		force = area * (stress + rou * (z - y0i));
+						//		force = area * (stress + rou * (z - y0i));
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y, z, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x2, y, z, force, 2);
+						//	}
+						//}
+						//else if (fenlie == 4)
+						//{
+						//	for (int m = 0; m < N + 1; m++)
+						//	{
+						//		double Zi = m * dzi;
+						//		double x1 = m * dxi + vectorData[i].x + 0.225 * cos(angle);
+						//		double x2 = m * dxi + vectorData[i].x - 0.225 * cos(angle);
+						//		double y1 = m * dyi + vectorData[i].y + 0.225 * sin(angle);
+						//		double y2 = m * dyi + vectorData[i].y - 0.225 * sin(angle);
+						//		double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+						//			sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//		double z1 = z + 0.225;
+						//		double z2 = z - 0.225;
+						//		force = area * (stress + rou * (z1 - y0i));
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
+						//	}
+						//	//中点坐标
+						//	int mid = (N + 1) / 2;
+						//	double mid_Zi = mid * dzi;
+						//	double mid_x = mid * dxi + vectorData[i].x - 0.225 * cos(angle);
+						//	double mid_y = mid * dyi + vectorData[i].y + 0.225 * sin(angle);
+						//	double mid_zz = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * mid_Zi - lxi) / 2)) - ((2 / k) * sinh(k * mid_Zi / 2) *
+						//		sinh(k * (lxi - mid_Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//	double mid_z = mid_zz - 0.225;
+						//	WireMidId[j].push_back(GetMidId(mid_x, mid_y, mid_z));
 
-						}
-						else if (fenlie == 6)
-						{
-							for (int m = 0; m < N + 1; m++)
-							{
-								double Zi = m * dzi;
-								double x1 = m * dxi + vectorData[i].x + 0.2 * cos(angle);
-								double x2 = m * dxi + vectorData[i].x - 0.2 * cos(angle);
-								double x3 = m * dxi + vectorData[i].x + 0.4 * cos(angle);
-								double x4 = m * dxi + vectorData[i].x - 0.4 * cos(angle);
-								double y1 = m * dyi + vectorData[i].y + 0.2 * sin(angle);
-								double y2 = m * dyi + vectorData[i].y - 0.2 * sin(angle);
-								double y3 = m * dyi + vectorData[i].y + 0.4 * sin(angle);
-								double y4 = m * dyi + vectorData[i].y - 0.4 * sin(angle);
-								double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
-									sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
-								double z1 = z + 0.35;
-								double z2 = z - 0.35;
-								force = area * (stress + rou * (z1 - y0i));
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x3, y4, z, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 4 * num * (N + 1) + m] = Creat_Node(x4, y3, z, force, 2);
-								node[(i - vectorData.size() / wireQty * j) * (n + 1) + 5 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
-							}
-						}
+						//}
+						//else if (fenlie == 6)
+						//{
+						//	for (int m = 0; m < N + 1; m++)
+						//	{
+						//		double Zi = m * dzi;
+						//		double x1 = m * dxi + vectorData[i].x + 0.2 * cos(angle);
+						//		double x2 = m * dxi + vectorData[i].x - 0.2 * cos(angle);
+						//		double x3 = m * dxi + vectorData[i].x + 0.4 * cos(angle);
+						//		double x4 = m * dxi + vectorData[i].x - 0.4 * cos(angle);
+						//		double y1 = m * dyi + vectorData[i].y + 0.2 * sin(angle);
+						//		double y2 = m * dyi + vectorData[i].y - 0.2 * sin(angle);
+						//		double y3 = m * dyi + vectorData[i].y + 0.4 * sin(angle);
+						//		double y4 = m * dyi + vectorData[i].y - 0.4 * sin(angle);
+						//		double z = ((1. / k) * (hi / Li)) * (sinh(k * lxi / 2) + sinh(k * (2 * Zi - lxi) / 2)) - ((2 / k) * sinh(k * Zi / 2) *
+						//			sinh(k * (lxi - Zi) / 2)) * sqrt(1 + (hi / Li) * (hi / Li)) + vectorData[i].z;
+						//		double z1 = z + 0.35;
+						//		double z2 = z - 0.35;
+						//		force = area * (stress + rou * (z1 - y0i));
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + m] = Creat_Node(x1, y2, z1, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + num * (N + 1) + m] = Creat_Node(x3, y4, z, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 2 * num * (N + 1) + m] = Creat_Node(x1, y2, z2, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 3 * num * (N + 1) + m] = Creat_Node(x2, y1, z2, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 4 * num * (N + 1) + m] = Creat_Node(x4, y3, z, force, 2);
+						//		node[(i - vectorData.size() / wireQty * j) * (n + 1) + 5 * num * (N + 1) + m] = Creat_Node(x2, y1, z1, force, 2);
+						//	}
+						//}
 					}
 
+					for (int m = 0; m < num; m++)
+					{
+						std::vector<int> nodeIds1;
 
-					if (fenlie == 1)
+						for (int i = 0; i < (N + 1); i++)
+						{
+							nodeIds1.push_back(node[i + m * (N + 1)]);
+						}
+						if (key == 1)
+						{
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1), "T", EleId);
+						}
+						else
+						{
+							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds1, pro[i].MaId, "G-" + QString::number(m + 1 + Length[key - 2]), "T", EleId);
+						}
+
+					}
+					/*if (fenlie == 1)
 					{
 						for (int m = 0; m < num; m++)
 						{
@@ -489,7 +532,7 @@ void CreateStrainWire::CreateStrainWireInfor(vector<WireProperties> pro)
 							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds5, pro[i].MaId, "L-" + QString::number(m + 1), "F", EleId);
 							CreatWireEle(m_Elements_Trusses, Truss_elementsID, nodeIds6, pro[i].MaId, "L-" + QString::number(m + 1), "F", EleId);
 						}
-					}
+					}*/
 					delete[]node;
 					delete[]ap_node;
 				}
@@ -627,7 +670,7 @@ void CreateStrainWire::Create_Mesh()
 	CreateRealSus();
 	CreateGWire(Property);
 	CreateStrainWireInfor(Property);
-	CreateSpacer();
+	//CreateSpacer();
 	for (int i = 0; i < InsulatorId.size(); i++)
 	{
 		m_Elements_Trusses[InsulatorId[i] - 1].AxialForce = 50000;
