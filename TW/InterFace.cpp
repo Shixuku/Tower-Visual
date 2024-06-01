@@ -197,6 +197,10 @@ void InterFace::ReadInstanceTXT()
 {
 	InstanceWire aa;
 	aa.ReadInstanceWire(this);
+
+	InputWireInfor bb;
+	bb.ReadWireInfor(this);
+
 }
 //双击树item相应事件
 void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
@@ -864,7 +868,7 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 {
 	InputWireInfor aa;
 	aa.ReadWireInfor(this);
-	aa.towerWire = OnFindGroup(item->parent());
+	/*aa.towerWire = OnFindGroup(item->parent());
 	if (aa.wd != nullptr)
 	{
 		aa.towerWire->Suspensioncombined();
@@ -880,7 +884,7 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 		aa.towerWire->Show_VTKbeam(m_Renderer);
 		aa.towerWire->Show_VTKtruss(m_Renderer);
 		m_Renderer->ResetCamera();
-	}
+	}*/
 	
 }
 

@@ -20,7 +20,9 @@ class InputWireInfor
 public:
 	TowerWireGroup* towerWire = nullptr;
 	InterFace* m_pInterFace = nullptr;
-	void ReadWireInfor(InterFace* InterFace);
+	//void ReadWireInfor(InterFace* InterFace);
+	void ReadWireInfor(InterFace* InterFace);//默认打开
+	void GetAllHangPointTXT(string path, vector<string>& files);
 	bool ReadLine(QTextStream& ssin, QString& str)
 	{//从文件中读取一行有效数据
 		while (!ssin.atEnd())
