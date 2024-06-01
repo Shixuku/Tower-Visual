@@ -28,7 +28,6 @@ Wind::Wind(Creat_Loads* creat_loads, QWidget *parent): QDialog(parent)
 	connect(ui.rad_C, &QRadioButton::clicked, [=]() {alf = 0.20;  m_pInstance->LandformsType = "C"; });
 	connect(ui.rad_D, &QRadioButton::clicked, [=]() {alf = 0.30;  m_pInstance->LandformsType = "D";  });
 
-	ShowObject();
 	void (QComboBox:: * intChanged)(int) = &QComboBox::currentIndexChanged;
 	//connect(ui.object_com, intChanged, this, &Wind::ShowObject);
 	connect(ui.sure_btn_2, &QPushButton::clicked, this, &Wind::ui_Speed);
@@ -56,37 +55,7 @@ void Wind::Initialize()
 	}
 }
 
-void Wind::CreateCombobox()
-{
-	/*ExampleNum =  m_pInterFace->ui.treeWidget->topLevelItem(2)->childCount();
-	
-	for (int i = 0; i < ExampleNum; i++)
-	{
-		ui.object_com->addItem("导线实例" + QString::number(i + 1));
-	
-	}*/
-}
 
-void Wind::ShowObject()
-{
-	//int Index = ui.object_com->currentIndex();
-	//if (Index == -1)return;
-	//if (Index < ExampleNum)
-	//{
-	//	id_Part = Index + 1;
-	//	m_Renderer->RemoveAllViewProps();  // 清空当前显示的所有actor
-	
-	//	if (m_pcreatWire != nullptr)
-	//	{
-	//		m_pcreatWire->Show_VTKnode(m_Renderer);
-	//		m_pcreatWire->Show_VTKbeam(m_Renderer);
-	//		m_pcreatWire->Show_VTKtruss(m_Renderer);
-	//	}
-	//	
-	//}
-	//m_Renderer->ResetCamera();
-	//ui.widget_5->update();
-}
 
 void Wind::ui_Speed()
 {
@@ -119,93 +88,7 @@ void Wind::ui_Speed()
 	
 }
 
-void Wind::ReadStableData()
-{
-	//QStringList headerLabels;
-	//headerLabels << "单元编号" << "单元长度(m)" << "风压系数"<<"风载荷(N)";
-	//ui.tableWidget->setColumnCount(headerLabels.count());
-	//ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
-	//ui.tableWidget->verticalHeader()->setVisible(false);
-	//ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//ui.tableWidget->setRowCount(num_ele);  // 默认N行
-	//for (int i = 0; i < num_ele; i++)
-	//{
-	//	ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(m_pcreatWire->m_Elements_Trusses[i].m_idElement)));
-	//	ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number((L_ele[i]))));
-	//	ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(Uz_ele[i])));
-	//	ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(Wx_values[i] * 1e3)));
-	//	// 设置单元格为只读
-	//	for (int j = 0; j < ui.tableWidget->columnCount(); j++)
-	//	{
-	//		QTableWidgetItem* item = ui.tableWidget->item(i, j);
-	//		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-	//	}
-	//}
-}
 
-void Wind::ReadRandomData()
-{
-	/*QStringList headerLabels;
-	headerLabels << "t(s)" << "风速(m/s)";
-	ui.tableWidget->setColumnCount(headerLabels.count());
-	ui.tableWidget->setHorizontalHeaderLabels(headerLabels);
-	ui.tableWidget->verticalHeader()->setVisible(false);
-	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	
-*/
-}
-
-void Wind::BtnOk()
-{
-	if (m_pcreatWire == nullptr)
-	{
-		QMessageBox::warning(this, "提示", "请创建分析对象！");
-		return;
-	}
-
-	num_node = m_pcreatWire->m_Nodes.size();
-	num_ele = m_pcreatWire->m_Elements_Trusses.size();
-	bool groundSelected = false;
-
-	QList<QRadioButton*> radioButtons = { ui.rad_A, ui.rad_B, ui.rad_C, ui.rad_D };
-
-	for (QRadioButton* radioButton : radioButtons)
-	{
-		if (radioButton->isChecked())
-		{
-			groundSelected = true;
-			break;
-		}
-	}
-
-	if (!groundSelected)
-	{
-		QMessageBox::warning(this, "提示", "请先选择地面粗糙程度！");
-		return;
-	}
-	if (ui.rad_stab->isChecked())
-	{
-		CountElePara();
-		CountWindForce();
-		ReadStableData();
-	}
-	else if (ui.rad_ran->isChecked())
-	{
-		int num = ui.Step_edi->text().toInt();
-		double StepSize = ui.StepSize_edi->text().toDouble();
-		for (int j = 0; j < ran->NumOfWindzones; j++)
-		{
-			double t = 0;
-			for (int i = 0; i < num; i++)
-			{
-				t += StepSize;
-				//WindSpeedInterpolation(j, t);
-
-			}
-		}
-		
-	}
-}
 
 void Wind::Get_ui_Data()
 {
@@ -246,6 +129,11 @@ void Wind::Get_ui_Data()
 		B = 1.1;
 	}
 	WindCoefficient = miusc * B;
+	if (ui.rad_stab->isChecked())
+	{
+		ParameterStableWind pwind = ParameterStableWind(id, AnalysisStep, angle, v, m_pInstance->Splits, m_pInstance->LandformsType, WindCoefficient);
+		m_pInstance->m_StableWind.push_back(pwind);
+	}
 }
 
 double Wind::CountUz(double h)

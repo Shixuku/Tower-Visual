@@ -23,12 +23,7 @@ public:
 	~Wind();
 	
 	void Initialize();
-	void CreateCombobox();
-	void ShowObject();
 	void ui_Speed();
-	void ReadStableData();
-	void ReadRandomData();
-	void BtnOk();
 	void Get_ui_Data();
 	double CountUz(double h);//计算风压系数
 	void CountElePara();//计算单元相关参数
