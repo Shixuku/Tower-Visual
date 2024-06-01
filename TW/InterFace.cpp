@@ -239,7 +239,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Tower();
 	}
-	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 1)||isChildOfGroup(item, 0))
+	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 1)||isChildOfGroup(item, 1))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
@@ -251,7 +251,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateMidIdAndEleInfor(item);
 	}
-	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 1)||isChildOfSingleWire(item,2))
+	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,2))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -281,7 +281,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_TowerWireGroup();
 	}
-	else if (isChildOfGroup(item, 1) || isChildOfSingleWire(item, 0))
+	else if (isChildOfGroup(item, 0) || isChildOfSingleWire(item, 0))
 	{//导线建模
 		//ui_Wire_InterFace(item);
 		//ReadWireInforTxT();
@@ -866,25 +866,58 @@ void InterFace::ReadWireInforTxT()
 
 void InterFace::CreateStrain(QTreeWidgetItem* item)
 {
-	InputWireInfor aa;
-	aa.OpenReadWireInfor(this);
-	aa.towerWire = OnFindGroup(item->parent());
-	if (aa.wd != nullptr)
+	TowerWireGroup* towerWire = OnFindGroup(item->parent());
+	if (towerWire->SuspensionNode.size() == 0)
 	{
-		aa.towerWire->Suspensioncombined();
-		aa.towerWire->VectorToMap();
-		m_Renderer->RemoveAllViewProps();
-		CreateStrainWire* c = new CreateStrainWire();
-		c->fenlie = aa.wd->fenlie;
-		c->Test_a = aa.wd->Test_a;
-		c->Property = aa.wd->Property;
-		c->Create_Mesh();
-		aa.towerWire->AddStrainWireToGroup(c);
-		aa.towerWire->Show_VTKnode(m_Renderer);
-		aa.towerWire->Show_VTKbeam(m_Renderer);
-		aa.towerWire->Show_VTKtruss(m_Renderer);
-		m_Renderer->ResetCamera();
+		if (towerWire->m_Nodes.size() == 0)
+		{
+			InputWireInfor aa;
+			aa.OpenReadWireInfor(this);
+			if (aa.wd != nullptr)
+			{
+				m_Renderer->RemoveAllViewProps();
+				CreateStrainWire* c = new CreateStrainWire();
+				c->fenlie = aa.wd->fenlie;
+				c->Test_a = aa.wd->Test_a;
+				c->Property = aa.wd->Property;
+				c->Create_Mesh();
+				aa.towerWire->AddStrainWireToGroup(c);
+				aa.towerWire->Show_VTKnode(m_Renderer);
+				aa.towerWire->Show_VTKbeam(m_Renderer);
+				aa.towerWire->Show_VTKtruss(m_Renderer);
+				m_Renderer->ResetCamera();
+			}
+
+		}
+		else
+		{
+			QMessageBox::warning(this, "提示", "已有导线或模型错误！");
+		}
 	}
+	else if (towerWire->SuspensionNode.size() != 0)
+	{
+		Wire_InterFace* wireInterFace = new Wire_InterFace(towerWire, this);
+		wireInterFace->show();
+	}
+	//InputWireInfor aa;
+	//aa.OpenReadWireInfor(this);
+	//TowerWireGroup*towerWire = OnFindGroup(item->parent());
+	//if (aa.wd != nullptr)
+	//{
+	//	aa.towerWire->Suspensioncombined();
+	//	aa.towerWire->VectorToMap();
+	//	m_Renderer->RemoveAllViewProps();
+	//	CreateStrainWire* c = new CreateStrainWire();
+	//	c->fenlie = aa.wd->fenlie;
+	//	c->Test_a = aa.wd->Test_a;
+	//	c->Property = aa.wd->Property;
+	//	c->Create_Mesh();
+	//	aa.towerWire->AddStrainWireToGroup(c);
+	//	aa.towerWire->Show_VTKnode(m_Renderer);
+	//	aa.towerWire->Show_VTKbeam(m_Renderer);
+	//	aa.towerWire->Show_VTKtruss(m_Renderer);
+	//	m_Renderer->ResetCamera();
+	//}
 	
 }
 
