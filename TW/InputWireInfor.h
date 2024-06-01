@@ -20,7 +20,7 @@ class InputWireInfor
 public:
 	TowerWireGroup* towerWire = nullptr;
 	InterFace* m_pInterFace = nullptr;
-	//void ReadWireInfor(InterFace* InterFace);
+	void OpenReadWireInfor(InterFace* InterFace);//界面打开
 	void ReadWireInfor(InterFace* InterFace);//默认打开
 	void GetAllHangPointTXT(string path, vector<string>& files);
 	bool ReadLine(QTextStream& ssin, QString& str)
@@ -40,6 +40,7 @@ public:
 	}
 
 	bool Input_FemData(const QString& FileName);
+	bool OpenInput_FemData(const QString& FileName);//界面打开读取
 	//static  bool cmp(const Insulator_Base& left, const Insulator_Base& right);
 	static  void sort_line(vector<Insulator_Base>& object);
 
