@@ -1,21 +1,70 @@
 #include "InputWireInfor.h"
 #include <QFileDialog>
+#include <iostream>
+#include<filesystem>
 #include"WireData.h"
 #include"InterFace.h"
 #include"TowerWireGroup.h"
 #include"CreateStrainWire.h"
+#pragma execution_character_set("utf-8")
+
+//void InputWireInfor::ReadWireInfor(InterFace* InterFace)
+//{
+//    m_pInterFace = InterFace;
+//	QString str = QFileDialog::getOpenFileName( nullptr,"打开", "/", "textfile(*.txt);;All files(*.*)");
+//    if (str == nullptr)
+//    {
+//        std::cout << "open failed\n";
+//        return;
+//    }
+//    qDebug() << str;
+//    Input_FemData(str);
+//    //Show();
+//}
+
 void InputWireInfor::ReadWireInfor(InterFace* InterFace)
 {
     m_pInterFace = InterFace;
-	QString str = QFileDialog::getOpenFileName( nullptr,"打开", "/", "textfile(*.txt);;All files(*.*)");
-    if (str == nullptr)
+    vector<string> fileNames;
+    string  path("../HangPointTXT"); 	//自己选择目录测试
+     GetAllHangPointTXT(path, fileNames);
+    for (int i = 0; i < fileNames.size(); i++)
     {
-        std::cout << "open failed\n";
-        return;
+        towerWire = nullptr;
+       // QString str = QString::fromStdString(fileNames[i]);
+        QString str = QString(QString::fromLocal8Bit(fileNames[i].data()));//防止转化乱码
+        Input_FemData(str);
+       
     }
-    qDebug() << str;
-    Input_FemData(str);
-    //Show();
+
+}
+
+void InputWireInfor::GetAllHangPointTXT(string path, vector<string>& files)
+{
+    intptr_t hFile = 0;
+    //文件信息
+    struct _finddata_t fileinfo;
+    string p;
+    if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            //如果是目录,递归查找
+            //如果不是,把文件绝对路径存入vector中
+            if ((fileinfo.attrib & _A_SUBDIR))
+            {
+                if (string(fileinfo.name).substr(string(fileinfo.name).find_last_of(".") + 1) == "txt")
+                {
+                    files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+                }
+            }
+            else
+            {
+                files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+            }
+        } while (_findnext(hFile, &fileinfo) == 0);
+        _findclose(hFile);
+    }
 }
 
 bool InputWireInfor::Input_FemData(const QString& FileName)
@@ -25,6 +74,19 @@ bool InputWireInfor::Input_FemData(const QString& FileName)
         qDebug() << "Error: 文件 " << FileName << " 不存在";
         exit(1);
         return false;
+    }
+
+    QFileInfo fileInfo(FileName);
+
+    QString baseName = fileInfo.baseName(); // 获取文件名，不包括路径和扩展名
+
+    for (auto& i: m_pInterFace->TWG)
+    {
+        if (i.second->m_Name == baseName)
+        {
+            towerWire = i.second;
+            break;
+        }
     }
     wd = new WireData();
     QFile aFile(FileName);//定义文件
@@ -119,6 +181,12 @@ bool InputWireInfor::Input_FemData(const QString& FileName)
             }
 
         }
+        CreateStrainWire* c = new CreateStrainWire();
+        c->fenlie = wd->fenlie;
+        c->Test_a = wd->Test_a;
+        c->Property = wd->Property;
+        c->Create_Mesh();
+        towerWire->AddStrainWireToGroup(c);
     }
     aFile.close();//关闭文件
     return true;
@@ -142,3 +210,5 @@ void InputWireInfor::sort_line(vector<Insulator_Base>& object)
         }
     }
 }
+
+
