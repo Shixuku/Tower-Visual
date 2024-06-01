@@ -599,8 +599,8 @@ void InstanceWire::CreatTowerWierGroupItem(QString lineName)
 	//	GroupTowerItem->setText(0, QString("杆塔编号" + str));
 	//}
 	towerWire->Item = towerWierGroupItem;
-	//QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
-	//Wire_modeling->setText(0, QString("导线建模"));
+	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
+	Wire_modeling->setText(0, QString("导线建模"));
 
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(towerWierGroupItem);
 	Loads->setText(0, QString("施加荷载"));
