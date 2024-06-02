@@ -40,15 +40,12 @@ protected:
 private:
 	Ui::UI_CalculateClass ui;
 	InterFace* m_InterFace = nullptr;
-	TowerCaculate* towercaculate = nullptr;
 	resultVisualize* display = nullptr;
 
 	std::map<int, Instance*> list_Instance;
 
 	Instance* m_ins = nullptr;
-	vector<Node> m_nodes;//包含位移的点
-	vector<Element_Truss> m_truss;//包含位移的杆单元
-	vector<Element_Truss> m_beam;//包含位移的杆单元
+
 	Manage_Entity<Node_Base> m_Nodes;
 	Manage_Entity<Element_Base> m_LineElements;
 	QString m_str;

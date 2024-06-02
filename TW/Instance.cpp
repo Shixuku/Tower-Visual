@@ -13,6 +13,26 @@ Instance::Instance()
 {
 	//默认给重力
 	m_Gravitys.push_back(ParameterGravity(1, 1, 2, -9.8));
+
+	for (auto& i : m_HangPointLabelActor) {
+		i = nullptr;
+	}
+	for (auto& i : m_HangPointActor) {
+		i = nullptr;
+	}
+	for (auto& i : m_LoadActor) {
+		i = nullptr;
+	}
+	for (auto& i : m_ConstraintActor) {
+		i = nullptr;
+	}
+}
+Instance::~Instance()
+{
+	if (s != nullptr)
+	{
+		delete s;
+	}
 }
 void Instance::Show_VTKtruss(vtkRenderer* renderer)
 {
@@ -987,4 +1007,173 @@ void Instance::DrawForceZ(Node* n, int a, vtkRenderer* renderer)
 
 	renderer->AddActor(actor);
 
+}
+
+bool Instance::update(bool replay, int step, int& frames, int iType, double Amp)
+{
+	Outputter* m_Outputter = &s->get_outputter(step);
+
+	if (frames >= m_Outputter->dataSet.size())
+	{
+		if (replay) {
+			frames = 0;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	visualData::DataFrame* iframe = m_Outputter->dataSet.at(frames);
+	//修改点的坐标
+	for (auto& i : iframe->nodeDatas)
+	{
+		//int pointIndex = nodeIdToIndex.find(i.first)->second;
+		int pointIndex = i.first;
+		visualData::NodeData& node = i.second;
+		double* p = m_pts->GetPoint(pointIndex);
+		m_animationPoints->SetPoint(pointIndex, p[0] + node.displaymentZ * Amp, p[1] + node.displaymentX * Amp, p[2] + node.displaymentY * Amp);
+
+		DataType itype = static_cast<DataType>(iType);
+		//添加云图数据
+		switch (itype)
+		{
+		case DataType::U1:
+			scalars->SetValue(pointIndex, node.displaymentZ);
+			break;
+		case DataType::U2:
+			scalars->SetValue(pointIndex, node.displaymentX);
+			break;
+		case DataType::U3:
+			scalars->SetValue(pointIndex, node.displaymentY);
+			break;
+		case DataType::MagnitudeU:
+			scalars->SetValue(pointIndex, node.displayment);
+			break;
+		case DataType::UR1:
+			scalars->SetValue(pointIndex, node.rotationZ);
+			break;
+		case DataType::UR2:
+			scalars->SetValue(pointIndex, node.rotationX);
+			break;
+		case DataType::UR3:
+			scalars->SetValue(pointIndex, node.rotationY);
+			break;
+		case DataType::N:
+			scalars->SetValue(pointIndex, node.stressN);
+			break;
+		case DataType::M2:
+			scalars->SetValue(pointIndex, node.stressM2);
+			break;
+		case DataType::M3:
+			scalars->SetValue(pointIndex, node.stressM3);
+			break;
+		case DataType::Mises:
+			scalars->SetValue(pointIndex, node.mises);
+			break;
+		default:
+			break;
+		}
+	}
+	//更新vtkActor和vtkPolyData的数据
+	m_animationPoints->Modified();
+
+	return true;
+}
+
+void Instance::addGeometryData()
+{
+	InterFace* pCAE = Get_InterFace();
+
+	if (m_vtkNodes != nullptr)//创建过了
+	{
+		pCAE->m_Renderer->AddActor(m_vtkNodes);
+		pCAE->m_Renderer->AddActor(m_vtklines);
+		pCAE->m_renderWindow->Render();
+		return;
+	}
+
+	m_animationPoints = vtkSmartPointer<vtkPoints>::New();//用于显示的数据
+
+	m_animationPoints->DeepCopy(m_pts);//复制一份新的数据
+
+	vtkSmartPointer<vtkPolyData> nodesPolyData = vtkSmartPointer<vtkPolyData>::New();
+	nodesPolyData->SetPoints(m_animationPoints);
+
+	vtkNew<vtkVertexGlyphFilter> VertexFilter;
+	VertexFilter->SetInputData(nodesPolyData);
+	VertexFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputConnection(VertexFilter->GetOutputPort());
+	m_vtkNodes = vtkSmartPointer<vtkActor>::New();
+	m_vtkNodes->SetMapper(mapper);
+	m_vtkNodes->GetProperty()->SetColor(0, 0, 0);
+	m_vtkNodes->GetProperty()->SetPointSize(2);
+
+	//应力渲染
+	int numPts = m_pts->GetNumberOfPoints();
+	scalars = vtkSmartPointer<vtkDoubleArray>::New();
+	scalars->SetNumberOfComponents(1);
+	scalars->SetNumberOfValues(numPts);
+
+	//create the visualized line
+	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
+	//点数据(pt)所定义的一系列点构成数据集(vtkDataSet)的几何结构
+	linesPolyData->SetPoints(m_animationPoints);
+	//点数据的连接形式(lines)形成的单元数据(cell Data)构成数据集拓扑结构
+	linesPolyData->SetLines(m_lines);
+	linesPolyData->GetPointData()->SetScalars(scalars);
+
+	vtkSmartPointer<vtkPolyDataMapper> linesmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	linesmapper->SetInputData(linesPolyData);
+	linesmapper->ScalarVisibilityOn(); // linesmapper->SetColorModeToMapScalars();
+	linesmapper->SetScalarModeToUsePointData();
+	//linesmapper->SetScalarRange(0, 1);
+
+	m_vtklines = vtkSmartPointer<vtkActor>::New();
+	m_vtklines->SetMapper(linesmapper);
+	m_vtklines->GetProperty()->SetColor(0, 0, 0);
+	m_vtklines->GetProperty()->SetLineWidth(2);
+
+	//scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
+	//scalarBar->SetLookupTable(linesmapper->GetLookupTable());
+	//scalarBar->SetMaximumNumberOfColors(8);
+	//scalarBar->SetNumberOfLabels(16);
+
+	pCAE->m_Renderer->AddActor(m_vtkNodes);
+	pCAE->m_Renderer->AddActor(m_vtklines);
+	//pCAE->m_Renderer->AddActor(scalarBar);
+	pCAE->m_renderWindow->Render();
+}
+
+void Instance::removeActor()
+{
+	InterFace* pInterFace = Get_InterFace();
+	pInterFace->m_Renderer->RemoveActor(m_vtkNodes);
+	pInterFace->m_Renderer->RemoveActor(m_vtklines);
+}
+
+void Instance::showOriginalActor(bool flag)
+{
+	if (Node_actor != nullptr) {
+		Node_actor->SetVisibility(flag);
+	}
+	if (m_TrussActor != nullptr) {
+		m_TrussActor->SetVisibility(flag);
+	}
+	if (m_BeamActor != nullptr) {
+		m_BeamActor->SetVisibility(flag);
+	}
+	//悬挂点
+	for (auto& i : m_HangPointLabelActor) {
+		if (i != nullptr) {
+			i->SetVisibility(flag);
+		}
+	}
+	for (auto& i : m_HangPointActor) {
+		if (i != nullptr) {
+			i->SetVisibility(flag);
+		}
+	}
 }

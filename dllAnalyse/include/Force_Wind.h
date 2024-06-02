@@ -17,7 +17,7 @@ class DLL_ANSYS_EXPORT Force_Wind : public ForceBase
 
 	friend class Structure;
 public:
-	Force_Wind() :m_pair(1.29), alf(0.16), z0(0.03), v10(15){}
+	Force_Wind() :m_pair(1.29), alf(0.16), z0(0.03), v10(15){ v_direction = { 0,0,1 }; }
 
 	Force_Wind(double p_air, double alf, double z0, double v10, int N, int M, double w_up, double T)
 	{//空气密度，地面粗糙度，地表粗糙长度，10m高10分钟平均风速(m/s)，频率等分数， M >= 2 * N，高频截止点，模拟总时
@@ -29,6 +29,7 @@ public:
 		this->M = M;
 		this->w_up = w_up;
 		this->T = T;
+		v_direction = { 0,0,1 };
 	}
 
 	void Input(QDataStream& fin);
@@ -83,7 +84,7 @@ public:
 	double wind_coeff = 1.1;//风荷载系数
 	double Get_WindCoeff();//计算风荷载系数(风偏计算)
 
-	double m_angle = 90;
+	Vector3d v_direction;
 
 	virtual void Assemble_Force(VectorXd& Force, const double t) override;
 

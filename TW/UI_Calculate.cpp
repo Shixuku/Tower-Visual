@@ -18,7 +18,7 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 void Instance_Calculate::Set_headertext()
 {
 	QStringList headertext;//表头
-	headertext << "名称" << "计算文件" ;
+	headertext << "名称" << "计算文件";
 	ui.tableWidget->setColumnCount(headertext.count());
 	ui.tableWidget->setHorizontalHeaderLabels(headertext);
 	ui.tableWidget->verticalHeader()->setVisible(false);
@@ -33,7 +33,7 @@ Instance_Calculate::~Instance_Calculate()
 
 void Instance_Calculate::on_btn_import_clicked()
 {
-	m_InterFace->m_Renderer->RemoveAllViewProps();
+	//m_InterFace->m_Renderer->RemoveAllViewProps();
 	m_str = QFileDialog::getOpenFileName(this, "打开", "/", "textfile(*.txt);;All file(*.*)");
 	if (m_str == nullptr)
 	{
@@ -51,6 +51,10 @@ void Instance_Calculate::on_btn_import_clicked()
 	towerWireGroup->m_filename = m_str;//读取模型的文件路径名称
 	m_InterFace->CalculationModel.Add_Entity(towerWireGroup);
 	m_ins = (Instance*)towerWireGroup;
+	if (m_ins->hasCalc) {
+		std::cout << "has calculate!\n";
+		return;
+	}
 	if (m_ins->s) delete m_ins->s;//释放之前的对象
 	m_ins->s = GetStructure();//生成structure类对象
 	m_ins->s->set_ID(m_ins->m_id);
@@ -83,8 +87,7 @@ void Instance_Calculate::on_btn_import_clicked()
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
 	qDebug() << "总迭代次数： " << Totalit;
-
-
+	m_ins->hasCalc = true;
 }
 
 
@@ -93,16 +96,20 @@ void Instance_Calculate::on_btk_ok_clicked()
 	int index = ui.tableWidget->currentRow();
 	m_ins = list_Instance[index];
 	if (!m_ins) return;
-	QString str = m_ins->m_filename;
-	if (str != nullptr)
+	if (m_ins->hasCalc) {
+		std::cout << "has calculate!\n";
+		return;
+	}
+	m_str = m_ins->m_filename;
+	if (m_str != nullptr)
 	{
-		qDebug() << str;
+		qDebug() << m_str;
 		if (m_ins->s) delete m_ins->s;//释放之前的对象
 		m_ins->s = GetStructure();//生成structure类对象
 		m_ins->s->set_ID(m_ins->m_id);
 		m_ins->s->AddToStructures();
 
-		m_ins->s->Input_Standard(str);
+		m_ins->s->Input_Standard(m_str);
 
 		m_ins->s->set_Name(m_ins->m_name);
 
@@ -128,6 +135,7 @@ void Instance_Calculate::on_btk_ok_clicked()
 	double rtime = (end - start);
 	qDebug() << "计算总耗时： " << rtime << " ms";
 	qDebug() << "总迭代次数： " << Totalit;
+	m_ins->hasCalc = true;
 }
 
 void Instance_Calculate::visual()
@@ -143,28 +151,27 @@ void Instance_Calculate::visual()
 		{
 			display = new resultVisualize(m_InterFace);
 		}
-		this->accept();//把原来的界面关闭
-		display->show();
-		m_ins = list_Instance[index];
-		if (!m_ins) return;
-		m_ins->Show_VTKnode(m_InterFace->m_Renderer);//增加显示
-		m_ins->Show_VTKbeam(m_InterFace->m_Renderer);
-		m_ins->Show_VTKtruss(m_InterFace->m_Renderer);
-		m_InterFace->m_Renderer->ResetCamera();
-		vector<Node_Base*> ptr_nodes = m_ins->s->GetNodes();
-		std::list<std::vector<double>> nodes;
-		for (auto& i : ptr_nodes)
-		{
-			std::vector<double> coor(3);
-			coor = { i->m_x,i->m_y,i->m_z };
-			nodes.push_back(coor);
+
+		//this->accept();//把原来的界面关闭
+
+		for (auto& i : list_Instance) {
+			i.second->showOriginalActor(false);
 		}
-		display->addData(nodes, m_ins);
+		Instance* ins = nullptr;
+		ins = list_Instance[index];
+		if (!ins) return;
+		if (!ins->hasCalc) {
+			qDebug() << "not calculated";
+			return;
+		}
+		display->setCurrentModel(ins);
+		display->show();
 	}
 }
 
 void Instance_Calculate::update()
 {
+	list_Instance.clear();
 	int T_tower = m_InterFace->TP.size();//塔实例数量
 	int T_wire = m_InterFace->TWG.size();//线+塔线实例数量
 	int T_CalculationModel = m_InterFace->CalculationModel.size();//读取模型数量
@@ -279,4 +286,3 @@ void Instance_Calculate::CreateActor()
 	m_InterFace->m_Renderer->ResetCamera();
 	m_InterFace->m_renderWindow->Render();
 }
-
