@@ -155,11 +155,11 @@ void InterFace::TreeWidgetShow()
 	sectionMaterial->setText(0, QString("截面材料"));
 
 	QTreeWidgetItem* manageSection = new QTreeWidgetItem(sectionMaterial);
-	manageSection->setText(0, QString("管理"));
-	QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
-	saveSection->setText(0, QString("保存"));
-	QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
-	openSection->setText(0, QString("读取"));
+	manageSection->setText(0, QString("查看"));
+	//QTreeWidgetItem* saveSection = new QTreeWidgetItem(sectionMaterial);
+	//saveSection->setText(0, QString("保存"));
+	//QTreeWidgetItem* openSection = new QTreeWidgetItem(sectionMaterial);
+	//openSection->setText(0, QString("读取"));
 
 }
 void InterFace::ReadMaterialTXT()
