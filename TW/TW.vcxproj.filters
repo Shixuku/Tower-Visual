@@ -287,6 +287,9 @@
     <ClCompile Include="ui_TowerLegParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParameterGalloping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaSelected_InteractorStyle.h">
@@ -455,6 +458,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StrainInfor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterGalloping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

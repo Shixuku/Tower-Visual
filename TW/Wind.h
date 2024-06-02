@@ -38,6 +38,7 @@ public:
 	int id;
 	int AnalysisStep;
 	double v;
+	double ice = 0;//冰厚
 	int angle;
 	std::vector<double>Uz_node;//每个节点的风压系数
 	std::vector<double>Uz_ele;//每个单元的风压系数
@@ -50,6 +51,7 @@ public:
 	RandomWind* ran = nullptr;
 	Creat_Loads* m_pCreat_loads = nullptr;
 	Instance* m_pInstance = nullptr;
+
 private:
 	Ui::WindClass ui;
 	

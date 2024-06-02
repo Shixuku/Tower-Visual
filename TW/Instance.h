@@ -21,6 +21,7 @@
 #include"Insulator_Base.h"
 #include"WireProperties.h"
 #include"Material.h"
+#include"ParameterGalloping.h"
 class Instance :public Base
 {
 public:
@@ -84,6 +85,7 @@ public:
 	list<ParameterConstraint> m_Constraint;//约束的容器
 	vector<ParameterStableWind>m_StableWind;//稳定风的容器
 	list<ParameterIceType> m_IceTypeElement;//冰单元类型
+	vector<ParameterGalloping>m_GallopWind;//舞动的容器
 	vector<int>pSection;//截面的容器
 	vector<int>TowerToGroup;//添加杆塔到塔线组里时暂存节点编号
 	vector<int>SuspensionElement;//放悬挂的单元，用于后续添加轴力
@@ -99,6 +101,7 @@ public:
 	void ConcentrationTxT();//集中力
 	void GravityTxT();//重力
 	void WindTxT();//稳定风载荷
+	void GallopTxT();//舞动荷载
 	void IceLoadTxT();
 	void RestraintTxT();//约束
 	void MaterialTxT();//材料
