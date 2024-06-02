@@ -109,6 +109,7 @@
     <ClCompile Include="AreaSelected_InteractorStyle.cpp" />
     <ClCompile Include="Assign_Section.cpp" />
     <ClCompile Include="Base.cpp" />
+    <ClCompile Include="ChooseNode.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ClassSection.cpp" />
     <ClCompile Include="CreateAbaqusInp.cpp" />
@@ -190,6 +191,7 @@
     <QtRcc Include="tubiao.qrc" />
     <QtRcc Include="TW.qrc" />
     <QtUic Include="Assign_Section.ui" />
+    <QtUic Include="ChooseNode.ui" />
     <QtUic Include="ConcentrateForce.ui" />
     <QtUic Include="CreateSingleTower.ui" />
     <QtUic Include="Creat_Loads.ui" />
@@ -233,6 +235,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="CreateSingleTower.h" />
+    <QtMoc Include="ChooseNode.h" />
     <ClInclude Include="CreateStrainWire.h" />
     <ClInclude Include="HangList.h" />
     <ClInclude Include="HangPoint.h" />

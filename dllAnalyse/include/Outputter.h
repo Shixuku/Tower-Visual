@@ -3,59 +3,88 @@
 #include <vector>
 #include <map>
 #include <QTextStream>
+#include <QDataStream>
 #include <QFile>
 #include "dll_ansys_global.h"
 #include <QDebug>
+#include <Eigen/Dense>
 
+class Structure;
 class Node;
 class Fem_Element_Base;
 
 enum class DataType :int {
 	U1, U2, U3, MagnitudeU, UR1, UR2, UR3, N, M2, M3, Mises
 };
+namespace visualData {
+	struct NodeData
+	{
+		NodeData() {}
+		NodeData(const Node& node);
 
-struct NodeData
-{
-	NodeData(const Node& node);
+		//位移
+		double displaymentX = 0;
+		double displaymentY = 0;
+		double displaymentZ = 0;
+		double displayment = 0; //总位移大小
+		//转角
+		double rotationX = 0;
+		double rotationY = 0;
+		double rotationZ = 0;
+		//内力
+		double stressN = 0;
+		double stressM1 = 0;
+		double stressM2 = 0;
+		double stressM3 = 0;
 
-	//位移
-	double displaymentX = 0;
-	double displaymentY = 0;
-	double displaymentZ = 0;
-	double displayment = 0; //总位移大小
-	//转角
-	double rotationX = 0;
-	double rotationY = 0;
-	double rotationZ = 0;
-	//内力
-	double stressN = 0;
-	double stressM1 = 0;
-	double stressM2 = 0;
-	double stressM3 = 0;
+		double mises = 0;
 
-	double mises = 0;
-};
+		// 保存和读取数据
+		void Read(QDataStream& dataStream) {
+			dataStream >> displaymentX >> displaymentY >> displaymentZ >> displayment >> rotationX
+				>> rotationY >> rotationZ >> stressN >> stressM1 >> stressM2 >> stressM3 >> mises;
+		}
+		void Save(QDataStream& dataStream) const {
+			dataStream << displaymentX << displaymentY << displaymentZ << displayment << rotationX
+				<< rotationY << rotationZ << stressN << stressM1 << stressM2 << stressM3 << mises;
+		}
+	};
 
-struct ElementData
-{
-	ElementData(Fem_Element_Base& ele);
+	struct ElementData
+	{
+		ElementData() {}
+		ElementData(Fem_Element_Base& ele);
 
-	//内力
-	double stress_n = 0; //轴向应力
+		//内力
+		double stress_n = 0; //轴向应力
+		Eigen::Vector3d axial; // 轴向方向
 
-};
+		// 保存和读取数据
+		void Read(QDataStream& dataStream) {
+			dataStream >> stress_n;
+		}
+		void Save(QDataStream& dataStream) const {
+			dataStream << stress_n;
+		}
+	};
 
-struct DataFrame
-{
-	double currentTime = 0;
+	struct DataFrame
+	{
+		double currentTime = 0;
 
-	//每一帧节点数据
-	std::map<int, NodeData> nodeDatas;//int 为节点的编号 NodeData 为对应节点的数据
-	//每一帧单元数据
-	std::map<int, ElementData> eleDatas;//int 为单元的编号 ElementData 为对应节点的数据
+		//每一帧节点数据
+		std::map<int, NodeData> nodeDatas;//int 为节点的编号 NodeData 为对应节点的数据
+		//每一帧单元数据
+		std::map<int, ElementData> eleDatas;//int 为单元的编号 ElementData 为对应节点的数据
 
-	double getNodeData(int idNode, DataType iType);
-};
+		double getNodeData(int idNode, DataType iType);
+		Eigen::Vector3d getElementData(int idElement);
+
+		// 保存和读取数据
+		void Read(QDataStream& dataStream, Structure* pStructure);
+		void Save(QDataStream& dataStream) const;
+	};
+}
 
 
 class DLL_ANSYS_EXPORT Outputter
@@ -68,7 +97,7 @@ public:
 
 	int Precision = 6; //输出精度
 
-	std::vector<DataFrame*> dataSet; //数据集合
+	std::vector<visualData::DataFrame*> dataSet; //数据集合
 
 	void SaveData(double time, const std::vector<Node>& nodes, const std::map<int, Fem_Element_Base*>& eles);
 
@@ -80,7 +109,9 @@ public:
 		if (boundary[1] < max) boundary[1] = max;
 	}
 
+	Eigen::MatrixXd outputNodeDisplaycement(int idNode, double& dt);
 	void outputNodeData(int idNode, std::vector<int>& iTypes);
+	void outputElementData(int idElement);
 
 	//CRS[4] = { R ,Lon ,Lat ,H }
 	double CRS[4] = { 6378137, 30.1970028361111, 119.393508944444, 370 };
@@ -113,6 +144,10 @@ public:
 	std::vector<double> getBoundaryStressM2() const { return  boundaryStressM2; }
 	std::vector<double> getBoundaryStressM3() const { return  boundaryStressM3; }
 	std::vector<double> getBoundaryMises() const { return  boundaryMises; }
+
+	// 保存和读取数据
+	void Read(QDataStream& dataStream, Structure* pStructure);
+	void Save(QDataStream& dataStream) const;
 private:
 
 	//第一个元素为最小值，第二个元素为最大值

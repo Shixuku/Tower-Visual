@@ -287,6 +287,9 @@
     <ClCompile Include="ui_TowerLegParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChooseNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ParameterGalloping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -567,6 +570,9 @@
     <QtMoc Include="ui_TowerLegParameter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ChooseNode.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="IceLoad.ui">
@@ -666,6 +672,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ui_TowerLegParameter.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ChooseNode.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

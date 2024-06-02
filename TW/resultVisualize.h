@@ -21,6 +21,7 @@
 #include"Node.h"
 #include"Outputter.h"
 #include"Outputter_ice.h"
+#include"ChooseNode.h"
 
 class InterFace;
 class Instance;
@@ -59,6 +60,7 @@ public:
 	void stop();
 	void quit();
 	void autoFactor(bool flag);
+	void btn_GraphShow();
 
 	void addData(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
 	//void addData_ice(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
@@ -67,6 +69,8 @@ public:
 
 	void setNephogramType(int iTpye);
 	void setCurrentStep(int idStep);
+
+	Outputter* getCurrentOutputter();
 signals:
 	void animationFinished();//动画结束
 

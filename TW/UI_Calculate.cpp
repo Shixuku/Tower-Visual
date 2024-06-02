@@ -9,7 +9,7 @@ Instance_Calculate::Instance_Calculate(InterFace* InterFace, QWidget *parent)
 	Set_headertext();
 	connect(ui.btn_ok, &QPushButton::clicked, this, &Instance_Calculate::on_btk_ok_clicked);
 	connect(ui.btn_showWind, &QPushButton::clicked, this, &Instance_Calculate::visual);
-
+	
 	connect(ui.btn_import, &QPushButton::clicked, this, &Instance_Calculate::on_btn_import_clicked);
 	connect(this, &Instance_Calculate::msg_CreateModel, this, &Instance_Calculate::CreateActor);
 

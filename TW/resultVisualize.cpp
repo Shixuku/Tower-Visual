@@ -22,9 +22,9 @@ resultVisualize::resultVisualize(QWidget *parent)
 	connect(ui.play_btn, &QPushButton::clicked, this, &resultVisualize::start);
 	//暂停
 	connect(ui.stop_btn, &QPushButton::clicked, this, &resultVisualize::stop);
-	//终止
-	connect(ui.quit_btn, &QPushButton::clicked, this, &resultVisualize::quit);
 
+	//曲线图
+	connect(ui.btn_Graph, &QPushButton::clicked, this, &resultVisualize::btn_GraphShow);
 	ui.label_frame->setText(QString::number(m_frames));//帧标签
 	//设置速度滑块
 	ui.speed_Slider->setRange(1, 60);
@@ -95,6 +95,12 @@ void resultVisualize::getBoundary()
 	if (boundary < (max_z - min_z)) boundary = max_z - min_z;
 }
 
+Outputter* resultVisualize::getCurrentOutputter()
+{
+	int id = ui.comboBox_step->currentIndex() + 1;
+	return  &(m_ins->s->get_outputter(id));
+}
+
 void resultVisualize::update()
 {
 	if (m_Outputter != nullptr)
@@ -108,12 +114,12 @@ void resultVisualize::update()
 
 		vtkIdType pointsNum = m_nodes.size();
 
-		DataFrame* iframe = m_Outputter->dataSet[m_frames];
+		visualData::DataFrame* iframe = m_Outputter->dataSet[m_frames];
 		//修改点的坐标
 		for (auto& i : iframe->nodeDatas)
 		{
 			int pointIndex = i.first - 1;
-			NodeData& node = i.second;
+			visualData::NodeData& node = i.second;
 			double* p = m_originalPoints->GetPoint(pointIndex);
 			m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
 
@@ -204,6 +210,12 @@ void resultVisualize::autoFactor(bool flag)
 		ui.lineEdit->setText(QString::number(ampFator));
 	}
 
+}
+
+void resultVisualize::btn_GraphShow()
+{
+	ChooseNode* choose = new ChooseNode(this);
+	choose->show();
 }
 
 void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* ins)

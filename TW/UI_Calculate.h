@@ -8,6 +8,7 @@
 #include"Element_Beam.h"
 #include"Instance.h"
 #include"resultVisualize.h"
+
 #include<vector>
 #include<map>
 
@@ -27,6 +28,8 @@ public:
 
 	void CreateActor();
 	void on_btn_import_clicked();
+
+	
 signals:
 	void msg_CreateModel();
 

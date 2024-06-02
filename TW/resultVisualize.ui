@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>339</width>
+    <width>356</width>
     <height>415</height>
    </rect>
   </property>
@@ -170,9 +170,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="quit_btn">
+       <widget class="QPushButton" name="btn_Graph">
         <property name="text">
-         <string>终止</string>
+         <string>曲线图</string>
         </property>
        </widget>
       </item>
