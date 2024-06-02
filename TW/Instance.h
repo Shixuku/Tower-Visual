@@ -25,15 +25,11 @@ class Instance :public Base
 {
 public:
 	Instance();
-	virtual ~Instance() { 
-		if (s)
-		{
-			delete s;
-			qDebug() << "删除计算实例！";
-		}
+	virtual ~Instance() {
 
 	}
 	QString m_name = nullptr;
+	QString m_filename = "No File!";
 	vector<Node> m_Nodes;//节点合集
 	vector<Element> m_Elements;//单元合集
 	vector<Element_Beam> m_Elements_beams;//梁单元合集

@@ -357,7 +357,8 @@ void Instance::CreateOutPut()
 			cout << "文件打开失败！\n";
 			return;
 		}
-		this->m_name = filename;
+		//this->m_name = filename;
+		this->m_filename = filename;
 		NodeTxT();//节点
 		TrussTxT();//桁架单元
 		BeamTxT();//梁单元

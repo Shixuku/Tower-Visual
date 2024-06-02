@@ -14,6 +14,7 @@ Create_Constraint::Create_Constraint(Instance* instance, QWidget *parent)
 			Draw_Con1();
 			this->accept();
 		});
+	connect(ui.Cancel_Btn, &QPushButton::clicked, this, &Create_Constraint::reject);//增加取消的功能
 	connect(m_pInterFace, &InterFace::Msg_Select_Nodes, this, &Create_Constraint::Insert_Data);
 }
 
