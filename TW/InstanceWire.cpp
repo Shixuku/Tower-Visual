@@ -590,26 +590,25 @@ void InstanceWire::CreatTowerWierGroupItem(QString lineName)
 	QString str = QString::number(m_pInterFace->creat_towerwire_instance->childCount());     //塔线组的item
 	towerWierGroupItem->setText(0, QString(lineName));
 	//放入每个杆塔
-	QTreeWidgetItem* GroupTower = new QTreeWidgetItem(towerWierGroupItem);
-	GroupTower->setText(0, QString("杆塔"));
-	for (int i = 0; i < TowerSize; i++)
-	{
-		QTreeWidgetItem* GroupTowerItem = new QTreeWidgetItem(GroupTower);
-		QString str = QString::number(i+1);     //str转字符
-		GroupTowerItem->setText(0, QString("杆塔编号" + str));
-	}
+	//QTreeWidgetItem* GroupTower = new QTreeWidgetItem(towerWierGroupItem);
+	//GroupTower->setText(0, QString("杆塔"));
+	//for (int i = 0; i < TowerSize; i++)
+	//{
+	//	QTreeWidgetItem* GroupTowerItem = new QTreeWidgetItem(GroupTower);
+	//	QString str = QString::number(i+1);     //str转字符
+	//	GroupTowerItem->setText(0, QString("杆塔编号" + str));
+	//}
 	towerWire->Item = towerWierGroupItem;
 	QTreeWidgetItem* Wire_modeling = new QTreeWidgetItem(towerWierGroupItem);
 	Wire_modeling->setText(0, QString("导线建模"));
 
-	QTreeWidgetItem* calculate = new QTreeWidgetItem(towerWierGroupItem);
-	calculate->setText(0, QString("计算文件"));
-
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(towerWierGroupItem);
 	Loads->setText(0, QString("施加荷载"));
 
-	QTreeWidgetItem* out = new QTreeWidgetItem(towerWierGroupItem);
-	out->setText(0, QString("关键信息"));
+	QTreeWidgetItem* calculate = new QTreeWidgetItem(towerWierGroupItem);
+	calculate->setText(0, QString("计算文件"));
+
+
 }
 
 void InstanceWire::WriteHangList()

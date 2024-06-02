@@ -239,7 +239,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_Tower();
 	}
-	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 3)||isChildOfGroup(item, 3))
+	else if (isChildOfTower(1,item, 0) || isChildOfSingleWire(item, 1)||isChildOfGroup(item, 1))
 	{//施加载荷
 		ui_CreatLoads(item);
 	}
@@ -251,7 +251,7 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		CreateMidIdAndEleInfor(item);
 	}
-	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,4))
+	else if (isChildOfTower(1,item, 2)|| isChildOfGroup(item, 2)||isChildOfSingleWire(item,2))
 	{//输出txt文件
 		CreateOutPut(item);
 	}
@@ -268,20 +268,20 @@ void InterFace::onTreeitemDoubleClicked(QTreeWidgetItem* item)
 	{
 		ui_SingleWire();
 	}
-	else if (isChildOfSingleWire(item, 0))
-	{//创建绝缘子串
-		ui_SingleWireSpacer(item);
-	}
-	else if (isChildOfSingleWire(item, 2))
-	{//施加约束
-		ui_Constraint(item);
-	}
+	//else if (isChildOfSingleWire(item, 0))
+	//{//创建绝缘子串
+	//	ui_SingleWireSpacer(item);
+	//}
+	//else if (isChildOfSingleWire(item, 2))
+	//{//施加约束
+	//	ui_Constraint(item);
+	//}
 	//塔线实例
 	else if (item == ui.treeWidget->topLevelItem(3))
 	{
 		ui_TowerWireGroup();
 	}
-	else if (isChildOfGroup(item, 1) || isChildOfSingleWire(item, 1))
+	else if (isChildOfGroup(item, 0) || isChildOfSingleWire(item, 0))
 	{//导线建模
 		//ui_Wire_InterFace(item);
 		//ReadWireInforTxT();
@@ -866,25 +866,73 @@ void InterFace::ReadWireInforTxT()
 
 void InterFace::CreateStrain(QTreeWidgetItem* item)
 {
-	InputWireInfor aa;
-	aa.ReadWireInfor(this);
-	/*aa.towerWire = OnFindGroup(item->parent());
-	if (aa.wd != nullptr)
+	TowerWireGroup* towerWire = OnFindGroup(item->parent());
+	if (towerWire->SuspensionNode.size() == 0)
 	{
-		aa.towerWire->Suspensioncombined();
-		aa.towerWire->VectorToMap();
-		m_Renderer->RemoveAllViewProps();
-		CreateStrainWire* c = new CreateStrainWire();
-		c->fenlie = aa.wd->fenlie;
-		c->Test_a = aa.wd->Test_a;
-		c->Property = aa.wd->Property;
-		c->Create_Mesh();
-		aa.towerWire->AddStrainWireToGroup(c);
-		aa.towerWire->Show_VTKnode(m_Renderer);
-		aa.towerWire->Show_VTKbeam(m_Renderer);
-		aa.towerWire->Show_VTKtruss(m_Renderer);
-		m_Renderer->ResetCamera();
-	}*/
+		if (towerWire->m_Nodes.size() == 0)
+		{
+			InputWireInfor aa;
+			aa.OpenReadWireInfor(this);
+			if (aa.wd != nullptr)
+			{
+				m_Renderer->RemoveAllViewProps();
+				CreateStrainWire* c = new CreateStrainWire();
+				c->fenlie = aa.wd->fenlie;
+				c->Test_a = aa.wd->Test_a;
+				c->Property = aa.wd->Property;
+				c->Create_Mesh();
+				towerWire->AddStrainWireToGroup(c);
+				towerWire->Show_VTKnode(m_Renderer);
+				towerWire->Show_VTKbeam(m_Renderer);
+				towerWire->Show_VTKtruss(m_Renderer);
+				m_Renderer->ResetCamera();
+			}
+
+		}
+		else
+		{
+			QMessageBox::warning(this, "提示", "已有导线或模型错误！");
+		}
+	}
+	else if (towerWire->SuspensionNode.size() != 0)
+	{
+		towerWire->Suspensioncombined();
+		towerWire->VectorToMap();
+		Wire_InterFace* wireInterFace = new Wire_InterFace(towerWire, this);
+		int ret = wireInterFace->exec();
+
+		if (ret == QDialog::Accepted)
+		{
+			CreatWire* t = new CreatWire;
+			wireInterFace->Get_Data(*t);//取数据
+			m_Renderer->RemoveAllViewProps();
+			t->Create_Mesh();
+			towerWire->AddWireToGroup(t);
+			towerWire->Show_VTKnode(m_Renderer);
+			towerWire->Show_VTKbeam(m_Renderer);
+			towerWire->Show_VTKtruss(m_Renderer);
+			m_Renderer->ResetCamera();
+		}
+	}
+	//InputWireInfor aa;
+	//aa.OpenReadWireInfor(this);
+	//TowerWireGroup*towerWire = OnFindGroup(item->parent());
+	//if (aa.wd != nullptr)
+	//{
+	//	aa.towerWire->Suspensioncombined();
+	//	aa.towerWire->VectorToMap();
+	//	m_Renderer->RemoveAllViewProps();
+	//	CreateStrainWire* c = new CreateStrainWire();
+	//	c->fenlie = aa.wd->fenlie;
+	//	c->Test_a = aa.wd->Test_a;
+	//	c->Property = aa.wd->Property;
+	//	c->Create_Mesh();
+	//	aa.towerWire->AddStrainWireToGroup(c);
+	//	aa.towerWire->Show_VTKnode(m_Renderer);
+	//	aa.towerWire->Show_VTKbeam(m_Renderer);
+	//	aa.towerWire->Show_VTKtruss(m_Renderer);
+	//	m_Renderer->ResetCamera();
+	//}
 	
 }
 
@@ -1476,12 +1524,10 @@ void InterFace::ui_SingleWire()
 	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
 	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
 	item->setText(0, "导线");
-	QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
-	spacer->setText(0, "添加绝缘子串");
+	//QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
+	//spacer->setText(0, "添加绝缘子串");
 	QTreeWidgetItem* creareWire = new QTreeWidgetItem(item);
-	creareWire->setText(0, "建立导线");
-	QTreeWidgetItem* Constraint = new QTreeWidgetItem(item);
-	Constraint->setText(0, "添加约束");
+	creareWire->setText(0, "读取模型");
 	QTreeWidgetItem* Loads = new QTreeWidgetItem(item);
 	Loads->setText(0, "施加荷载");
 	QTreeWidgetItem* inp = new QTreeWidgetItem(item);
