@@ -11,7 +11,7 @@ Manage_Section::Manage_Section(InterFace*m_InterFace,QWidget *parent): QDialog(p
 	connect(ui.btn_ok, &QPushButton::clicked, this, &Manage_Section::accept);
 	connect(ui.btn_cancle, &QPushButton::clicked, this, &Manage_Section::reject);
 	//connect(ui.btn_modify, &QPushButton::clicked, this, &Manage_Section::Modify_Data);
-	connect(ui.btn_delete, &QPushButton::clicked, this, &Manage_Section::DeleteSection);
+	//connect(ui.btn_delete, &QPushButton::clicked, this, &Manage_Section::DeleteSection);
 }
 
 Manage_Section::~Manage_Section()

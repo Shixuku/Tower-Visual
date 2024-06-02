@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ui_TowerLegParameter</string>
+   <string>塔腿参数</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
