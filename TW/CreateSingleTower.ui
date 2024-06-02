@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CreateSingleTower</string>
+   <string>组装单塔</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

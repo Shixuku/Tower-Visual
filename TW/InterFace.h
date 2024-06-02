@@ -182,7 +182,6 @@ private:
     TowerData_CrossArm* OnFindCrossAem(const QTreeWidgetItem* Item);
     TowerWireGroup* OnFindGroup(const QTreeWidgetItem* Item);
    
-    Instance_Calculate* ui_calculate = nullptr;
     void ReadWireInforTxT();
     void CreateStrain(QTreeWidgetItem* item);
 

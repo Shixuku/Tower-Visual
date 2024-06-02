@@ -26,6 +26,11 @@ TowerWireGroupAssembly::TowerWireGroupAssembly(InterFace* InterFace, TowerWireGr
 			CreatTowerWierGroupItem();
 			towerWireGroup->VectorToMap();
 			m_pInterFace->m_Renderer->ResetCamera();
+			m_pInterFace->m_Renderer->GetRenderWindow()->Render();//及时显示
+			//给塔线组加名称
+			QString str = QString::number(m_pInterFace->creat_towerwire_instance->childCount());     //塔线组的item
+			towerWireGroup->m_Name = "塔线实例" + str;
+			towerWireGroup->m_id = m_pInterFace->TWG.size() + 1;
 			m_pInterFace->TWG.Add_Entity(towerWireGroup);
 			this->reject();
 		});
