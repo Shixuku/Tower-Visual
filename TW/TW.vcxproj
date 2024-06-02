@@ -142,6 +142,7 @@
     <ClCompile Include="NominalHeight.cpp" />
     <ClCompile Include="ParameterAnalysisStep.cpp" />
     <ClCompile Include="ParameterConstraint.cpp" />
+    <ClCompile Include="ParameterGalloping.cpp" />
     <ClCompile Include="ParameterGravity.cpp" />
     <ClCompile Include="ParameterIceElement.cpp" />
     <ClCompile Include="ParameterStableWind.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Insulator_Base.h" />
     <ClInclude Include="LineMaterial.h" />
     <ClInclude Include="NominalHeight.h" />
+    <ClInclude Include="ParameterGalloping.h" />
     <ClInclude Include="StrainInfor.h" />
     <ClInclude Include="TowerList.h" />
     <QtMoc Include="ui_TowerLegType.h" />

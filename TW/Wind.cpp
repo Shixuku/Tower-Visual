@@ -42,9 +42,9 @@ Wind::~Wind()
 
 void Wind::Initialize()
 {
-	ui.ice_edi->setText("5");
+	ui.ice_edi->setText("0.005");
 	ui.wind_edi->setText("10");
-	ui.direction_edi->setText("0");
+//	ui.direction_edi->setText("0");
 	ui.StepSize_edi->setText("0.3");
 	ui.Step_edi->setText("100");
 	//分析步的combobox
@@ -96,7 +96,8 @@ void Wind::Get_ui_Data()
 	//分析步
 	 AnalysisStep = ui.comboBox->currentIndex() + 1;
 	 v = ui.wind_edi->text().toDouble();
-	 angle = ui.direction_edi->text().toInt();
+	 ice = ui.ice_edi->text().toDouble() ;
+	// angle = ui.direction_edi->text().toInt();
 	
 	//cout << "xxxx" << "  " << ui.stackedWidget_2->currentIndex() << "\n";
 	if (ui.stackedWidget_2->currentIndex() == 0)
@@ -131,9 +132,20 @@ void Wind::Get_ui_Data()
 	WindCoefficient = miusc * B;
 	if (ui.rad_stab->isChecked())
 	{
-		ParameterStableWind pwind = ParameterStableWind(id, AnalysisStep, angle, v, m_pInstance->Splits, m_pInstance->LandformsType, WindCoefficient);
-		m_pInstance->m_StableWind.push_back(pwind);
+		if (ui.wudong_com->currentIndex() == 0)//稳定风风偏
+		{
+			ParameterStableWind pwind = ParameterStableWind(id, AnalysisStep, angle, v, m_pInstance->Splits, m_pInstance->LandformsType, WindCoefficient);
+			m_pInstance->m_StableWind.push_back(pwind);
+		}
+		else if(ui.wudong_com->currentIndex() == 1)//舞动
+		{
+	
+			ParameterGalloping pgallop = ParameterGalloping(id, AnalysisStep, v, ice);
+			m_pInstance->m_GallopWind.push_back(pgallop);
+		}
 	}
+
+
 }
 
 double Wind::CountUz(double h)
@@ -228,34 +240,6 @@ std::vector<double> Wind::CountWindForce()
 	return Wx_values;
 }
 
-//double Wind::WindSpeedInterpolation(int pointIndex, double time)
-//{
-//	double T = 0, Dt = 0;
-//	Eigen::MatrixXd velocitiys;
-//	Eigen::VectorXd v;
-//	if (ran->fw)
-//	{
-//		velocitiys = ran->fw->getVelocityMat();
-//		v = velocitiys.col(pointIndex);//第i点的风速
-//
-//		Dt = 0.5;
-//		//double Dt = ran->fw->getDt();
-//		T = ran->T;
-//	}
-//	else
-//	{
-//		QMessageBox::warning(this, "提示", "请创建随机风！");
-//	}
-//	double re_v = 0;
-//	
-//	int start = time / Dt;//第几次开始
-//
-//	if ((time >= (start * Dt)) && (time <= ((start + 1) * Dt)))
-//	{
-//		re_v = v[start] + (v[start + 1] - v[start]) * (time - Dt * start) / Dt;
-//		cout << pointIndex + 1 << "  " << "(" << v[start] << "," << v[start + 1] << "): " << re_v << "\n";
-//	}
-//	return re_v;
-//}
+
 
 

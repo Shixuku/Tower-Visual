@@ -371,6 +371,7 @@ void Instance::CreateOutPut()
 		IceLoadTxT();//冰单元
 
 		WindTxT();//风载荷
+		GallopTxT();
 		//边界条件
 		RestraintTxT();
 		//add冰单元类别
@@ -464,11 +465,12 @@ void Instance::WindTxT()
 {
 	int StableWindSize = m_StableWind.size();
 	Stream << "*Force_Wind," << StableWindSize << "\n";//风载荷
+	
 	if (TypeWind == 0)
 	{
 		for (int i = 0; i < StableWindSize; i++)
 		{	//1 0 - 9.8(编号 方向012-xyz 大小)
-			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  "  << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_v << "  " 
+			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  "  <<1 << "  "<<0<<"  "<<0<<" " << m_StableWind[i].m_v << "  "
 				<< m_StableWind[i].m_splitCount << "  " << m_StableWind[i].m_alf_select << "  " << m_StableWind[i].m_coeff << "\n";
 		}
 	}
@@ -476,9 +478,21 @@ void Instance::WindTxT()
 	{
 		for (int i = 0; i < StableWindSize; i++)
 		{	//1 0 - 9.8(编号 方向012-xyz 大小)
-			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  "  << m_StableWind[i].m_angle << "  " << m_StableWind[i].m_fileName
+			Stream << "  " << m_StableWind[i].m_id << "  " << m_StableWind[i].m_AnalysisStep << "  " << 1 << "  " << 0 << "  " << 0 <<  "  " << m_StableWind[i].m_fileName
 				<< "  " << m_StableWind[i].m_splitCount << "  " << m_StableWind[i].m_alf_select << "  " << m_StableWind[i].m_coeff << "\n";
 		}
+	}
+}
+
+void Instance::GallopTxT()
+{
+
+	int GallopWindSize = m_GallopWind.size();
+	Stream << "*Force_Galloping," << GallopWindSize << "\n";//风载荷
+
+	for (int i = 0; i < GallopWindSize; i++)
+	{	//1 0 - 9.8(编号 方向012-xyz 大小)
+		Stream << "  " << m_GallopWind[i].m_id << "  " << m_GallopWind[i].m_AnalysisStep<<"  "<< m_GallopWind[i].m_v<<"  "<< m_GallopWind[i].m_ice << "\n";
 	}
 }
 
