@@ -881,10 +881,10 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 				c->Test_a = aa.wd->Test_a;
 				c->Property = aa.wd->Property;
 				c->Create_Mesh();
-				aa.towerWire->AddStrainWireToGroup(c);
-				aa.towerWire->Show_VTKnode(m_Renderer);
-				aa.towerWire->Show_VTKbeam(m_Renderer);
-				aa.towerWire->Show_VTKtruss(m_Renderer);
+				towerWire->AddStrainWireToGroup(c);
+				towerWire->Show_VTKnode(m_Renderer);
+				towerWire->Show_VTKbeam(m_Renderer);
+				towerWire->Show_VTKtruss(m_Renderer);
 				m_Renderer->ResetCamera();
 			}
 
@@ -896,8 +896,23 @@ void InterFace::CreateStrain(QTreeWidgetItem* item)
 	}
 	else if (towerWire->SuspensionNode.size() != 0)
 	{
+		towerWire->Suspensioncombined();
+		towerWire->VectorToMap();
 		Wire_InterFace* wireInterFace = new Wire_InterFace(towerWire, this);
-		wireInterFace->show();
+		int ret = wireInterFace->exec();
+
+		if (ret == QDialog::Accepted)
+		{
+			CreatWire* t = new CreatWire;
+			wireInterFace->Get_Data(*t);//È¡Êý¾Ý
+			m_Renderer->RemoveAllViewProps();
+			t->Create_Mesh();
+			towerWire->AddWireToGroup(t);
+			towerWire->Show_VTKnode(m_Renderer);
+			towerWire->Show_VTKbeam(m_Renderer);
+			towerWire->Show_VTKtruss(m_Renderer);
+			m_Renderer->ResetCamera();
+		}
 	}
 	//InputWireInfor aa;
 	//aa.OpenReadWireInfor(this);
