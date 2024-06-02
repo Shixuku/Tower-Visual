@@ -1523,7 +1523,10 @@ void InterFace::ui_SingleWire()
 {
 	QTreeWidgetItem* parent = ui.treeWidget->topLevelItem(2);
 	QTreeWidgetItem* item = new QTreeWidgetItem(parent);
-	item->setText(0, "导线");
+	int childIndex = parent->indexOfChild(item) + 1;
+
+	item->setText(0, QString("导线 %1").arg(childIndex));
+
 	//QTreeWidgetItem* spacer = new QTreeWidgetItem(item);
 	//spacer->setText(0, "添加绝缘子串");
 	QTreeWidgetItem* creareWire = new QTreeWidgetItem(item);
@@ -1535,6 +1538,7 @@ void InterFace::ui_SingleWire()
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
+	towerWireGroup->m_Name= QString("导线 %1").arg(childIndex + 1);
 	TWG.Add_Entity(towerWireGroup);
 }
 
