@@ -37,7 +37,7 @@ void Tower::addPart(Part_Base* part)
 	addNodeToTower(part);
 	addElementToTower(part);
 	//addSectionToTower(part);//不每次都把截面添加进去，只能添加一次
-	//addRestraintNode(part);
+	addRestraintNode(part);
 	addSuspensionNode(part);
 	addHangPoint(part);
 	//HangPintList();

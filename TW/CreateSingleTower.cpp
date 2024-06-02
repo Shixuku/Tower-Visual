@@ -24,24 +24,27 @@ void CreateSingleTower::Initialize()
 	//线路名称
 	for (int i = 1; i < m_pInterface->TWG.size() + 1; i++)
 	{
-		ui.comboBox_line->addItem(m_pInterface->TWG.Find_Entity(i)->m_Name);
+		if (m_pInterface->TWG.Find_Entity(i)->TWG_TP.size() != 0)
+		{
+			ui.comboBox_line->addItem(m_pInterface->TWG.Find_Entity(i)->m_Name);
+			//塔类型
+			int towerSize = m_pInterface->TWG.Find_Entity(i)->TWG_TP.size();//选择这条线路上塔的数量
+			//将塔添加到item里面
+			for (int j = 0; j < towerSize; j++)
+			{
+				ui.comboBox_towertype->addItem(m_pInterface->TWG.Find_Entity(i)->TWG_TP.Find_Entity(j + 1)->m_Name);
+			}
+			//呼高
+			int hugaoSize = m_pInterface->TWG.Find_Entity(i)->TWG_TP.Find_Entity(1)->TP_Height.size();//选择这个杆塔的呼高数量
+			//将呼高添加到combobox里面
+			for (int j = 0; j < hugaoSize; j++)
+			{
+				QString hugaoID = QString::number(m_pInterface->TWG.Find_Entity(i)->TWG_TP.Find_Entity(1)->TP_Height.Find_Entity(j + 1)->m_id);
+				QString hugaoHIGH = QString::number(m_pInterface->TWG.Find_Entity(i)->TWG_TP.Find_Entity(1)->TP_Height.Find_Entity(j + 1)->hight);
+				ui.comboBox_hugao->addItem(hugaoID + " " + hugaoHIGH);
+			}
+		}	
 	}
-	//塔类型
-	int towerSize = m_pInterface->TWG.Find_Entity(1)->TWG_TP.size();//选择这条线路上塔的数量
-	//将塔添加到item里面
-	for (int i = 0; i < towerSize; i++)
-	{
-		ui.comboBox_towertype->addItem(m_pInterface->TWG.Find_Entity(1)->TWG_TP.Find_Entity(i + 1)->m_Name);
-	}
-	//呼高
-	int hugaoSize = m_pInterface->TWG.Find_Entity(1)->TWG_TP.Find_Entity(1)->TP_Height.size();//选择这个杆塔的呼高数量
-	//将呼高添加到combobox里面
-	for (int i = 0; i < hugaoSize; i++)
-	{
-		QString hugaoID = QString::number(m_pInterface->TWG.Find_Entity(1)->TWG_TP.Find_Entity(1)->TP_Height.Find_Entity(i + 1)->m_id);
-		QString hugaoHIGH = QString::number(m_pInterface->TWG.Find_Entity(1)->TWG_TP.Find_Entity(1)->TP_Height.Find_Entity(i + 1)->hight);
-		ui.comboBox_hugao->addItem(hugaoID + " " + hugaoHIGH);
-	}	
 }
 
 void CreateSingleTower::ChangeTowerType()

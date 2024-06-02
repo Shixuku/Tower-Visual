@@ -9,6 +9,7 @@
 #include"Instance.h"
 #include"resultVisualize.h"
 #include<vector>
+#include<map>
 
 class Instance_Calculate : public QDialog
 {
@@ -20,18 +21,21 @@ public:
 	~Instance_Calculate();
 
 	void on_btk_ok_clicked();
-	void on_btk_ok_clicked_ice();
 	void visual();
-	void visual_ice();
 
 	void update();
 
 	void CreateActor();
-	void CreateActor_ice();
 	void on_btn_import_clicked();
-	void btn_CaculateModelIce();
 signals:
 	void msg_CreateModel();
+
+protected:
+	void showEvent(QShowEvent* event) override {
+		update();
+		QWidget::showEvent(event);
+	}
+
 
 private:
 	Ui::UI_CalculateClass ui;
@@ -39,7 +43,7 @@ private:
 	TowerCaculate* towercaculate = nullptr;
 	resultVisualize* display = nullptr;
 
-	std::vector<Instance*> list_Instance;
+	std::map<int, Instance*> list_Instance;
 
 	Instance* m_ins = nullptr;
 	vector<Node> m_nodes;//包含位移的点

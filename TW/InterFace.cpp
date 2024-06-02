@@ -410,7 +410,7 @@ void InterFace::ui_Body()
 	
 		TP_body.Add_Entity(t);
 		m_Renderer->ResetCamera();
-
+		m_Renderer->GetRenderWindow()->Render();//及时显示
 		t_bodys.push_back(T_body);
 	
 	}
@@ -440,7 +440,7 @@ void InterFace::ui_CrossArm()
 		
 		TP_CrossArm.Add_Entity(t);//塔头
 		m_Renderer->ResetCamera();
-
+		m_Renderer->GetRenderWindow()->Render();//及时显示
 		t_crossarms.push_back(T_ca);//塔头对话框
 
 	}
@@ -495,6 +495,7 @@ void InterFace::ui_Tower()
 		tw->AddNewSection(idSections);
 
 		m_Renderer->ResetCamera();
+		m_Renderer->GetRenderWindow()->Render();//及时显示
 		tower_assembles.push_back(T_As);
 	}
 
@@ -633,6 +634,7 @@ void InterFace::ui_CreateSingleTower()
 		createSingleTower->BtnOK(tower);
 		TP.Add_Entity(tower);
 		item->setText(0, "单塔 "+QString::number(tower->m_id));
+		tower->m_name = "单塔 " + QString::number(tower->m_id);
 		tower->Item = item;
 	}
 }
@@ -997,15 +999,8 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 void InterFace::Caculate()
 {
-	if (ui_calculate)
-	{
-		ui_calculate->show();
-	}
-	else
-	{
-		ui_calculate = new Instance_Calculate(this);
-		ui_calculate->show();
-	}
+	Instance_Calculate* ui_Calculate = new Instance_Calculate(this);
+	ui_Calculate->show();
 }
 
 void InterFace::Display()
@@ -1538,7 +1533,7 @@ void InterFace::ui_SingleWire()
 	TowerWireGroup* towerWireGroup = new TowerWireGroup;
 	towerWireGroup->Item= item;
 	towerWireGroup->m_id = TWG.size() + 1;
-	towerWireGroup->m_Name= QString("导线 %1").arg(childIndex + 1);
+	towerWireGroup->m_Name= QString("导线 %1").arg(childIndex);
 	TWG.Add_Entity(towerWireGroup);
 }
 

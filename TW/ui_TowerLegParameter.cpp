@@ -89,7 +89,8 @@ void ui_TowerLegParameter::Get_Data()
 
 	m_pTowerLegType->m_InterFace->TP_leg.Add_Entity(leg);
 	m_pTowerLegType->m_InterFace->m_Renderer->ResetCamera();
-	m_pTowerLegType->m_InterFace->m_Renderer->GetRenderWindow()->Render();
+	m_pTowerLegType->m_InterFace->m_Renderer->GetRenderWindow()->Render();//¼°Ê±ÏÔÊ¾
+
 	this->close();
 
 }
