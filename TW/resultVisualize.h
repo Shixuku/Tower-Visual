@@ -20,7 +20,6 @@
 #include <vtkActor.h>
 #include"Node.h"
 #include"Outputter.h"
-#include"Outputter_ice.h"
 
 class InterFace;
 class Instance;
@@ -32,19 +31,13 @@ public:
 	resultVisualize(QWidget *parent = nullptr);
 	~resultVisualize();
 	InterFace* pCAE = nullptr;
-	Instance* m_ins = nullptr;
+	Instance* FocusedModel = nullptr; //当前关注的模型
 
 	std::vector<Node> m_nodes;//包含位移的点
 
 	QTimer* updateTimer;
 	double m_dt = 1000;//ms
 
-	vtkSmartPointer<vtkActor> m_vtkNodes;
-	vtkSmartPointer<vtkActor> m_vtklines;
-	vtkSmartPointer<vtkPoints> m_originalPoints;//原始数据
-	vtkSmartPointer<vtkPoints> m_points;
-
-	vtkSmartPointer<vtkDoubleArray> scalars;//设置云图颜色
 	vtkSmartPointer<vtkScalarBarActor> scalarBar;//云图块actor
 	vtkSmartPointer<vtkLookupTable> lookupTable;
 
@@ -52,36 +45,38 @@ public:
 	int m_frames = 0;//帧
 	bool loopPlay = false;
 	void set_loopPlay(bool flag) { loopPlay = flag; }
-
+	void Init();
 	void set_fps(int fps);
 	void update();
 	void start();
 	void stop();
-	void quit();
+
+	void show();
+
 	void autoFactor(bool flag);
 
-	void addData(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
-	//void addData_ice(std::list<std::vector<double>>& nodes, Instance* ins);//界面的数据
-	void addActorData();//添加界面的actor
 	void removeActor();
 
 	void setNephogramType(int iTpye);
+	void SetStepCombox();
 	void setCurrentStep(int idStep);
+
+	void setCurrentModel(Instance* Model);
+protected:
+	void updateBoundary();
+
+	void getBoundary();
+
+	void closeEvent(QCloseEvent* event) override;
 signals:
 	void animationFinished();//动画结束
 
 public slots:
 	void showOriginalActor(bool flag);//显示原始actor
+	void showPointsActor(bool flag);
+	void showLinesActor(bool flag);
 
 private:
 	Ui::resultVisualizeClass ui;
-
-	Outputter* m_Outputter = nullptr;
-	//Outputter_ice* m_Outputter_ice = nullptr;
-
-	void getBoundary();
-	double boundary = 0; //模型边界大小
-
 	DataType currentType;
-	DataType_ice currentType_ice;
 };

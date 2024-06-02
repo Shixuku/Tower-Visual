@@ -193,4 +193,5 @@ private:
     void SetBackView();
     void updateCameraView(double focalPoint[3], double position[3], double viewUp[3]);
  
+    Instance_Calculate* ui_Calculate = nullptr;
 };

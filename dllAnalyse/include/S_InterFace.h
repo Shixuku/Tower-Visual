@@ -23,6 +23,13 @@ public:
 	//克隆
 	virtual S_InterFace* clone() const = 0;
 
+	//保存和读取计算结果
+	virtual void SaveResult(QDataStream& dataStream) const = 0;
+	virtual void ReadResult(QDataStream& dataStream) = 0;
+
+	//输出子模型的计算文件
+	virtual void SaveChildrenModelFile(QString fileName, std::vector<std::pair<QChar, int>> ChildrenModel) const = 0;
+
 	//设置模型ID
 	virtual void set_ID(int id) = 0;
 	//设置模型name

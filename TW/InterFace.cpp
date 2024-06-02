@@ -999,7 +999,10 @@ void InterFace::AddPartFunction(QTreeWidgetItem* item)
 
 void InterFace::Caculate()
 {
-	Instance_Calculate* ui_Calculate = new Instance_Calculate(this);
+	if (ui_Calculate == nullptr)
+	{
+		ui_Calculate = new Instance_Calculate(this);
+	}
 	ui_Calculate->show();
 }
 

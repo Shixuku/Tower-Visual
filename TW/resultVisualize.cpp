@@ -2,6 +2,7 @@
 #include"InterFace.h"
 #include <vtkTextProperty.h>
 #include <vtkLookupTable.h>
+#include <QDebug>
 
 resultVisualize::resultVisualize(QWidget *parent)
 	: QDialog(parent)
@@ -15,15 +16,12 @@ resultVisualize::resultVisualize(QWidget *parent)
 	//自动调整放大因子
 	ui.lineEdit->setText("1");
 	connect(ui.radioButton, &QRadioButton::clicked, this, &resultVisualize::autoFactor);
-	connect(ui.radioButton, &QRadioButton::clicked, ui.lineEdit, &QLineEdit::setDisabled);
 	//更新动画
 	connect(updateTimer, &QTimer::timeout, this, &resultVisualize::update);
 	//播放
 	connect(ui.play_btn, &QPushButton::clicked, this, &resultVisualize::start);
 	//暂停
 	connect(ui.stop_btn, &QPushButton::clicked, this, &resultVisualize::stop);
-	//终止
-	connect(ui.quit_btn, &QPushButton::clicked, this, &resultVisualize::quit);
 
 	ui.label_frame->setText(QString::number(m_frames));//帧标签
 	//设置速度滑块
@@ -34,6 +32,9 @@ resultVisualize::resultVisualize(QWidget *parent)
 	//显示原始actor
 	ui.checkBox_showOriginal->setChecked(true);
 	connect(ui.checkBox_showOriginal, &QCheckBox::clicked, this, &resultVisualize::showOriginalActor);
+	//显示Points
+	ui.checkBox_showPoints->setChecked(true);
+	connect(ui.checkBox_showPoints, &QCheckBox::clicked, this, &resultVisualize::showPointsActor);
 	//循环播放
 	ui.checkBox_loop->setChecked(true);
 	set_loopPlay(true);
@@ -43,21 +44,70 @@ resultVisualize::resultVisualize(QWidget *parent)
 
 	//云图combox
 	QStringList qstrlist;
-	qstrlist << "U1" << "U2" << "U3" << "UR1" << "UR2" << "UR3" << "N" << "M2" << "M3" << "Mises";
+	qstrlist << "Ux" << "Uy" << "Uz" << "U" << "URx" << "URy" << "URz" << "N" << "My" << "Mz" << "Mises";
 	ui.comboBox_nephogram->addItems(qstrlist);
 	void (QComboBox:: * MycurrentIndexChanged)(int) = &QComboBox::currentIndexChanged;
 	connect(ui.comboBox_nephogram, MycurrentIndexChanged, this, &resultVisualize::setNephogramType);
-
 	connect(ui.comboBox_step, MycurrentIndexChanged, this, &resultVisualize::setCurrentStep);
 
+	//lookupTable
 	lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-	lookupTable->SetHueRange(0.667,0);
-	lookupTable->SetNumberOfColors(16);
+	//lookupTable->SetTableRange(0, 1); //设置查找表中的值范围 不进行颜色映射
+	lookupTable->SetRange(0, 1); //设置数据范围，并自动对应颜色映射
+	lookupTable->SetNumberOfColors(16);//设置颜色映射表中的颜色数量
+	lookupTable->SetHueRange(0.667, 0); //设置色相范围
 	lookupTable->Build();
+
+	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
+	scalarBar->SetLookupTable(lookupTable);
+	scalarBar->SetNumberOfLabels(16);
+	scalarBar->SetVisibility(0);
+
+	// 设置颜色条的宽度
+	scalarBar->SetWidth(0.15);
+	// 设置颜色条的高度
+	scalarBar->SetHeight(0.8);
+	// 设置颜色条在渲染窗口中的位置
+	scalarBar->SetPosition(0.85, 0.1); // (x, y) 坐标，范围从 0 到 1
+	// 获取标题文本属性
+	vtkTextProperty* titleTextProperty = scalarBar->GetTitleTextProperty();
+	// 设置标题字体大小
+	titleTextProperty->SetFontSize(10);
+	// 设置标题字体样式，例如设置为粗体
+	titleTextProperty->SetBold(0);
+	// 设置标题字体斜体
+	titleTextProperty->SetItalic(0);
+	// 设置标题字体颜色
+	titleTextProperty->SetColor(1.0, 1.0, 1.0); // 设置为白色
 }
 
 resultVisualize::~resultVisualize()
 {}
+
+void resultVisualize::Init()
+{
+	m_frames = 0;
+	int steps = ui.comboBox_step->count();
+	for (int i = 0; i < steps; ++i) {
+		ui.comboBox_step->setCurrentIndex(i);
+	}
+	ui.comboBox_nephogram->setCurrentIndex(0);
+	ui.comboBox_nephogram->setCurrentIndex(1);
+
+	if (ui.checkBox_showPoints->isChecked()) {
+		FocusedModel->showAnimationPointsActor(true);
+	}
+	else {
+		FocusedModel->showAnimationPointsActor(false);
+	}
+
+	if (ui.checkBox_showOriginal->isChecked()) {
+		FocusedModel->showOriginalActor(true);
+	}
+	else {
+		FocusedModel->showOriginalActor(false);
+	}
+}
 
 void resultVisualize::set_fps(int fps)
 {
@@ -66,328 +116,267 @@ void resultVisualize::set_fps(int fps)
 
 void resultVisualize::showOriginalActor(bool flag)
 {
-	if (m_ins->Node_actor) m_ins->Node_actor->SetVisibility(flag);
-	if (m_ins->m_BeamActor) m_ins->m_BeamActor->SetVisibility(flag);
-	if (m_ins->m_TrussActor) m_ins->m_TrussActor->SetVisibility(flag);
+	if (FocusedModel == nullptr) return;
+
+	updateTimer->stop();
+
+	FocusedModel->showOriginalActor(flag);
+	pCAE->m_renderWindow->Render();
+
+	updateTimer->start();
+}
+
+void resultVisualize::showPointsActor(bool flag)
+{//动画中的点
+	if (FocusedModel == nullptr) return;
+
+	updateTimer->stop();
+
+	FocusedModel->showAnimationPointsActor(flag);
+	pCAE->m_renderWindow->Render();
+
+	updateTimer->start();
+}
+
+void resultVisualize::showLinesActor(bool flag)
+{
+	if (FocusedModel == nullptr) return;
+
+	FocusedModel->showAnimationLinesActor(flag);
 	pCAE->m_renderWindow->Render();
 }
 
+void resultVisualize::updateBoundary()//更新边界
+{
+	int step = ui.comboBox_step->count();
+	//分析步boundary
+	for (int i = 1; i <= step; ++i)
+	{
+		FocusedModel->s->get_outputter(i).FindBoundary();
+	}
+}
 
 void resultVisualize::getBoundary()
 {
-	double max_x = 0;
-	double min_x = 0;
-	double max_y = 0;
-	double min_y = 0;
-	double max_z = 0;
-	double min_z = 0;
-	for (auto& i : m_nodes)
+	if (FocusedModel == nullptr) return;
+
+	double bounds[6];
+	FocusedModel->Node_actor->GetBounds(bounds);
+	double boundary = FocusedModel->boundary;
+	for (int i = 0; i < 3; ++i)
 	{
-		if (max_x < i.x) max_x = i.x;
-		if (min_x > i.x) min_x = i.x;
-		if (max_y < i.y) max_y = i.y;
-		if (min_y > i.y) min_y = i.y;
-		if (max_z < i.z) max_z = i.z;
-		if (min_z > i.z) min_z = i.z;
+		boundary = std::max(bounds[i * 2 + 1] - bounds[i * 2], boundary);
 	}
-	if (boundary < (max_x - min_x)) boundary = max_x - min_x;
-	if (boundary < (max_y - min_y)) boundary = max_y - min_y;
-	if (boundary < (max_z - min_z)) boundary = max_z - min_z;
+	FocusedModel->boundary = boundary;
+}
+
+void resultVisualize::setCurrentModel(Instance* Model)
+{
+	FocusedModel = Model;
+}
+
+void resultVisualize::closeEvent(QCloseEvent* event)
+{
+	updateTimer->stop();
+	m_frames = 0;
+	removeActor();
+
+	pCAE->m_renderWindow->Render();
+	QDialog::closeEvent(event);
+}
+
+void resultVisualize::show()
+{
+	FocusedModel->addGeometryData();//添加主界面数据(copy)
+
+	//分析步combox
+	SetStepCombox();
+
+	//setBoundary
+	getBoundary();
+
+	FocusedModel->m_vtklines->GetMapper()->SetLookupTable(lookupTable);
+	updateBoundary();
+
+	pCAE->m_Renderer->AddActor(scalarBar);
+	scalarBar->SetVisibility(1);
+	Init();
+	pCAE->m_renderWindow->Render();
+	pCAE->m_Renderer->ResetCamera();
+	// 调用父类的show()函数来显示对话框
+	QDialog::show();
 }
 
 void resultVisualize::update()
 {
-	if (m_Outputter != nullptr)
-	{
-		if (m_frames >= m_Outputter->dataSet.size())
-		{
-			if (loopPlay) emit animationFinished();
-			return;
-		}
-		double ampFactor = ui.lineEdit->text().toDouble();//放大因子
+	int iType = ui.comboBox_nephogram->currentIndex();
+	int step = ui.comboBox_step->currentIndex() + 1;
 
-		vtkIdType pointsNum = m_nodes.size();
+	double ampFator = ui.lineEdit->text().toDouble();
+	ampFator = std::max(1., ampFator);
 
-		DataFrame* iframe = m_Outputter->dataSet[m_frames];
-		//修改点的坐标
-		for (auto& i : iframe->nodeDatas)
-		{
-			int pointIndex = i.first - 1;
-			NodeData& node = i.second;
-			double* p = m_originalPoints->GetPoint(pointIndex);
-			m_points->SetPoint(pointIndex, p[0] + ampFactor * node.displaymentZ, p[1] + ampFactor * node.displaymentX, p[2] + ampFactor * node.displaymentY);
-
-			//添加云图数据
-			switch (currentType)
-			{
-			case DataType::U1:
-				scalars->SetValue(pointIndex, node.displaymentZ);
-				break;
-			case DataType::U2:
-				scalars->SetValue(pointIndex, node.displaymentX);
-				break;
-			case DataType::U3:
-				scalars->SetValue(pointIndex, node.displaymentY);
-				break;
-			case DataType::UR1:
-				scalars->SetValue(pointIndex, node.rotationZ);
-				break;
-			case DataType::UR2:
-				scalars->SetValue(pointIndex, node.rotationX);
-				break;
-			case DataType::UR3:
-				scalars->SetValue(pointIndex, node.rotationY);
-				break;
-			case DataType::N:
-				scalars->SetValue(pointIndex, node.stressN);
-				break;
-			case DataType::M2:
-				scalars->SetValue(pointIndex, node.stressM2);
-				break;
-			case DataType::M3:
-				scalars->SetValue(pointIndex, node.stressM3);
-				break;
-			default:
-				break;
-			}
-
-		}
+	if (!FocusedModel->update(loopPlay, step, m_frames, iType, ampFator))
+	{//更新失败
+		updateTimer->stop();
 	}
-	m_frames++;//帧++
+
+	m_frames++;
 	ui.label_frame->setText(QString::number(m_frames));//帧
-	m_points->Modified();
 	pCAE->m_renderWindow->Render();
 }
 
 void resultVisualize::start()
 {
-	if (m_vtkNodes == nullptr) return;
+	updateTimer->stop();
+	m_frames = 0;
 
 	int msec = m_dt / m_speed;
 	qDebug() << "current time interval: " << msec << "ms";
 	updateTimer->setInterval(msec);
 	updateTimer->start();
+
+	qDebug() << "play";
 }
 
 void resultVisualize::stop()
 {
 	updateTimer->stop();
-}
 
-void resultVisualize::quit()
-{
-	updateTimer->stop();
-	m_frames = 0;
-	removeActor();
-	pCAE->m_renderWindow->Render();
-	this->accept();
+	qDebug() << "stop";
 }
 
 void resultVisualize::autoFactor(bool flag)
 {
-	if (m_Outputter != nullptr)
-	{
-		if (!flag) return;
+	if (!flag) return;
 
-		double max_disp = 0;
+	if (FocusedModel == nullptr) return;
 
-		double max_dx = m_Outputter->getBoundaryDisplaymentX()[1];
-		if (max_disp < max_dx) max_disp = max_dx;
+	double max_disp = 0;
 
-		double max_dy = m_Outputter->getBoundaryDisplaymentY()[1];
-		if (max_disp < max_dy) max_disp = max_dy;
+	int step = ui.comboBox_step->currentIndex() + 1;
+	Outputter* m_Outputter = &FocusedModel->s->get_outputter(step);
 
-		double max_dz = m_Outputter->getBoundaryDisplaymentZ()[1];
-		if (max_disp < max_dz) max_disp = max_dz;
+	//Boundary
+	double max_dx = m_Outputter->getBoundaryDisplaymentX()[1];
+	if (max_disp < max_dx) max_disp = max_dx;
 
-		double ampFator = boundary / max_disp / 10;
-		ui.lineEdit->setText(QString::number(ampFator));
-	}
+	double max_dy = m_Outputter->getBoundaryDisplaymentY()[1];
+	if (max_disp < max_dy) max_disp = max_dy;
 
-}
+	double max_dz = m_Outputter->getBoundaryDisplaymentZ()[1];
+	if (max_disp < max_dz) max_disp = max_dz;
 
-void resultVisualize::addData(std::list<std::vector<double>>& nodes, Instance* ins)
-{//刷新数据（主界面数据变化后）
-	m_ins = ins;
-	assert(m_ins);
+	double ampFator = FocusedModel->boundary / max_disp / 10;
 
-	for (auto& i : nodes)
-	{
-		m_nodes.push_back(Node(0, i[0], i[1], i[2], 0.));
-	}
-	addActorData();//添加主界面数据(copy)
-
-	//添加分析步结果数据
-	int stepnum = ins->s->getTotalSteps();
-
-	//分析步boundary
-	for (int i = 1; i <= stepnum; ++i)
-	{
-		ins->s->get_outputter(i).FindBoundary();
-
-	}
-
-	if (stepnum == ui.comboBox_step->count()) return;
-
-	getBoundary();
-	//分析步combox
-	for (int i = 1; i <= stepnum; ++i)
-	{
-		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
-	}
-
-	pCAE->m_Renderer->ResetCamera();
-}
-
-void resultVisualize::addActorData()
-{
-	if (m_vtkNodes != nullptr)
-	{
-		removeActor();
-	}
-	m_originalPoints = vtkSmartPointer<vtkPoints>::New();//原始数据
-	m_points = vtkSmartPointer<vtkPoints>::New();//用于显示的数据
-
-	vtkSmartPointer<vtkPoints> points = m_ins->m_pts;//主界面中的数据
-	vtkSmartPointer<vtkCellArray> lines = m_ins->m_lines;//主界面中的数据
-
-	m_originalPoints->ShallowCopy(points);//共用同一份数据
-	m_points->DeepCopy(points);//复制一份新的数据
-
-	vtkSmartPointer<vtkPolyData> nodesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	nodesPolyData->SetPoints(m_points);
-
-	vtkNew<vtkVertexGlyphFilter> VertexFilter;
-	VertexFilter->SetInputData(nodesPolyData);
-	VertexFilter->Update();
-
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(VertexFilter->GetOutputPort());
-	m_vtkNodes = vtkSmartPointer<vtkActor>::New();
-	m_vtkNodes->SetMapper(mapper);
-	m_vtkNodes->GetProperty()->SetColor(0, 0, 0);
-	m_vtkNodes->GetProperty()->SetPointSize(3);
-
-	//应力渲染
-	int numPts = points->GetNumberOfPoints();
-	scalars = vtkSmartPointer<vtkDoubleArray>::New();
-	scalars->SetNumberOfComponents(1);
-	scalars->SetNumberOfValues(numPts);
-	for (int i = 0; i < numPts; ++i)
-	{
-		scalars->SetValue(i, 0);
-	}
-
-	vtkSmartPointer<vtkPolyData> linesPolyData = vtkSmartPointer<vtkPolyData>::New();
-	linesPolyData->SetPoints(m_points);
-	linesPolyData->SetLines(lines);
-	linesPolyData->GetPointData()->SetScalars(scalars);
-
-	vtkSmartPointer<vtkPolyDataMapper> linesmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	linesmapper->SetInputData(linesPolyData);
-	linesmapper->ScalarVisibilityOn();
-	linesmapper->SetScalarModeToUsePointData();
-	linesmapper->SetScalarRange(0, 1);
-
-	m_vtklines = vtkSmartPointer<vtkActor>::New();
-	m_vtklines->SetMapper(linesmapper);
-	m_vtklines->GetProperty()->SetColor(0, 0, 0);
-
-	scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-	scalarBar->SetLookupTable(lookupTable);
-	//scalarBar->SetTitle("U1");
-	scalarBar->SetNumberOfLabels(16);
-	scalarBar->SetMaximumNumberOfColors(8);
-
-	pCAE->m_Renderer->AddActor(m_vtkNodes);
-	pCAE->m_Renderer->AddActor(m_vtklines);
-	pCAE->m_Renderer->AddActor(scalarBar);
-	pCAE->m_renderWindow->Render();
+	ui.lineEdit->setText(QString::number(ampFator));
 }
 
 void resultVisualize::removeActor()
 {
-	pCAE->m_Renderer->RemoveActor(m_vtkNodes);
-	pCAE->m_Renderer->RemoveActor(m_vtklines);
 	pCAE->m_Renderer->RemoveActor(scalarBar);
-
-	m_vtkNodes = nullptr;
-	m_vtklines = nullptr;
+	FocusedModel->removeActor();
+	pCAE->m_renderWindow->Render();
 }
 
 void resultVisualize::setNephogramType(int iTpye)
 {
-	vector<double> boundary(2);
-	if (m_Outputter != nullptr)
-	{
-		currentType = static_cast<DataType>(iTpye);
+	updateTimer->stop();
 
-		switch (currentType)
-		{
-		case DataType::U1:
-			boundary = m_Outputter->getBoundaryDisplaymentZ();
-			//scalarBar->SetTitle("U1");
-			break;
-		case DataType::U2:
-			boundary = m_Outputter->getBoundaryDisplaymentX();
-			//scalarBar->SetTitle("U2");
-			break;
-		case DataType::U3:
-			boundary = m_Outputter->getBoundaryDisplaymentY();
-			//scalarBar->SetTitle("U3");
-			break;
-		case DataType::UR1:
-			boundary = m_Outputter->getBoundaryRotationZ();
-			scalarBar->SetTitle("UR1");
-			break;
-		case DataType::UR2:
-			boundary = m_Outputter->getBoundaryRotationX();
-			scalarBar->SetTitle("UR2");
-			break;
-		case DataType::UR3:
-			boundary = m_Outputter->getBoundaryRotationY();
-			scalarBar->SetTitle("UR3");
-			break;
-		case DataType::N:
-			boundary = m_Outputter->getBoundaryStressN();
-			scalarBar->SetTitle("StressN");
-			break;
-		case DataType::M2:
-			boundary = m_Outputter->getBoundaryStressM2();
-			scalarBar->SetTitle("StressM2");
-			break;
-		case DataType::M3:
-			boundary = m_Outputter->getBoundaryStressM3();
-			scalarBar->SetTitle("StressM3");
-			break;
-		case DataType::Mises:
-			boundary = m_Outputter->getBoundaryMises();
-			scalarBar->SetTitle("Mises");
-			break;
-		default:
-			qDebug() << "未知云图类型！";
-			break;
-		}
-		qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	currentType = static_cast<DataType>(iTpye);
+
+	//qDebug() << "云图类型：" << currentType;
+
+	if (FocusedModel == nullptr) return;
+
+	int step = ui.comboBox_step->currentIndex() + 1;
+	Outputter* m_Outputter = &FocusedModel->s->get_outputter(step);
+
+	//setBoundary
+	vector<double> boundary(2);
+
+	switch (currentType)
+	{
+	case DataType::U1:
+		boundary = m_Outputter->getBoundaryDisplaymentZ();
+		scalarBar->SetTitle("Ux         ");
+		break;
+	case DataType::U2:
+		boundary = m_Outputter->getBoundaryDisplaymentX();
+		scalarBar->SetTitle("Uy         ");
+		break;
+	case DataType::U3:
+		boundary = m_Outputter->getBoundaryDisplaymentY();
+		scalarBar->SetTitle("Uz         ");
+		break;
+	case DataType::MagnitudeU:
+		boundary = m_Outputter->getBoundaryDisplayment();
+		scalarBar->SetTitle("U          ");
+		break;
+	case DataType::UR1:
+		boundary = m_Outputter->getBoundaryRotationZ();
+		scalarBar->SetTitle("URx         ");
+		break;
+	case DataType::UR2:
+		boundary = m_Outputter->getBoundaryRotationX();
+		scalarBar->SetTitle("URy         ");
+		break;
+	case DataType::UR3:
+		boundary = m_Outputter->getBoundaryRotationY();
+		scalarBar->SetTitle("URz         ");
+		break;
+	case DataType::N:
+		boundary = m_Outputter->getBoundaryStressN();
+		scalarBar->SetTitle("StressN         ");
+		break;
+	case DataType::M2:
+		boundary = m_Outputter->getBoundaryStressM2();
+		scalarBar->SetTitle("StressMy         ");
+		break;
+	case DataType::M3:
+		boundary = m_Outputter->getBoundaryStressM3();
+		scalarBar->SetTitle("StressM2         ");
+		break;
+	case DataType::Mises:
+		boundary = m_Outputter->getBoundaryMises();
+		scalarBar->SetTitle("Mises         ");
+		break;
+	default:
+		qDebug() << "未知云图类型！";
+		break;
+	}
+	qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
+	if (boundary[0] > boundary[1])
+	{
+		std::swap(boundary[0], boundary[1]);
 	}
 	lookupTable->SetRange(boundary[0], boundary[1]);
 	lookupTable->Build();
 
-	m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+	FocusedModel->m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
 }
 
-void resultVisualize::setCurrentStep(int idStep)
+void resultVisualize::SetStepCombox()
 {
-	idStep += 1;
-	if (m_ins->s != nullptr)
+	if (FocusedModel == nullptr)
 	{
-		m_Outputter = &(m_ins->s->get_outputter(idStep));
-		//qDebug() << "current step:" << m_Outputter->m_idStep;
-		ui.comboBox_nephogram->setCurrentIndex(0);
-		vector<double>boundary = m_Outputter->getBoundaryDisplaymentX();
-		//scalarBar->SetTitle("U1");
-		//qDebug() << "range of value:" << boundary[0] << " " << boundary[1];
-
-		m_vtklines->GetMapper()->SetScalarRange(boundary[0], boundary[1]);
+		return;
 	}
+	ui.comboBox_step->clear();
+	int stepnum = FocusedModel->s->getTotalSteps();
+	for (int i = 1; i <= stepnum; ++i)
+	{
+		ui.comboBox_step->addItem(QString("Step-") + QString::number(i));
+	}
+}
+
+void resultVisualize::setCurrentStep(int index)
+{
+	updateTimer->stop();
+	if (index < 0) return;
+
+	index += 1;
+
+	//m_Outputter = &(pCAE->s->get_outputter(index));
+
+	qDebug() << "current step:" << index;
 }

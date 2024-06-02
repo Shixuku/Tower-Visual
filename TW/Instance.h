@@ -21,14 +21,14 @@
 #include"Insulator_Base.h"
 #include"WireProperties.h"
 #include"Material.h"
+#include"Outputter.h"
+#include<vtkDoubleArray.h>
 #include"ParameterGalloping.h"
 class Instance :public Base
 {
 public:
 	Instance();
-	virtual ~Instance() {
-
-	}
+	virtual ~Instance();
 	QString m_name = nullptr;
 	QString m_filename = "No File!";
 	vector<Node> m_Nodes;//节点合集
@@ -44,15 +44,15 @@ public:
 	void Show_VTKtruss(vtkRenderer* renderer);
 	void Show_VTKbeam(vtkRenderer* renderer);
 	void Show_VTKnode(vtkRenderer* renderer);//显示节点
-	vtkSmartPointer<vtkPoints> m_pts;
-	vtkSmartPointer<vtkActor> m_BeamActor;
-	vtkSmartPointer<vtkActor> m_TrussActor;
-	vtkSmartPointer<vtkPolyData> linesPolyData;
+	vtkSmartPointer<vtkPoints> m_pts = nullptr;
+	vtkSmartPointer<vtkActor> m_BeamActor = nullptr;
+	vtkSmartPointer<vtkActor> m_TrussActor = nullptr;
+	vtkSmartPointer<vtkPolyData> linesPolyData = nullptr;
 	std::vector<vtkSmartPointer<vtkActor>>m_LoadActor;//集中力actor
 	std::vector<vtkSmartPointer<vtkActor>>m_ConstraintActor;//约束actor
 	std::list<vtkSmartPointer<vtkActor>>m_HangPointActor;//悬垂串actor
 	std::list<vtkSmartPointer<vtkActor2D>>m_HangPointLabelActor;//悬垂串标签actor
-	vtkSmartPointer<vtkActor> Node_actor;//huangzhan
+	vtkSmartPointer<vtkActor> Node_actor = nullptr;//huangzhan
 	map<int, Node>NodeData;
 	map<int, Element_Beam>BeamData;
 	map<int, Element_Truss>TrussData;
@@ -117,7 +117,6 @@ public:
 	
 	//计算
 	S_InterFace* s = nullptr;
-	S_InterFace_ice* s_ice = nullptr;
 	void Section_Assign();//为各单元的截面指派情况
 	void Axial_force();//初始轴力
 
@@ -148,5 +147,34 @@ public:
 	vector<int>MidId;
 	map<int, vector<int>>WireMidId;
 	map<int, vector<int>>GroundMidId;
+
+
+	// 后处理
+	//动画显示
+	double boundary = 0; //模型边界大小
+	vtkSmartPointer<vtkActor> m_vtkNodes = nullptr;
+	vtkSmartPointer<vtkActor> m_vtklines = nullptr;
+	vtkSmartPointer<vtkPoints> m_animationPoints = nullptr;
+	//标量渲染
+	vtkSmartPointer<vtkDoubleArray> scalars = nullptr;
+	bool update(bool replay, int step, int& frames, int iType, double Amp); //更新失败（没有更多的数据|循环播放）返回false
+	void addGeometryData(); //添加动画模型到界面
+	void removeActor();
+
+	void showOriginalActor(bool flag);
+
+	inline void showAnimationPointsActor(bool flag) {
+		if (m_vtkNodes != nullptr) {
+			m_vtkNodes->SetVisibility(flag);
+		}
+	}
+	inline void showAnimationLinesActor(bool flag) {
+		if (m_vtklines != nullptr) {
+			m_vtklines->SetVisibility(flag);
+		}
+	}
+	bool hasCalc = false;
+	//索引和节点ID的映射关系
+	std::unordered_map<int, vtkIdType> nodeIdToIndex;
 };
 
